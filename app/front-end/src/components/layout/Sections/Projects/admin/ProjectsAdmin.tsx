@@ -9,6 +9,7 @@ import type { Project } from '@/types/api';
 import { useNotificationContext } from '@/contexts';
 import { useNavigate } from 'react-router-dom';
 import styles from './ProjectsAdmin.module.css';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 /**
  * ProjectsAdmin Component - Lista de gestión de artículos
@@ -30,6 +31,7 @@ interface SortConfig {
 const ITEMS_PER_PAGE = 10;
 
 const ProjectsAdmin: React.FC = () => {
+  const { t } = useTranslation();
   const [projects, setProjects] = useState<article[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -213,7 +215,7 @@ const ProjectsAdmin: React.FC = () => {
             <div className={styles.headerContent}>
               <h1 className={styles.projectsAdminTitle}>
                 <i className="fas fa-newspaper"></i>
-                Gestión de Proyectos
+                Gestión de {t.projects.title}
               </h1>
               <p className={styles.projectsAdminSubtitle}>
                 Administra y organiza todos tus artículos y proyectos
@@ -238,7 +240,7 @@ const ProjectsAdmin: React.FC = () => {
               </button>
               <button className={styles.btnPrimary} onClick={handleNewProject}>
                 <i className="fas fa-plus"></i>
-                Nuevo Proyecto
+                Nuevo {t.projects.title.slice(0, -1)}
               </button>
             </div>
           </div>
@@ -303,14 +305,14 @@ const ProjectsAdmin: React.FC = () => {
             </div>
 
             <div className={styles.resultsInfo}>
-              Mostrando {filteredProjects.length} de {stats.total} proyectos
+              {`Mostrando ${filteredProjects.length} de ${stats.total} ${t.projects.title.toLowerCase()}`}
             </div>
           </div>
 
           {loading ? (
             <div className={styles.adminLoading}>
               <div className={styles.loadingSpinner}></div>
-              <p>Cargando proyectos...</p>
+              <p>{t.states.loading}</p>
             </div>
           ) : (
             <>
@@ -341,7 +343,7 @@ const ProjectsAdmin: React.FC = () => {
                     }}
                   >
                     <i className="fas fa-undo"></i>
-                    Limpiar filtros
+                    {t.states.reset}
                   </button>
                 </div>
               ) : (
@@ -371,7 +373,7 @@ const ProjectsAdmin: React.FC = () => {
                             className={`${styles.thEstado} ${styles.sortable}`}
                             onClick={() => handleSort('status')}
                           >
-                            Estado
+                            {t.projects.status}
                             <i
                               className={`fas ${
                                 sortConfig.key === 'status'
@@ -382,7 +384,7 @@ const ProjectsAdmin: React.FC = () => {
                               }`}
                             ></i>
                           </th>
-                          <th className={styles.thTecnologias}>Tecnologías</th>
+                          <th className={styles.thTecnologias}>{t.projects.technologies}</th>
                           <th className={styles.thAcciones}>Acciones</th>
                         </tr>
                       </thead>
@@ -416,11 +418,15 @@ const ProjectsAdmin: React.FC = () => {
                               <span
                                 className={`${styles.badge} ${
                                   styles[
-                                    `badge${(project.status || 'Completado').replace(/\s+/g, '')}`
+                                    `badge${(project.status || t.projects.completed).replace(/\s+/g, '')}`
                                   ]
                                 }`}
                               >
-                                {project.status || 'Completado'}
+                                {project.status === 'Completado'
+                                  ? t.projects.completed
+                                  : project.status === 'En Desarrollo'
+                                    ? t.projects.inProgress
+                                    : project.status || t.projects.completed}
                               </span>
                             </td>
                             <td className={styles.tdTecnologias}>
@@ -445,21 +451,21 @@ const ProjectsAdmin: React.FC = () => {
                                 <button
                                   className={`${styles.buttonIcon} ${styles.viewBtn}`}
                                   onClick={() => handleView(project)}
-                                  title="Ver artículo/proyecto"
+                                  title={`${t.projects.viewProject}/${t.projects.title.slice(0, -1).toLowerCase()}`}
                                 >
                                   <i className="fas fa-eye"></i>
                                 </button>
                                 <button
                                   className={`${styles.buttonIcon} ${styles.editBtn}`}
                                   onClick={() => handleEdit(project)}
-                                  title="Editar proyecto"
+                                  title={`Editar ${t.projects.title.slice(0, -1).toLowerCase()}`}
                                 >
                                   <i className="fas fa-edit"></i>
                                 </button>
                                 <button
                                   className={`${styles.buttonIcon} ${styles.deleteBtn}`}
                                   onClick={() => handleDelete(project)}
-                                  title="Eliminar proyecto"
+                                  title={`Eliminar ${t.projects.title.slice(0, -1).toLowerCase()}`}
                                 >
                                   <i className="fas fa-trash"></i>
                                 </button>

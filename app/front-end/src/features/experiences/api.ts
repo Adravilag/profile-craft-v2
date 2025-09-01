@@ -1,7 +1,7 @@
 // src/features/experiences/api.ts
 import { API } from '@/services/http';
 import { getDynamicUserId } from '@/features/users/services/userId';
-import type { Experience } from '@/types/experience';
+import type { Experience } from '@/types/api';
 
 export const getExperiences = async () => {
   const userId = await getDynamicUserId();

@@ -1,7 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './projectCard.module.css';
-import SkillPill from '@/components/shared/SkillPill';
+import SkillPill from '@/components/ui/SkillPill/SkillPill';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 type Media = { type: 'image' | 'gif' | 'video'; src: string; poster?: string };
 
@@ -31,6 +32,7 @@ export type Project = {
 };
 
 const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
+  const { t, getText } = useTranslation();
   const navigate = useNavigate();
   const media = project.media;
   // Función para navegar al artículo del proyecto
@@ -82,7 +84,7 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
           handleCardClick();
         }
       }}
-      aria-label={`Ver detalles del proyecto ${project.title}`}
+      aria-label={`${getText('projects.viewDetails', 'Ver detalles')} ${project.title}`}
     >
       <div className={styles.content}>
         {/* meta badges (type / status) */}
@@ -108,7 +110,7 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
           {project.description ??
             project.shortDescription ??
             (project as any).description ??
-            'Haz clic para ver más detalles del proyecto'}
+            getText('projects.descriptionFallback', 'Haz clic para ver más detalles del proyecto')}
         </p>
 
         <div className={styles.techRow}>
@@ -118,7 +120,7 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
         </div>
 
         <div className={styles.ctaRow}>
-          <span className={styles.readMore}>Leer más →</span>
+          <span className={styles.readMore}>{t.projects.readMore}</span>
 
           <div className={styles.iconCtas}>
             {/* Botón de demo si existe */}
@@ -132,8 +134,11 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
                   )
                 }
                 className={styles.iconBtn}
-                aria-label={`Ver demo de ${project.title}`}
-                title="Ver demo"
+                aria-label={getText(
+                  'projects.viewDemoAria',
+                  `Ver demo de ${project.title}`
+                ).replace('{title}', project.title)}
+                title={t.projects.liveDemo}
               >
                 <i className="fas fa-external-link-alt" aria-hidden></i>
               </button>
@@ -149,8 +154,11 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
                   )
                 }
                 className={styles.iconBtn}
-                aria-label={`Ver demo en vídeo de ${project.title}`}
-                title="Ver demo en vídeo"
+                aria-label={getText(
+                  'projects.viewVideoDemoAria',
+                  `Ver demo en vídeo de ${project.title}`
+                ).replace('{title}', project.title)}
+                title={getText('projects.videoDemoTitle', 'Ver demo en vídeo')}
               >
                 <i className="fas fa-play" aria-hidden></i>
               </button>
@@ -166,8 +174,11 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
                   )
                 }
                 className={styles.iconBtn}
-                aria-label={`Ver código de ${project.title} en GitHub`}
-                title="Ver código"
+                aria-label={getText(
+                  'projects.viewCodeOnGitHub',
+                  `Ver código de ${project.title} en GitHub`
+                ).replace('{title}', project.title)}
+                title={t.projects.viewCode}
               >
                 <i className="fab fa-github" aria-hidden></i>
               </button>
@@ -181,8 +192,11 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
           onClick={e =>
             handleSecondaryAction(e, project.video_demo_url ?? (project as any).video_demo_url)
           }
-          aria-label={`Reproducir demo de ${project.title}`}
-          title="Ver demo en vídeo"
+          aria-label={getText(
+            'projects.playDemoAria',
+            `Reproducir demo de ${project.title}`
+          ).replace('{title}', project.title)}
+          title={getText('projects.videoDemoTitle', 'Ver demo en vídeo')}
           className={styles.videoPlayCorner}
         >
           <i className="fas fa-play" aria-hidden></i>

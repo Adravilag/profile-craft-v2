@@ -1,6 +1,7 @@
 // Página temporal para probar el sistema de iconos después de la limpieza SVG
 import React from 'react';
-import { SkillsTestComponent } from '@/features/skills';
+// import { cn } from '@/utils/cn';
+// import { SkillsTestComponent } from '@/features/skills';
 
 const IconTestPage: React.FC = () => {
   return (
@@ -16,7 +17,7 @@ const IconTestPage: React.FC = () => {
           </p>
         </header>
 
-        <SkillsTestComponent />
+        {/* <SkillsTestComponent /> */}
 
         <footer
           style={{ marginTop: '40px', textAlign: 'center', color: '#9ca3af', fontSize: '14px' }}

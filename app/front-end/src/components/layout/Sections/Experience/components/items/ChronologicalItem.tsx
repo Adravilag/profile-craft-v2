@@ -1,10 +1,11 @@
 import React from 'react';
 import type { Experience } from '@/types/api';
 import { formatDateRange, calculateDuration, formatDateFromInput } from '@/utils/dateUtils';
-import SkillPill from '@/components/shared/SkillPill';
+import SkillPill from '@/components/ui/SkillPill/SkillPill';
 import { findImageForName } from '@/utils/imageLookup';
 import styles from './ChronologicalItem.module.css';
 import BlurImage from '@/components/utils/BlurImage';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 interface Education {
   id?: number; // Para compatibilidad con código antiguo
@@ -44,6 +45,7 @@ const ChronologicalItem: React.FC<ChronologicalItemProps> = ({
   position,
   animationDelay = 0.15,
 }) => {
+  const { t } = useTranslation();
   const imgCandidate = findImageForName(item.company ?? item.institution);
 
   return (
@@ -59,7 +61,7 @@ const ChronologicalItem: React.FC<ChronologicalItemProps> = ({
         </div>
         {/* Fecha de fin posicionada al lado del marcador */}
         <div className={styles.chronologicalYearExternal}>
-          {formatDateFromInput(item.end_date) || 'Presente'}
+          {formatDateFromInput(item.end_date) || t.time.present}
         </div>
       </div>
 
@@ -82,7 +84,7 @@ const ChronologicalItem: React.FC<ChronologicalItemProps> = ({
         )}
         <div className={styles.chronologicalHeader}>
           <div className={`${styles.chronologicalType} ${styles[item.type]}`}>
-            {item.type === 'experience' ? 'Experiencia' : 'Formación'}
+            {item.type === 'experience' ? t.experience.title : t.experience.education}
           </div>
         </div>
 
@@ -110,7 +112,7 @@ const ChronologicalItem: React.FC<ChronologicalItemProps> = ({
           <div className={styles.chronologicalSkills}>
             <div className={styles.skillsLabel}>
               <i className="fas fa-tools" />
-              <span>Tecnologías:</span>
+              <span>{t.forms.experience.technologies}:</span>
             </div>
             <div className={styles.skillsTags}>
               {item.technologies.map((tech: string, idx: number) => (
@@ -124,7 +126,9 @@ const ChronologicalItem: React.FC<ChronologicalItemProps> = ({
         {item.type === 'education' && item.grade && (
           <div className={styles.educationGrade}>
             <i className="fas fa-medal" />
-            <span>Calificación: {item.grade}</span>
+            <span>
+              {t.forms.experience.grade}: {item.grade}
+            </span>
           </div>
         )}
       </div>

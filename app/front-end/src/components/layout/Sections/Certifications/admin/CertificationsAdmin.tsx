@@ -7,13 +7,13 @@ import type { Certification } from '@/types/api';
 import { useNotification } from '@/hooks/useNotification';
 import ModalShell from '@/components/ui/Modal/ModalShell';
 import { IssuerSelector, CredentialIdInput } from '@/ui/components/forms';
-import type { CertificationIssuer } from '../../../../../data/certificationIssuers';
+import type { CertificationIssuer } from '@/features/certifications';
 import {
   CERTIFICATION_ISSUERS,
   generateVerifyUrl,
   generateCertificateImageUrl,
   getCredentialExample,
-} from '../../../../../data/certificationIssuers';
+} from '@/features/certifications';
 import styles from './CertificationsAdmin.module.css';
 
 interface CertificationsAdminProps {

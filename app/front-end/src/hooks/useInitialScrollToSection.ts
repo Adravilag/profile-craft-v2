@@ -180,12 +180,42 @@ export const useInitialScrollToSection = ({
         debugLog.error('navigateToSection threw:', e);
       }
 
+      // Buscar el elemento inmediatamente sin esperar
+      const immediateElement =
+        document.getElementById(sectionFromPath!) ||
+        (document.querySelector(`[data-section="${sectionFromPath}"]`) as HTMLElement | null);
+
+      if (immediateElement) {
+        // Si el elemento ya existe, hacer scroll inmediatamente
+        debugLog.navigation('useInitialScrollToSection: Element found immediately, scrolling now');
+        try {
+          await scrollToSection(immediateElement);
+        } catch (err) {
+          debugLog.error('Error in immediate scroll:', err);
+        }
+
+        // Finalizar la carga rápidamente para navegación inmediata
+        const MIN_LOADING = 100; // Reducido para navegación inmediata
+        const postElapsed = Date.now() - start;
+        const remaining = Math.max(0, MIN_LOADING - postElapsed);
+
+        setTimeout(() => {
+          setIsInitialLoading(false);
+          isInitialLoadingRef.current = false;
+        }, remaining);
+        return;
+      }
+
+      // Si el elemento no existe inmediatamente, usar el comportamiento anterior
+      debugLog.navigation('useInitialScrollToSection: Element not found immediately, waiting...');
+
       const el = await waitForElement(
         () =>
           document.getElementById(sectionFromPath!) ||
           (document.querySelector(`[data-section="${sectionFromPath}"]`) as HTMLElement | null)
       );
 
+      // Solo esperar recursos si no pudimos hacer scroll inmediatamente
       await Promise.all([waitForResources(), waitForScrollStability()]);
 
       if (el) {

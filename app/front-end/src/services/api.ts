@@ -470,3 +470,34 @@ export const hasRegisteredUser = async (): Promise<boolean> => {
 export const getProjectStats = async (projectId: string) => {
   return API.get(`/projects/admin/projects/${projectId}/stats`).then(r => r.data);
 };
+
+// ==========================================
+// About Section API
+// ==========================================
+
+/**
+ * Obtener la información completa de la sección About
+ */
+export const getAboutSection = () => API.get('/about');
+
+/**
+ * Actualizar la información de la sección About (Admin)
+ */
+export const updateAboutSection = (data: any) => API.put('/about', data);
+
+/**
+ * Agregar un nuevo highlight (Admin)
+ */
+export const addAboutHighlight = (data: any) => API.post('/about/highlights', data);
+
+/**
+ * Actualizar un highlight específico (Admin)
+ */
+export const updateAboutHighlight = (highlightId: string, data: any) =>
+  API.put(`/about/highlights/${highlightId}`, data);
+
+/**
+ * Eliminar un highlight (Admin)
+ */
+export const deleteAboutHighlight = (highlightId: string) =>
+  API.delete(`/about/highlights/${highlightId}`);

@@ -29,6 +29,80 @@ vi.mock('@/contexts', () => ({
     login: vi.fn(),
     logout: vi.fn(),
   }),
+  useUnifiedTheme: () => ({
+    currentTheme: 'light',
+    themeConfig: {
+      colors: {
+        primary: '#007acc',
+        secondary: '#f0f0f0',
+        accent: '#ff6b35',
+        text: '#333333',
+        background: '#ffffff',
+      },
+    },
+    toggleTheme: vi.fn(),
+    setTheme: vi.fn(),
+  }),
+  useTranslation: () => ({
+    currentLanguage: 'es',
+    setLanguage: vi.fn(),
+  }),
+  useT: () => ({
+    states: {
+      error: 'Error',
+      loading: 'Cargando...',
+    },
+    ui: {
+      buttons: {
+        download: 'Descargar',
+      },
+    },
+  }),
+}));
+
+vi.mock('@/contexts/TranslationContext', () => ({
+  useTranslation: () => ({
+    t: {
+      experience: {
+        title: 'Professional Journey',
+        subtitle: 'A journey through my work experience and academic background',
+        loading: 'Loading experience and education...',
+        loadingDetails: 'Getting data from server...',
+        errorRetry: 'Retry',
+        retryLimitReached: 'Retry limit reached',
+        viewCategories: 'Category View',
+        viewChronological: 'Chronological View',
+        workExperience: 'Work Experience',
+        education: 'Academic Background',
+        certifications: 'Certifications',
+        stats: {
+          experiences: 'Experiences',
+          certifications: 'Certifications',
+          technologies: 'Technologies',
+        },
+        admin: {
+          title: 'Journey Administration',
+          noExperiences: 'No experiences',
+          noExperiencesDesc: 'Add the first work experience using the floating button.',
+          noEducation: 'No academic background',
+          noEducationDesc: 'Add the first academic formation using the floating button.',
+          edit: 'Edit',
+          delete: 'Delete',
+          newExperience: 'New Experience',
+          newEducation: 'New Education',
+          cancel: 'Cancel',
+          saveChanges: 'Save Changes',
+          create: 'Create',
+        },
+      },
+    },
+  }),
+}));
+
+vi.mock('@/contexts/FabContext', () => ({
+  useFab: () => ({
+    onOpenExperienceModal: vi.fn(() => vi.fn()),
+  }),
 }));
 
 vi.mock('@/hooks/useTimelineAnimation', () => ({
@@ -111,8 +185,8 @@ test('renderiza experiencia y educación (vista tradicional)', async () => {
   expect(await screen.findByTestId('edu-card')).toHaveTextContent('Computer Science BSc');
 
   // Estadísticas rápidas deben reflejar las cantidades
-  expect(screen.getByText('Experiencias')).toBeInTheDocument();
-  expect(screen.getByText('Certificaciones')).toBeInTheDocument();
+  expect(screen.getByText('Experiences')).toBeInTheDocument();
+  expect(screen.getByText('Certifications')).toBeInTheDocument();
 });
 
 test('cambiar a vista cronológica muestra elementos combinados', async () => {
@@ -138,3 +212,24 @@ test('cambiar a vista cronológica muestra elementos combinados', async () => {
 });
 
 // Nota: la prueba de reintento de carga es frágil en el entorno de tests y se omite por ahora.
+
+test('debe usar traducciones del contexto para textos del componente', async () => {
+  // Preparar mocks
+  (endpoints as any).experiences.getExperiences.mockResolvedValue([]);
+  (endpoints as any).education.getEducation.mockResolvedValue([]);
+
+  render(<ExperienceSection />);
+
+  // Verificar que usa las traducciones del contexto para botones de vista
+  expect(await screen.findByText('Category View')).toBeInTheDocument();
+  expect(screen.getByText('Chronological View')).toBeInTheDocument();
+
+  // Verificar estadísticas traducidas
+  expect(screen.getByText('Experiences')).toBeInTheDocument();
+  expect(screen.getByText('Certifications')).toBeInTheDocument();
+  expect(screen.getByText('Technologies')).toBeInTheDocument();
+
+  // Verificar títulos de columnas traducidos
+  expect(screen.getByText('Work Experience')).toBeInTheDocument();
+  expect(screen.getByText('Academic Background')).toBeInTheDocument();
+});

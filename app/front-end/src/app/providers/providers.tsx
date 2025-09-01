@@ -1,7 +1,13 @@
 import { lazy, Suspense, type PropsWithChildren } from 'react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient as defaultClient } from '@services/react-query/queryClient';
-import { AuthProvider, DataProvider, NotificationProvider, UnifiedThemeProvider } from '@/contexts';
+import {
+  AuthProvider,
+  DataProvider,
+  NotificationProvider,
+  UnifiedThemeProvider,
+  TranslationProvider,
+} from '@/contexts';
 
 // Control de activación de React Query vía variable de entorno Vite
 // Para habilitar: VITE_ENABLE_REACT_QUERY=true
@@ -26,6 +32,22 @@ export function AppProviders({ children, client = defaultClient }: AppProvidersP
   if (!REACT_QUERY_ENABLED) {
     return (
       <>
+        <TranslationProvider>
+          <NotificationProvider>
+            <AuthProvider>
+              <UnifiedThemeProvider>
+                <DataProvider>{children}</DataProvider>
+              </UnifiedThemeProvider>
+            </AuthProvider>
+          </NotificationProvider>
+        </TranslationProvider>
+      </>
+    );
+  }
+
+  return (
+    <QueryClientProvider client={client}>
+      <TranslationProvider>
         <NotificationProvider>
           <AuthProvider>
             <UnifiedThemeProvider>
@@ -33,19 +55,7 @@ export function AppProviders({ children, client = defaultClient }: AppProvidersP
             </UnifiedThemeProvider>
           </AuthProvider>
         </NotificationProvider>
-      </>
-    );
-  }
-
-  return (
-    <QueryClientProvider client={client}>
-      <NotificationProvider>
-        <AuthProvider>
-          <UnifiedThemeProvider>
-            <DataProvider>{children}</DataProvider>
-          </UnifiedThemeProvider>
-        </AuthProvider>
-      </NotificationProvider>
+      </TranslationProvider>
       {import.meta.env.DEV && Devtools && (
         <Suspense fallback={null}>
           <Devtools initialIsOpen={false} />

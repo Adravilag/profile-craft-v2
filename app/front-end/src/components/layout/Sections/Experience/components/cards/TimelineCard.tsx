@@ -4,7 +4,7 @@ import styles from './TimelineCard.module.css';
 import type { Experience } from '@/types/api';
 import { formatDateRange, calculateDuration } from '@/utils/dateUtils';
 import { findImageForName } from '@/utils/imageLookup';
-import SkillPill from '@/components/shared/SkillPill';
+import SkillPill from '@/components/ui/SkillPill/SkillPill';
 import { normalizeSkillName } from '@/features/skills/utils/normalizeSkillName';
 
 interface Education {

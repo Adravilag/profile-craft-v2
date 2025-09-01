@@ -1,0 +1,263 @@
+/* Checkbox.module.css */
+.checkboxWrapper,
+.switchWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+/* Standard Checkbox */
+.checkboxInputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.checkboxInput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkboxCustom {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--md-sys-color-outline, #666);
+  border-radius: 4px;
+  background: var(--md-sys-color-surface, #1e1e1e);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.checkboxInput:checked + .checkboxCustom {
+  background: var(--md-sys-color-primary, #7c3aed);
+  border-color: var(--md-sys-color-primary, #7c3aed);
+  color: var(--md-sys-color-on-primary, #fff);
+}
+
+.checkboxInput:indeterminate + .checkboxCustom {
+  background: var(--md-sys-color-primary, #7c3aed);
+  border-color: var(--md-sys-color-primary, #7c3aed);
+  color: var(--md-sys-color-on-primary, #fff);
+}
+
+.checkboxInput:disabled + .checkboxCustom {
+  background: var(--md-sys-color-outline-variant, #333);
+  border-color: var(--md-sys-color-outline-variant, #333);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.checkboxInput:focus + .checkboxCustom {
+  outline: 2px solid var(--md-sys-color-primary, #7c3aed);
+  outline-offset: 2px;
+}
+
+.checkboxLabel {
+  cursor: pointer;
+  color: var(--md-sys-color-on-surface, #fff);
+  font-weight: 500;
+  user-select: none;
+  line-height: 1.4;
+}
+
+.checkboxInput:disabled ~ .checkboxLabel {
+  color: var(--md-sys-color-on-surface-variant, #888);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Switch */
+.switchInput {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.switchLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.switchSlider {
+  position: relative;
+  display: inline-block;
+  border-radius: 20px;
+  background: var(--md-sys-color-outline, #666);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.switchSlider::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  background: var(--md-sys-color-surface, #fff);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.switchInput:checked + .switchLabel .switchSlider {
+  background: var(--md-sys-color-primary, #7c3aed);
+}
+
+.switchInput:disabled + .switchLabel .switchSlider {
+  background: var(--md-sys-color-outline-variant, #333);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.switchInput:disabled + .switchLabel .switchSlider::before {
+  background: var(--md-sys-color-on-surface-variant, #888);
+}
+
+.switchInput:focus + .switchLabel .switchSlider {
+  outline: 2px solid var(--md-sys-color-primary, #7c3aed);
+  outline-offset: 2px;
+}
+
+.switchText {
+  cursor: pointer;
+  color: var(--md-sys-color-on-surface, #fff);
+  font-weight: 500;
+  user-select: none;
+  line-height: 1.4;
+}
+
+.switchInput:disabled + .switchLabel .switchText {
+  color: var(--md-sys-color-on-surface-variant, #888);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Sizes */
+.sm .checkboxCustom {
+  width: 16px;
+  height: 16px;
+  font-size: 10px;
+}
+
+.md .checkboxCustom {
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+}
+
+.lg .checkboxCustom {
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+}
+
+.sm .switchSlider {
+  width: 36px;
+  height: 20px;
+}
+
+.sm .switchSlider::before {
+  width: 16px;
+  height: 16px;
+}
+
+.sm .switchInput:checked + .switchLabel .switchSlider::before {
+  transform: translateX(16px);
+}
+
+.md .switchSlider {
+  width: 44px;
+  height: 24px;
+}
+
+.md .switchSlider::before {
+  width: 20px;
+  height: 20px;
+}
+
+.md .switchInput:checked + .switchLabel .switchSlider::before {
+  transform: translateX(20px);
+}
+
+.lg .switchSlider {
+  width: 52px;
+  height: 28px;
+}
+
+.lg .switchSlider::before {
+  width: 24px;
+  height: 24px;
+}
+
+.lg .switchInput:checked + .switchLabel .switchSlider::before {
+  transform: translateX(24px);
+}
+
+/* Description */
+.description {
+  color: var(--md-sys-color-on-surface-variant, #888);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  margin-left: calc(20px + 0.75rem); /* Align with label text */
+}
+
+.sm .description {
+  margin-left: calc(16px + 0.75rem);
+  font-size: 0.75rem;
+}
+
+.lg .description {
+  margin-left: calc(24px + 0.75rem);
+  font-size: 1rem;
+}
+
+/* Error state */
+.error .checkboxCustom,
+.error .switchSlider {
+  border-color: var(--md-sys-color-error, #ef4444);
+}
+
+.error .checkboxLabel,
+.error .switchText,
+.error .description {
+  color: var(--md-sys-color-error, #ef4444);
+}
+
+/* Hover states */
+.checkboxInputWrapper:hover .checkboxCustom:not(:disabled) {
+  border-color: var(--md-sys-color-primary, #7c3aed);
+  background: var(--md-sys-color-surface-variant, #2a2a2a);
+}
+
+.switchLabel:hover .switchSlider:not(:disabled) {
+  background: var(--md-sys-color-outline-variant, #555);
+}
+
+.switchInput:checked + .switchLabel:hover .switchSlider:not(:disabled) {
+  background: var(--md-sys-color-primary-container, #5b21b6);
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .checkboxCustom,
+  .switchSlider,
+  .switchSlider::before {
+    transition: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .checkboxCustom,
+  .switchSlider {
+    border-width: 3px;
+  }
+}

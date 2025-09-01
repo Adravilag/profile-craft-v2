@@ -3,10 +3,24 @@ import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider, type RouteObject } from 'react-router-dom';
 
+// Importar contextos necesarios
+import { NotificationProvider } from '@/contexts/NotificationContext';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { UnifiedThemeProvider } from '@/contexts/UnifiedThemeContext';
+import { TranslationProvider } from '@/contexts/TranslationContext';
+
 // jsdom no implementa scrollTo y lo usa ScrollRestoration
 beforeAll(() => {
   window.scrollTo = vi.fn();
 });
+
+// Mock de hooks que no necesitan contextos completos
+vi.mock('@/hooks/useNotification', () => ({
+  useNotificationContext: () => ({
+    showSuccess: vi.fn(),
+    showError: vi.fn(),
+  }),
+}));
 
 // ---- mock useNavigation con estado mutable ----
 let navState: 'idle' | 'loading' = 'idle';
@@ -25,6 +39,17 @@ function Home() {
 function About() {
   return <div>About content</div>;
 }
+
+// Wrapper con todos los proveedores necesarios
+const TestWrapper = ({ children }: { children: React.ReactNode }) => (
+  <NotificationProvider>
+    <AuthProvider>
+      <UnifiedThemeProvider>
+        <TranslationProvider>{children}</TranslationProvider>
+      </UnifiedThemeProvider>
+    </AuthProvider>
+  </NotificationProvider>
+);
 
 // SUT
 import RootLayout from '@/components/layout/RootLayout/RootLayout';
@@ -49,7 +74,11 @@ describe('RootLayout', () => {
   it('renderiza header, sidebar, footer y el contenido del Outlet', () => {
     navState = 'idle';
     const router = makeRouter('/');
-    render(<RouterProvider router={router} />);
+    render(
+      <TestWrapper>
+        <RouterProvider router={router} />
+      </TestWrapper>
+    );
 
     // Header: hay 2 'banner' (wrapper y el Header). Nos quedamos con el interior (último).
     const banners = screen.getAllByRole('banner');
@@ -72,7 +101,11 @@ describe('RootLayout', () => {
   it('marca <main> con aria-busy cuando navigation=loading y muestra el top loader', () => {
     navState = 'loading';
     const router = makeRouter('/');
-    const { container } = render(<RouterProvider router={router} />);
+    const { container } = render(
+      <TestWrapper>
+        <RouterProvider router={router} />
+      </TestWrapper>
+    );
 
     expect(screen.getByRole('main')).toHaveAttribute('aria-busy', 'true');
     // El top loader usa aria-hidden en el contenedor
@@ -83,7 +116,11 @@ describe('RootLayout', () => {
     // 1) Montamos en loading
     navState = 'loading';
     const router1 = makeRouter('/');
-    const { container, unmount } = render(<RouterProvider router={router1} />);
+    const { container, unmount } = render(
+      <TestWrapper>
+        <RouterProvider router={router1} />
+      </TestWrapper>
+    );
     expect(screen.getByRole('main')).toHaveAttribute('aria-busy', 'true');
     expect(container.querySelector('div[aria-hidden="true"]')).toBeTruthy();
 
@@ -91,7 +128,11 @@ describe('RootLayout', () => {
     unmount();
     navState = 'idle';
     const router2 = makeRouter('/');
-    const { container: container2 } = render(<RouterProvider router={router2} />);
+    const { container: container2 } = render(
+      <TestWrapper>
+        <RouterProvider router={router2} />
+      </TestWrapper>
+    );
 
     expect(screen.getByRole('main')).not.toHaveAttribute('aria-busy', 'true');
     expect(container2.querySelector('div[aria-hidden="true"]')).toBeNull();

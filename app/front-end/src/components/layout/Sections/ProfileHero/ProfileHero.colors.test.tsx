@@ -39,7 +39,6 @@ vi.mock('@/services/endpoints', async importOriginal => {
     education: actual.education || { getEducation: async () => [] },
     projects: actual.projects || { getProjects: async () => [] },
     certifications: actual.certifications || { getCertifications: async () => [] },
-    projects: actual.projects || { getProjects: async () => [] },
     users: actual.users || { getUsers: async () => [] },
   };
 });
@@ -72,6 +71,35 @@ vi.mock('@/contexts', () => ({
     user: null,
     login: vi.fn(),
     logout: vi.fn(),
+  }),
+  useUnifiedTheme: () => ({
+    currentTheme: 'light',
+    themeConfig: {
+      colors: {
+        primary: '#007acc',
+        secondary: '#f0f0f0',
+        accent: '#ff6b35',
+        text: '#333333',
+        background: '#ffffff',
+      },
+    },
+    toggleTheme: vi.fn(),
+    setTheme: vi.fn(),
+  }),
+  useTranslation: () => ({
+    currentLanguage: 'es',
+    setLanguage: vi.fn(),
+  }),
+  useT: () => ({
+    states: {
+      error: 'Error',
+      loading: 'Cargando...',
+    },
+    ui: {
+      buttons: {
+        download: 'Descargar',
+      },
+    },
   }),
 }));
 

@@ -23,6 +23,7 @@ import mediaRoutes from './src/routes/media.js';
 import educationRoutes from './src/routes/education.js';
 import certificationsRoutes from './src/routes/certifications.js';
 import testimonialsRoutes from './src/routes/testimonials.js';
+import aboutRoutes from './src/routes/aboutRoutes.js';
 
 // Servicios
 import { emailService } from './src/services/emailService.js';
@@ -189,6 +190,7 @@ app.use('/api/admin/education', educationRoutes);
 app.use('/api/certifications', certificationsRoutes);
 app.use('/api/admin/certifications', certificationsRoutes);
 app.use('/api/testimonials', testimonialsRoutes);
+app.use('/api/about', aboutRoutes);
 
 // Health check endpoints
 app.get('/health', healthCheck);

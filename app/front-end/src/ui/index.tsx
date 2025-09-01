@@ -10,7 +10,7 @@ import FloatingActionButton from '@/components/ui/FloatingActionButtonGroup/Floa
 import { AccessibleToast as Toast } from '@/components/ui/Toast/Toast';
 import LoadingSpinner from '@/components/ui/LoadingSpinner/LoadingSpinner';
 import ModalShell from '@/components/ui/Modal/ModalShell';
-import TestimonialModal from '@/components/ui/Modal/TestimonialModal';
+import TestimonialModal from '@/components/layout/Sections/Testimonials/modal/TestimonialModal';
 import ModalPortalImpl from '@/components/layout/Modal/ModalPortal';
 
 // Keep lightweight stubs for pieces not yet implemented as shared exports
@@ -115,14 +115,3 @@ export const LazyImage: React.FC<{
 };
 
 export const SmartFooter: React.FC<any> = Footer;
-
-export default {
-  SmartNavigation,
-  Footer,
-  Button,
-  FloatingActionButtonGroup,
-  FloatingActionButton,
-  Toast,
-  LoadingSpinner,
-  ModalShell,
-};

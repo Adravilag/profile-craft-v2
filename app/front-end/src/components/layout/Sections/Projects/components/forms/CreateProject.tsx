@@ -8,6 +8,7 @@ import type { Project } from '@/types/api';
 import { useNotificationContext } from '@/contexts';
 import ProjectFormContainer from './ProjectFormContainer';
 import styles from './CreateProjectForm.module.css';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 interface SeoMetadata {
   meta_title?: string;
@@ -45,6 +46,7 @@ const emptyProject: EnhancedProject = {
 };
 
 const CreateProject: React.FC = () => {
+  const { t } = useTranslation();
   const [form, setForm] = useState<EnhancedProject>(emptyProject);
   const [techInput, setTechInput] = useState('');
   const [saving, setSaving] = useState(false);
@@ -511,7 +513,7 @@ const CreateProject: React.FC = () => {
         <div className={styles.formActions}>
           <button className={styles.cancelButton} onClick={handleCancel} disabled={saving}>
             <i className="fas fa-times"></i>
-            Cancelar
+            {t.forms.experience.cancel}
           </button>
           <button
             className={`${styles.saveButton} ${saving ? 'loading' : ''}`}
@@ -519,7 +521,7 @@ const CreateProject: React.FC = () => {
             disabled={saving}
           >
             <i className="fas fa-save"></i>
-            {saving ? 'Guardando...' : 'Guardar Proyecto'}
+            {saving ? t.forms.experience.saving : t.forms.experience.save}
           </button>
         </div>
       </ProjectFormContainer>

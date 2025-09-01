@@ -1,0 +1,70 @@
+/* Modal content layout */
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.mediaArea {
+  width: 100%;
+  max-height: 400px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--surface-container-low);
+}
+
+.media {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.description {
+  color: var(--on-surface-variant);
+  line-height: 1.6;
+  margin: 0;
+  font-size: var(--body-large-size);
+}
+
+.technologiesSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: var(--title-small-size);
+  font-weight: var(--title-small-weight);
+  color: var(--on-surface);
+}
+
+.badgesRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .modalContent {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .mediaArea {
+    flex: 1;
+    max-width: 50%;
+  }
+  .content {
+    flex: 1;
+    min-width: 0;
+  }
+}

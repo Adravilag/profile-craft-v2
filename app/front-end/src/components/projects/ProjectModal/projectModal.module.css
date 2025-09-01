@@ -1,61 +1,76 @@
-.backdrop {
-  position: fixed;
-  inset: 0;
+/* Modal content layout */
+.modalContent {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 2000;
+  flex-direction: column;
+  gap: var(--space-lg);
 }
-.modal {
-  width: min(900px, 95%);
-  background: var(--card-bg, #071018);
-  border-radius: 12px;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  padding: 1rem;
-  position: relative;
-}
-.close {
-  position: absolute;
-  right: 0.6rem;
-  top: 0.4rem;
-  background: transparent;
-  border: none;
-  color: var(--muted-text, #cfd8e3);
-  font-size: 1.4rem;
-}
-.mediaArea img,
-.mediaArea video {
+
+/* Media area styling */
+.mediaArea {
   width: 100%;
-  height: 100%;
-  max-height: 360px;
+  max-height: 400px;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--surface-container-low);
+}
+
+.media {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
 }
+
+/* Content area */
 .content {
-  padding: 0.2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
 }
-.long {
-  color: var(--muted-text, #b7c2cf);
+
+.description {
+  color: var(--on-surface-variant);
+  line-height: 1.6;
+  margin: 0;
+  font-size: var(--body-large-size);
 }
+
+/* Technologies section */
+.technologiesSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: var(--title-small-size);
+  font-weight: var(--title-small-weight);
+  color: var(--on-surface);
+}
+
 .badgesRow {
   display: flex;
-  gap: 0.5rem;
-  margin: 0.6rem 0;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  align-items: center;
 }
-.ctas {
-  display: flex;
-  gap: 0.6rem;
-  margin-top: 0.8rem;
-}
-.cta {
-  background: linear-gradient(90deg, #5eead4, #34d399);
-  padding: 0.5rem 0.9rem;
-  color: #042;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 600;
+
+/* Responsive design */
+@media (min-width: 768px) {
+  .modalContent {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .mediaArea {
+    flex: 1;
+    max-width: 50%;
+  }
+
+  .content {
+    flex: 1;
+    min-width: 0;
+  }
 }

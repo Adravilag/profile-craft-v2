@@ -34,4 +34,9 @@ export const updateProject = (id: string, project: Partial<Project>) =>
  */
 export const deleteProject = (id: string) => deleteProjectImpl(id);
 
+/**
+ * Obtiene proyectos para administración (temporal stub).
+ */
+export const getAdminProjects = () => getProjectsImpl();
+
 export type { Project };

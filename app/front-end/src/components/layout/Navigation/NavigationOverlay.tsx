@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useNavigation, useData } from '@cv-maker/shared';
+import { useTranslation } from '@/contexts/TranslationContext';
 import './ScrollOverlay.css';
 
 /**
@@ -17,23 +18,32 @@ const NavigationOverlay: React.FC = () => {
 
   if (!isVisible) return null;
 
+  // Traducciones
+  const { t, getText } = useTranslation();
+
   // Generar mensaje dinámico basado en la sección objetivo
   const getMessage = () => {
-    if (!targetSection) return isAnyLoading ? 'Cargando contenido...' : 'Navegando...';
+    if (!targetSection)
+      return isAnyLoading
+        ? getText('states.loading', 'Cargando contenido...')
+        : getText('navigation.navigating', 'Navegando...');
 
     const sectionNames: { [key: string]: string } = {
-      home: 'Inicio',
-      about: 'Sobre mí',
-      experience: 'Experiencia',
-      projects: 'Proyectos',
-      skills: 'Habilidades',
-      certifications: 'Certificaciones',
-      testimonials: 'Testimonios',
-      contact: 'Contacto',
+      home: getText('navigation.home', 'Inicio'),
+      about: getText('navigation.about', 'Sobre mí'),
+      experience: getText('navigation.experience', 'Experiencia'),
+      projects: getText('navigation.projects', 'Proyectos'),
+      skills: getText('navigation.skills', 'Habilidades'),
+      certifications: getText('projectsSection.subtitleProjects', 'Certificaciones'),
+      testimonials: getText('navigation.testimonials', 'Testimonios'),
+      contact: getText('navigation.contact', 'Contacto'),
     };
 
     const sectionName = sectionNames[targetSection] || targetSection;
-    return `Navegando a ${sectionName}...`;
+    return getText('navigation.navigatingTo', `Navegando a ${sectionName}...`).replace(
+      '{section}',
+      sectionName
+    );
   };
 
   // Función para prevenir cualquier interacción

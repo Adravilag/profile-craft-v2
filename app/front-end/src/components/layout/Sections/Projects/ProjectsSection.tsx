@@ -6,13 +6,14 @@ import { projects } from '@/services/endpoints';
 import ProjectCard from '@/components/layout/Sections/Projects/components/ProjectCard/ProjectCard';
 import type { Project as ApiProject } from '@/types/api';
 import type { Project as UiProject } from '@/components/layout/Sections/Projects/components/ProjectCard/ProjectCard';
-import ProjectModal from '@/components/projects/ProjectModal/ProjectModal';
+import ProjectModal from '@/features/projects/components/ProjectModal/ProjectModal';
 const { getProjects } = projects;
 import { useData } from '@/contexts';
 import { debugLog } from '@/utils/debugConfig';
 import HeaderSection from '../../HeaderSection/HeaderSection';
 import styles from './ProjectsSection.module.css';
 import Pagination from '@/ui/components/layout/Pagination';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 // Definición de tipos y estados
 interface ProjectsSectionProps {
@@ -23,8 +24,8 @@ interface ProjectsSectionProps {
 
 // Función de mapeo para normalizar un ApiProject al shape que espera la UI (UiProject)
 const mapItemToProject = (item: ApiProject): UiProject => {
-  const isProject = !item.project_content;
-  const projectType = isProject ? 'Proyecto' : 'Artículo';
+  const isProject = true; // all items are considered projects now
+  const projectType = 'Proyecto';
   const canonicalPath = `/profile-craft/projects/${item.id}`;
 
   const detectMedia = () => {
@@ -83,6 +84,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   showAdminButton = false,
   onAdminClick,
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { projects: contextProjects, projectsLoading, projectsError } = useData();
   const [localProjects, setLocalProjects] = useState<ApiProject[]>([]);
@@ -91,7 +93,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   const articlesPerPage = 3;
   const [isChangingPage, setIsChangingPage] = useState(false);
   const [activeProject, setActiveProject] = useState<UiProject | null>(null);
-  const [selectedFilter, setSelectedFilter] = useState<'all' | 'projects' | 'articles'>('all');
+  const [selectedFilter, setSelectedFilter] = useState<'all' | 'projects'>('all');
 
   // Usar useMemo para evitar recálculos innecesarios
   const currentProjects = useMemo(() => {
@@ -105,18 +107,17 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   const getFilteredProjects = useMemo(() => {
     let filtered = currentProjects;
 
+    // Since "article" type no longer exists, treat projects filter as items without project_content
     if (selectedFilter === 'projects') {
       filtered = currentProjects.filter(p => !p.project_content);
-    } else if (selectedFilter === 'articles') {
-      filtered = currentProjects.filter(p => p.project_content);
     }
 
     return filtered;
   }, [currentProjects, selectedFilter]);
 
-  const filteredTotalArticles = getFilteredProjects.length;
-  const filteredTotalPages = Math.ceil(filteredTotalArticles / articlesPerPage);
-  const paginatedFilteredArticles = getFilteredProjects.slice(
+  const filteredTotalItems = getFilteredProjects.length;
+  const filteredTotalPages = Math.ceil(filteredTotalItems / articlesPerPage);
+  const paginatedFilteredItems = getFilteredProjects.slice(
     (currentPage - 1) * articlesPerPage,
     currentPage * articlesPerPage
   ) as ApiProject[];
@@ -134,7 +135,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
     }, 100);
   };
 
-  const handleFilterChange = (filter: 'all' | 'projects' | 'articles') => {
+  const handleFilterChange = (filter: 'all' | 'projects') => {
     setSelectedFilter(filter);
     setCurrentPage(1);
   };
@@ -142,10 +143,10 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   const loadProjects = async () => {
     try {
       const data = await getProjects();
-      debugLog.dataLoading('Proyectos cargados:', data?.length || 0);
+      debugLog.dataLoading(`${t.projects.title} loaded:`, data?.length || 0);
       setLocalProjects(data);
     } catch (err) {
-      console.error('Error al cargar los proyectos:', err);
+      console.error(t.projectsCarousel.loadingProblem, err);
     }
   };
 
@@ -170,54 +171,15 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   };
 
   const hasProjects = currentProjects.some(p => !p.project_content);
-  const hasArticles = currentProjects.some(p => p.project_content);
-  const showFilters = hasProjects && hasArticles;
-
-  const getDynamicTitle = () => {
-    switch (selectedFilter) {
-      case 'projects':
-        return 'Proyectos Destacados';
-      default:
-        return 'Proyectos y Artículos';
-    }
-  };
-
-  const getDynamicIcon = () => {
-    switch (selectedFilter) {
-      case 'projects':
-        return 'fas fa-code';
-      default:
-        return 'fas fa-th';
-    }
-  };
-
-  const getDynamicSubtitle = () => {
-    if (filteredTotalArticles > articlesPerPage) {
-      const contentType =
-        selectedFilter === 'all'
-          ? 'elementos'
-          : selectedFilter === 'projects'
-            ? 'proyectos'
-            : 'artículos';
-      const found = selectedFilter === 'all' ? 'en total' : 'encontrados';
-      return `Los ${contentType} más relevantes (${filteredTotalArticles} ${contentType} ${found})`;
-    }
-
-    switch (selectedFilter) {
-      case 'projects':
-        return 'Una selección de mis proyectos más relevantes y sus tecnologías';
-      default:
-        return 'Una selección de mis proyectos y artículos más relevantes';
-    }
-  };
+  const showFilters = hasProjects && currentProjects.length > 1;
 
   if (currentLoading) {
     return (
       <div className={`section-cv ${styles.projectsSection}`} id="projects">
         <HeaderSection
-          icon={getDynamicIcon()}
-          title={getDynamicTitle()}
-          subtitle={getDynamicSubtitle()}
+          icon="fas fa-code"
+          title="Proyectos"
+          subtitle="Explora mis proyectos y desarrollos más destacados"
           className="projects"
         />
         <div className="section-container">
@@ -255,9 +217,9 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
     return (
       <div className={`section-cv ${styles.projectsSection}`} id="projects">
         <HeaderSection
-          icon="fas fa-project-diagram"
-          title="Proyectos Destacados"
-          subtitle="Una selección de mis proyectos más relevantes y sus tecnologías"
+          icon="fas fa-code"
+          title="Proyectos"
+          subtitle="Explora mis proyectos y desarrollos más destacados"
           className="projects"
         />
         <div className="section-container">
@@ -265,7 +227,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
             <div className={styles.projectsError}>
               <p>{currentError}</p>
               <button onClick={loadProjects} className={styles.retryButton}>
-                Reintentar
+                {t.projectsCarousel.retry}
               </button>
             </div>
           </div>
@@ -278,19 +240,19 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
     return (
       <div className={`section-cv ${styles.projectsSection}`} id="projects">
         <HeaderSection
-          icon="fas fa-project-diagram"
-          title="Proyectos Destacados"
-          subtitle="Una selección de mis proyectos más relevantes y sus tecnologías"
+          icon="fas fa-code"
+          title="Proyectos"
+          subtitle="Explora mis proyectos y desarrollos más destacados"
           className="projects"
         />
         <div className="section-container">
           <div className={styles.panel}>
             <div className={styles.projectsEmpty}>
               <i className="fas fa-project-diagram"></i>
-              <p>No hay proyectos publicados aún.</p>
+              <p>{t.projectsCarousel.noProjects}</p>
               {showAdminButton && (
                 <button onClick={handleAdminClick} className={styles.adminButton}>
-                  <i className="fas fa-plus"></i> Crear primer proyecto
+                  <i className="fas fa-plus"></i> {t.projectsCarousel.createProject}
                 </button>
               )}
             </div>
@@ -301,17 +263,11 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   }
 
   return (
-    <div className="section-cv" id="projects">
+    <div className={`section-cv ${styles.projectsSection}`} id="projects">
       <HeaderSection
-        icon={getDynamicIcon()}
-        title={getDynamicTitle()}
-        subtitle={
-          selectedFilter === 'projects'
-            ? 'Explora mis proyectos más recientes y relevantes. Cada uno muestra tecnologías clave y demos.'
-            : selectedFilter === 'articles'
-              ? 'Lecturas y guías técnicas seleccionadas para compartir aprendizajes y soluciones.'
-              : 'Explora mi colección de proyectos técnicos y artículos profundos. Cada uno cuenta una historia de innovación y aprendizaje.'
-        }
+        icon="fas fa-code"
+        title="Proyectos"
+        subtitle="Explora mis proyectos y desarrollos más destacados"
         className="projects"
       />
       <div className="section-container">
@@ -323,27 +279,21 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                 onClick={() => handleFilterChange('all')}
                 aria-pressed={selectedFilter === 'all'}
               >
-                <i className="fas fa-th"></i> Todos
+                <i className="fas fa-th"></i> {t.actions.showAll}
               </button>
               <button
                 className={`${styles.filterButton} ${selectedFilter === 'projects' ? styles.active : ''}`}
                 onClick={() => handleFilterChange('projects')}
                 aria-pressed={selectedFilter === 'projects'}
               >
-                <i className="fas fa-code"></i> Proyectos
+                <i className="fas fa-code"></i> {t.projects.title}
               </button>
-              <button
-                className={`${styles.filterButton} ${selectedFilter === 'articles' ? styles.active : ''}`}
-                onClick={() => handleFilterChange('articles')}
-                aria-pressed={selectedFilter === 'articles'}
-              >
-                <i className="fas fa-newspaper"></i> Artículos
-              </button>
+              {/* 'Article' type doesn't exist — we only show All and Projects */}
             </div>
           )}
 
           <div className={`${styles.projectsGrid} ${isChangingPage ? styles.loading : ''}`}>
-            {paginatedFilteredArticles.map(item => {
+            {paginatedFilteredItems.map(item => {
               const projectData = mapItemToProject(item);
               const handleOpen = () => {
                 if (onProjectClick) {
@@ -381,7 +331,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
               currentPage={currentPage}
               totalPages={filteredTotalPages}
               onPageChange={handlePageChange}
-              totalItems={filteredTotalArticles}
+              totalItems={filteredTotalItems}
               itemsPerPage={articlesPerPage}
               showInfo={true}
             />

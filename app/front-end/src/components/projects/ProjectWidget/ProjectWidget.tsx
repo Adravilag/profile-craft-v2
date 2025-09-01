@@ -1,6 +1,6 @@
 import React from 'react';
 import BlurImage from '@/components/utils/BlurImage';
-import SkillPill from '@/components/shared/SkillPill';
+import SkillPill from '@/components/ui/SkillPill/SkillPill';
 import styles from './ProjectWidget.module.css';
 
 type Props = {

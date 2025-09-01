@@ -3,51 +3,261 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--space-2);
   color: currentcolor;
+  position: relative;
 }
 
 .svg {
   display: block;
+  filter: drop-shadow(0 0 8px currentColor);
+  transition: filter var(--duration-fast) var(--ease-out);
 }
 
 .arc {
   transform-origin: 12px 12px;
-  animation: spin 0.8s linear infinite;
+  animation: spinSmooth 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  stroke-linecap: round;
+  stroke-dasharray: 80;
+  stroke-dashoffset: 60;
 }
 
+/* Animación principal mejorada */
+@keyframes spinSmooth {
+  0% {
+    transform: rotate(0deg);
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px;
+  }
+  100% {
+    transform: rotate(360deg);
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px;
+  }
+}
+
+/* Fallback animation for older browsers */
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
 
-/* Overlay de pantalla completa */
+/* Overlay de pantalla completa mejorado */
 .overlay {
   position: fixed;
   inset: 0;
   display: grid;
   place-items: center;
-  background: #000; /* pantalla completamente negra durante el loading */
-  z-index: 11000; /* Por encima de las barras y overlays locales */
-  pointer-events: all; /* Bloquear interacciones mientras carga */
+  background: linear-gradient(
+    135deg,
+    rgba(13, 17, 23, 0.95) 0%,
+    rgba(21, 26, 35, 0.95) 50%,
+    rgba(13, 17, 23, 0.95) 100%
+  );
+  backdrop-filter: blur(12px) saturate(180%);
+  z-index: 11000;
+  pointer-events: all;
   opacity: 0;
-  animation: fadeInOverlay 220ms ease forwards;
+  animation: fadeInOverlay 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes fadeInOverlay {
   0% {
     opacity: 0;
+    backdrop-filter: blur(0px) saturate(100%);
   }
   100% {
     opacity: 1;
+    backdrop-filter: blur(12px) saturate(180%);
   }
 }
 
-/* Cuando el overlay está activo, forzamos color claro para el spinner */
-.overlay :global(.container),
+/* Spinner mejorado en overlay con efectos de glow */
 .overlay .container {
-  color: rgba(255, 255, 255, 0.95);
+  color: var(--color-accent);
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.overlay .svg {
+  filter: drop-shadow(0 0 12px currentColor) drop-shadow(0 0 24px rgba(88, 166, 255, 0.5))
+    drop-shadow(0 0 36px rgba(88, 166, 255, 0.3));
+}
+
+@keyframes pulseGlow {
+  0%,
+  100% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* Variantes de spinner */
+.variant-default .arc {
+  animation: spinSmooth 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.variant-pulse .arc {
+  animation:
+    spinSmooth 1.2s cubic-bezier(0.4, 0, 0.2, 1) infinite,
+    pulse 2s ease-in-out infinite;
+}
+
+.variant-gradient .arc {
+  stroke: url(#spinnerGradient);
+  animation: spinSmooth 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.variant-dots .container::before,
+.variant-dots .container::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: dotsOrbit 1.5s linear infinite;
+}
+
+.variant-dots .container::before {
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.variant-dots .container::after {
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  animation-delay: 0.75s;
+}
+
+@keyframes dotsOrbit {
+  0% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: translateX(-50%) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Estados de tamaño mejorados */
+.size-small {
+  --spinner-size: 16px;
+  --glow-intensity: 4px;
+}
+
+.size-medium {
+  --spinner-size: 24px;
+  --glow-intensity: 6px;
+}
+
+.size-large {
+  --spinner-size: 48px;
+  --glow-intensity: 8px;
+}
+
+.size-xlarge {
+  --spinner-size: 64px;
+  --glow-intensity: 12px;
+}
+
+/* Aplicar tamaños dinámicos */
+.container[class*='size-'] .svg {
+  width: var(--spinner-size);
+  height: var(--spinner-size);
+  filter: drop-shadow(0 0 var(--glow-intensity) currentColor);
+}
+
+/* Texto del spinner con mejor tipografía */
+.container span {
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  animation: fadeInText 0.5s ease-out 0.3s both;
+}
+
+@keyframes fadeInText {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Modo de alta definición */
+@media (min-resolution: 2dppx) {
+  .svg {
+    filter: drop-shadow(0 0 var(--glow-intensity, 6px) currentColor)
+      drop-shadow(0 0 calc(var(--glow-intensity, 6px) * 2) rgba(88, 166, 255, 0.3));
+  }
+}
+
+/* Soporte para modo de contraste alto */
+@media (prefers-contrast: high) {
+  .container {
+    color: var(--color-accent);
+  }
+
+  .svg {
+    filter: none;
+  }
+
+  .arc {
+    stroke-width: 6;
+  }
+}
+
+/* Soporte para movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  .arc {
+    animation: none;
+  }
+
+  .container {
+    animation: none;
+  }
+
+  .overlay {
+    animation: none;
+    opacity: 1;
+    backdrop-filter: none;
+    background: rgba(13, 17, 23, 0.9);
+  }
+
+  .variant-dots .container::before,
+  .variant-dots .container::after {
+    animation: none;
+    opacity: 1;
+  }
 }
 
 /* Accesibilidad: solo lectores de pantalla */

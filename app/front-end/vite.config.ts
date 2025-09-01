@@ -125,4 +125,4 @@ const config: any = {
   },
 };
 
-export default config;
+export default defineConfig(config);

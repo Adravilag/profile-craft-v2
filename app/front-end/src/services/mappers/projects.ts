@@ -45,7 +45,8 @@ export const mapApiToUi = (api: any): MappedProject => {
     demoUrl: api.live_url ?? api.demoUrl ?? undefined,
     repoUrl: api.github_url ?? api.repoUrl ?? undefined,
     media,
-    projectType: api.type ?? (api.project_content ? 'Artículo' : 'Proyecto'),
+    // El tipo 'Artículo' ya no existe; todo se considera 'Proyecto'
+    projectType: api.type ?? 'Proyecto',
     status: api.status ?? undefined,
     projectUrl: api.project_url ?? api.projectUrl ?? undefined,
     image_url: api.image_url,

@@ -19,6 +19,7 @@
     "lint:fix": "npm run lint -- --fix",
     "dev:watch": "ts-node --watch server-clean.ts",
     "dev:mongodb:watch": "ts-node --watch server-mongodb.ts",
+    "script:populate-about": "tsx scripts/populate-about-data.ts",
     "test:health": "curl http://localhost:3000/health || echo 'Server not running'",
     "test:mongodb": "node test-mongodb.js",
     "test:api": "node test-api.js",

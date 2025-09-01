@@ -1,0 +1,127 @@
+/* src/components/common/LanguageSelector/LanguageSelector.module.css */
+
+.languageToggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
+  color: var(--color-text);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.languageToggle:hover {
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-hover);
+}
+
+.languageToggle:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.languageButtons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.langButton {
+  padding: 0.375rem 0.75rem;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 2.5rem;
+}
+
+.langButton:hover {
+  background: var(--color-surface-hover);
+  color: var(--color-text);
+}
+
+.langButton:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.langButton.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-primary-foreground);
+}
+
+.languageDropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.select {
+  padding: 0.5rem 0.75rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.375rem;
+  color: var(--color-text);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.select:hover {
+  border-color: var(--color-border-hover);
+}
+
+.select:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-color: var(--color-primary);
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.currentLang {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+}
+
+/* Dark mode support */
+:global(.dark-mode) .languageToggle,
+:global(.dark-mode) .langButton,
+:global(.dark-mode) .select {
+  --color-surface: #1a1a1a;
+  --color-surface-hover: #2a2a2a;
+  --color-border: #333;
+  --color-border-hover: #444;
+  --color-text: #e5e5e5;
+  --color-text-secondary: #a1a1a1;
+  --color-primary: #3b82f6;
+  --color-primary-foreground: #fff;
+}
+
+/* Light mode (default) */
+.languageToggle,
+.langButton,
+.select {
+  --color-surface: #ffffff;
+  --color-surface-hover: #f9fafb;
+  --color-border: #d1d5db;
+  --color-border-hover: #9ca3af;
+  --color-text: #111827;
+  --color-text-secondary: #6b7280;
+  --color-primary: #3b82f6;
+  --color-primary-foreground: #ffffff;
+}

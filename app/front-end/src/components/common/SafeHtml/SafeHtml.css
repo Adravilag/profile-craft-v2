@@ -1,0 +1,31 @@
+.translation-code {
+  background: rgba(0, 0, 0, 0.06);
+  padding: 0 6px;
+  border-radius: 4px;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Segoe UI Mono', monospace;
+  font-size: 0.95em;
+}
+.translation-pre {
+  background: rgba(0, 0, 0, 0.04);
+  padding: 8px;
+  border-radius: 6px;
+  overflow: auto;
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Segoe UI Mono', monospace;
+  font-size: 0.9em;
+}
+.translation-strong {
+  font-weight: 700;
+}
+.translation-em {
+  font-style: italic;
+}
+.translation-link {
+  color: #0b74de;
+  text-decoration: underline;
+}
+/* small wrapper for generic inline elements */
+.translation-span {
+  display: inline;
+}

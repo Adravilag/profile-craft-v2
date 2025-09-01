@@ -16,17 +16,20 @@
 }
 
 /* ===== Base de timeline ===== */
-.timeline-item {
+.timeline-item,
+.timelineItem {
   padding-block: 10px;
   position: relative;
 }
 
-.timeline-item + .timeline-item {
+.timeline-item + .timeline-item,
+.timelineItem + .timelineItem {
   margin-top: 16px;
 }
 
 /* Separador sutil entre items */
-.timeline-item:not(:last-child)::after {
+.timeline-item:not(:last-child)::after,
+.timelineItem:not(:last-child)::after {
   content: '';
   position: absolute;
   left: 34px;
@@ -794,7 +797,8 @@
   position: relative;
 }
 
-.ex-card-current::after {
+.ex-card-current::after,
+.exCardCurrent::after {
   content: '';
   position: absolute;
   inset: -2px;
@@ -802,4 +806,189 @@
   border-radius: calc(var(--md-shape-large) + 2px);
   pointer-events: none;
   z-index: -1;
+}
+
+/* ===== CAMELCASE ALIASES FOR CSS MODULES ===== */
+/* Duplicamos las clases principales en camelCase para compatibilidad */
+
+.timelineCardCompact {
+  position: relative;
+  background: var(--md-sys-color-surface-container-low);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-shape-large);
+  padding: var(--card-padding);
+  transition: var(--transition-smooth);
+}
+
+.timelineMarker {
+  position: absolute;
+  left: -34px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  z-index: 2;
+}
+
+.markerDot {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid var(--md-sys-color-outline);
+  background: var(--md-sys-color-surface);
+  transition: var(--transition-smooth);
+}
+
+.timelineContent {
+  width: 100%;
+}
+
+.cardMediaHero {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.cardMedia {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.cardMedia__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardMediaLogo {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid white;
+  box-shadow: var(--shadow-card);
+}
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.titleWrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+.timelineTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface);
+  margin: 0 0 4px 0;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 0.875rem;
+}
+
+.pillGreen {
+  background: color-mix(in srgb, var(--md-sys-color-tertiary) 10%, transparent);
+  color: var(--md-sys-color-tertiary);
+  border: 1px solid color-mix(in srgb, var(--md-sys-color-tertiary) 20%, transparent);
+}
+
+.timelineDescription {
+  margin-bottom: 12px;
+}
+
+.exCard__descClamp,
+.descClamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--md-sys-color-on-surface-variant);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.timelineSkills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.exCardCurrent {
+  position: relative;
+}
+
+.periodAbs {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1;
+}
+
+/* Clases adicionales que faltan */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: var(--pill-radius);
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: var(--md-sys-color-surface-variant);
+  color: var(--md-sys-color-on-surface-variant);
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.period {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  border: 1px solid var(--md-sys-color-primary);
+}
+
+.duration {
+  flex-shrink: 0;
+}
+
+.education {
+  background: var(--md-sys-color-secondary);
+  border-color: var(--md-sys-color-secondary);
+}
+
+.experience {
+  background: var(--md-sys-color-primary);
+  border-color: var(--md-sys-color-primary);
+}
+
+.present {
+  background: var(--md-sys-color-tertiary);
+  border-color: var(--md-sys-color-tertiary);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }

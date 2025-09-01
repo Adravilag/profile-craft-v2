@@ -1,7 +1,7 @@
 import React from 'react';
 import { useFab } from '@/contexts/FabContext';
 import { useModal } from '@/contexts/ModalContext';
-import TestimonialModal from '@/components/ui/Modal/TestimonialModal';
+import TestimonialModal from '@/components/layout/Sections/Testimonials/modal/TestimonialModal';
 import TestimonialForm from './TestimonialForm';
 import HeaderSection from '../../HeaderSection/HeaderSection';
 import TestimonialsAdmin from './admin/TestimonialsAdmin';

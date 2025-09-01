@@ -18,7 +18,7 @@ interface ThemePreferences {
 
 interface ThemeContextType {
   preferences: ThemePreferences;
-  currentTheme: Exclude<articleTheme, 'auto'>;
+  currentTheme: Exclude<ProjectTheme, 'auto'>;
   isReadingMode: boolean;
   updatePreference: <K extends keyof ThemePreferences>(key: K, value: ThemePreferences[K]) => void;
   toggleReadingMode: () => void;
@@ -73,7 +73,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [isEmittingEvent, setIsEmittingEvent] = useState(false);
 
   // Determinar tema actual
-  const getCurrentTheme = (): Exclude<articleTheme, 'auto'> => {
+  const getCurrentTheme = (): Exclude<ProjectTheme, 'auto'> => {
     if (preferences.theme !== 'auto') {
       return preferences.theme;
     }
@@ -99,7 +99,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     return systemPrefersDark ? 'dark' : 'light';
   };
 
-  const [currentTheme, setCurrentTheme] = useState<Exclude<articleTheme, 'auto'>>(getCurrentTheme);
+  const [currentTheme, setCurrentTheme] = useState<Exclude<ProjectTheme, 'auto'>>(getCurrentTheme);
 
   // Sincronización simplificada con localStorage
   useEffect(() => {
@@ -204,7 +204,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
     // Si el usuario cambió el tema manualmente (no auto), sincronizar con el sistema global
     if (key === 'theme' && value !== 'auto') {
-      const newTheme = value as Exclude<articleTheme, 'auto'>;
+      const newTheme = value as Exclude<ProjectTheme, 'auto'>;
       if (newTheme === 'light' || newTheme === 'dark') {
         localStorage.setItem('cv-theme', newTheme);
 

@@ -1,6 +1,7 @@
 // src/components/sections/experience/EnhancedExperienceForm.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { useNotificationContext } from '@/contexts';
+import { useTranslation } from '@/contexts/TranslationContext';
 import styles from './EnhancedExperienceForm.module.css';
 import DateInput from '@/components/ui/DateInput/DateInput';
 
@@ -99,6 +100,7 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
   useExternalFooter = false,
 }) => {
   const { showError, showSuccess } = useNotificationContext();
+  const { t } = useTranslation();
 
   // Estados del formulario
   const [formData, setFormData] = useState<FormData>({
@@ -225,34 +227,34 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
   const validateField = (name: string, value: string): string | null => {
     switch (name) {
       case 'title':
-        if (!value.trim()) return 'El título es obligatorio';
-        if (value.trim().length < 3) return 'El título debe tener al menos 3 caracteres';
+        if (!value.trim()) return t.forms.validation.titleRequired;
+        if (value.trim().length < 3) return t.forms.validation.titleMinLength;
         // No aceptar títulos que sean solo números o símbolos: debe contener al menos una letra
-        if (!/[\p{L}]/u.test(value)) return 'El título debe contener letras';
+        if (!/[\p{L}]/u.test(value)) return t.forms.validation.titleMustContainLetters;
         break;
       case 'company':
       case 'institution':
         if (!value.trim())
-          return `${formType === 'experience' ? 'La empresa' : 'La institución'} es obligatoria`;
-        if (value.trim().length < 2) return 'Debe tener al menos 2 caracteres';
+          return `${formType === 'experience' ? t.forms.validation.companyRequired : t.forms.validation.institutionRequired}`;
+        if (value.trim().length < 2) return t.forms.validation.minLength;
         // No aceptar nombres compuestos únicamente por números o símbolos — debe contener letras
         if (!/[\p{L}]/u.test(value))
-          return `${formType === 'experience' ? 'La empresa' : 'La institución'} debe contener letras`;
+          return `${formType === 'experience' ? t.forms.validation.companyMustContainLetters : t.forms.validation.institutionMustContainLetters}`;
         break;
       case 'start_date':
-        if (!value) return 'La fecha de inicio es obligatoria';
+        if (!value) return t.forms.validation.startDateRequired;
         // formato DD-MM-YYYY o DD/MM/YYYY
         if (!/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/.test(value))
-          return 'Formato de fecha inválido (DD-MM-YYYY)';
+          return t.forms.validation.invalidDateFormat;
         break;
       case 'end_date':
-        if (!value && !formData.is_current) return 'La fecha de fin es obligatoria';
+        if (!value && !formData.is_current) return t.forms.validation.endDateRequired;
         if (value && !/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/.test(value))
-          return 'Formato de fecha inválido (DD-MM-YYYY)';
+          return t.forms.validation.invalidDateFormat;
         // comparison is handled in validateForm for robustness
         break;
       case 'description':
-        if (value.length > 500) return 'La descripción no puede exceder 500 caracteres';
+        if (value.length > 500) return t.forms.validation.descriptionMaxLength;
         break;
     }
     return null;
@@ -355,7 +357,7 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
     // Para experience, requerir tecnologías
     if (formType === 'experience') {
       if (!selectedTechnologies || selectedTechnologies.length === 0) {
-        errors.technologies = 'Agrega al menos una tecnología o herramienta';
+        errors.technologies = t.forms.validation.technologiesRequired;
       }
     }
 
@@ -374,7 +376,7 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
           const sd = parse(formData.start_date);
           const ed = parse(formData.end_date);
           if (ed < sd) {
-            errors.end_date = 'La fecha de fin debe ser posterior a la de inicio';
+            errors.end_date = t.forms.validation.endDateMustBeAfterStart;
           }
         } catch (e) {
           /* noop */
@@ -396,7 +398,7 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
 
     const errors = validateForm();
     if (Object.keys(errors).length > 0) {
-      showError('Errores de Validación', 'Por favor corrige los errores antes de continuar');
+      showError(t.forms.validation.validationErrors, t.forms.validation.pleaseFixErrors);
       // focus al primer campo con error
       const firstKey = Object.keys(errors)[0];
       try {
@@ -442,12 +444,15 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
 
       await onSubmit(payload);
       showSuccess(
-        `${formType === 'experience' ? 'Experiencia' : 'Educación'} ${isEditing ? 'Actualizada' : 'Creada'}`,
-        `Se ha ${isEditing ? 'actualizado' : 'creado'} "${formData.title}" correctamente`
+        `${formType === 'experience' ? t.forms.notifications.experienceUpdated : t.forms.notifications.educationUpdated}`,
+        `${t.forms.notifications[isEditing ? 'updateSuccess' : 'createSuccess']} "${formData.title}" ${t.forms.notifications.correctly}`
       );
       onClose();
     } catch (error) {
-      showError('Error al Guardar', error instanceof Error ? error.message : 'Error desconocido');
+      showError(
+        t.forms.notifications.saveError,
+        error instanceof Error ? error.message : t.forms.notifications.unknownError
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -486,8 +491,8 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
 
   const isExperience = formType === 'experience';
   const formTitle = isEditing
-    ? `Editar ${isExperience ? 'Experiencia' : 'Educación'}`
-    : `Nueva ${isExperience ? 'Experiencia' : 'Educación'}`;
+    ? `${t.forms.experience[isExperience ? 'editExperience' : 'editEducation']}`
+    : `${t.forms.experience[isExperience ? 'newExperience' : 'newEducation']}`;
 
   // Contenido interno del formulario (sin overlay)
   // Cuando usamos ModalShell externo (`useModalShell`=true) renderizamos sólo
@@ -505,8 +510,8 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
               <div>
                 <span className={styles.progressText}>
                   {formProgress === 0
-                    ? 'Completa este formulario para agregar tu experiencia'
-                    : `Completado: ${formProgress}%`}
+                    ? t.forms.experience.progressHelp
+                    : `${t.forms.experience.completed}: ${formProgress}%`}
                 </span>
               </div>
             </div>
@@ -518,14 +523,14 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
         <div className={styles.formSection}>
           <h3 className={styles.sectionTitle}>
             <i className="fas fa-id-badge"></i>
-            Información Básica
+            {t.forms.experience.basicInfo}
           </h3>
 
           <div className={styles.formGrid}>
             <div className={styles.formField}>
               <label className={styles.label}>
                 <i className={`fas ${isExperience ? 'fa-briefcase' : 'fa-graduation-cap'}`}></i>
-                {isExperience ? 'Título del puesto' : 'Título o grado'} *
+                {isExperience ? t.forms.experience.position : t.forms.experience.degree} *
               </label>
               <input
                 name="title"
@@ -541,14 +546,12 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
                 }`}
                 placeholder={
                   isExperience
-                    ? 'Ej: Desarrollador Full Stack Senior'
-                    : 'Ej: Grado en Ingeniería Informática'
+                    ? t.forms.experience.positionPlaceholder
+                    : t.forms.experience.degreePlaceholder
                 }
               />
               <div className={styles.helperText}>
-                {isExperience
-                  ? 'Especifica tu rol o cargo principal'
-                  : 'Indica el nombre completo del título'}
+                {isExperience ? t.forms.experience.positionHelper : t.forms.experience.degreeHelper}
               </div>
               {touchedFields.title && validationErrors.title && (
                 <div className={styles.errorText}>
@@ -561,7 +564,7 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
             <div className={styles.formField}>
               <label className={styles.label}>
                 <i className={`fas ${isExperience ? 'fa-building' : 'fa-university'}`}></i>
-                {isExperience ? 'Empresa' : 'Institución'} *
+                {isExperience ? t.forms.experience.company : t.forms.experience.institution} *
               </label>
               <input
                 name={isExperience ? 'company' : 'institution'}
@@ -580,13 +583,15 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
                       : ''
                 }`}
                 placeholder={
-                  isExperience ? 'Ej: TechCorp Solutions' : 'Ej: Universidad Tecnológica'
+                  isExperience
+                    ? t.forms.experience.companyPlaceholder
+                    : t.forms.experience.institutionPlaceholder
                 }
               />
               <div className={styles.helperText}>
                 {isExperience
-                  ? 'Nombre de la empresa u organización'
-                  : 'Nombre de la universidad o centro educativo'}
+                  ? t.forms.experience.companyHelper
+                  : t.forms.experience.institutionHelper}
               </div>
               {touchedFields[isExperience ? 'company' : 'institution'] &&
                 validationErrors[isExperience ? 'company' : 'institution'] && (
@@ -599,11 +604,11 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
           </div>
         </div>
 
-        {/* Período de Tiempo */}
+        {/* Time Period */}
         <div className={styles.formSection}>
           <h3 className={styles.sectionTitle}>
             <i className="fas fa-clock"></i>
-            Período de Tiempo
+            {t.forms.experience.timePeriod}
           </h3>
 
           <div className={styles.dateRangeContainer}>
@@ -611,7 +616,7 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
               <div className={styles.formField}>
                 <label className={styles.label}>
                   <i className="fas fa-play"></i>
-                  Fecha de inicio *
+                  {t.forms.experience.startDate} *
                 </label>
                 <div>
                   <DateInput
@@ -622,9 +627,7 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
                     ariaLabel="Fecha de inicio (dd/mm/aaaa)"
                     disabled={false}
                   />
-                  <div className={styles.helperText}>
-                    Formato: DD/MM/AAAA — también puedes escribir la fecha manualmente.
-                  </div>
+                  <div className={styles.helperText}>{t.forms.experience.startDateHelper}</div>
                 </div>
                 {touchedFields.start_date && validationErrors.start_date && (
                   <div className={styles.errorText}>
@@ -637,14 +640,16 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
               <div className={styles.formField}>
                 <label className={styles.label}>
                   <i className="fas fa-stop"></i>
-                  Fecha de fin {!formData.is_current && '*'}
+                  {t.forms.experience.endDate} {!formData.is_current && '*'}
                 </label>
                 <div>
                   <DateInput
                     name="end_date"
                     value={formData.end_date}
                     onChange={v => handleFieldChange('end_date', v)}
-                    placeholder={formData.is_current ? 'Actualidad' : 'DD/MM/AAAA'}
+                    placeholder={
+                      formData.is_current ? t.forms.experience.currentPlaceholder : 'DD/MM/AAAA'
+                    }
                     ariaLabel="Fecha de fin (dd/mm/aaaa)"
                     disabled={formData.is_current}
                   />
@@ -667,7 +672,7 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
                 className={styles.checkbox}
               />
               <label htmlFor="current-toggle" className={styles.checkboxLabel}>
-                {isExperience ? 'Trabajo actual' : 'Estudios en curso'}
+                {isExperience ? t.forms.experience.currentJob : t.forms.experience.currentStudies}
               </label>
             </div>
           </div>
@@ -678,13 +683,13 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
           <div className={styles.formSection}>
             <h3 className={styles.sectionTitle}>
               <i className="fas fa-code"></i>
-              Tecnologías y Herramientas
+              {t.forms.experience.technologies}
             </h3>
 
             <div className={styles.formField}>
               <label className={styles.label}>
                 <i className="fas fa-tools"></i>
-                Tecnologías utilizadas
+                {t.forms.experience.technologiesUsed}
               </label>
 
               <div className={styles.technologyContainer}>
@@ -698,7 +703,7 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
                   onFocus={() => setShowTechSuggestions(technologyInput.length > 0)}
                   onBlur={() => setTimeout(() => setShowTechSuggestions(false), 200)}
                   className={styles.technologyInput}
-                  placeholder="Escribe y presiona Enter para agregar..."
+                  placeholder={t.forms.experience.technologiesPlaceholder}
                 />
 
                 {showTechSuggestions && getFilteredSuggestions().length > 0 && (
@@ -725,7 +730,7 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
                         type="button"
                         onClick={() => handleTechnologyRemove(index)}
                         className={styles.chipRemove}
-                        aria-label={`Eliminar ${tech}`}
+                        aria-label={`${t.forms.experience.removeTechnology} ${tech}`}
                       >
                         <i className="fas fa-times"></i>
                       </button>
@@ -734,9 +739,7 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
                 </div>
               )}
 
-              <div className={styles.helperText}>
-                Agrega las tecnologías más relevantes de este puesto
-              </div>
+              <div className={styles.helperText}>{t.forms.experience.technologiesHelper}</div>
             </div>
           </div>
         )}
@@ -746,31 +749,29 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
           <div className={styles.formSection}>
             <h3 className={styles.sectionTitle}>
               <i className="fas fa-medal"></i>
-              Detalles Académicos
+              {t.forms.experience.academicDetails}
             </h3>
 
             <div className={styles.formGrid}>
               <div className={styles.formField}>
                 <label className={styles.label}>
                   <i className="fas fa-star"></i>
-                  Calificación
+                  {t.forms.experience.grade}
                 </label>
                 <input
                   type="text"
                   value={formData.grade || ''}
                   onChange={e => handleFieldChange('grade', e.target.value)}
                   className={styles.input}
-                  placeholder="Ej: Sobresaliente, 8.5/10, Matrícula de Honor"
+                  placeholder={t.forms.experience.gradePlaceholder}
                 />
-                <div className={styles.helperText}>
-                  Nota media, mención o reconocimiento obtenido
-                </div>
+                <div className={styles.helperText}>{t.forms.experience.gradeHelper}</div>
               </div>
 
               <div className={styles.formField}>
                 <label className={styles.label}>
                   <i className="fas fa-sort-numeric-up"></i>
-                  Orden de visualización
+                  {t.forms.experience.displayOrder}
                 </label>
                 <input
                   type="number"
@@ -780,7 +781,7 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
                   min="0"
                   placeholder="0"
                 />
-                <div className={styles.helperText}>Número para ordenar la visualización</div>
+                <div className={styles.helperText}>{t.forms.experience.displayOrderHelper}</div>
               </div>
             </div>
           </div>
@@ -790,13 +791,13 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
         <div className={styles.formSection}>
           <h3 className={styles.sectionTitle}>
             <i className="fas fa-align-left"></i>
-            Descripción y Detalles
+            {t.forms.experience.details}
           </h3>
 
           <div className={styles.formField}>
             <label className={styles.label}>
               <i className="fas fa-file-text"></i>
-              Descripción
+              {t.forms.experience.description}
             </label>
             <div className={styles.textareaContainer}>
               <textarea
@@ -806,16 +807,12 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
                 className={`${styles.textarea} ${touchedFields.description && validationErrors.description ? styles.textareaError : ''}`}
                 rows={8}
                 maxLength={500}
-                placeholder={
-                  isExperience
-                    ? 'Describe tus responsabilidades, logros y proyectos destacados...'
-                    : 'Describe la especialización, proyectos destacados, etc...'
-                }
+                placeholder={t.forms.experience.descriptionPlaceholder}
               />
               <div
                 className={`${styles.characterCounter} ${formData.description.length > 450 ? styles.warning : formData.description.length > 480 ? styles.error : ''}`}
               >
-                {formData.description.length}/500 caracteres
+                {formData.description.length}/500 {t.forms.experience.characterCount}
               </div>
             </div>
             {touchedFields.description && validationErrors.description && (
@@ -824,9 +821,7 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
                 {validationErrors.description}
               </div>
             )}
-            <div className={styles.helperText}>
-              Máximo 500 caracteres. Enfócate en logros y responsabilidades clave
-            </div>
+            <div className={styles.helperText}>{t.forms.experience.descriptionHelper}</div>
           </div>
         </div>
       </form>
@@ -838,7 +833,7 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
               {isSubmitting && (
                 <>
                   <i className={`fas fa-spinner ${styles.spinning}`}></i>
-                  Guardando cambios...
+                  {t.forms.experience.saving}
                 </>
               )}
             </div>
@@ -849,7 +844,7 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
                 onClick={onClose}
                 className={`${styles.button} ${styles.buttonSecondary}`}
               >
-                Cancelar
+                {t.forms.experience.cancel}
               </button>
               <button
                 type="button"
@@ -878,14 +873,16 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
                 {isSubmitting ? (
                   <>
                     <i className={`fas fa-spinner ${styles.spinning}`}></i>
-                    Guardando...
+                    {t.forms.experience.saving}
                   </>
                 ) : (
                   <>
                     <i className="fas fa-save"></i>
                     {isEditing
-                      ? 'Guardar Cambios'
-                      : `Crear ${isExperience ? 'Experiencia' : 'Educación'}`}
+                      ? t.forms.experience.saveChanges
+                      : isExperience
+                        ? t.forms.experience.createExperience
+                        : t.forms.experience.createEducation}
                   </>
                 )}
               </button>
@@ -895,10 +892,10 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
           {/* Indicadores de atajos */}
           <div className={styles.shortcuts}>
             <span>
-              <kbd>Esc</kbd> Cerrar
+              <kbd>Esc</kbd> {t.forms.experience.closeShortcut}
             </span>
             <span>
-              <kbd>Ctrl</kbd> + <kbd>Enter</kbd> Guardar
+              <kbd>Ctrl</kbd> + <kbd>Enter</kbd> {t.forms.experience.saveShortcut}
             </span>
           </div>
         </div>
@@ -922,7 +919,7 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
               type="button"
               className={styles.backButton}
               onClick={onClose}
-              aria-label="Cerrar formulario"
+              aria-label={t.forms.experience.closeShortcut}
             >
               <i className="fas fa-times"></i>
             </button>
@@ -938,8 +935,8 @@ const EnhancedExperienceForm: React.FC<EnhancedExperienceFormProps> = ({
             <div>
               <span className={styles.progressText}>
                 {formProgress === 0
-                  ? 'Completa este formulario para agregar tu experiencia'
-                  : `Completado: ${formProgress}%`}
+                  ? t.forms.experience.progressComplete
+                  : `${t.forms.experience.completed}: ${formProgress}%`}
               </span>
             </div>
           </div>

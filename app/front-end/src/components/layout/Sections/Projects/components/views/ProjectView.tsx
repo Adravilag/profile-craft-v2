@@ -8,6 +8,7 @@ const { getProjectById } = projects;
 import type { Project } from '@/types/api';
 // useUnifiedTheme removed: theme is global by default via variables.css
 import styles from './../../pages/ProjectPage.module.css'; // Usar el archivo CSS con diseño WordPress
+import { useTranslation } from '@/contexts/TranslationContext';
 
 // Función utilitaria para detectar si el contenido es HTML o Markdown
 const isHtmlContent = (content: string): boolean => {
@@ -38,6 +39,7 @@ interface ProjectViewProps {
 }
 
 const ProjectView: React.FC<ProjectViewProps> = ({ projectId, onBack, showBackButton = true }) => {
+  const { t } = useTranslation();
   const [project, setProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -53,7 +55,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ projectId, onBack, showBackBu
       const data = await getProjectById(projectId);
       setProject(data);
     } catch (err) {
-      setError('Error al cargar el artículo');
+      setError(t.projectsCarousel.errorLoading || 'Error al cargar el artículo');
       console.error(err);
     } finally {
       setLoading(false);
@@ -74,7 +76,7 @@ const ProjectView: React.FC<ProjectViewProps> = ({ projectId, onBack, showBackBu
         <div className={styles.wordpressHeader}>
           <nav className={styles.projectNavigation}>
             <div className={styles.backButton}>
-              <i className="fas fa-spinner fa-spin"></i> Cargando...
+              <i className="fas fa-spinner fa-spin"></i> {t.projectsCarousel.loading}
             </div>
           </nav>
         </div>
@@ -89,7 +91,9 @@ const ProjectView: React.FC<ProjectViewProps> = ({ projectId, onBack, showBackBu
             <div style={{ fontSize: '48px', marginBottom: '24px' }}>
               <i className="fas fa-spinner fa-spin"></i>
             </div>
-            <h1 style={{ fontSize: '24px', marginBottom: '16px' }}>Cargando artículo...</h1>
+            <h1 style={{ fontSize: '24px', marginBottom: '16px' }}>
+              {t.projectsCarousel.loadingProjects}
+            </h1>
             <p>Por favor espera mientras cargamos el contenido.</p>
           </div>
         </main>

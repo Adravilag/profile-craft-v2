@@ -27,8 +27,7 @@
 
 /* Espacio vertical entre secciones dentro del contenedor principal
    Aplica un margen superior responsivo a cada sección para separarlas
-   y evita añadir margen al primer hijo. También mejora el anclaje de
-   scroll usando scroll-margin-top. */
+   uniformemente. También mejora el anclaje de scroll usando scroll-margin-top. */
 .sections-container > div {
   /* Usar padding-top para el espaciado superior de cada sección y margin-bottom para separación
      Esto evita problemas de colapso de márgenes y facilita el anclaje. */
@@ -36,9 +35,6 @@
   margin-block-end: clamp(40px, 5vh, 96px);
   /* Facilita anclaje cuando el header fijo ocupa espacio. Usar la variable que establece el layout. */
   scroll-margin-top: var(--header-nav-height, 88px);
-}
-.sections-container > div:first-child {
-  padding-block-start: 0;
 }
 
 /* Fade inferior (solape -1px para evitar banda) */

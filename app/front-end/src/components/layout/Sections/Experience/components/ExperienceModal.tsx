@@ -1,6 +1,7 @@
 import React from 'react';
 import ModalShell from '@/components/ui/Modal/ModalShell';
 import EnhancedExperienceForm from './forms/EnhancedExperienceForm';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 interface ExperienceModalProps {
   isOpen: boolean;
@@ -21,24 +22,31 @@ const ExperienceModal: React.FC<ExperienceModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
+  const { t } = useTranslation();
   const formRef = React.useRef<HTMLFormElement | null>(null);
 
   return (
     <ModalShell
       title={
         isEditing
-          ? `Editar ${formType === 'experience' ? 'Experiencia' : 'Educación'}`
-          : `Nueva ${formType === 'experience' ? 'Experiencia' : 'Educación'}`
+          ? formType === 'experience'
+            ? t.forms.experience.editExperience
+            : t.forms.experience.editEducation
+          : formType === 'experience'
+            ? t.forms.experience.newExperience
+            : t.forms.experience.newEducation
       }
       onClose={onClose}
       maxWidth={900}
       formRef={formRef}
       actionButtons={[
-        { label: 'Cancelar', variant: 'ghost', onClick: onClose },
+        { label: t.states.cancel, variant: 'ghost', onClick: onClose },
         {
           label: isEditing
-            ? 'Guardar cambios'
-            : `Crear ${formType === 'experience' ? 'Experiencia' : 'Educación'}`,
+            ? t.forms.experience.saveChanges
+            : formType === 'experience'
+              ? t.forms.experience.createExperience
+              : t.forms.experience.createEducation,
           variant: 'primary',
           submit: true,
         },

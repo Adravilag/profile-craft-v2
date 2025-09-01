@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import TestimonialModal from '../components/ui/Modal/TestimonialModal';
+import TestimonialModal from '../components/layout/Sections/Testimonials/modal/TestimonialModal';
 import '@testing-library/jest-dom';
 
 describe('TestimonialModal', () => {

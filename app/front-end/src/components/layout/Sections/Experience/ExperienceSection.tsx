@@ -5,6 +5,7 @@ const { getEducation, createEducation, updateEducation, deleteEducation } = educ
 import type { Experience, Education } from '@/types/api';
 import { useTimelineAnimation } from '@/hooks/useTimelineAnimation';
 import { useNotificationContext } from '@/contexts';
+import { useTranslation } from '@/contexts/TranslationContext';
 import { convertSpanishDateToISO, formatDateRange } from '@/utils/dateUtils';
 import HeaderSection from '../../HeaderSection/HeaderSection';
 import styles from './ExperienceSection.module.css';
@@ -26,6 +27,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
   showAdminFAB = false,
   onAdminClick,
 }) => {
+  const { t } = useTranslation();
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [education, setEducation] = useState<Education[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -273,8 +275,8 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
       return (
         <div className={styles.adminEmpty}>
           <i className="fas fa-briefcase"></i>
-          <h3>No hay experiencias</h3>
-          <p>Añade la primera experiencia laboral usando el botón flotante.</p>
+          <h3>{t.experience.admin.noExperiences}</h3>
+          <p>{t.experience.admin.noExperiencesDesc}</p>
         </div>
       );
     }
@@ -332,14 +334,14 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
                   onClick={() => handleEditExperience(experience)}
                 >
                   <i className="fas fa-edit"></i>
-                  Editar
+                  {t.experience.admin.edit}
                 </button>
                 <button
                   className={styles.adminBtnDanger}
                   onClick={() => handleDeleteExperience(experience._id, experience.position)}
                 >
                   <i className="fas fa-trash"></i>
-                  Eliminar
+                  {t.experience.admin.delete}
                 </button>
               </div>
             </div>
@@ -352,8 +354,8 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
       return (
         <div className={styles.adminEmpty}>
           <i className="fas fa-graduation-cap"></i>
-          <h3>No hay formación académica</h3>
-          <p>Añade la primera formación académica usando el botón flotante.</p>
+          <h3>{t.experience.admin.noEducation}</h3>
+          <p>{t.experience.admin.noEducationDesc}</p>
         </div>
       );
     }
@@ -406,7 +408,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
                   onClick={() => handleEditEducation(edu)}
                 >
                   <i className="fas fa-edit"></i>
-                  Editar
+                  {t.experience.admin.edit}
                 </button>
                 <button
                   className={styles.adminBtnDanger}
@@ -427,7 +429,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
                   }}
                 >
                   <i className="fas fa-trash"></i>
-                  Eliminar
+                  {t.experience.admin.delete}
                 </button>
               </div>
             </div>
@@ -655,9 +657,9 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
       <div className={`${styles.sectionCv} ${className || ''}`}>
         <div className={styles.experienceLoading}>
           <div className={styles.loadingSpinner}></div>
-          <p>Cargando experiencia y formación...</p>
+          <p>{t.experience.loading}</p>
           <div className={styles.loadingDetails}>
-            <small>Obteniendo datos del servidor...</small>
+            <small>{t.experience.loadingDetails}</small>
           </div>
         </div>
       </div>
@@ -676,7 +678,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
             disabled={retryCount >= 3}
           >
             <i className="fas fa-redo"></i>
-            {retryCount >= 3 ? 'Límite de reintentos alcanzado' : 'Reintentar'}
+            {retryCount >= 3 ? t.experience.retryLimitReached : t.experience.errorRetry}
           </button>
         </div>
       </div>
@@ -686,8 +688,8 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
     <div className={`${styles.sectionCv} ${className || ''}`} id="experience">
       <HeaderSection
         icon="fas fa-route"
-        title="Trayectoria Profesional"
-        subtitle="Un recorrido por mi experiencia laboral y formación académica, mostrando las tecnologías y logros más relevantes."
+        title={t.experience.title}
+        subtitle={t.experience.subtitle}
         className={styles.experienceHeader}
         showNotification={!!(error && experiences.length > 0)}
         notificationMessage={error || undefined}
@@ -710,7 +712,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
             aria-label="Vista por categorías"
           >
             <i className="fas fa-columns"></i>
-            <span>Vista por Categorías</span>
+            <span>{t.experience.viewCategories}</span>
           </button>
           <button
             className={[
@@ -726,20 +728,20 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
             aria-label="Vista cronológica"
           >
             <i className="fas fa-clock"></i>
-            <span>Vista Cronológica</span>
+            <span>{t.experience.viewChronological}</span>
           </button>
         </div>
         {/* Estadísticas rápidas */}
         <div className={styles.experienceStats}>
           <div className={styles.statItem}>
             <span className={styles.statNumber}>{experiences.length}</span>
-            <span className={styles.statLabel}>Experiencias</span>
+            <span className={styles.statLabel}>{t.experience.stats.experiences}</span>
           </div>
           <div className={styles.statItem}>
             <span className={styles.statNumber}>
               {Array.isArray(education) ? education.length : 0}
             </span>
-            <span className={styles.statLabel}>Certificaciones</span>
+            <span className={styles.statLabel}>{t.experience.stats.certifications}</span>
           </div>
           <div className={styles.statItem}>
             <span className={styles.statNumber}>
@@ -747,7 +749,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
                 ? experiences.reduce((acc, exp) => acc + (exp.technologies?.length || 0), 0)
                 : 0}
             </span>
-            <span className={styles.statLabel}>Tecnologías</span>
+            <span className={styles.statLabel}>{t.experience.stats.technologies}</span>
           </div>
         </div>
         {/* Vista Tradicional - 2 Columnas con Componentes Modulares */}
@@ -760,7 +762,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
                   <i className="fas fa-briefcase"></i>
                 </div>
                 <h3 className={`${styles.columnTitle} ${styles.strongContrast}`}>
-                  Experiencia Laboral
+                  {t.experience.workExperience}
                 </h3>
               </div>
 
@@ -788,7 +790,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
                   <i className="fas fa-graduation-cap"></i>
                 </div>
                 <h3 className={`${styles.columnTitle} ${styles.strongContrast}`}>
-                  Formación Académica
+                  {t.experience.education}
                 </h3>
               </div>
               <div className={styles.timelineContainer}>
@@ -867,20 +869,20 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
       <AdminModal
         isOpen={showAdminModal}
         onClose={() => setShowAdminModal(false)}
-        title="Administración de Trayectoria"
+        title={t.experience.admin.title}
         icon="fas fa-route"
         maxWidth="1300px"
         height="88vh"
         tabs={[
           {
             id: 'experience',
-            label: 'Experiencia Laboral',
+            label: t.experience.workExperience,
             icon: 'fas fa-briefcase',
             content: null,
           },
           {
             id: 'education',
-            label: 'Formación Académica',
+            label: t.experience.education,
             icon: 'fas fa-graduation-cap',
             content: null,
           },
@@ -893,7 +895,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
             ? [
                 {
                   id: 'cancel-form',
-                  label: 'Cancelar',
+                  label: t.experience.admin.cancel,
                   icon: 'fas fa-times',
                   onClick: handleCloseForm,
                   variant: 'secondary',
@@ -901,8 +903,8 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
                 {
                   id: 'save-form',
                   label: editingId
-                    ? 'Guardar Cambios'
-                    : `Crear ${activeAdminSection === 'experience' ? 'Experiencia' : 'Educación'}`,
+                    ? t.experience.admin.saveChanges
+                    : `${t.experience.admin.create} ${activeAdminSection === 'experience' ? t.experience.workExperience : t.experience.education}`,
                   icon: 'fas fa-save',
                   onClick: () => {
                     const form = document.querySelector('.admin-form') as HTMLFormElement;
@@ -916,7 +918,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
             : [
                 {
                   id: 'new-item',
-                  label: `Nueva ${activeAdminSection === 'experience' ? 'Experiencia' : 'Educación'}`,
+                  label: `${activeAdminSection === 'experience' ? t.experience.admin.newExperience : t.experience.admin.newEducation}`,
                   icon: 'fas fa-plus',
                   onClick: handleNewItem,
                   variant: 'primary',

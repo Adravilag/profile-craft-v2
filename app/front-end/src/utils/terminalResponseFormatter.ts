@@ -278,28 +278,27 @@ export const createResponse = {
  * Enhanced bash command responses with better formatting
  */
 export const enhancedBashResponses = {
-  help: createResponse.info(`# Available Commands
-
-- **help** - Show this help message
-- **clear** - Clear the terminal screen
-- **ls** - List directory contents
-- **pwd** - Print working directory
-- **whoami** - Display current user
-
-*Tip: Type any command to see what happens!*`),
-
-  ls: createResponse.response(`portfolio.json    projects/    skills/    experience/
-
-*Use 'ls -la' for detailed view*`),
-
-  pwd: createResponse.response(`/home/adrian-davila`),
-
-  whoami: createResponse.response(`adrian-davila
-
-*Full Stack Developer & UI/UX Designer*`),
-
-  notFound: (command: string) =>
-    createResponse.error(`bash: ${command}: command not found
-
-*Type 'help' to see available commands*`),
+  // Ahora exportamos una función que construye las respuestas localizadas
 };
+
+// Factory que crea respuestas localizadas según el idioma usando las traducciones del terminal
+import { getTerminalTranslations } from '@/components/layout/Sections/ProfileHero/components/Widgets/Terminal/context/TerminalTranslationContext';
+
+export function makeEnhancedBashResponses(language: string) {
+  const t = getTerminalTranslations(language);
+
+  const helpLines = Array.isArray(t.commands.help.output)
+    ? t.commands.help.output.join('\n')
+    : String(t.commands.help.output || '');
+
+  return {
+    help: createResponse.info(helpLines),
+    ls: createResponse.response(
+      (t.commands.ls.projects || []).join('    ') + '\n\n' + (t.commands.ls.usage || '')
+    ),
+    pwd: createResponse.response('/home/adrian-davila'),
+    whoami: createResponse.response((t.commands.whoami.fallback || []).join('\n')),
+    notFound: (command: string) =>
+      createResponse.error(`bash: ${command}: command not found\n\n${t.responses.tryHelp}`),
+  };
+}

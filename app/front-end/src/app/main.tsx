@@ -67,11 +67,9 @@ if (typeof window !== 'undefined') {
 }
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
-    <AppProviders>
-      <Suspense fallback={<div aria-hidden="true" id="app-loading" />}>
-        <App />
-      </Suspense>
-    </AppProviders>
+    <Suspense fallback={<div aria-hidden="true" id="app-loading" />}>
+      <App />
+    </Suspense>
   </React.StrictMode>
 );
 

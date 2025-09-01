@@ -22,7 +22,7 @@ interface ThemePreferences {
   nightModeEnd: string; // "06:00"
 }
 
-interface UnifiedThemeContextType {
+export interface UnifiedThemeContextType {
   // Estado
   preferences: ThemePreferences;
   currentGlobalTheme: Exclude<Theme, 'auto'>;

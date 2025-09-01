@@ -1,0 +1,79 @@
+/* src/components/common/TranslatedBreadcrumbs/TranslatedBreadcrumbs.module.css */
+
+.breadcrumbs {
+  margin: 1rem 0;
+  font-size: 0.875rem;
+}
+
+.breadcrumbList {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+.breadcrumbItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.breadcrumbLink {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: all 0.2s ease;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.breadcrumbLink:hover {
+  color: var(--color-primary);
+  background: var(--color-surface-hover);
+}
+
+.breadcrumbLink:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.breadcrumbText {
+  color: var(--color-text-secondary);
+  padding: 0.25rem 0.5rem;
+}
+
+.breadcrumbText.active {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.separator {
+  color: var(--color-text-muted);
+  font-weight: 300;
+  user-select: none;
+}
+
+/* Dark mode support */
+:global(.dark-mode) .breadcrumbs {
+  --color-text: #e5e5e5;
+  --color-text-secondary: #a1a1a1;
+  --color-text-muted: #6b7280;
+  --color-primary: #3b82f6;
+  --color-surface-hover: #2a2a2a;
+}
+
+/* Light mode (default) */
+.breadcrumbs {
+  --color-text: #111827;
+  --color-text-secondary: #6b7280;
+  --color-text-muted: #9ca3af;
+  --color-primary: #3b82f6;
+  --color-surface-hover: #f9fafb;
+}

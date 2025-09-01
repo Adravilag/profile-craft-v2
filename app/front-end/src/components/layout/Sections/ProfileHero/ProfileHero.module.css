@@ -403,12 +403,21 @@ code {
   display: inline-block;
   margin-left: 6px;
   opacity: 0.9;
-  animation: blink 1s steps(2, start) infinite;
+  animation: cursorBlink 1.2s ease-in-out infinite;
 }
 
-@keyframes blink {
-  50% {
-    opacity: 0;
+@keyframes cursorBlink {
+  0% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 1;
+  }
+  55% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 0.1;
   }
 }
 

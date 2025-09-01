@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import { authLogout } from '@/services/endpoints/auth';
 
 // Tipo mínimo para el usuario autenticado
 export interface AuthUser {
@@ -28,8 +29,11 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
     let mounted = true;
     (async () => {
       try {
-        // En desarrollo, si existe un token dev, setear cookie para simular login en navegador
-        if (import.meta.env.DEV) {
+        // Verificar si el usuario hizo logout explícitamente
+        const explicitLogout = localStorage.getItem('explicit_logout');
+
+        // En desarrollo, solo auto-loguear si NO hay logout explícito
+        if (import.meta.env.DEV && !explicitLogout) {
           try {
             const dev = await fetch('/api/auth/dev-token');
             if (dev.ok) {
@@ -47,6 +51,10 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
         if (res.ok) {
           const data = await res.json();
           setUser(data.user ?? null);
+          // Si hay usuario válido, limpiar flag de logout explícito
+          if (data.user) {
+            localStorage.removeItem('explicit_logout');
+          }
         } else {
           setUser(null);
         }
@@ -79,10 +87,28 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
 
   const logout = useCallback(async () => {
     try {
-      await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+      // Marcar logout explícito para evitar auto-login en desarrollo
+      localStorage.setItem('explicit_logout', 'true');
+
+      // Usar el servicio de API que maneja tanto el endpoint como la limpieza
+      await authLogout();
     } catch (e) {
       // ignore network errors during logout
     }
+
+    // Limpiar completamente todos los tokens almacenados (backup adicional)
+    try {
+      // Limpiar localStorage (por si el servicio API no lo hizo)
+      localStorage.removeItem('portfolio_auth_token');
+
+      // Limpiar cookies de desarrollo (no-httpOnly)
+      if (import.meta.env.DEV) {
+        document.cookie = 'portfolio_auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+      }
+    } catch (e) {
+      // ignore errors cleaning storage
+    }
+
     setUser(null);
     // notify other tabs
     try {
