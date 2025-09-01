@@ -1,0 +1,375 @@
+:root {
+  --app-bg: #0b0f17;
+}
+
+/* Fondo base uniforme: aplicar al contenedor principal .curriculum-wrapper */
+.curriculum-container {
+  background: var(--app-bg);
+}
+
+/* Capa decorativa fija detrás de todo el contenido: mover a .curriculum-container */
+.curriculum-container::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Secciones: transparentes para evitar cortes + pseudo “bleed” */
+.section-cv {
+  position: relative;
+  isolation: isolate;
+  background: transparent;
+  min-height: 100vh;
+  animation: sectionFadeIn 1.6s ease-out both;
+}
+
+/* Espacio vertical entre secciones dentro del contenedor principal
+   Aplica un margen superior responsivo a cada sección para separarlas
+   y evita añadir margen al primer hijo. También mejora el anclaje de
+   scroll usando scroll-margin-top. */
+.sections-container > div {
+  /* Usar padding-top para el espaciado superior de cada sección y margin-bottom para separación
+     Esto evita problemas de colapso de márgenes y facilita el anclaje. */
+  padding-block-start: clamp(40px, 5vh, 96px);
+  margin-block-end: clamp(40px, 5vh, 96px);
+  /* Facilita anclaje cuando el header fijo ocupa espacio. Usar la variable que establece el layout. */
+  scroll-margin-top: var(--header-nav-height, 88px);
+}
+.sections-container > div:first-child {
+  padding-block-start: 0;
+}
+
+/* Fade inferior (solape -1px para evitar banda) */
+.section-cv::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: clamp(56px, 8vh, 96px);
+  transform: translateZ(0);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Fade superior cuando hay dos .section-cv consecutivas */
+.section-cv + .section-cv::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -1px;
+  height: clamp(56px, 8vh, 96px);
+  background: var(--app-bg);
+  mask-image: linear-gradient(to top, transparent 0%, #000 60%, #000 100%);
+  transform: translateZ(0);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Contenedor interno */
+.section-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  padding: 2rem;
+  overflow: visible; /* no cortar el “bleed” */
+}
+
+/* Cabecera de sección */
+.section-header {
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Compacta espacio en secciones específicas (About, etc.) */
+.section-header.about {
+  margin-bottom: clamp(12px, 2vh, 24px);
+  padding-bottom: 0.5rem;
+}
+
+/* Subtítulo */
+.section-subtitle {
+  font:
+    400 1.125rem/1.6 Inter,
+    sans-serif;
+  color: #64748b;
+  margin: 0 auto 1rem;
+  max-width: 600px;
+}
+
+/* Título + icono */
+.section-title {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-title-icon {
+  width: 3.6rem;
+  height: 3.6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  color: #fff;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-md);
+  transition:
+    transform 0.3s cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 0.3s cubic-bezier(0.2, 0, 0, 1);
+  animation: iconPulse 3s ease-in-out infinite;
+  margin: 1.3rem;
+  z-index: 1;
+  scale: 1.2;
+  transform-origin: center;
+  will-change: transform;
+}
+
+.section-title-icon::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.section-title-icon:hover {
+  transform: scale(1.15) rotate(5deg);
+  box-shadow: var(--shadow-xl);
+}
+.section-title-icon:hover::before {
+  opacity: 1;
+}
+
+/* Cards */
+.section-card {
+  position: relative;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-2xl);
+  padding: 2rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  transition:
+    transform 0.3s cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 0.3s cubic-bezier(0.2, 0, 0, 1),
+    border-color 0.3s;
+  animation: cardFadeIn 0.6s ease-out both;
+}
+
+.section-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.section-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+  border-color: #6366f1;
+}
+.section-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* Grid de contenido */
+.content-grid {
+  display: grid;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+.content-grid.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+.content-grid.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+.content-grid.grid-4 {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+/* Botones */
+.section-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--radius-lg);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  text-align: center;
+  transition:
+    transform var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-emphasized),
+    box-shadow var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-emphasized);
+}
+
+.section-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  left: -100%;
+  background: linear-gradient(90deg, transparent, rgb(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.section-btn:hover::before {
+  left: 100%;
+}
+.section-btn:hover {
+  transform: translateY(-2px);
+}
+.section-btn:active {
+  transform: translateY(0);
+}
+
+.section-btn.primary {
+  background: linear-gradient(135deg, var(--md-sys-color-primary), var(--md-sys-color-secondary));
+  color: var(--md-sys-color-on-primary);
+  box-shadow: var(--md-elevation-2);
+}
+.section-btn.primary:hover {
+  box-shadow: var(--md-elevation-4);
+}
+
+.section-btn.secondary {
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+  border: 1px solid var(--md-sys-color-secondary);
+}
+
+/* Divisor interactivo */
+.section-divider {
+  height: 3px;
+  width: 100%;
+  max-width: 350px;
+  margin: 1.5rem auto;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(99, 102, 241, 0.4) 20%,
+    rgb(139, 92, 246, 0.6) 50%,
+    rgb(99, 102, 241, 0.4) 80%,
+    transparent 100%
+  );
+  opacity: 0.8;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transform-origin: center;
+  will-change: transform;
+  transition:
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.2s;
+}
+
+.section-divider::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  left: -100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgb(255, 255, 255, 0.3) 20%,
+    rgb(255, 255, 255, 0.5) 50%,
+    rgb(255, 255, 255, 0.3) 80%,
+    transparent 100%
+  );
+  transition: left 0.6s ease;
+}
+
+.section-divider:hover {
+  opacity: 1;
+  transform: scaleY(1.2);
+  max-width: 400px;
+  box-shadow: var(--shadow-accent);
+}
+.section-divider:hover::before {
+  left: 100%;
+}
+
+.section-divider.thick {
+  height: 4px;
+  max-width: 450px;
+  opacity: 1;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #6366f1 20%,
+    #8b5cf6 50%,
+    #6366f1 80%,
+    transparent 100%
+  );
+}
+
+/* Accesibilidad: reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .section-cv,
+  .section-card,
+  .section-title-icon,
+  .section-divider {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Animaciones base */
+@keyframes sectionFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes iconPulse {
+  0%,
+  100% {
+    transform: scale(1.2);
+  }
+  50% {
+    transform: scale(1.24);
+  }
+}

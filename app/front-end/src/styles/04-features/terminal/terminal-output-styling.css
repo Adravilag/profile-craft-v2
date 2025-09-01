@@ -1,0 +1,733 @@
+/* terminal-output-styling.css - Enhanced Terminal Output and Content Styling */
+
+/* ===========================================
+   ENHANCED COMMAND PROMPT STYLING
+   =========================================== */
+
+/* Improved command prompt with better visual hierarchy */
+.interactive-terminal-prompt {
+  display: flex;
+  align-items: baseline;
+  gap: var(--terminal-gap-xs);
+  flex-shrink: 0;
+  user-select: none;
+  font-weight: var(--terminal-font-weight-medium);
+  letter-spacing: var(--terminal-letter-spacing);
+}
+
+.interactive-terminal-prompt .user {
+  color: var(--terminal-prompt);
+  font-weight: var(--terminal-font-weight-bold);
+  text-shadow: 0 0 8px rgb(var(--color-accent-rgb), 0.3);
+  transition: all var(--terminal-transition);
+}
+
+.interactive-terminal-prompt .at,
+.interactive-terminal-prompt .separator {
+  color: var(--terminal-text-muted);
+  font-weight: var(--terminal-font-weight);
+  opacity: 0.8;
+}
+
+.interactive-terminal-prompt .host {
+  color: var(--color-warning);
+  font-weight: var(--terminal-font-weight-bold);
+  text-shadow: 0 0 6px rgb(242, 204, 96, 0.2);
+}
+
+.interactive-terminal-prompt .path {
+  color: var(--color-accent);
+  font-weight: var(--terminal-font-weight-semibold);
+  text-shadow: 0 0 6px rgb(var(--color-accent-rgb), 0.2);
+}
+
+.interactive-terminal-prompt .dollar {
+  color: var(--color-error);
+  font-weight: var(--terminal-font-weight-bold);
+  text-shadow: 0 0 6px rgb(255, 123, 114, 0.2);
+  margin-left: var(--terminal-gap-xs);
+}
+
+/* Enhanced command text styling */
+.command-text {
+  color: var(--terminal-command);
+  font-weight: var(--terminal-font-weight-semibold);
+  letter-spacing: var(--terminal-letter-spacing);
+  text-shadow: 0 0 4px rgb(var(--color-accent-rgb), 0.1);
+  transition: color var(--terminal-transition);
+}
+
+/* ===========================================
+   ENHANCED OUTPUT TEXT FORMATTING
+   =========================================== */
+
+/* Improved output line styling with better readability */
+.interactive-output-line {
+  color: var(--terminal-output);
+  line-height: var(--terminal-line-height-relaxed);
+  font-weight: var(--terminal-font-weight);
+  letter-spacing: var(--terminal-letter-spacing);
+  margin-bottom: var(--terminal-line-spacing);
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* Enhanced name highlighting */
+.interactive-output-line .terminal-name-highlight {
+  color: var(--color-accent);
+  font-weight: var(--terminal-font-weight-bold);
+  background: rgb(var(--color-accent-rgb), 0.1);
+  padding: var(--terminal-padding-xs) var(--terminal-gap-xs);
+  border-radius: var(--radius-sm);
+  text-shadow: 0 0 8px rgb(var(--color-accent-rgb), 0.3);
+  transition: all var(--terminal-transition);
+}
+
+.interactive-output-line .terminal-name-highlight:hover {
+  background: rgb(var(--color-accent-rgb), 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgb(var(--color-accent-rgb), 0.2);
+}
+
+/* Enhanced error, success, and warning output styling */
+.interactive-output-line.error {
+  color: var(--terminal-error);
+  background: rgb(255, 123, 114, 0.05);
+  border-left: var(--space-1) solid var(--terminal-error);
+  padding-left: var(--terminal-padding-md);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin: var(--terminal-margin-sm) 0;
+}
+
+.interactive-output-line.success {
+  color: var(--terminal-success);
+  background: rgb(86, 211, 100, 0.05);
+  border-left: var(--space-1) solid var(--terminal-success);
+  padding-left: var(--terminal-padding-md);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin: var(--terminal-margin-sm) 0;
+}
+
+.interactive-output-line.warning {
+  color: var(--terminal-warning);
+  background: rgb(242, 204, 96, 0.05);
+  border-left: var(--space-1) solid var(--terminal-warning);
+  padding-left: var(--terminal-padding-md);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  margin: var(--terminal-margin-sm) 0;
+}
+
+/* ===========================================
+   ASSISTANT BUBBLES
+   =========================================== */
+
+/* Enhanced assistant bubble styles */
+.assistant-bubble {
+  margin: 0.75rem 0;
+  padding: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-left: 3px solid var(--accent-color, #3b82f6);
+  border-radius: 0 0.5rem 0.5rem 0.5rem;
+  position: relative;
+}
+
+/* Enhanced assistant prefix styles */
+
+.assistant-output-text {
+  color: var(--terminal-text);
+  line-height: var(--terminal-line-height-relaxed);
+  font-weight: var(--terminal-font-weight);
+  letter-spacing: var(--terminal-letter-spacing);
+}
+
+/* ===========================================
+   ENHANCED CODE BLOCK STYLING
+   =========================================== */
+
+/* Improved code block styling with syntax highlighting support */
+.assistant-code,
+.assistant-markdown-wrapper pre,
+pre.assistant-code {
+  background: linear-gradient(135deg, var(--bg-primary) 0%, #0a0e13 100%);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--terminal-padding-lg);
+  margin: var(--terminal-margin-md) 0;
+  overflow-x: auto;
+  border-left: var(--space-1) solid var(--color-accent);
+  box-shadow:
+    inset 0 1px 3px rgb(0, 0, 0, 0.2),
+    var(--shadow-md);
+  position: relative;
+  font-family: var(--terminal-font);
+  font-size: var(--terminal-font-size-sm);
+  line-height: var(--terminal-line-height-normal);
+  transition: all var(--terminal-transition);
+}
+
+.assistant-code::before,
+.assistant-markdown-wrapper pre::before,
+pre.assistant-code::before {
+  content: 'code';
+  position: absolute;
+  top: var(--terminal-padding-sm);
+  right: var(--terminal-padding-md);
+  color: var(--terminal-text-muted);
+  font-size: var(--text-xs);
+  font-weight: var(--terminal-font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  opacity: 0.6;
+  background: var(--bg-secondary);
+  padding: var(--terminal-padding-xs) var(--terminal-gap-sm);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-secondary);
+}
+
+.assistant-code:hover,
+.assistant-markdown-wrapper pre:hover,
+pre.assistant-code:hover {
+  border-left-color: var(--color-success);
+  box-shadow:
+    inset 0 1px 3px rgb(0, 0, 0, 0.2),
+    0 0 20px rgb(var(--color-accent-rgb), 0.1),
+    var(--shadow-lg);
+  transform: translateY(-1px);
+}
+
+.assistant-code code,
+.assistant-markdown-wrapper pre code,
+pre.assistant-code code {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: var(--terminal-text);
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* Enhanced inline code styling */
+code:not(pre code) {
+  background: rgb(var(--color-accent-rgb), 0.1);
+  color: var(--color-accent);
+  padding: var(--terminal-padding-xs) var(--terminal-gap-sm);
+  border-radius: var(--radius-sm);
+  font-family: var(--terminal-font);
+  font-size: 0.9em;
+  font-weight: var(--terminal-font-weight-medium);
+  border: 1px solid rgb(var(--color-accent-rgb), 0.2);
+  text-shadow: 0 0 4px rgb(var(--color-accent-rgb), 0.3);
+  transition: all var(--terminal-transition);
+}
+
+code:not(pre code):hover {
+  background: rgb(var(--color-accent-rgb), 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgb(var(--color-accent-rgb), 0.2);
+}
+
+/* ===========================================
+   SYNTAX HIGHLIGHTING COLORS
+   =========================================== */
+
+/* Basic syntax highlighting for code blocks */
+.assistant-code .token.comment,
+.assistant-markdown-wrapper pre .token.comment,
+pre.assistant-code .token.comment {
+  color: var(--terminal-text-muted);
+  font-style: italic;
+  opacity: 0.8;
+}
+
+.assistant-code .token.keyword,
+.assistant-markdown-wrapper pre .token.keyword,
+pre.assistant-code .token.keyword {
+  color: var(--color-accent);
+  font-weight: var(--terminal-font-weight-semibold);
+}
+
+.assistant-code .token.string,
+.assistant-markdown-wrapper pre .token.string,
+pre.assistant-code .token.string {
+  color: var(--color-success);
+}
+
+.assistant-code .token.number,
+.assistant-markdown-wrapper pre .token.number,
+pre.assistant-code .token.number {
+  color: var(--color-warning);
+}
+
+.assistant-code .token.function,
+.assistant-markdown-wrapper pre .token.function,
+pre.assistant-code .token.function {
+  color: var(--color-accent);
+  font-weight: var(--terminal-font-weight-medium);
+}
+
+.assistant-code .token.operator,
+.assistant-markdown-wrapper pre .token.operator,
+pre.assistant-code .token.operator {
+  color: var(--terminal-text);
+  opacity: 0.9;
+}
+
+.assistant-code .token.punctuation,
+.assistant-markdown-wrapper pre .token.punctuation,
+pre.assistant-code .token.punctuation {
+  color: var(--terminal-text-muted);
+}
+
+.assistant-code .token.variable,
+.assistant-markdown-wrapper pre .token.variable,
+pre.assistant-code .token.variable {
+  color: var(--terminal-text);
+}
+
+.assistant-code .token.class-name,
+.assistant-markdown-wrapper pre .token.class-name,
+pre.assistant-code .token.class-name {
+  color: var(--color-warning);
+  font-weight: var(--terminal-font-weight-medium);
+}
+
+.assistant-code .token.tag,
+.assistant-markdown-wrapper pre .token.tag,
+pre.assistant-code .token.tag {
+  color: var(--color-error);
+}
+
+.assistant-code .token.attr-name,
+.assistant-markdown-wrapper pre .token.attr-name,
+pre.assistant-code .token.attr-name {
+  color: var(--color-accent);
+}
+
+.assistant-code .token.attr-value,
+.assistant-markdown-wrapper pre .token.attr-value,
+pre.assistant-code .token.attr-value {
+  color: var(--color-success);
+}
+
+/* ===========================================
+   ENHANCED MARKDOWN WRAPPER
+   =========================================== */
+
+/* Improved markdown wrapper styling */
+.assistant-markdown-wrapper {
+  font-family: var(--terminal-font);
+  color: var(--terminal-text);
+  line-height: var(--terminal-line-height-relaxed);
+}
+
+.assistant-markdown-wrapper p {
+  margin: var(--terminal-margin-sm) 0;
+  color: var(--terminal-text);
+  line-height: var(--terminal-line-height-relaxed);
+}
+
+.assistant-markdown-wrapper h1,
+.assistant-markdown-wrapper h2,
+.assistant-markdown-wrapper h3,
+.assistant-markdown-wrapper h4,
+.assistant-markdown-wrapper h5,
+.assistant-markdown-wrapper h6 {
+  color: var(--color-accent);
+  font-weight: var(--terminal-font-weight-bold);
+  margin: var(--terminal-margin-lg) 0 var(--terminal-margin-md) 0;
+  text-shadow: 0 0 8px rgb(var(--color-accent-rgb), 0.3);
+  border-bottom: 1px solid rgb(var(--color-accent-rgb), 0.2);
+  padding-bottom: var(--terminal-padding-sm);
+}
+
+.assistant-markdown-wrapper ul,
+.assistant-markdown-wrapper ol {
+  padding-left: var(--terminal-padding-lg);
+  margin: var(--terminal-margin-md) 0;
+  color: var(--terminal-text);
+}
+
+.assistant-markdown-wrapper li {
+  margin-bottom: var(--terminal-line-spacing);
+  line-height: var(--terminal-line-height-relaxed);
+  position: relative;
+}
+
+.assistant-markdown-wrapper li::marker {
+  color: var(--color-accent);
+  font-weight: var(--terminal-font-weight-bold);
+}
+
+.assistant-markdown-wrapper blockquote {
+  border-left: var(--space-1) solid var(--color-accent);
+  padding-left: var(--terminal-padding-md);
+  margin: var(--terminal-margin-md) 0;
+  background: rgb(var(--color-accent-rgb), 0.05);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-style: italic;
+  color: var(--terminal-text-muted);
+}
+
+.assistant-markdown-wrapper a {
+  color: var(--color-accent);
+  text-decoration: none;
+  font-weight: var(--terminal-font-weight-medium);
+  border-bottom: 1px solid rgb(var(--color-accent-rgb), 0.3);
+  transition: all var(--terminal-transition);
+  text-shadow: 0 0 4px rgb(var(--color-accent-rgb), 0.2);
+}
+
+.assistant-markdown-wrapper a:hover {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+  text-shadow: 0 0 8px rgb(var(--color-accent-rgb), 0.4);
+  transform: translateY(-1px);
+}
+
+.assistant-markdown-wrapper strong {
+  color: var(--terminal-text);
+  font-weight: var(--terminal-font-weight-bold);
+  text-shadow: 0 0 4px rgb(var(--color-accent-rgb), 0.1);
+}
+
+.assistant-markdown-wrapper em {
+  color: var(--terminal-text-muted);
+  font-style: italic;
+}
+
+/* ===========================================
+   ENHANCED STREAMING EFFECTS
+   =========================================== */
+
+/* Improved streaming cursor with glow effect */
+.assistant-streaming-cursor {
+  animation: enhanced-blink 1.2s infinite;
+  color: var(--color-accent);
+  font-weight: var(--terminal-font-weight-bold);
+  text-shadow: 0 0 8px rgb(var(--color-accent-rgb), 0.6);
+  display: inline-block;
+  margin-left: var(--terminal-gap-xs);
+}
+
+@keyframes enhanced-blink {
+  0%,
+  50% {
+    opacity: 1;
+    transform: scale(1);
+    text-shadow: 0 0 8px rgb(var(--color-accent-rgb), 0.6);
+  }
+
+  51%,
+  100% {
+    opacity: 0.3;
+    transform: scale(0.95);
+    text-shadow: 0 0 4px rgb(var(--color-accent-rgb), 0.3);
+  }
+}
+
+/* Enhanced typing indicator */
+.typing-indicator {
+  color: var(--terminal-text-muted);
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: var(--terminal-gap-md);
+  padding: var(--terminal-padding-sm) var(--terminal-padding-md);
+  background: rgb(var(--color-accent-rgb), 0.05);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgb(var(--color-accent-rgb), 0.1);
+  margin: var(--terminal-margin-sm) 0;
+}
+
+.typing-dots {
+  display: inline-flex;
+  gap: var(--terminal-gap-xs);
+}
+
+.typing-dots span {
+  animation: enhanced-typing-bounce 1.6s infinite ease-in-out both;
+  background: var(--color-accent);
+  width: var(--terminal-gap-sm);
+  height: var(--terminal-gap-sm);
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 4px rgb(var(--color-accent-rgb), 0.4);
+}
+
+.typing-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+.typing-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+.typing-dots span:nth-child(3) {
+  animation-delay: 0s;
+}
+
+@keyframes enhanced-typing-bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+    box-shadow: 0 0 2px rgb(var(--color-accent-rgb), 0.2);
+  }
+
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+    box-shadow: 0 0 8px rgb(var(--color-accent-rgb), 0.6);
+  }
+}
+
+/* ===========================================
+   RESPONSIVE ENHANCEMENTS
+   =========================================== */
+
+@media (max-width: 768px) {
+  .assistant-bubble {
+    padding: var(--terminal-padding-md);
+    margin: var(--terminal-margin-sm) 0;
+    border-radius: var(--radius-lg);
+  }
+
+  .assistant-prefix {
+    padding: var(--terminal-padding-xs) var(--terminal-gap-sm);
+    margin-right: var(--terminal-gap-sm);
+    font-size: var(--text-sm);
+  }
+
+  .assistant-code,
+  .assistant-markdown-wrapper pre,
+  pre.assistant-code {
+    padding: var(--terminal-padding-md);
+    font-size: var(--text-xs);
+    border-radius: var(--radius-md);
+  }
+
+  .interactive-terminal-prompt .user,
+  .interactive-terminal-prompt .host,
+  .interactive-terminal-prompt .path,
+  .interactive-terminal-prompt .dollar {
+    text-shadow: none; /* Reduce visual effects on mobile for performance */
+  }
+}
+
+@media (max-width: 480px) {
+  .assistant-bubble {
+    padding: var(--terminal-padding-sm);
+    border-radius: var(--radius-md);
+  }
+
+  .assistant-code,
+  .assistant-markdown-wrapper pre,
+  pre.assistant-code {
+    padding: var(--terminal-padding-sm);
+    margin: var(--terminal-margin-sm) 0;
+  }
+
+  .assistant-prefix::before {
+    display: none; /* Hide emoji on very small screens */
+  }
+}
+
+/* ===========================================
+   ACCESSIBILITY ENHANCEMENTS
+   =========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .assistant-bubble::before,
+  .assistant-streaming-cursor,
+  .typing-dots span {
+    animation: none;
+  }
+
+  .assistant-bubble:hover,
+  .assistant-code:hover,
+  .assistant-markdown-wrapper pre:hover,
+  pre.assistant-code:hover,
+  code:not(pre code):hover,
+  .interactive-output-line .terminal-name-highlight:hover,
+  .assistant-markdown-wrapper a:hover {
+    transform: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .assistant-bubble {
+    border-width: 2px;
+    background: var(--bg-primary);
+  }
+
+  .assistant-prefix {
+    border-width: 2px;
+    background: var(--bg-primary);
+  }
+
+  .assistant-code,
+  .assistant-markdown-wrapper pre,
+  pre.assistant-code {
+    border-width: 2px;
+    background: var(--bg-primary);
+  }
+
+  code:not(pre code) {
+    border-width: 2px;
+    background: var(--bg-primary);
+  }
+}
+
+/* ===========================================
+   THEME-SPECIFIC ENHANCEMENTS
+   =========================================== */
+
+/* Light theme adjustments */
+@media (prefers-color-scheme: light) {
+  .assistant-code,
+  .assistant-markdown-wrapper pre,
+  pre.assistant-code {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, #f0f2f5 100%);
+    box-shadow:
+      inset 0 1px 3px rgb(0, 0, 0, 0.1),
+      var(--shadow-md);
+  }
+
+  .assistant-bubble {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+/* Hack theme enhancements */
+[data-hack-theme='active'] .assistant-bubble {
+  background: var(--hack-bg);
+  border-color: var(--hack-border);
+  box-shadow: 0 0 20px var(--hack-shadow-color);
+}
+
+[data-hack-theme='active'] .assistant-prefix {
+  color: var(--hack-color);
+  background: rgb(0, 255, 65, 0.1);
+  border-color: var(--hack-border);
+  text-shadow: 0 0 8px var(--hack-shadow-color);
+}
+
+[data-hack-theme='active'] .assistant-code,
+[data-hack-theme='active'] .assistant-markdown-wrapper pre,
+[data-hack-theme='active'] pre.assistant-code {
+  background: var(--hack-bg);
+  border-color: var(--hack-border);
+  box-shadow:
+    inset 0 1px 3px rgb(0, 255, 65, 0.2),
+    0 0 15px var(--hack-shadow-color);
+}
+
+/* Undertale theme enhancements */
+[data-theme='undertale'] .assistant-bubble {
+  background: #1a1a1a;
+  border-color: #ff0;
+  box-shadow: 0 0 20px rgb(255, 255, 0, 0.3);
+}
+
+[data-theme='undertale'] .assistant-prefix {
+  color: #ff0;
+  background: rgb(255, 255, 0, 0.1);
+  border-color: #ff0;
+  text-shadow: 0 0 8px rgb(255, 255, 0, 0.6);
+}
+
+[data-theme='undertale'] .assistant-code,
+[data-theme='undertale'] .assistant-markdown-wrapper pre,
+[data-theme='undertale'] pre.assistant-code {
+  background: #000;
+  border-color: #ff0;
+  box-shadow:
+    inset 0 1px 3px rgb(255, 255, 0, 0.2),
+    0 0 15px rgb(255, 255, 0, 0.3);
+}
+
+/* ===========================================
+   TERMINAL GAMES STYLING
+   =========================================== */
+
+/* DOOM Game ASCII Art Styling */
+.terminal-output-line:has-text('DOOM'),
+.terminal-output-line:has-text('████'),
+.terminal-output-line:has-text('▓▓'),
+.terminal-output-line:has-text('━━') {
+  font-family: var(--terminal-font);
+  font-weight: var(--terminal-font-weight-bold);
+  letter-spacing: -0.05em;
+  line-height: 1.2;
+}
+
+/* Game frames and borders */
+.terminal-output-line:has-text('┌─'),
+.terminal-output-line:has-text('└─'),
+.terminal-output-line:has-text('│') {
+  color: var(--color-accent);
+  font-weight: var(--terminal-font-weight-bold);
+  text-shadow: 0 0 6px rgb(var(--color-accent-rgb), 0.4);
+}
+
+/* Game title styling */
+.terminal-output-line:has-text('DOOM v1.0'),
+.terminal-output-line:has-text('Terminal Edition') {
+  color: var(--color-error);
+  font-weight: var(--terminal-font-weight-extrabold);
+  text-shadow: 0 0 8px rgb(255, 123, 114, 0.6);
+  text-align: center;
+}
+
+/* Game loading bars */
+.terminal-output-line:has-text('████████████████████') {
+  color: var(--color-success);
+  text-shadow: 0 0 6px rgb(86, 211, 100, 0.4);
+}
+
+/* ASCII art characters */
+.terminal-output-line:has-text('💀'),
+.terminal-output-line:has-text('👹'),
+.terminal-output-line:has-text('🔫'),
+.terminal-output-line:has-text('💥') {
+  font-size: 1.1em;
+  filter: drop-shadow(0 0 4px currentColor);
+}
+
+/* Game stats and health bars */
+.terminal-output-line:has-text('HP:'),
+.terminal-output-line:has-text('ARMOR:'),
+.terminal-output-line:has-text('VIDA:') {
+  color: var(--color-warning);
+  font-weight: var(--terminal-font-weight-bold);
+}
+
+/* Victory/Achievement styling */
+.terminal-output-line:has-text('VICTORY!'),
+.terminal-output-line:has-text('ACHIEVEMENTS'),
+.terminal-output-line:has-text('🏆') {
+  color: var(--color-success);
+  font-weight: var(--terminal-font-weight-bold);
+  text-shadow: 0 0 8px rgb(86, 211, 100, 0.6);
+}
+
+/* Game over styling */
+.terminal-output-line:has-text('Game Over'),
+.terminal-output-line:has-text('RIP AND TEAR') {
+  color: var(--color-error);
+  font-weight: var(--terminal-font-weight-bold);
+  text-shadow: 0 0 8px rgb(255, 123, 114, 0.6);
+}
+
+/* Enhanced monospace for game content */
+.terminal-output-line:has-text('▓'),
+.terminal-output-line:has-text('░'),
+.terminal-output-line:has-text('█'),
+.terminal-output-line:has-text('♦') {
+  font-family: var(--terminal-font);
+  letter-spacing: -0.1em;
+  font-size: 0.95em;
+  line-height: 1.1;
+}

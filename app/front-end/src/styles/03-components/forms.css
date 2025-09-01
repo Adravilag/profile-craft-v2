@@ -1,0 +1,9 @@
+/* Placeholder: estilos para formularios. Evita archivo vacío que rompe postcss durante el build. */
+
+.form-row {
+  display: flex;
+  gap: 0.5rem;
+}
+.form-control {
+  width: 100%;
+}

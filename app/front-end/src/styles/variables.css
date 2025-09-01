@@ -1,0 +1,432 @@
+/* variables.css - Design Token System - Terminal Visual Improvements */
+:root {
+  /* ===========================================
+     TYPOGRAPHY SYSTEM - ENHANCED
+     =========================================== */
+
+  /* Font Families - Optimized for terminal and general use */
+  --font-mono:
+    'JetBrains Mono', 'Fira Code', 'SF Mono', 'Monaco', 'Cascadia Code', 'Consolas', 'Courier New',
+    monospace;
+  --font-sans:
+    'Poppins', 'Inter', -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, 'Helvetica Neue',
+    arial, sans-serif;
+  --font-system:
+    -apple-system, blinkmacsystemfont, 'Segoe UI', roboto, 'Helvetica Neue', arial, sans-serif;
+
+  /* Font Weights - Extended range for better typography hierarchy */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  /* Font Sizes - Responsive scale with better hierarchy */
+  --text-xs: clamp(10px, 0.625rem + 0.1vw, 11px); /* 10-11px */
+  --text-sm: clamp(11px, 0.75rem + 0.1vw, 12px); /* 11-12px */
+  --text-base: clamp(13px, 0.875rem + 0.15vw, 14px); /* 13-14px */
+  --text-lg: clamp(15px, 1rem + 0.2vw, 16px); /* 15-16px */
+  --text-xl: clamp(17px, 1.125rem + 0.25vw, 18px); /* 17-18px */
+  --text-2xl: clamp(19px, 1.25rem + 0.3vw, 20px); /* 19-20px */
+  --text-3xl: clamp(21px, 1.375rem + 0.35vw, 22px); /* 21-22px */
+
+  /* Line Heights - Optimized for different content types */
+  --leading-none: 1;
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+
+  /* Terminal-specific typography enhancements */
+  --terminal-font-size-sm: var(--text-sm);
+  --terminal-font-size-base: var(--text-base);
+  --terminal-font-size-lg: var(--text-lg);
+  --terminal-line-height-tight: var(--leading-tight);
+  --terminal-line-height-normal: var(--leading-normal);
+  --terminal-line-height-relaxed: var(--leading-relaxed);
+
+  /* Letter spacing for improved readability */
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+
+  /* ===========================================
+     COLOR SYSTEM - DARK THEME (DEFAULT)
+     =========================================== */
+
+  /* Primary Colors - Enhanced for better contrast and readability */
+  --color-primary: #f0f6fc; /* Brighter white for better contrast (>8:1) */
+  --color-secondary: #8b949e; /* Improved secondary text (>4.5:1) */
+  --color-accent: #58a6ff; /* Bright blue for text visibility (>4.5:1) */
+  --color-success: #56d364; /* Bright green for text visibility (>4.5:1) */
+  --color-warning: #f2cc60; /* Brighter yellow for better text contrast (>4.5:1) */
+  --color-error: #ff7b72; /* Bright red for text visibility (>4.5:1) */
+
+  /* Button Colors - Darker variants for better white text contrast */
+  --color-accent-button: #1f6feb; /* Darker blue for buttons with white text */
+  --color-success-button: #238636; /* Darker green for buttons with white text */
+  --color-warning-button: #9a6700; /* Darker yellow for buttons with white text */
+  --color-error-button: #da3633; /* Darker red for buttons with white text */
+
+  /* Background Colors - Refined for better depth and hierarchy */
+  --bg-primary: #0d1117; /* Deep dark base */
+  --bg-secondary: #161b22; /* Slightly elevated surface */
+  --bg-tertiary: #21262d; /* Input fields and deeper elements */
+  --bg-elevated: #30363d; /* Cards and modals */
+  --bg-overlay: rgb(13, 17, 23, 0.85); /* Improved overlay opacity */
+
+  /* Border Colors - Enhanced for better definition */
+  --border-primary: #30363d; /* Main borders */
+  --border-secondary: #21262d; /* Subtle borders */
+  --border-accent: #58a6ff; /* Interactive borders */
+  --border-muted: #21262d; /* Very subtle borders */
+
+  /* Text Colors - Optimized for readability */
+  --text-primary: #f0f6fc; /* Main text - excellent contrast */
+  --text-secondary: #8b949e; /* Secondary text - good contrast */
+  --text-muted: #7d8590; /* Muted text - minimum AA compliance */
+  --text-inverse: #1f2328; /* Text on light backgrounds */
+
+  /* ====== MD3 Compat Aliases (used by ExperienceSection) ====== */
+  --md-primary: var(--color-accent);
+  --md-primary-ctr: #cddfff;
+  --md-info: #60a5fa;
+  --md-teal: #2dd4bf;
+
+  --md-surface-1: var(--bg-secondary);
+  --md-surface-2: var(--bg-tertiary);
+  --md-outline: var(--border-primary);
+  --md-outline-weak: var(--border-muted);
+  --md-on-surface: var(--text-primary);
+  --md-on-variant: var(--text-secondary);
+
+  /* Legacy MD3 Colors for Compatibility - Updated for better contrast */
+  --md-sys-color-primary: var(--color-accent);
+  --md-sys-color-on-primary: var(--bg-primary);
+  --md-sys-color-primary-container: #1c2d41; /* Darker container for better contrast */
+  --md-sys-color-on-primary-container: #d6e8ff; /* Brighter text on container */
+  --md-sys-color-secondary: var(--color-secondary);
+  --md-sys-color-on-secondary: #1f2328; /* Better contrast on secondary */
+  --md-sys-color-secondary-container: #2d3748; /* Enhanced container color */
+  --md-sys-color-on-secondary-container: #e2e8f0; /* Better text contrast */
+  --md-sys-color-tertiary: #e2a6b3; /* Improved tertiary color */
+  --md-sys-color-on-tertiary: #2d1b20; /* Better contrast on tertiary */
+  --md-sys-color-tertiary-container: #3d2832; /* Enhanced container */
+  --md-sys-color-on-tertiary-container: #ffd9e2; /* Better text contrast */
+  --md-sys-color-error: var(--color-error);
+  --md-sys-color-on-error: #1a0002; /* Better contrast on error */
+  --md-sys-color-error-container: #4a0e15; /* Enhanced error container */
+  --md-sys-color-on-error-container: #ffdad8; /* Better text contrast */
+  --md-sys-color-surface: var(--bg-primary);
+  --md-sys-color-on-surface: var(--text-primary);
+  --md-sys-color-surface-variant: #30363d; /* Better aligned with design system */
+  --md-sys-color-on-surface-variant: var(--text-secondary);
+  --md-sys-color-outline: #8b949e; /* Improved outline color */
+  --md-sys-color-outline-variant: #30363d; /* Consistent with surface variant */
+  --md-sys-color-surface-dim: #0d1117; /* Consistent with primary bg */
+  --md-sys-color-surface-bright: #21262d; /* Better brightness level */
+  --md-sys-color-surface-tint: var(--md-sys-color-primary);
+  --md-sys-color-inverse-surface: #f0f6fc; /* Updated to match new primary */
+  --md-sys-color-inverse-on-surface: #1f2328; /* Better contrast */
+  --md-sys-color-inverse-primary: #0969da; /* Light theme accent */
+  --md-sys-color-warning: var(--color-warning);
+  --md-sys-color-on-warning: #1f1611; /* Better contrast on warning */
+  --md-sys-color-warning-container: #2d1f0a; /* Enhanced warning container */
+  --md-sys-color-on-warning-container: #f7e6a1; /* Better text contrast */
+  --md-sys-color-success: var(--color-success);
+  --md-sys-color-on-success: #0a2e1a; /* Better contrast on success */
+  --md-sys-color-success-container: #0d3d21; /* Enhanced success container */
+  --md-sys-color-on-success-container: #b8f5c8; /* Better text contrast */
+  --md-sys-color-info: #58a6ff; /* Consistent with accent */
+  --md-sys-color-on-info: #0d1829; /* Better contrast on info */
+  --md-sys-color-info-container: #1c2d41; /* Enhanced info container */
+  --md-sys-color-on-info-container: #d6e8ff; /* Better text contrast */
+  --md-sys-color-surface-container: var(--bg-secondary);
+  --md-sys-color-surface-container-high: var(--bg-tertiary); /* Better hierarchy */
+  --md-sys-color-surface-container-highest: var(--bg-elevated); /* Consistent elevation */
+  --md-sys-color-surface-container-low: #161b22; /* Between primary and secondary */
+  --md-sys-color-surface-container-lowest: #0d1117; /* Same as primary for consistency */
+
+  /* ====== Experience Section Semantic Tokens ====== */
+  --exp-bg: var(--bg-primary);
+  --exp-card: #0f141d;
+  --exp-card-2: #0c121c;
+  --exp-surface: var(--bg-secondary);
+  --exp-on: var(--text-primary);
+  --exp-muted: var(--text-secondary);
+  --exp-line: #243244;
+  --exp-line-2: #2d3c52;
+  --exp-primary: #7c8dff; /* purple-blue accent used in screenshot */
+
+  /* ===========================================
+     SPACING SYSTEM
+     =========================================== */
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* ===========================================
+     BORDER RADIUS SYSTEM
+     =========================================== */
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 18px;
+  --radius-full: 9999px;
+
+  /* ===========================================
+     SHADOW SYSTEM
+     =========================================== */
+
+  --shadow-sm: 0 1px 2px rgb(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgb(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px rgb(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgb(0, 0, 0, 0.15);
+  --shadow-2xl: 0 25px 50px rgb(0, 0, 0, 0.25);
+
+  /* Elevations used as variables in the section CSS */
+  --elev-1: var(--shadow-sm);
+  --elev-2: var(--shadow-md);
+  --elev-3: var(--shadow-lg);
+  --elev-4: var(--shadow-xl);
+
+  /* ===========================================
+     ANIMATION SYSTEM
+     =========================================== */
+
+  /* Motion */
+  --curve: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Timing Functions */
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Durations */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+
+  /* ===========================================
+     INTERACTIVE STATES
+     =========================================== */
+
+  /* State layers */
+  --state-layer-hover: rgb(68, 147, 248, 0.08);
+  --state-layer-focus: rgb(68, 147, 248, 0.12);
+  --state-layer-pressed: rgb(68, 147, 248, 0.12);
+  --state-layer-selected: rgb(68, 147, 248, 0.16);
+  --state-layer-disabled: rgb(255, 255, 255, 0.12);
+  --state-layer-dragged: rgb(68, 147, 248, 0.2);
+
+  /* ===========================================
+     ELEVATION SYSTEM (LEGACY MD3 COMPATIBILITY)
+     =========================================== */
+
+  --md-elevation-1: var(--shadow-sm);
+  --md-elevation-2: var(--shadow-md);
+  --md-elevation-3: var(--shadow-lg);
+  --md-elevation-4: var(--shadow-xl);
+  --md-elevation-5: var(--shadow-2xl);
+  --md-elevation-6: var(--shadow-2xl);
+
+  /* ===========================================
+     SEMANTIC ALIASES
+     =========================================== */
+
+  --surface-color: var(--bg-primary);
+  --background-color: var(--bg-primary);
+
+  /* ===========================================
+     GLOW EFFECTS - Updated to match new color system
+     =========================================== */
+
+  --glow-primary: 0 0 20px rgb(88, 166, 255, 0.3); /* Updated to match accent */
+  --glow-secondary: 0 0 15px rgb(139, 148, 158, 0.2); /* Updated to match secondary */
+  --glow-success: 0 0 20px rgb(86, 211, 100, 0.3); /* Updated to match success */
+  --glow-warning: 0 0 20px rgb(242, 204, 96, 0.3); /* Updated to match warning */
+  --glow-error: 0 0 20px rgb(255, 123, 114, 0.3); /* Updated to match error */
+
+  /* ===========================================
+     LEGACY MD3 SPACING (COMPATIBILITY)
+     =========================================== */
+
+  --md-sys-spacing-xs: var(--space-1);
+  --md-sys-spacing-sm: var(--space-2);
+  --md-sys-spacing-md: var(--space-4);
+  --md-sys-spacing-lg: var(--space-6);
+  --md-sys-spacing-xl: var(--space-8);
+  --md-sys-spacing-xxl: var(--space-12);
+  --md-sys-spacing-xxxl: var(--space-16);
+  --md-comp-fab-container-width: 56px;
+  --md-comp-fab-container-height: 56px;
+  --md-comp-fab-small-container-width: 40px;
+  --md-comp-fab-small-container-height: 40px;
+  --md-comp-fab-large-container-width: 96px;
+  --md-comp-fab-large-container-height: 96px;
+  --md-comp-button-container-height: 40px;
+  --md-comp-chip-container-height: 32px;
+  --md-comp-list-item-container-height: 56px;
+  --md-comp-menu-item-container-height: 48px;
+  --md-sys-z-index-modal: 1000;
+  --md-sys-z-index-dropdown: 900;
+  --md-sys-z-index-sticky: 800;
+  --md-sys-z-index-fixed: 700;
+  --md-sys-z-index-overlay: 600;
+  --md-sys-z-index-fab: 500;
+  --md-sys-z-index-drawer: 400;
+  --md-sys-z-index-appbar: 300;
+  --md-sys-opacity-disabled: 0.38;
+  --md-sys-opacity-secondary: 0.6;
+  --md-sys-opacity-medium: 0.74;
+  --md-sys-opacity-high: 0.87;
+  --md-sys-opacity-full: 1;
+
+  /* ===========================================
+     LEGACY MD3 MOTION (COMPATIBILITY)
+     =========================================== */
+
+  --md-sys-motion-duration-short: var(--duration-fast);
+  --md-sys-motion-duration-medium: var(--duration-normal);
+  --md-sys-motion-duration-long: var(--duration-slow);
+  --md-sys-motion-duration-short1: 50ms;
+  --md-sys-motion-duration-short2: 100ms;
+  --md-sys-motion-duration-short3: var(--duration-fast);
+  --md-sys-motion-duration-short4: 200ms;
+  --md-sys-motion-duration-medium1: var(--duration-normal);
+  --md-sys-motion-duration-medium2: 300ms;
+  --md-sys-motion-duration-medium3: var(--duration-slow);
+  --md-sys-motion-duration-medium4: 400ms;
+  --md-sys-motion-duration-long1: 450ms;
+  --md-sys-motion-duration-long2: 500ms;
+  --md-sys-motion-duration-long3: 550ms;
+  --md-sys-motion-duration-long4: 600ms;
+  --md-sys-motion-easing-linear: cubic-bezier(0, 0, 1, 1);
+  --md-sys-motion-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --md-sys-motion-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* ===========================================
+     TRANSFORM UTILITIES
+     =========================================== */
+
+  --hover-transform: translateY(-2px);
+  --hover-scale: scale(1.02);
+  --press-transform: translateY(0px);
+  --press-scale: scale(0.98);
+
+  /* ===========================================
+     MODAL SYSTEM (LEGACY COMPATIBILITY)
+     =========================================== */
+
+  --modal-overlay-bg: rgb(13, 17, 23, 0.8);
+  --modal-content-bg: var(--bg-elevated);
+  --modal-border-color: var(--border-accent);
+  --modal-header-bg: linear-gradient(90deg, var(--color-accent) 0%, #8b5cf6 100%);
+  --modal-text-primary: var(--text-primary);
+  --modal-text-secondary: var(--text-secondary);
+  --modal-text-light: var(--text-muted);
+  --modal-input-bg: var(--bg-tertiary);
+  --modal-input-border: var(--border-accent);
+  --modal-input-focus: #8b5cf6;
+  --modal-btn-primary: linear-gradient(90deg, var(--color-accent) 0%, #8b5cf6 100%);
+  --modal-btn-secondary-bg: var(--bg-tertiary);
+  --modal-btn-secondary-border: var(--border-accent);
+  --modal-filter-bg: #374151;
+  --modal-filter-border: #4b5563;
+  --modal-filter-active: linear-gradient(135deg, #8b5cf6 0%, var(--color-accent) 100%);
+  --modal-dropdown-bg: var(--bg-tertiary);
+  --modal-dropdown-border: #8b5cf6;
+  --modal-z-index: 1000;
+  --modal-dropdown-z-index: 99999;
+  --modal-dropdown-container-z-index: 10000;
+  --modal-padding: var(--space-6);
+  --modal-gap: var(--space-3);
+  --modal-border-radius: var(--radius-2xl);
+  --modal-small-radius: var(--radius-lg);
+}
+
+/* ===========================================
+   LIGHT THEME OVERRIDES
+   =========================================== */
+
+@media (prefers-color-scheme: light) {
+  :root {
+    /* Primary Colors - Enhanced for better contrast in light theme */
+    --color-primary: #1f2328; /* Dark text for excellent contrast (>12:1) */
+    --color-secondary: #656d76; /* Secondary text with good contrast (>7:1) */
+    --color-accent: #0969da; /* Blue with excellent contrast (>7:1) */
+    --color-success: #1a7f37; /* Green with good contrast (>4.5:1) */
+    --color-warning: #9a6700; /* Darker yellow for better contrast (>4.5:1) */
+    --color-error: #cf222e; /* Red with excellent contrast (>7:1) */
+
+    /* Button Colors - Same as text colors since they work well in light theme */
+    --color-accent-button: #0969da; /* Blue buttons with white text */
+    --color-success-button: #1a7f37; /* Green buttons with white text */
+    --color-warning-button: #9a6700; /* Yellow buttons with white text */
+    --color-error-button: #cf222e; /* Red buttons with white text */
+
+    /* Background Colors - Clean and accessible */
+    --bg-primary: #fff; /* Pure white base */
+    --bg-secondary: #f6f8fa; /* Very light gray for cards */
+    --bg-tertiary: #f6f8fa; /* Lighter gray for better contrast */
+    --bg-elevated: #fff; /* White for elevated elements */
+    --bg-overlay: rgb(255, 255, 255, 0.9); /* Improved overlay opacity */
+
+    /* Border Colors - Subtle but defined */
+    --border-primary: #d0d7de; /* Main borders with good contrast */
+    --border-secondary: #d8dee4; /* Subtle borders */
+    --border-accent: #0969da; /* Interactive borders */
+    --border-muted: #d8dee4; /* Very subtle borders */
+
+    /* Text Colors - Optimized for light backgrounds */
+    --text-primary: #1f2328; /* Main text - excellent contrast */
+    --text-secondary: #656d76; /* Secondary text - good contrast */
+    --text-muted: #6e7781; /* Muted text - AA compliant */
+    --text-inverse: #fff; /* Text on dark backgrounds */
+
+    /* State layers for light theme - Enhanced for better visibility */
+    --state-layer-hover: rgb(9, 105, 218, 0.08);
+    --state-layer-focus: rgb(9, 105, 218, 0.12);
+    --state-layer-pressed: rgb(9, 105, 218, 0.16); /* Slightly stronger for better feedback */
+    --state-layer-selected: rgb(9, 105, 218, 0.12); /* Adjusted for better balance */
+    --state-layer-disabled: rgb(0, 0, 0, 0.06); /* Lighter for better aesthetics */
+    --state-layer-dragged: rgb(9, 105, 218, 0.2);
+
+    /* Glow effects for light theme - Subtle but visible */
+    --glow-primary: 0 0 20px rgb(9, 105, 218, 0.15); /* Matches accent color */
+    --glow-secondary: 0 0 15px rgb(101, 109, 118, 0.1); /* Matches secondary color */
+    --glow-success: 0 0 20px rgb(26, 127, 55, 0.15); /* Matches success color */
+    --glow-warning: 0 0 20px rgb(154, 103, 0, 0.15); /* Matches warning color */
+    --glow-error: 0 0 20px rgb(207, 34, 46, 0.15); /* Matches error color */
+
+    /* Shadow adjustments for light theme */
+    --shadow-sm: 0 1px 2px rgb(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgb(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgb(0, 0, 0, 0.15);
+    --shadow-xl: 0 20px 25px rgb(0, 0, 0, 0.2);
+    --shadow-2xl: 0 25px 50px rgb(0, 0, 0, 0.3);
+
+    /* Modal adjustments for light theme - Enhanced consistency */
+    --modal-overlay-bg: rgb(255, 255, 255, 0.9); /* Better opacity for readability */
+    --modal-content-bg: var(--bg-elevated);
+    --modal-filter-bg: var(--bg-tertiary); /* Consistent with design system */
+    --modal-filter-border: var(--border-primary); /* Consistent border colors */
+    --modal-input-bg: var(--bg-tertiary); /* Consistent input styling */
+    --modal-input-border: var(--border-accent); /* Consistent accent usage */
+  }
+}

@@ -1,0 +1,107 @@
+.toolbarContainer {
+  position: sticky;
+  top: var(--navbar-height, 60px); /* Se fija debajo del navbar */
+  z-index: 1010; /* Por encima de otros elementos pero debajo de modales */
+  background: var(--md-sys-color-surface-container-high);
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  backdrop-filter: blur(12px);
+  padding: 12px 24px;
+  transition: top 0.3s ease-in-out;
+}
+
+.toolbarContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.filterGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.featuredButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: var(--md-sys-color-surface-variant);
+  color: var(--md-sys-color-on-surface-variant);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-weight: 600;
+}
+
+.featuredButton:hover {
+  background-color: var(--md-sys-color-secondary-container);
+  transform: translateY(-1px);
+}
+
+.featuredButton.active {
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  border-color: var(--md-sys-color-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.featuredButton.active i {
+  color: var(--md-sys-color-on-primary);
+}
+
+.sortControls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.sortLabel {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.sortButtons {
+  display: flex;
+  gap: 8px;
+  background-color: var(--md-sys-color-surface-container);
+  padding: 4px;
+  border-radius: 16px;
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 12px;
+  border: none;
+  background-color: transparent;
+  color: var(--md-sys-color-on-surface-variant);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.85rem;
+}
+
+.sortButton:hover {
+  background-color: var(--md-sys-color-surface-variant);
+}
+
+.sortButton.active {
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  font-weight: 600;
+}
+
+.sortButton i {
+  font-size: 0.9em;
+  transition: transform 0.2s;
+}
+
+.sortButton.active i:last-child {
+  transform: scale(1.1);
+}

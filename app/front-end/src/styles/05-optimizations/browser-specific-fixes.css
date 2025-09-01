@@ -1,0 +1,548 @@
+/* stylelint-disable */
+/* Browser-Specific Fixes */
+
+/* Terminal Visual Improvements - Task 15 */
+
+/* ===========================================
+   INTERNET EXPLORER 11 FIXES
+   =========================================== */
+
+/* IE11 detection using CSS hacks */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  /* Fix flexbox issues in IE11 */
+  .ie11-flex-container {
+    display: flexbox;
+    display: flex;
+  }
+
+  .ie11-flex-item {
+    flex: 1 1 auto;
+
+    /* Fix min-height issue in IE11 */
+    min-height: 1px;
+  }
+
+  /* Fix CSS Grid fallback for IE11 */
+  .ie11-grid-container {
+    display: grid;
+    -ms-grid-columns: 1fr 1fr 1fr;
+    -ms-grid-rows: auto;
+  }
+
+  .ie11-grid-item:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .ie11-grid-item:nth-child(2) {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .ie11-grid-item:nth-child(3) {
+    grid-column: 3;
+    grid-row: 1;
+  }
+
+  /* Fix viewport units in IE11 */
+  .ie11-viewport-fix {
+    height: 100vh;
+    height: expression(document.documentelement.clientheight + 'px');
+  }
+
+  /* Fix CSS custom properties fallback */
+  .ie11-color-fallback {
+    color: #f0f6fc !important;
+    background-color: #0d1117 !important;
+  }
+
+  /* Fix transform issues */
+  .ie11-transform-fix {
+    transform: translateY(-2px);
+
+    /* Force hardware acceleration */
+    transform: translateZ(0);
+    transform: translateZ(0);
+  }
+}
+
+/* ===========================================
+   SAFARI FIXES
+   =========================================== */
+
+/* Safari detection using CSS hacks */
+@media not all and (min-resolution: 0.001dpcm) {
+  @supports (-webkit-appearance: none) {
+    /* Fix transform flickering in Safari */
+    .safari-transform-fix {
+      transform: translateZ(0);
+      backface-visibility: hidden;
+      perspective: 1000;
+    }
+
+    /* Fix flexbox issues in older Safari */
+    .safari-flex-fix {
+      flex-grow: 1;
+      flex: 1;
+
+      /* Fix flex-shrink issue */
+      flex-shrink: 1;
+    }
+
+    /* Fix sticky positioning in Safari */
+    .safari-sticky-fix {
+      position: sticky;
+
+      /* Force layer creation */
+      transform: translateZ(0);
+    }
+
+    /* Fix backdrop-filter performance */
+    .safari-backdrop-fix {
+      backdrop-filter: blur(10px);
+
+      /* Improve performance */
+      will-change: backdrop-filter;
+    }
+
+    /* Fix font rendering */
+    .safari-font-fix {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+
+      /* Fix font weight rendering */
+      font-feature-settings: 'liga' 1;
+    }
+  }
+}
+
+/* Safari iOS specific fixes */
+@supports (-webkit-touch-callout: none) {
+  /* Fix viewport height on mobile Safari */
+  .safari-ios-viewport-fix {
+    height: 100vh;
+    height: -webkit-fill-available;
+  }
+
+  /* Fix touch scrolling */
+  .safari-ios-scroll-fix {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+  }
+
+  /* Fix input zoom on focus */
+  .safari-ios-input-fix {
+    font-size: 16px; /* Prevent zoom on focus */
+  }
+
+  /* Fix button appearance */
+  .safari-ios-button-fix {
+    appearance: none;
+    border-radius: 0;
+  }
+}
+
+/* ===========================================
+   FIREFOX FIXES
+   =========================================== */
+
+/* Firefox detection using CSS hacks */
+@document url-prefix() {
+  /* Fix flexbox min-height issue */
+  .firefox-flex-fix {
+    min-height: 0;
+  }
+
+  /* Fix CSS Grid gap issue in older Firefox */
+  .firefox-grid-fix {
+    /* Use margin instead of gap for older Firefox */
+    gap: 0;
+  }
+
+  .firefox-grid-fix > * {
+    margin: 8px;
+  }
+
+  /* Fix transform performance */
+  .firefox-transform-fix {
+    will-change: transform;
+  }
+
+  /* Fix scrollbar styling */
+  .firefox-scrollbar-fix {
+    scrollbar-width: thin;
+    scrollbar-color: #30363d #161b22;
+  }
+
+  /* Fix font rendering */
+  .firefox-font-fix {
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ===========================================
+   EDGE LEGACY FIXES
+   =========================================== */
+
+/* Edge Legacy detection */
+@supports (-ms-ime-align: auto) {
+  /* Fix CSS Grid issues */
+  .edge-grid-fix {
+    display: grid;
+    -ms-grid-columns: 1fr 1fr 1fr;
+    -ms-grid-rows: auto;
+  }
+
+  /* Fix flexbox issues */
+  .edge-flex-fix {
+    flex: 1 1 auto;
+  }
+
+  /* Fix transform issues */
+  .edge-transform-fix {
+    transform: translateY(-2px);
+  }
+
+  /* Fix custom properties fallback */
+  .edge-custom-properties-fix {
+    color: #f0f6fc;
+    background-color: #0d1117;
+  }
+}
+
+/* ===========================================
+   CHROME FIXES
+   =========================================== */
+
+/* Chrome-specific optimizations */
+@media screen and (min-device-pixel-ratio: 0) and (min-resolution: 0.001dpcm) {
+  /* Fix font rendering in Chrome */
+  .chrome-font-fix {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizelegibility;
+  }
+
+  /* Fix transform performance */
+  .chrome-transform-fix {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  /* Fix scrollbar styling */
+  .chrome-scrollbar-fix::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .chrome-scrollbar-fix::-webkit-scrollbar-track {
+    background: #161b22;
+    border-radius: 4px;
+  }
+
+  .chrome-scrollbar-fix::-webkit-scrollbar-thumb {
+    background: #30363d;
+    border-radius: 4px;
+  }
+
+  .chrome-scrollbar-fix::-webkit-scrollbar-thumb:hover {
+    background: #58a6ff;
+  }
+}
+
+/* ===========================================
+   MOBILE BROWSER FIXES
+   =========================================== */
+
+/* General mobile fixes */
+@media (max-width: 768px) {
+  /* Fix viewport height on mobile */
+  .mobile-viewport-fix {
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height */
+  }
+
+  /* Fix touch targets */
+  .mobile-touch-fix {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Fix font size adjustment */
+  .mobile-font-fix {
+    text-size-adjust: 100%;
+  }
+
+  /* Fix tap highlight */
+  .mobile-tap-fix {
+    -webkit-tap-highlight-color: transparent;
+    tap-highlight-color: transparent;
+  }
+}
+
+/* Android Chrome fixes */
+@media screen and (max-width: 768px) and (min-device-pixel-ratio: 1) {
+  /* Fix viewport units on Android */
+  .android-viewport-fix {
+    height: 100vh;
+    height: calc(100vh - env(keyboard-height, 0px));
+  }
+
+  /* Fix input focus zoom */
+  .android-input-fix {
+    font-size: 16px;
+    transform: scale(1);
+  }
+}
+
+/* ===========================================
+   HIGH CONTRAST MODE FIXES
+   =========================================== */
+
+/* Windows High Contrast Mode */
+@media screen and (-ms-high-contrast: active) {
+  .high-contrast-fix {
+    border: 2px solid windowText !important;
+    background: window !important;
+    color: CanvasText !important;
+  }
+
+  .high-contrast-button-fix {
+    border: 2px solid buttonText !important;
+    background: buttonFace !important;
+    color: buttonText !important;
+  }
+
+  .high-contrast-link-fix {
+    color: linkText !important;
+  }
+
+  .high-contrast-visited-fix {
+    color: visitedText !important;
+  }
+}
+
+/* CSS4 High Contrast */
+@media (prefers-contrast: high) {
+  .high-contrast-modern-fix {
+    border: 2px solid currentcolor;
+    background: transparent;
+    filter: contrast(2);
+  }
+}
+
+/* ===========================================
+   PRINT FIXES
+   =========================================== */
+
+@media print {
+  /* Fix colors in print */
+  .print-color-fix {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+
+  /* Fix page breaks */
+  .print-break-fix {
+    break-inside: avoid;
+  }
+
+  /* Hide interactive elements */
+  .print-hide-fix {
+    display: none !important;
+  }
+
+  /* Show print-only elements */
+  .print-show-fix {
+    display: block !important;
+  }
+}
+
+/* ===========================================
+   REDUCED MOTION FIXES
+   =========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Disable all animations and transitions */
+  .reduced-motion-fix,
+  .reduced-motion-fix *,
+  .reduced-motion-fix *::before,
+  .reduced-motion-fix *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ===========================================
+   FORCED COLORS MODE FIXES
+   =========================================== */
+
+@media (forced-colors: active) {
+  .forced-colors-fix {
+    forced-color-adjust: none;
+    border-color: ButtonText;
+    color: ButtonText;
+    background-color: ButtonFace;
+  }
+
+  .forced-colors-button-fix {
+    border-color: ButtonText;
+    background-color: ButtonFace;
+    color: ButtonText;
+  }
+
+  .forced-colors-link-fix {
+    color: LinkText;
+  }
+
+  .forced-colors-visited-fix {
+    color: VisitedText;
+  }
+}
+
+/* ===========================================
+   FEATURE DETECTION FALLBACKS
+   =========================================== */
+
+/* CSS Custom Properties fallback */
+.no-css-custom-properties {
+  /* Apply direct color values */
+  color: #f0f6fc;
+  background-color: #0d1117;
+}
+
+.no-css-custom-properties .accent-color {
+  color: #58a6ff;
+}
+
+.no-css-custom-properties .success-color {
+  color: #56d364;
+}
+
+.no-css-custom-properties .error-color {
+  color: #ff7b72;
+}
+
+.no-css-custom-properties .warning-color {
+  color: #f2cc60;
+}
+
+/* CSS Grid fallback */
+.no-css-grid .grid-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.no-css-grid .grid-item {
+  flex: 1 1 250px;
+  margin: 8px;
+}
+
+/* Flexbox fallback (for very old browsers) */
+.no-flexbox .flex-container {
+  display: table;
+  width: 100%;
+}
+
+.no-flexbox .flex-item {
+  display: table-cell;
+  vertical-align: top;
+}
+
+/* Backdrop filter fallback */
+.no-backdrop-filter .backdrop-element {
+  background-color: rgb(13, 17, 23, 0.95) !important;
+}
+
+/* Position sticky fallback */
+.no-position-sticky .sticky-element {
+  position: relative;
+}
+
+/* CSS Clamp fallback */
+.no-css-clamp .clamp-text-sm {
+  font-size: 12px;
+}
+
+.no-css-clamp .clamp-text-base {
+  font-size: 14px;
+}
+
+.no-css-clamp .clamp-text-lg {
+  font-size: 16px;
+}
+
+/* Viewport units fallback */
+.no-viewport-units .viewport-height {
+  height: 600px; /* Fixed fallback height */
+}
+
+.no-viewport-units .viewport-width {
+  width: 100%; /* Percentage fallback */
+}
+
+/* ===========================================
+   PERFORMANCE OPTIMIZATIONS
+   =========================================== */
+
+/* Hardware acceleration for transforms */
+.hardware-accelerated {
+  transform: translateZ(0);
+
+  /* Enable hardware acceleration */
+  backface-visibility: hidden;
+  perspective: 1000;
+}
+
+/* Optimize repaints */
+.optimized-repaint {
+  will-change: transform, opacity;
+}
+
+/* Remove will-change after animation */
+.animation-complete {
+  will-change: auto;
+}
+
+/* ===========================================
+   ACCESSIBILITY ENHANCEMENTS
+   =========================================== */
+
+/* Focus visible polyfill */
+.focus-visible-fix:focus:not(.focus-visible) {
+  outline: none;
+}
+
+.focus-visible-fix.focus-visible {
+  outline: 2px solid #58a6ff;
+  outline-offset: 2px;
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip links */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #58a6ff;
+  color: #0d1117;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 1000;
+}
+
+.skip-link:focus {
+  top: 6px;
+}

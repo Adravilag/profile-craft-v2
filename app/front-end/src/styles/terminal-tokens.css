@@ -1,0 +1,246 @@
+/* terminal-tokens.css - Design tokens specifically for terminal interface */
+
+:root {
+  /* ===========================================
+     TERMINAL-SPECIFIC DESIGN TOKENS
+     =========================================== */
+
+  /* Terminal Colors - Dark Theme */
+  --terminal-bg: var(--bg-primary);
+  --terminal-surface: var(--bg-secondary);
+  --terminal-border: var(--border-primary);
+  --terminal-text: var(--text-primary);
+  --terminal-text-muted: var(--text-secondary);
+  --terminal-prompt: var(--color-accent);
+  --terminal-command: var(--color-primary);
+  --terminal-output: var(--text-secondary);
+  --color-accent-rgb: 68, 147, 248; /* RGB values for accent color effects */
+  --terminal-error: var(--color-error);
+  --terminal-success: var(--color-success);
+  --terminal-warning: var(--color-warning);
+
+  /* Terminal Typography - Enhanced */
+  --terminal-font: var(--font-mono);
+  --terminal-font-size: var(--terminal-font-size-base);
+  --terminal-font-size-sm: var(--terminal-font-size-sm);
+  --terminal-font-size-lg: var(--terminal-font-size-lg);
+  --terminal-line-height: var(--terminal-line-height-normal);
+  --terminal-line-height-tight: var(--terminal-line-height-tight);
+  --terminal-line-height-relaxed: var(--terminal-line-height-relaxed);
+  --terminal-font-weight: var(--font-weight-normal);
+  --terminal-font-weight-medium: var(--font-weight-medium);
+  --terminal-font-weight-bold: var(--font-weight-bold);
+  --terminal-letter-spacing: var(--tracking-normal);
+  --terminal-letter-spacing-wide: var(--tracking-wide);
+
+  /* Terminal Spacing - Enhanced with consistent scale */
+  --terminal-padding-xs: var(--space-1);
+  --terminal-padding-sm: var(--space-2);
+  --terminal-padding-md: var(--space-4);
+  --terminal-padding-lg: var(--space-6);
+  --terminal-padding-xl: var(--space-8);
+  --terminal-gap-xs: var(--space-1);
+  --terminal-gap-sm: var(--space-2);
+  --terminal-gap-md: var(--space-3);
+  --terminal-gap-lg: var(--space-4);
+  --terminal-gap-xl: var(--space-6);
+  --terminal-margin-xs: var(--space-1);
+  --terminal-margin-sm: var(--space-2);
+  --terminal-margin-md: var(--space-4);
+  --terminal-margin-lg: var(--space-6);
+  --terminal-margin-xl: var(--space-8);
+  --terminal-line-spacing: var(--space-1);
+  --terminal-section-spacing: var(--space-3);
+  --terminal-component-spacing: var(--space-4);
+
+  /* Terminal layout spacing */
+  --terminal-header-padding: var(--terminal-padding-sm) var(--terminal-padding-md);
+  --terminal-body-padding: var(--terminal-padding-md);
+  --terminal-input-padding: var(--terminal-padding-sm) var(--terminal-padding-md);
+  --terminal-bubble-padding: var(--terminal-padding-md);
+  --terminal-controls-gap: var(--terminal-gap-sm);
+  --terminal-content-gap: var(--terminal-gap-md);
+
+  /* Terminal Interactive Elements */
+  --terminal-input-bg: transparent;
+  --terminal-input-border: transparent;
+  --terminal-input-focus: var(--color-accent);
+  --terminal-cursor: var(--color-accent);
+  --terminal-selection: rgb(68, 147, 248, 0.2);
+
+  /* Terminal Header */
+  --terminal-header-bg: var(--bg-tertiary);
+  --terminal-header-bg-rgb: 33, 38, 45; /* RGB values for backdrop filters */
+  --terminal-header-border: var(--border-primary);
+  --terminal-header-text: var(--text-primary);
+  --terminal-controls-hover: var(--state-layer-hover);
+
+  /* Terminal Scrollbar */
+  --terminal-scrollbar-track: var(--bg-secondary);
+  --terminal-scrollbar-thumb: var(--border-primary);
+  --terminal-scrollbar-thumb-hover: var(--color-accent);
+
+  /* Terminal Effects */
+  --terminal-glow: var(--glow-primary);
+  --terminal-shadow: var(--shadow-lg);
+  --terminal-radius: var(--radius-lg);
+
+  /* Terminal Animation */
+  --terminal-transition: var(--duration-normal) var(--ease-out);
+  --terminal-cursor-blink: 1s ease-in-out infinite alternate;
+
+  /* Terminal States */
+  --terminal-loading: var(--color-warning);
+  --terminal-typing: var(--color-accent);
+  --terminal-complete: var(--color-success);
+}
+
+/* Light theme overrides for terminal */
+@media (prefers-color-scheme: light) {
+  :root {
+    --terminal-bg: var(--bg-primary);
+    --terminal-surface: var(--bg-secondary);
+    --terminal-border: var(--border-primary);
+    --terminal-text: var(--text-primary);
+    --terminal-text-muted: var(--text-secondary);
+    --terminal-prompt: var(--color-accent);
+    --terminal-command: var(--text-primary);
+    --terminal-output: var(--text-secondary);
+    --terminal-selection: rgb(9, 105, 218, 0.2);
+    --terminal-header-bg: var(--bg-tertiary);
+    --terminal-header-bg-rgb: 234, 238, 242; /* Light theme RGB values */
+    --terminal-scrollbar-track: var(--bg-secondary);
+    --terminal-scrollbar-thumb: var(--border-primary);
+    --terminal-scrollbar-thumb-hover: var(--color-accent);
+    --color-accent-rgb: 9, 105, 218; /* Light theme accent RGB */
+  }
+}
+
+/* ===========================================
+   TERMINAL THEME VARIANTS
+   =========================================== */
+
+/* Hack Theme */
+[data-theme='hack'] {
+  --terminal-bg: #000;
+  --terminal-surface: #0a0a0a;
+  --terminal-border: #0f0;
+  --terminal-text: #0f0;
+  --terminal-text-muted: #080;
+  --terminal-prompt: #0f0;
+  --terminal-command: #0f0;
+  --terminal-output: #0c0;
+  --terminal-cursor: #0f0;
+  --terminal-selection: rgb(0, 255, 0, 0.2);
+  --terminal-glow: 0 0 20px rgb(0, 255, 0, 0.3);
+  --terminal-header-bg: #0a0a0a;
+  --terminal-header-border: #0f0;
+}
+
+/* Undertale Theme */
+[data-theme='undertale'] {
+  --terminal-bg: #000;
+  --terminal-surface: #1a1a1a;
+  --terminal-border: #ff0;
+  --terminal-text: #fff;
+  --terminal-text-muted: #ccc;
+  --terminal-prompt: #ff0;
+  --terminal-command: #fff;
+  --terminal-output: #ccc;
+  --terminal-cursor: #ff0;
+  --terminal-selection: rgb(255, 255, 0, 0.2);
+  --terminal-glow: 0 0 20px rgb(255, 255, 0, 0.3);
+  --terminal-header-bg: #1a1a1a;
+  --terminal-header-border: #ff0;
+}
+
+/* ===========================================
+   TERMINAL UTILITY CLASSES
+   =========================================== */
+
+/* Enhanced terminal typography utility classes */
+.terminal-font {
+  font-family: var(--terminal-font);
+  font-size: var(--terminal-font-size);
+  line-height: var(--terminal-line-height);
+  font-weight: var(--terminal-font-weight);
+  letter-spacing: var(--terminal-letter-spacing);
+  font-feature-settings:
+    'liga' 1,
+    'calt' 1; /* Enable ligatures for code fonts */
+  font-variant-ligatures: common-ligatures;
+}
+
+.terminal-font-sm {
+  font-family: var(--terminal-font);
+  font-size: var(--terminal-font-size-sm);
+  line-height: var(--terminal-line-height-tight);
+  font-weight: var(--terminal-font-weight);
+  letter-spacing: var(--terminal-letter-spacing);
+}
+
+.terminal-font-lg {
+  font-family: var(--terminal-font);
+  font-size: var(--terminal-font-size-lg);
+  line-height: var(--terminal-line-height-relaxed);
+  font-weight: var(--terminal-font-weight);
+  letter-spacing: var(--terminal-letter-spacing);
+}
+
+.terminal-font-medium {
+  font-family: var(--terminal-font);
+  font-size: var(--terminal-font-size);
+  line-height: var(--terminal-line-height);
+  font-weight: var(--terminal-font-weight-medium);
+  letter-spacing: var(--terminal-letter-spacing);
+}
+
+.terminal-font-bold {
+  font-family: var(--terminal-font);
+  font-size: var(--terminal-font-size);
+  line-height: var(--terminal-line-height);
+  font-weight: var(--terminal-font-weight-bold);
+  letter-spacing: var(--terminal-letter-spacing-wide);
+}
+
+.terminal-text {
+  color: var(--terminal-text);
+}
+
+.terminal-prompt {
+  color: var(--terminal-prompt);
+}
+
+.terminal-command {
+  color: var(--terminal-command);
+}
+
+.terminal-output {
+  color: var(--terminal-output);
+}
+
+.terminal-error {
+  color: var(--terminal-error);
+}
+
+.terminal-success {
+  color: var(--terminal-success);
+}
+
+.terminal-warning {
+  color: var(--terminal-warning);
+}
+
+.terminal-cursor {
+  color: var(--terminal-cursor);
+  animation: var(--terminal-cursor-blink);
+}
+
+@keyframes terminal-cursor-blink {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

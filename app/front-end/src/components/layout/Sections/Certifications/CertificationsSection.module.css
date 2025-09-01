@@ -1,0 +1,1022 @@
+/* Certifications Section Module - Enhanced Modern Design */
+
+/* ===== CSS CUSTOM PROPERTIES ===== */
+:root {
+  --cert-border-radius: 20px;
+  --cert-border-radius-lg: 24px;
+  --cert-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --cert-shadow-sm: 0 2px 8px rgb(0, 0, 0, 0.04);
+  --cert-shadow-md: 0 8px 32px rgb(0, 0, 0, 0.08);
+  --cert-shadow-lg: 0 16px 48px rgb(0, 0, 0, 0.12);
+  --cert-shadow-xl: 0 24px 64px rgb(0, 0, 0, 0.16);
+  --cert-gradient-primary: linear-gradient(
+    135deg,
+    var(--md-sys-color-primary),
+    var(--md-sys-color-secondary)
+  );
+  --cert-gradient-surface: linear-gradient(
+    145deg,
+    var(--md-sys-color-surface-container-low),
+    var(--md-sys-color-surface-container)
+  );
+  --cert-backdrop-filter: blur(20px) saturate(180%);
+  --cert-glow: 0 0 30px rgb(var(--md-sys-color-primary-rgb), 0.3);
+}
+
+/* ===== MAIN SECTION ===== */
+.certificationsSection {
+  max-width: 1400px;
+  margin: 5rem auto;
+  padding: 0 2rem;
+  position: relative;
+}
+
+/* Enhanced responsiveness */
+@media (max-width: 768px) {
+  .certificationsSection {
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+  }
+}
+
+/* ===== SECTION HEADER ===== */
+.sectionHeader {
+  margin-bottom: 4rem;
+  text-align: center;
+  position: relative;
+}
+
+.sectionHeader::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: var(--cert-gradient-primary);
+  border-radius: 2px;
+  opacity: 0.7;
+}
+
+.sectionTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.titleIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: var(--cert-gradient-surface);
+  border: 2px solid var(--md-sys-color-primary-container);
+  border-radius: var(--cert-border-radius);
+  box-shadow: var(--cert-shadow-md);
+  position: relative;
+  overflow: hidden;
+  transition: var(--cert-transition);
+}
+
+.titleIcon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cert-gradient-primary);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.titleIcon:hover::before {
+  opacity: 0.1;
+}
+
+.titleIcon:hover {
+  transform: scale(1.05) rotate(2deg);
+  box-shadow: var(--cert-shadow-lg);
+}
+
+.titleIcon i {
+  font-size: 1.75rem;
+  color: var(--md-sys-color-primary);
+  z-index: 1;
+  transition: var(--cert-transition);
+}
+
+.titleIcon:hover i {
+  color: var(--md-sys-color-on-primary-container);
+  transform: scale(1.1);
+}
+
+.titleText {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 800;
+  background: var(--cert-gradient-primary);
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  letter-spacing: -0.02em;
+  position: relative;
+}
+
+.sectionSubtitle {
+  font-size: 1.125rem;
+  color: var(--md-sys-color-on-surface-variant);
+  max-width: 650px;
+  margin: 0 auto;
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+/* ===== CERTIFICATIONS GRID ===== */
+.certificationsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 2.5rem;
+  padding: 2rem 0;
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .certificationsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1rem 0;
+  }
+}
+
+/* ===== CERTIFICATION CARD ===== */
+.certificationCard {
+  display: flex;
+  gap: 1.75rem;
+  padding: 2.5rem;
+  background: var(--cert-gradient-surface);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--cert-border-radius-lg);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(40px) scale(0.96);
+  box-shadow: var(--cert-shadow-sm);
+  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: cardSlideIn 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  backdrop-filter: var(--cert-backdrop-filter);
+  cursor: pointer;
+}
+
+/* Enhanced staggered animation */
+.certificationCard:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.certificationCard:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.certificationCard:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.certificationCard:nth-child(4) {
+  animation-delay: 0.25s;
+}
+.certificationCard:nth-child(5) {
+  animation-delay: 0.3s;
+}
+.certificationCard:nth-child(6) {
+  animation-delay: 0.35s;
+}
+
+/* Enhanced top border gradient */
+.certificationCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: var(--cert-gradient-primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 2;
+}
+
+/* Ambient glow effect */
+.certificationCard::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgb(var(--md-sys-color-primary-rgb), 0.08) 90deg,
+    rgb(var(--md-sys-color-secondary-rgb), 0.08) 180deg,
+    rgb(var(--md-sys-color-tertiary-rgb), 0.08) 270deg,
+    transparent 360deg
+  );
+  border-radius: calc(var(--cert-border-radius-lg) + 3px);
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.5s ease;
+  animation: rotate 8s linear infinite;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.certificationCard:hover {
+  border-color: var(--md-sys-color-primary);
+  box-shadow:
+    var(--cert-shadow-xl),
+    var(--cert-glow),
+    0 0 0 1px rgb(var(--md-sys-color-primary-rgb), 0.2);
+  transform: translateY(-20px) scale(1.04);
+  background: var(--md-sys-color-surface-container-high);
+}
+
+.certificationCard:hover::before {
+  transform: scaleX(1);
+}
+
+.certificationCard:hover::after {
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .certificationCard {
+    padding: 1.8rem;
+    gap: 1.25rem;
+  }
+}
+
+/* ===== CARD IMAGE ===== */
+.certImage {
+  flex: 0 0 90px;
+  height: 90px;
+  background: var(--md-sys-color-surface-container-highest);
+  border: 2px solid var(--md-sys-color-primary-container);
+  border-radius: var(--cert-border-radius);
+  padding: 0.875rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: var(--cert-transition);
+  box-shadow: var(--cert-shadow-sm);
+}
+
+/* Enhanced shimmer effect */
+.certImage::before {
+  content: '';
+  position: absolute;
+  inset: -150%;
+  background: linear-gradient(
+    45deg,
+    transparent 20%,
+    rgb(255, 255, 255, 0.6) 40%,
+    rgb(255, 255, 255, 0.8) 50%,
+    rgb(255, 255, 255, 0.6) 60%,
+    transparent 80%
+  );
+  transform: translateX(-100%) translateY(-100%) rotate(45deg);
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.certificationCard:hover .certImage::before {
+  transform: translateX(100%) translateY(100%) rotate(45deg);
+}
+
+/* Floating and rotation animation for image */
+.certImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+  transition: var(--cert-transition);
+  filter: brightness(1) saturate(1) contrast(1);
+}
+
+.certificationCard:hover .certImage img {
+  transform: scale(1.2) rotateY(8deg) rotateX(2deg);
+  filter: brightness(1.15) saturate(1.3) contrast(1.05);
+  animation: floatAnimation 3s ease-in-out infinite;
+}
+
+.certificationCard:hover .certImage {
+  background: var(--cert-gradient-primary);
+  border-color: var(--md-sys-color-primary);
+  transform: scale(1.08) translateY(-2px);
+  box-shadow: var(--cert-shadow-md);
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+@media (max-width: 768px) {
+  .certImage {
+    flex: 0 0 70px;
+    height: 70px;
+    padding: 0.75rem;
+  }
+}
+
+/* ===== CARD CONTENT ===== */
+.certContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  position: relative;
+  min-width: 0; /* Prevents flex item from overflowing */
+}
+
+.certTitle {
+  font: 700 1.375rem/1.3 var(--md-ref-typeface-brand);
+  margin: 0;
+  color: var(--md-sys-color-on-surface);
+  letter-spacing: -0.01em;
+  transition: var(--cert-transition);
+  transform: translateX(0);
+  overflow-wrap: break-word;
+}
+
+.certificationCard:hover .certTitle {
+  color: var(--md-sys-color-primary);
+  transform: translateX(6px);
+}
+
+.certIssuer {
+  font: 600 1.125rem/1.4 var(--md-ref-typeface-plain);
+  color: var(--md-sys-color-primary);
+  margin: 0;
+  transition: var(--cert-transition);
+  transform: translateX(0);
+  opacity: 0.9;
+  overflow-wrap: break-word;
+}
+
+.certificationCard:hover .certIssuer {
+  color: var(--md-sys-color-secondary);
+  transform: translateX(8px);
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .certTitle {
+    font-size: 1.25rem;
+  }
+
+  .certIssuer {
+    font-size: 1rem;
+  }
+}
+
+/* ===== DETAILS CONTAINER ===== */
+.certDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  margin-top: 0.75rem;
+  overflow: hidden;
+  padding: 0.75rem 0;
+}
+
+.certDate,
+.certId {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font: 500 0.9rem/1.5 var(--md-ref-typeface-plain);
+  color: var(--md-sys-color-on-surface-variant);
+  transition: var(--cert-transition);
+  transform: translateX(0);
+  opacity: 0.85;
+  padding: 0.25rem 0;
+  border-radius: 8px;
+  position: relative;
+}
+
+.certificationCard:hover .certDate,
+.certificationCard:hover .certId {
+  transform: translateX(10px);
+  color: var(--md-sys-color-on-surface);
+  opacity: 1;
+  background: rgb(var(--md-sys-color-primary-rgb), 0.05);
+}
+
+.certDate i,
+.certId i {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--md-sys-color-primary);
+  text-align: center;
+  font-size: 0.9rem;
+  transition: var(--cert-transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--md-sys-color-primary-container);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.certificationCard:hover .certDate i,
+.certificationCard:hover .certId i {
+  color: var(--md-sys-color-on-primary);
+  background: var(--md-sys-color-primary);
+  transform: scale(1.15) rotate(360deg);
+}
+
+/* ===== CARD ACTIONS ===== */
+.certActions {
+  margin-top: auto;
+  padding-top: 1.25rem;
+  transform: translateY(15px);
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: 0.15s;
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.certificationCard:hover .certActions {
+  transform: translateY(0);
+  opacity: 1;
+  border-top-color: var(--md-sys-color-primary-container);
+}
+
+.certVerifyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(
+    135deg,
+    var(--md-sys-color-primary-container),
+    var(--md-sys-color-secondary-container)
+  );
+  border: 2px solid var(--md-sys-color-primary);
+  border-radius: 50px;
+  color: var(--md-sys-color-primary);
+  font: 600 0.875rem/1 var(--md-ref-typeface-plain);
+  text-decoration: none;
+  transition: var(--cert-transition);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  box-shadow: var(--cert-shadow-sm);
+}
+
+.certVerifyBtn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cert-gradient-primary);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.certVerifyBtn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgb(255, 255, 255, 0.4) 0%, transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.certVerifyBtn span,
+.certVerifyBtn i {
+  position: relative;
+  z-index: 1;
+  transition: var(--cert-transition);
+}
+
+.certVerifyBtn:hover {
+  color: var(--md-sys-color-on-primary);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: var(--cert-shadow-lg), var(--cert-glow);
+  border-color: var(--md-sys-color-primary);
+}
+
+.certVerifyBtn:hover::before {
+  opacity: 1;
+}
+
+.certVerifyBtn:hover::after {
+  width: 120px;
+  height: 120px;
+}
+
+.certVerifyBtn:hover i {
+  transform: translateX(6px) scale(1.15) rotate(5deg);
+  filter: drop-shadow(0 0 8px rgb(255, 255, 255, 0.6));
+}
+
+.certVerifyBtn:active {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: var(--cert-shadow-md);
+}
+
+/* ===== Enhanced disabled state for verify button ===== */
+.certVerifyBtn.disabled {
+  background: var(--md-sys-color-surface-variant);
+  border-color: var(--md-sys-color-outline-variant);
+  color: var(--md-sys-color-on-surface-variant);
+  cursor: not-allowed;
+  opacity: 0.6;
+  transform: none;
+  box-shadow: none;
+}
+
+.certVerifyBtn.disabled:hover {
+  background: var(--md-sys-color-surface-variant);
+  border-color: var(--md-sys-color-outline-variant);
+  color: var(--md-sys-color-on-surface-variant);
+  transform: none;
+  box-shadow: none;
+}
+
+.certVerifyBtn.disabled::before,
+.certVerifyBtn.disabled::after {
+  display: none;
+}
+
+.certVerifyBtn.disabled i {
+  transform: none;
+  filter: none;
+}
+
+@media (max-width: 1200px) {
+  .certificationsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .certificationsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .certificationsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== CARD BADGE ===== */
+.certBadge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(
+    135deg,
+    var(--md-sys-color-tertiary),
+    var(--md-sys-color-secondary),
+    var(--md-sys-color-primary)
+  );
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1rem;
+  opacity: 0;
+  transform: scale(0) rotate(-180deg);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgb(0, 0, 0, 0.2);
+}
+
+.certificationCard:hover .certBadge {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+  animation: badgePulse 2s ease-in-out infinite;
+}
+
+.certBadge::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  background: linear-gradient(
+    45deg,
+    var(--md-sys-color-primary),
+    var(--md-sys-color-secondary),
+    var(--md-sys-color-tertiary),
+    var(--md-sys-color-primary)
+  );
+  border-radius: 50%;
+  z-index: -1;
+  animation: badgeRotate 3s linear infinite;
+  opacity: 0;
+}
+
+.certificationCard:hover .certBadge::before {
+  opacity: 0.6;
+}
+
+/* ===== LOADING STATE ===== */
+.loadingState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.loadingSpinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  color: var(--md-sys-color-on-surface-variant);
+  text-align: center;
+}
+
+.loadingSpinner i {
+  font-size: 3rem;
+  color: var(--md-sys-color-primary);
+  animation: spin 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  filter: drop-shadow(0 4px 8px rgb(var(--md-sys-color-primary-rgb), 0.3));
+}
+
+.loadingSpinner p {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin: 0;
+  opacity: 0.8;
+  animation: loadingPulse 2s ease-in-out infinite;
+  color: var(--md-sys-color-primary);
+}
+
+/* ===== EMPTY STATE ===== */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 400px;
+  padding: 4rem 2rem;
+  border-radius: 32px;
+  background: linear-gradient(
+    145deg,
+    var(--md-sys-color-surface-container-lowest),
+    var(--md-sys-color-surface-container-low)
+  );
+  border: 2px dashed var(--md-sys-color-outline-variant);
+  animation: fadeInUp 0.8s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.emptyState::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgb(var(--md-sys-color-primary-rgb), 0.03) 0%,
+    transparent 70%
+  );
+  animation: rotate 20s linear infinite;
+}
+
+.emptyIcon {
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--md-sys-color-surface-container),
+    var(--md-sys-color-surface-container-high)
+  );
+  color: var(--md-sys-color-primary);
+  box-shadow: var(--cert-shadow-md);
+  position: relative;
+  z-index: 1;
+  animation: floatAnimation 4s ease-in-out infinite;
+}
+
+.emptyIcon i {
+  font-size: 3rem;
+  opacity: 0.8;
+  transition: var(--cert-transition);
+}
+
+.emptyState:hover .emptyIcon i {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.emptyTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--md-sys-color-on-surface);
+  margin: 0 0 1rem;
+  line-height: 1.3;
+  position: relative;
+  z-index: 1;
+}
+
+.emptyDescription {
+  font-size: 1.125rem;
+  color: var(--md-sys-color-on-surface-variant);
+  margin: 0;
+  max-width: 450px;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+  opacity: 0.9;
+}
+
+/* ===== ADMIN CONTROLS ===== */
+.adminControls {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.editBtn,
+.deleteBtn {
+  padding: 0.5rem;
+  border: none;
+  border-radius: var(--md-sys-shape-corner-small);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.editBtn {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.editBtn:hover {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}
+
+.deleteBtn {
+  background: var(--md-sys-color-error-container);
+  color: var(--md-sys-color-on-error-container);
+}
+
+.deleteBtn:hover {
+  background: var(--md-sys-color-error);
+  color: var(--md-sys-color-on-error);
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes cardSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.9) rotateX(10deg);
+  }
+
+  60% {
+    opacity: 0.8;
+    transform: translateY(-5px) scale(1.02) rotateX(0deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes badgePulse {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    box-shadow: 0 4px 15px rgb(0, 0, 0, 0.2);
+  }
+
+  50% {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 6px 25px rgb(var(--md-sys-color-primary-rgb), 0.4);
+  }
+}
+
+@keyframes badgeRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Enhanced loading animation */
+@keyframes loadingPulse {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* Enhanced shimmer effect for cards */
+@keyframes cardShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Floating effect for images */
+@keyframes floatAnimation {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  25% {
+    transform: translateY(-5px) rotate(1deg);
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(0deg);
+  }
+
+  75% {
+    transform: translateY(-3px) rotate(-1deg);
+  }
+}
+
+/* Glow pulse animation */
+@keyframes glowPulse {
+  0%,
+  100% {
+    box-shadow:
+      var(--cert-shadow-md),
+      0 0 20px rgb(var(--md-sys-color-primary-rgb), 0.2);
+  }
+
+  50% {
+    box-shadow:
+      var(--cert-shadow-lg),
+      0 0 40px rgb(var(--md-sys-color-primary-rgb), 0.4);
+  }
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+  .certificationsSection {
+    margin: 2rem auto;
+    padding: 0 1rem;
+  }
+
+  .certificationsGrid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .certificationCard {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  .certImage {
+    flex: 0 0 60px;
+    height: 60px;
+    align-self: center;
+  }
+
+  .sectionTitle {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .titleText {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .certificationsSection {
+    margin: 1.5rem auto;
+  }
+
+  .certificationCard {
+    padding: 1rem;
+  }
+
+  .titleText {
+    font-size: 1.75rem;
+  }
+
+  .sectionSubtitle {
+    font-size: 1rem;
+  }
+}
+
+/* ===== DARK MODE ADAPTATIONS ===== */
+@media (prefers-color-scheme: dark) {
+  .emptyState {
+    background: var(--md-sys-color-surface-container-low);
+    border-color: var(--md-sys-color-outline);
+  }
+
+  .emptyIcon {
+    background: var(--md-sys-color-surface-container-high);
+  }
+
+  .certificationCard {
+    background: var(--md-sys-color-surface);
+    border-color: var(--md-sys-color-outline-variant);
+  }
+
+  .certImage {
+    background: var(--md-sys-color-surface-container);
+  }
+}

@@ -1,0 +1,215 @@
+/* NavigationOverlay.module.css */
+
+.navigationOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.navigationOverlay.visible {
+  opacity: 1;
+  visibility: visible;
+  animation: fadeIn 200ms ease-out forwards;
+}
+
+.overlayContent {
+  background: white;
+  border-radius: 12px;
+  padding: 24px 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  min-width: 280px;
+  text-align: center;
+  z-index: 2001;
+}
+
+.navigationIndicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.iconContainer {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 16px;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  animation: pulseIcon 1.5s ease-in-out infinite;
+}
+
+.textContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.navigatingText {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sectionName {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.progressContainer {
+  width: 100%;
+  height: 3px;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progressBar {
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6, #3b82f6);
+  border-radius: 2px;
+  animation: progressAnimation var(--progress-duration, 1000ms) ease-out forwards;
+  position: relative;
+  overflow: hidden;
+}
+
+.progressBar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  animation: progressShine 1.5s ease-in-out infinite;
+}
+
+/* ===== ANIMACIONES SIMPLIFICADAS ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes pulseIcon {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+  }
+}
+
+@keyframes progressAnimation {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes progressShine {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* ===== DARK MODE ===== */
+[data-theme='dark'] .overlayContent {
+  background: #1f2937;
+  color: white;
+}
+
+[data-theme='dark'] .navigatingText {
+  color: #9ca3af;
+}
+
+[data-theme='dark'] .sectionName {
+  color: #f9fafb;
+}
+
+[data-theme='dark'] .progressContainer {
+  background: rgba(99, 102, 241, 0.2);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .overlayContent {
+    margin: 0 20px;
+    padding: 16px 20px;
+    min-width: 200px;
+  }
+
+  .iconContainer {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+
+  .sectionName {
+    font-size: 14px;
+  }
+}
+
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+  .navigationOverlay,
+  .overlayContent,
+  .iconContainer,
+  .progressBar,
+  .progressBar::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .overlayContent {
+    transform: none;
+  }
+}
+
+/* ===== PRINT ===== */
+@media print {
+  .navigationOverlay {
+    display: none !important;
+  }
+}

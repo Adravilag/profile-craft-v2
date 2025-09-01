@@ -1,0 +1,47 @@
+{
+  "extends": ["stylelint-config-standard"],
+  "rules": {
+    "selector-class-pattern": null,
+    "color-function-notation": null,
+    "alpha-value-notation": null,
+    "media-feature-range-notation": null,
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": ["tailwind", "apply", "variants", "responsive", "screen"]
+      }
+    ],
+    "no-descending-specificity": null,
+    "no-duplicate-selectors": null,
+    "declaration-block-single-line-max-declarations": null,
+    "keyframes-name-pattern": "^[a-z][a-z0-9A-Z-]*$",
+    "media-feature-name-value-no-unknown": null,
+    "media-feature-name-no-unknown": null,
+    "property-no-deprecated": null,
+    "property-no-unknown": [
+      true,
+      {
+        "ignoreProperties": [
+          "loading",
+          "decoding",
+          "overflow-scrolling",
+          "tap-highlight-color",
+          "appearance"
+        ]
+      }
+    ],
+    "selector-pseudo-class-no-unknown": [
+      true,
+      { "ignorePseudoClasses": ["global", "has-text", "has"] }
+    ]
+  },
+  "ignoreFiles": [
+    "**/dist/**",
+    "**/node_modules/**",
+    "src/styles/browser-specific-fixes.css",
+    "src/styles/cross-browser-compatibility.css",
+    "src/components/styles/modal.css",
+    "src/components/layout/Modal/Modal.module.css",
+    "src/components/layout/Sections/Skills/components/modal/SkillModal.module.css"
+  ]
+}

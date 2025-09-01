@@ -1,0 +1,11 @@
+// Barrel de hooks - reexporta hooks públicos de la carpeta hooks
+export { default as useNavigation } from './useNavigation';
+export { default as useNotification, useNotificationContext } from './useNotification';
+export { default as useUnifiedTheme } from './useUnifiedTheme';
+export { default as useTestimonials } from './useTestimonials';
+export * from './useIntersectionObserver';
+export * from './usePerformanceMonitoring';
+
+// useResponsive may not exist in this project root; if needed, add it later.
+
+// Agregar más re-exports según se necesite

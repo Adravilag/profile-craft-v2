@@ -1,0 +1,793 @@
+/* spacing-utilities.css - Comprehensive spacing utility system */
+
+/* ===========================================
+   SPACING UTILITY CLASSES
+   =========================================== */
+
+/* Padding utilities */
+.p-0 {
+  padding: 0;
+}
+.p-1 {
+  padding: var(--space-1);
+}
+.p-2 {
+  padding: var(--space-2);
+}
+.p-3 {
+  padding: var(--space-3);
+}
+.p-4 {
+  padding: var(--space-4);
+}
+.p-5 {
+  padding: var(--space-5);
+}
+.p-6 {
+  padding: var(--space-6);
+}
+.p-8 {
+  padding: var(--space-8);
+}
+.p-10 {
+  padding: var(--space-10);
+}
+.p-12 {
+  padding: var(--space-12);
+}
+.p-16 {
+  padding: var(--space-16);
+}
+
+/* Padding X (horizontal) */
+.px-0 {
+  padding-left: 0;
+  padding-right: 0;
+}
+.px-1 {
+  padding-left: var(--space-1);
+  padding-right: var(--space-1);
+}
+.px-2 {
+  padding-left: var(--space-2);
+  padding-right: var(--space-2);
+}
+.px-3 {
+  padding-left: var(--space-3);
+  padding-right: var(--space-3);
+}
+.px-4 {
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+.px-5 {
+  padding-left: var(--space-5);
+  padding-right: var(--space-5);
+}
+.px-6 {
+  padding-left: var(--space-6);
+  padding-right: var(--space-6);
+}
+.px-8 {
+  padding-left: var(--space-8);
+  padding-right: var(--space-8);
+}
+
+/* Padding Y (vertical) */
+.py-0 {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.py-1 {
+  padding-top: var(--space-1);
+  padding-bottom: var(--space-1);
+}
+.py-2 {
+  padding-top: var(--space-2);
+  padding-bottom: var(--space-2);
+}
+.py-3 {
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
+}
+.py-4 {
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-4);
+}
+.py-5 {
+  padding-top: var(--space-5);
+  padding-bottom: var(--space-5);
+}
+.py-6 {
+  padding-top: var(--space-6);
+  padding-bottom: var(--space-6);
+}
+.py-8 {
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-8);
+}
+
+/* Individual padding sides */
+.pt-0 {
+  padding-top: 0;
+}
+.pt-1 {
+  padding-top: var(--space-1);
+}
+.pt-2 {
+  padding-top: var(--space-2);
+}
+.pt-3 {
+  padding-top: var(--space-3);
+}
+.pt-4 {
+  padding-top: var(--space-4);
+}
+.pt-5 {
+  padding-top: var(--space-5);
+}
+.pt-6 {
+  padding-top: var(--space-6);
+}
+.pt-8 {
+  padding-top: var(--space-8);
+}
+
+.pr-0 {
+  padding-right: 0;
+}
+.pr-1 {
+  padding-right: var(--space-1);
+}
+.pr-2 {
+  padding-right: var(--space-2);
+}
+.pr-3 {
+  padding-right: var(--space-3);
+}
+.pr-4 {
+  padding-right: var(--space-4);
+}
+.pr-5 {
+  padding-right: var(--space-5);
+}
+.pr-6 {
+  padding-right: var(--space-6);
+}
+.pr-8 {
+  padding-right: var(--space-8);
+}
+
+.pb-0 {
+  padding-bottom: 0;
+}
+.pb-1 {
+  padding-bottom: var(--space-1);
+}
+.pb-2 {
+  padding-bottom: var(--space-2);
+}
+.pb-3 {
+  padding-bottom: var(--space-3);
+}
+.pb-4 {
+  padding-bottom: var(--space-4);
+}
+.pb-5 {
+  padding-bottom: var(--space-5);
+}
+.pb-6 {
+  padding-bottom: var(--space-6);
+}
+.pb-8 {
+  padding-bottom: var(--space-8);
+}
+
+.pl-0 {
+  padding-left: 0;
+}
+.pl-1 {
+  padding-left: var(--space-1);
+}
+.pl-2 {
+  padding-left: var(--space-2);
+}
+.pl-3 {
+  padding-left: var(--space-3);
+}
+.pl-4 {
+  padding-left: var(--space-4);
+}
+.pl-5 {
+  padding-left: var(--space-5);
+}
+.pl-6 {
+  padding-left: var(--space-6);
+}
+.pl-8 {
+  padding-left: var(--space-8);
+}
+
+/* Margin utilities */
+.m-0 {
+  margin: 0;
+}
+.m-1 {
+  margin: var(--space-1);
+}
+.m-2 {
+  margin: var(--space-2);
+}
+.m-3 {
+  margin: var(--space-3);
+}
+.m-4 {
+  margin: var(--space-4);
+}
+.m-5 {
+  margin: var(--space-5);
+}
+.m-6 {
+  margin: var(--space-6);
+}
+.m-8 {
+  margin: var(--space-8);
+}
+.m-10 {
+  margin: var(--space-10);
+}
+.m-12 {
+  margin: var(--space-12);
+}
+.m-16 {
+  margin: var(--space-16);
+}
+.m-auto {
+  margin: auto;
+}
+
+/* Margin X (horizontal) */
+.mx-0 {
+  margin-left: 0;
+  margin-right: 0;
+}
+.mx-1 {
+  margin-left: var(--space-1);
+  margin-right: var(--space-1);
+}
+.mx-2 {
+  margin-left: var(--space-2);
+  margin-right: var(--space-2);
+}
+.mx-3 {
+  margin-left: var(--space-3);
+  margin-right: var(--space-3);
+}
+.mx-4 {
+  margin-left: var(--space-4);
+  margin-right: var(--space-4);
+}
+.mx-5 {
+  margin-left: var(--space-5);
+  margin-right: var(--space-5);
+}
+.mx-6 {
+  margin-left: var(--space-6);
+  margin-right: var(--space-6);
+}
+.mx-8 {
+  margin-left: var(--space-8);
+  margin-right: var(--space-8);
+}
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Margin Y (vertical) */
+.my-0 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.my-1 {
+  margin-top: var(--space-1);
+  margin-bottom: var(--space-1);
+}
+.my-2 {
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+.my-3 {
+  margin-top: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.my-4 {
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+.my-5 {
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-5);
+}
+.my-6 {
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+.my-8 {
+  margin-top: var(--space-8);
+  margin-bottom: var(--space-8);
+}
+
+/* Individual margin sides */
+.mt-0 {
+  margin-top: 0;
+}
+.mt-1 {
+  margin-top: var(--space-1);
+}
+.mt-2 {
+  margin-top: var(--space-2);
+}
+.mt-3 {
+  margin-top: var(--space-3);
+}
+.mt-4 {
+  margin-top: var(--space-4);
+}
+.mt-5 {
+  margin-top: var(--space-5);
+}
+.mt-6 {
+  margin-top: var(--space-6);
+}
+.mt-8 {
+  margin-top: var(--space-8);
+}
+
+.mr-0 {
+  margin-right: 0;
+}
+.mr-1 {
+  margin-right: var(--space-1);
+}
+.mr-2 {
+  margin-right: var(--space-2);
+}
+.mr-3 {
+  margin-right: var(--space-3);
+}
+.mr-4 {
+  margin-right: var(--space-4);
+}
+.mr-5 {
+  margin-right: var(--space-5);
+}
+.mr-6 {
+  margin-right: var(--space-6);
+}
+.mr-8 {
+  margin-right: var(--space-8);
+}
+
+.mb-0 {
+  margin-bottom: 0;
+}
+.mb-1 {
+  margin-bottom: var(--space-1);
+}
+.mb-2 {
+  margin-bottom: var(--space-2);
+}
+.mb-3 {
+  margin-bottom: var(--space-3);
+}
+.mb-4 {
+  margin-bottom: var(--space-4);
+}
+.mb-5 {
+  margin-bottom: var(--space-5);
+}
+.mb-6 {
+  margin-bottom: var(--space-6);
+}
+.mb-8 {
+  margin-bottom: var(--space-8);
+}
+
+.ml-0 {
+  margin-left: 0;
+}
+.ml-1 {
+  margin-left: var(--space-1);
+}
+.ml-2 {
+  margin-left: var(--space-2);
+}
+.ml-3 {
+  margin-left: var(--space-3);
+}
+.ml-4 {
+  margin-left: var(--space-4);
+}
+.ml-5 {
+  margin-left: var(--space-5);
+}
+.ml-6 {
+  margin-left: var(--space-6);
+}
+.ml-8 {
+  margin-left: var(--space-8);
+}
+
+/* Gap utilities for flexbox and grid */
+.gap-0 {
+  gap: 0;
+}
+.gap-1 {
+  gap: var(--space-1);
+}
+.gap-2 {
+  gap: var(--space-2);
+}
+.gap-3 {
+  gap: var(--space-3);
+}
+.gap-4 {
+  gap: var(--space-4);
+}
+.gap-5 {
+  gap: var(--space-5);
+}
+.gap-6 {
+  gap: var(--space-6);
+}
+.gap-8 {
+  gap: var(--space-8);
+}
+
+/* Row and column gaps */
+.gap-x-0 {
+  column-gap: 0;
+}
+.gap-x-1 {
+  column-gap: var(--space-1);
+}
+.gap-x-2 {
+  column-gap: var(--space-2);
+}
+.gap-x-3 {
+  column-gap: var(--space-3);
+}
+.gap-x-4 {
+  column-gap: var(--space-4);
+}
+.gap-x-5 {
+  column-gap: var(--space-5);
+}
+.gap-x-6 {
+  column-gap: var(--space-6);
+}
+.gap-x-8 {
+  column-gap: var(--space-8);
+}
+
+.gap-y-0 {
+  row-gap: 0;
+}
+.gap-y-1 {
+  row-gap: var(--space-1);
+}
+.gap-y-2 {
+  row-gap: var(--space-2);
+}
+.gap-y-3 {
+  row-gap: var(--space-3);
+}
+.gap-y-4 {
+  row-gap: var(--space-4);
+}
+.gap-y-5 {
+  row-gap: var(--space-5);
+}
+.gap-y-6 {
+  row-gap: var(--space-6);
+}
+.gap-y-8 {
+  row-gap: var(--space-8);
+}
+
+/* ===========================================
+   RESPONSIVE SPACING UTILITIES
+   =========================================== */
+
+/* Mobile-first responsive spacing */
+@media (min-width: 768px) {
+  /* Tablet and up - md: prefix */
+  .md\:p-0 {
+    padding: 0;
+  }
+  .md\:p-1 {
+    padding: var(--space-1);
+  }
+  .md\:p-2 {
+    padding: var(--space-2);
+  }
+  .md\:p-3 {
+    padding: var(--space-3);
+  }
+  .md\:p-4 {
+    padding: var(--space-4);
+  }
+  .md\:p-5 {
+    padding: var(--space-5);
+  }
+  .md\:p-6 {
+    padding: var(--space-6);
+  }
+  .md\:p-8 {
+    padding: var(--space-8);
+  }
+
+  .md\:px-4 {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+  .md\:px-6 {
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+  .md\:px-8 {
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
+  }
+
+  .md\:py-4 {
+    padding-top: var(--space-4);
+    padding-bottom: var(--space-4);
+  }
+  .md\:py-6 {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+  .md\:py-8 {
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-8);
+  }
+
+  .md\:m-4 {
+    margin: var(--space-4);
+  }
+  .md\:m-6 {
+    margin: var(--space-6);
+  }
+  .md\:m-8 {
+    margin: var(--space-8);
+  }
+
+  .md\:mx-4 {
+    margin-left: var(--space-4);
+    margin-right: var(--space-4);
+  }
+  .md\:mx-6 {
+    margin-left: var(--space-6);
+    margin-right: var(--space-6);
+  }
+  .md\:mx-8 {
+    margin-left: var(--space-8);
+    margin-right: var(--space-8);
+  }
+
+  .md\:my-4 {
+    margin-top: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+  .md\:my-6 {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+  .md\:my-8 {
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-8);
+  }
+
+  .md\:gap-4 {
+    gap: var(--space-4);
+  }
+  .md\:gap-6 {
+    gap: var(--space-6);
+  }
+  .md\:gap-8 {
+    gap: var(--space-8);
+  }
+}
+
+@media (min-width: 1024px) {
+  /* Desktop and up - lg: prefix */
+  .lg\:p-6 {
+    padding: var(--space-6);
+  }
+  .lg\:p-8 {
+    padding: var(--space-8);
+  }
+  .lg\:p-10 {
+    padding: var(--space-10);
+  }
+  .lg\:p-12 {
+    padding: var(--space-12);
+  }
+
+  .lg\:px-6 {
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
+  }
+  .lg\:px-8 {
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
+  }
+  .lg\:px-10 {
+    padding-left: var(--space-10);
+    padding-right: var(--space-10);
+  }
+
+  .lg\:py-6 {
+    padding-top: var(--space-6);
+    padding-bottom: var(--space-6);
+  }
+  .lg\:py-8 {
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-8);
+  }
+  .lg\:py-10 {
+    padding-top: var(--space-10);
+    padding-bottom: var(--space-10);
+  }
+
+  .lg\:m-6 {
+    margin: var(--space-6);
+  }
+  .lg\:m-8 {
+    margin: var(--space-8);
+  }
+  .lg\:m-10 {
+    margin: var(--space-10);
+  }
+  .lg\:m-12 {
+    margin: var(--space-12);
+  }
+
+  .lg\:gap-6 {
+    gap: var(--space-6);
+  }
+  .lg\:gap-8 {
+    gap: var(--space-8);
+  }
+  .lg\:gap-10 {
+    gap: var(--space-10);
+  }
+}
+
+/* ===========================================
+   SEMANTIC SPACING CLASSES
+   =========================================== */
+
+/* Component-specific spacing classes for better maintainability */
+.terminal-spacing {
+  --terminal-padding-sm: var(--space-2);
+  --terminal-padding-md: var(--space-4);
+  --terminal-padding-lg: var(--space-6);
+  --terminal-gap-sm: var(--space-1);
+  --terminal-gap-md: var(--space-2);
+  --terminal-gap-lg: var(--space-4);
+  --terminal-margin-sm: var(--space-2);
+  --terminal-margin-md: var(--space-4);
+  --terminal-margin-lg: var(--space-6);
+}
+
+.section-spacing {
+  --section-padding-sm: var(--space-4);
+  --section-padding-md: var(--space-6);
+  --section-padding-lg: var(--space-8);
+  --section-gap-sm: var(--space-3);
+  --section-gap-md: var(--space-4);
+  --section-gap-lg: var(--space-6);
+}
+
+.content-spacing {
+  --content-padding-sm: var(--space-3);
+  --content-padding-md: var(--space-4);
+  --content-padding-lg: var(--space-6);
+  --content-gap-sm: var(--space-2);
+  --content-gap-md: var(--space-3);
+  --content-gap-lg: var(--space-4);
+}
+
+/* ===========================================
+   LAYOUT SPACING HELPERS
+   =========================================== */
+
+/* Stack layout with consistent spacing */
+.stack {
+  display: flex;
+  flex-direction: column;
+}
+
+.stack-1 > * + * {
+  margin-top: var(--space-1);
+}
+.stack-2 > * + * {
+  margin-top: var(--space-2);
+}
+.stack-3 > * + * {
+  margin-top: var(--space-3);
+}
+.stack-4 > * + * {
+  margin-top: var(--space-4);
+}
+.stack-5 > * + * {
+  margin-top: var(--space-5);
+}
+.stack-6 > * + * {
+  margin-top: var(--space-6);
+}
+.stack-8 > * + * {
+  margin-top: var(--space-8);
+}
+
+/* Inline layout with consistent spacing */
+.inline {
+  display: flex;
+  align-items: center;
+}
+
+.inline-1 > * + * {
+  margin-left: var(--space-1);
+}
+.inline-2 > * + * {
+  margin-left: var(--space-2);
+}
+.inline-3 > * + * {
+  margin-left: var(--space-3);
+}
+.inline-4 > * + * {
+  margin-left: var(--space-4);
+}
+.inline-5 > * + * {
+  margin-left: var(--space-5);
+}
+.inline-6 > * + * {
+  margin-left: var(--space-6);
+}
+.inline-8 > * + * {
+  margin-left: var(--space-8);
+}
+
+/* Container spacing */
+.container-sm {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+.container-md {
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+.container-lg {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+.container-xl {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--space-8);
+}
+
+@media (max-width: 768px) {
+  .container-sm,
+  .container-md,
+  .container-lg,
+  .container-xl {
+    padding: 0 var(--space-3);
+  }
+}

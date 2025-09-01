@@ -1,0 +1,272 @@
+/* ContactTooltips.css - Diseño minimalista y moderno */
+
+.contact-tooltips {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.contact-tooltips.compact {
+  gap: 8px;
+}
+
+.contact-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Iconos principales */
+.contact-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--md-sys-color-surface-container);
+  border: 2px solid var(--md-sys-color-outline-variant);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  color: var(--contact-color, var(--md-sys-color-primary));
+}
+
+.contact-icon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--contact-color, var(--md-sys-color-primary));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: inherit;
+}
+
+.contact-icon:hover {
+  transform: scale(1.1);
+  border-color: var(--contact-color, var(--md-sys-color-primary));
+  box-shadow: 0 4px 12px rgb(var(--contact-color, var(--md-sys-color-primary-rgb)), 0.3);
+}
+
+.contact-icon:hover::before {
+  opacity: 0.1;
+}
+
+.contact-icon.active {
+  background: var(--contact-color, var(--md-sys-color-primary));
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgb(var(--contact-color, var(--md-sys-color-primary-rgb)), 0.4);
+}
+
+.contact-icon i {
+  font-size: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Brand-specific hover accents for recognizability */
+.contact-icon[data-contact-type='linkedin']:hover,
+.contact-icon[data-contact-type='linkedin'].active {
+  border-color: #0077b5;
+  box-shadow: 0 8px 20px rgb(0, 119, 181, 0.18);
+}
+
+.contact-icon[data-contact-type='github']:hover,
+.contact-icon[data-contact-type='github'].active {
+  border-color: #333;
+  box-shadow: 0 8px 20px rgb(51, 51, 51, 0.14);
+}
+
+.contact-icon[data-contact-type='email']:hover,
+.contact-icon[data-contact-type='email'].active {
+  border-color: #ea4335;
+  box-shadow: 0 8px 20px rgb(234, 67, 53, 0.14);
+}
+
+.contact-icon[data-contact-type='location']:hover,
+.contact-icon[data-contact-type='location'].active {
+  border-color: #4285f4;
+  box-shadow: 0 8px 20px rgb(66, 133, 244, 0.12);
+}
+
+/* Tooltip expandible */
+.contact-tooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--md-sys-color-surface);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgb(0, 0, 0, 0.15);
+  padding: 16px;
+  z-index: 1000;
+  min-width: 200px;
+  animation: tooltipSlideIn 0.2s ease-out;
+}
+
+@keyframes tooltipSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.tooltip-arrow {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  background: var(--md-sys-color-surface);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-bottom: none;
+  border-right: none;
+  transform: translateX(-50%) rotate(45deg);
+}
+
+.tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tooltip-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tooltip-value {
+  font-size: 0.875rem;
+  color: var(--md-sys-color-on-surface);
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.tooltip-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.tooltip-action {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tooltip-action.primary {
+  background: var(--contact-color, var(--md-sys-color-primary));
+  color: white;
+}
+
+.tooltip-action.primary:hover {
+  background: color-mix(in srgb, var(--contact-color, var(--md-sys-color-primary)) 85%, black);
+  transform: translateY(-1px);
+}
+
+.tooltip-action.secondary {
+  background: var(--md-sys-color-surface-container);
+  color: var(--md-sys-color-on-surface-variant);
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.tooltip-action.secondary:hover {
+  background: var(--md-sys-color-surface-container-high);
+  border-color: var(--md-sys-color-outline);
+}
+
+/* Responsive adaptations */
+@media (max-width: 768px) {
+  .contact-tooltips.compact .contact-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .contact-tooltips.compact .contact-icon i {
+    font-size: 16px;
+  }
+
+  .contact-tooltip {
+    min-width: 180px;
+    padding: 12px;
+  }
+
+  .tooltip-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-tooltips {
+    gap: 6px;
+  }
+
+  .contact-icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .contact-icon i {
+    font-size: 14px;
+  }
+
+  .contact-tooltip {
+    min-width: 160px;
+    padding: 10px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Tema oscuro */
+.contact-tooltip {
+  background: var(--md-sys-color-surface-container);
+  border-color: var(--md-sys-color-outline);
+  box-shadow: 0 8px 24px rgb(0, 0, 0, 0.3);
+}
+
+.tooltip-arrow {
+  background: var(--md-sys-color-surface-container);
+  border-color: var(--md-sys-color-outline);
+}
+
+/* Estados de focus para accesibilidad */
+.contact-icon:focus-visible {
+  outline: 2px solid var(--contact-color, var(--md-sys-color-primary));
+  outline-offset: 2px;
+}
+
+.tooltip-action:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 1px;
+}
+
+/* Animaciones reducidas para usuarios que prefieren menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .contact-icon {
+    transition: none;
+  }
+
+  .contact-tooltip {
+    animation: none;
+  }
+
+  .contact-icon:hover {
+    transform: none;
+  }
+}

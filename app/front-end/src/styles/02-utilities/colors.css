@@ -1,0 +1,433 @@
+/* ===========================================
+   COLOR UTILITIES
+   Terminal Visual Improvements
+   =========================================== */
+
+/* Text Color Utilities */
+.text-primary {
+  color: var(--color-text-primary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-inverse {
+  color: var(--color-text-inverse);
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
+.text-success {
+  color: var(--color-success);
+}
+
+.text-warning {
+  color: var(--color-warning);
+}
+
+.text-error {
+  color: var(--color-error);
+}
+
+/* Background Color Utilities */
+.bg-primary {
+  background-color: var(--color-bg-primary);
+}
+
+.bg-secondary {
+  background-color: var(--color-bg-secondary);
+}
+
+.bg-tertiary {
+  background-color: var(--color-bg-tertiary);
+}
+
+.bg-elevated {
+  background-color: var(--color-bg-elevated);
+}
+
+.bg-overlay {
+  background-color: var(--color-bg-overlay);
+}
+
+.bg-accent {
+  background-color: var(--color-accent);
+}
+
+.bg-success {
+  background-color: var(--color-success);
+}
+
+.bg-warning {
+  background-color: var(--color-warning);
+}
+
+.bg-error {
+  background-color: var(--color-error);
+}
+
+.bg-transparent {
+  background-color: transparent;
+}
+
+/* Border Color Utilities */
+.border-primary {
+  border-color: var(--color-border-primary);
+}
+
+.border-secondary {
+  border-color: var(--color-border-secondary);
+}
+
+.border-accent {
+  border-color: var(--color-border-accent);
+}
+
+.border-muted {
+  border-color: var(--color-border-muted);
+}
+
+.border-success {
+  border-color: var(--color-success);
+}
+
+.border-warning {
+  border-color: var(--color-warning);
+}
+
+.border-error {
+  border-color: var(--color-error);
+}
+
+.border-transparent {
+  border-color: transparent;
+}
+
+/* Border Width Utilities */
+.border-0 {
+  border-width: 0;
+}
+
+.border {
+  border-width: 1px;
+}
+
+.border-2 {
+  border-width: 2px;
+}
+
+.border-4 {
+  border-width: 4px;
+}
+
+.border-8 {
+  border-width: 8px;
+}
+
+/* Border Style Utilities */
+.border-solid {
+  border-style: solid;
+}
+
+.border-dashed {
+  border-style: dashed;
+}
+
+.border-dotted {
+  border-style: dotted;
+}
+
+.border-double {
+  border-style: double;
+}
+
+.border-none {
+  border-style: none;
+}
+
+/* Directional Border Utilities */
+.border-t {
+  border-top-width: 1px;
+}
+
+.border-r {
+  border-right-width: 1px;
+}
+
+.border-b {
+  border-bottom-width: 1px;
+}
+
+.border-l {
+  border-left-width: 1px;
+}
+
+.border-x {
+  border-left-width: 1px;
+  border-right-width: 1px;
+}
+
+.border-y {
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+}
+
+/* Opacity Utilities */
+.opacity-0 {
+  opacity: 0;
+}
+
+.opacity-25 {
+  opacity: 0.25;
+}
+
+.opacity-50 {
+  opacity: 0.5;
+}
+
+.opacity-75 {
+  opacity: 0.75;
+}
+
+.opacity-100 {
+  opacity: 1;
+}
+
+/* State Color Utilities */
+.hover\:text-accent:hover {
+  color: var(--color-accent);
+}
+
+.hover\:text-success:hover {
+  color: var(--color-success);
+}
+
+.hover\:text-warning:hover {
+  color: var(--color-warning);
+}
+
+.hover\:text-error:hover {
+  color: var(--color-error);
+}
+
+.hover\:bg-accent:hover {
+  background-color: var(--color-accent);
+}
+
+.hover\:bg-success:hover {
+  background-color: var(--color-success);
+}
+
+.hover\:bg-warning:hover {
+  background-color: var(--color-warning);
+}
+
+.hover\:bg-error:hover {
+  background-color: var(--color-error);
+}
+
+.hover\:border-accent:hover {
+  border-color: var(--color-accent);
+}
+
+.hover\:border-success:hover {
+  border-color: var(--color-success);
+}
+
+.hover\:border-warning:hover {
+  border-color: var(--color-warning);
+}
+
+.hover\:border-error:hover {
+  border-color: var(--color-error);
+}
+
+/* Focus State Utilities */
+.focus\:text-accent:focus {
+  color: var(--color-accent);
+}
+
+.focus\:bg-accent:focus {
+  background-color: var(--color-accent);
+}
+
+.focus\:border-accent:focus {
+  border-color: var(--color-accent);
+}
+
+.focus\:outline-accent:focus {
+  outline-color: var(--color-accent);
+}
+
+/* Terminal-Specific Color Utilities */
+.terminal-bg {
+  background-color: var(--color-bg-primary);
+}
+
+.terminal-surface {
+  background-color: var(--color-bg-secondary);
+}
+
+.terminal-text {
+  color: var(--color-text-primary);
+}
+
+.terminal-prompt {
+  color: var(--color-accent);
+}
+
+.terminal-command {
+  color: var(--color-text-primary);
+}
+
+.terminal-output {
+  color: var(--color-text-secondary);
+}
+
+.terminal-error {
+  color: var(--color-error);
+}
+
+.terminal-success {
+  color: var(--color-success);
+}
+
+.terminal-warning {
+  color: var(--color-warning);
+}
+
+/* Gradient Utilities */
+.bg-gradient-accent {
+  background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-success) 100%);
+}
+
+.bg-gradient-success {
+  background: linear-gradient(135deg, var(--color-success) 0%, var(--color-accent) 100%);
+}
+
+.bg-gradient-warning {
+  background: linear-gradient(135deg, var(--color-warning) 0%, var(--color-error) 100%);
+}
+
+.bg-gradient-error {
+  background: linear-gradient(135deg, var(--color-error) 0%, var(--color-warning) 100%);
+}
+
+/* Color Scheme Utilities */
+.color-scheme-dark {
+  color-scheme: dark;
+}
+
+.color-scheme-light {
+  color-scheme: light;
+}
+
+.color-scheme-auto {
+  color-scheme: dark light;
+}
+
+/* Backdrop Filter Utilities */
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+}
+
+.backdrop-blur {
+  backdrop-filter: blur(8px);
+}
+
+.backdrop-blur-md {
+  backdrop-filter: blur(12px);
+}
+
+.backdrop-blur-lg {
+  backdrop-filter: blur(16px);
+}
+
+.backdrop-blur-xl {
+  backdrop-filter: blur(24px);
+}
+
+/* Mix Blend Mode Utilities */
+.mix-blend-normal {
+  mix-blend-mode: normal;
+}
+
+.mix-blend-multiply {
+  mix-blend-mode: multiply;
+}
+
+.mix-blend-screen {
+  mix-blend-mode: screen;
+}
+
+.mix-blend-overlay {
+  mix-blend-mode: overlay;
+}
+
+.mix-blend-darken {
+  mix-blend-mode: darken;
+}
+
+.mix-blend-lighten {
+  mix-blend-mode: lighten;
+}
+
+.mix-blend-color-dodge {
+  mix-blend-mode: color-dodge;
+}
+
+.mix-blend-color-burn {
+  mix-blend-mode: color-burn;
+}
+
+.mix-blend-hard-light {
+  mix-blend-mode: hard-light;
+}
+
+.mix-blend-soft-light {
+  mix-blend-mode: soft-light;
+}
+
+.mix-blend-difference {
+  mix-blend-mode: difference;
+}
+
+.mix-blend-exclusion {
+  mix-blend-mode: exclusion;
+}
+
+/* Responsive Color Utilities */
+@media (max-width: 768px) {
+  .md\:text-primary {
+    color: var(--color-text-primary);
+  }
+
+  .md\:bg-primary {
+    background-color: var(--color-bg-primary);
+  }
+
+  .md\:border-primary {
+    border-color: var(--color-border-primary);
+  }
+}
+
+@media (max-width: 480px) {
+  .sm\:text-primary {
+    color: var(--color-text-primary);
+  }
+
+  .sm\:bg-primary {
+    background-color: var(--color-bg-primary);
+  }
+
+  .sm\:border-primary {
+    border-color: var(--color-border-primary);
+  }
+}

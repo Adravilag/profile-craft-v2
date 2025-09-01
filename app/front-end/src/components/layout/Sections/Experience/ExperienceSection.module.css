@@ -1,0 +1,746 @@
+/* ===================================================
+   ExperienceSection.css — MD3/Neumorphic Dark (Updated ++)
+   Estructura y acentos cercanos a la captura (depurado)
+   =================================================== */
+
+/* ---------- Header ---------- */
+.section-header.experience {
+  transform: translateY(-2px);
+  box-shadow: inset 0 16px 28px rgb(0 0 0 / 0.45);
+  filter: brightness(1.02);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 auto 10px;
+}
+
+.section-title-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, rgb(192 184 255 / 0.22), rgb(139 92 246 / 0.18));
+  border: 1px solid rgb(192 184 255 / 0.3);
+  color: #0b0e14;
+  box-shadow: var(--elev-2);
+}
+.section-title-icon i {
+  color: #fff;
+  font-size: 22px;
+}
+.section-title-text {
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: 0.2px;
+}
+.section-subtitle {
+  max-width: 900px;
+  margin: 6px auto 10px;
+  color: var(--md-on-variant);
+  line-height: 1.65;
+}
+
+/* ---------- Toggle vistas ---------- */
+.view-toggle-container {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin: 12px auto 18px;
+}
+
+/* Global fallback button utility (disponible si CSS Modules no resuelve la clase) */
+:global(.btn) {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: var(--md-surface-2);
+  border: 1px solid var(--md-outline-weak);
+  color: var(--md-on-surface);
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.16s var(--curve),
+    background 0.16s var(--curve),
+    border-color 0.16s var(--curve),
+    box-shadow 0.18s;
+}
+
+.view-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: var(--md-surface-2);
+  border: 1px solid var(--md-outline-weak);
+  color: var(--md-on-surface);
+  border-radius: 12px;
+  font-weight: 700;
+  transition:
+    transform 0.16s var(--curve),
+    background 0.16s var(--curve),
+    border-color 0.16s var(--curve),
+    box-shadow 0.18s;
+  position: relative; /* crear stacking context para controlar solapamientos */
+  z-index: 1;
+}
+.view-toggle-btn:hover {
+  transform: translateY(-2px) scale(1.04);
+  background: linear-gradient(135deg, #232b3a 80%, #7c8dff 100%);
+  border-color: var(--md-outline);
+  box-shadow: 0 4px 18px rgb(124 141 255 / 0.18);
+  z-index: 3; /* traer al frente mientras se interactúa */
+}
+
+.view-toggle-btn.active {
+  background: linear-gradient(135deg, var(--md-primary), #a794ff 80%);
+  color: #161522;
+  border-color: transparent;
+  box-shadow: 0 12px 32px rgb(192 184 255 / 0.3);
+  filter: brightness(1.08);
+}
+.view-toggle-btn-active {
+  background: linear-gradient(135deg, var(--md-primary), #a794ff 80%);
+  color: #161522;
+  border-color: transparent;
+  box-shadow: 0 12px 32px rgb(192 184 255 / 0.3);
+  filter: brightness(1.08);
+  z-index: 4; /* activo siempre arriba */
+}
+.view-toggle-btn-inactive {
+  /* Estilo explícito para botones no activos: menos apagado, más legible */
+  background: linear-gradient(180deg, rgba(124, 141, 255, 0.04), var(--md-surface-2));
+  color: rgba(255, 255, 255, 0.92); /* ligeramente más legible */
+  border: 1px solid rgba(255, 255, 255, 0.04); /* borde más visible */
+  box-shadow: 0 6px 18px rgba(124, 141, 255, 0.06); /* sombra tenue para separarlo del fondo */
+  filter: brightness(0.98);
+  transition:
+    box-shadow 0.14s,
+    transform 0.14s,
+    filter 0.14s,
+    background 0.14s;
+}
+.view-toggle-btn-inactive:hover {
+  /* Hover más perceptible pero sin superar al botón activo */
+  box-shadow: 0 10px 30px rgba(124, 141, 255, 0.12);
+  transform: translateY(-2px);
+  background: linear-gradient(180deg, rgba(124, 141, 255, 0.06), rgba(124, 141, 255, 0.02));
+  z-index: 2;
+}
+
+.view-toggle-btn:focus-visible {
+  outline: 2px solid rgba(155, 130, 255, 0.18);
+  outline-offset: 3px;
+  z-index: 5;
+}
+.view-toggle-btn i {
+  font-size: 14px;
+}
+
+/* ---------- Stats banner estilo "pill" ---------- */
+.experience-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 240px));
+  gap: 14px;
+  justify-content: center;
+  margin: 8px auto 26px;
+  max-width: 980px;
+}
+
+@media (max-width: 768px) {
+  .experience-stats {
+    grid-template-columns: 1fr;
+    max-width: 300px;
+  }
+}
+
+.stat-item {
+  position: relative;
+  background: linear-gradient(180deg, rgb(16 22 34 / 0.9), rgb(12 18 28 / 0.9));
+  border: 1px solid var(--md-outline-weak);
+  border-radius: 18px;
+  padding: 18px 22px;
+  box-shadow:
+    var(--elev-1),
+    0 0 18px 2px rgb(124 141 255 / 0.1),
+    inset 0 0 0 1px rgb(255 255 255 / 0.02);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  transition:
+    transform 0.18s,
+    box-shadow 0.18s;
+}
+
+.stat-item:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow:
+    0 8px 28px 4px rgb(124 141 255 / 0.2),
+    inset 0 0 0 1px rgb(255 255 255 / 0.04);
+}
+
+.stat-item::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 18px;
+  background: radial-gradient(600px 180px at 50% -40px, rgb(124 141 255 / 0.15), transparent 60%);
+  pointer-events: none;
+}
+
+.stat-number {
+  font-weight: 900;
+  font-size: 28px;
+  background: linear-gradient(90deg, var(--md-primary), #9a7cff);
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 1px 10px rgb(124 141 255 / 0.25);
+}
+.stat-label {
+  color: var(--md-on-variant);
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* ---------- Grid 2 columnas ---------- */
+.experience-grid.traditional-view {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .experience-grid.traditional-view {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Panel columna con borde/glow + rail ---------- */
+.experience-column,
+.education-column {
+  position: relative;
+  overflow: hidden;
+  background: var(--md-surface-1);
+  border: 1px solid var(--md-outline-weak);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow:
+    0 0 32px 6px rgb(45 212 191 / 0.08),
+    0 2px 24px 2px rgb(124 141 255 / 0.1);
+  transition:
+    box-shadow 0.22s,
+    filter 0.18s,
+    transform 0.18s;
+}
+
+.experience-column:hover,
+.education-column:hover {
+  box-shadow:
+    0 0 48px 8px rgb(45 212 191 / 0.12),
+    0 4px 32px 4px rgb(124 141 255 / 0.15);
+  transform: translateY(-2px);
+}
+
+.experience-column::before,
+.education-column::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 16px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.03), rgb(255 255 255 / 0)) border-box;
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.03),
+    0 0 0 1px rgb(0 0 0 / 0.25);
+}
+
+/* Rail único dentro del panel (no usar ::before en timeline) */
+.experience-column::after,
+.education-column::after {
+  content: '';
+  position: absolute;
+  top: 68px;
+  bottom: 16px;
+  left: 21px;
+  width: 3px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, rgb(124 141 255 / 0.9), rgb(154 124 255 / 0.6));
+  filter: drop-shadow(0 0 12px rgb(124 141 255 / 0.7));
+  z-index: 1; /* Reducido para estar por debajo de los markers */
+  pointer-events: none;
+}
+
+.education-column::after {
+  background: linear-gradient(180deg, rgb(45 212 191 / 0.95), rgb(124 255 231 / 0.65));
+  filter: drop-shadow(0 0 12px rgb(45 212 191 / 0.7));
+  z-index: 1; /* Reducido para estar por debajo de los markers */
+  pointer-events: none;
+}
+
+/* ---------- Header de columna sticky ---------- */
+.column-header {
+  position: sticky;
+  top: 8px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 10px 16px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--md-outline-weak);
+  background: linear-gradient(180deg, rgb(16 22 34 / 0.98), rgb(16 22 34 / 0.85));
+  backdrop-filter: blur(8px);
+  box-shadow:
+    inset 0 4px 18px rgb(0 0 0 / 0.25),
+    0 2px 12px rgb(0 0 0 / 0.2);
+  border-radius: 12px 12px 0 0;
+}
+
+.column-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(192 184 255 / 0.5),
+    rgb(154 124 255 / 0.5),
+    transparent
+  );
+  filter: blur(1px);
+}
+
+.education-column .column-header::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(45 212 191 / 0.5),
+    rgb(124 255 231 / 0.5),
+    transparent
+  );
+}
+
+.column-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #141d2a, #1a2332);
+  border: 1px solid var(--md-outline-weak);
+  box-shadow: inset 0 1px 3px rgb(255 255 255 / 0.05);
+}
+.column-icon i {
+  color: var(--md-primary-ctr);
+  font-size: 16px;
+}
+.column-title {
+  margin: 0;
+  font-weight: 800;
+  font-size: 16px;
+}
+.strong-contrast {
+  color: #fff;
+}
+
+/* ---------- Timeline interior (alineado al rail) ---------- */
+.timeline-container {
+  position: relative;
+  padding-left: 38px;
+  padding-top: 10px;
+} /* 21px rail + 17px respiro */
+
+/* Mejorar animación de entrada de items */
+.timeline-item {
+  animation: fade-up 0.7s cubic-bezier(0.23, 1.01, 0.32, 1) both;
+  box-shadow: 0 2px 18px 0 rgb(124 141 255 / 0.08);
+  border-radius: 14px;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: linear-gradient(180deg, rgb(20 26 38 / 0.6), rgb(16 22 34 / 0.8));
+  border: 1px solid var(--md-outline-weak);
+  transition:
+    box-shadow 0.18s,
+    transform 0.18s,
+    background 0.18s;
+}
+
+.timeline-item:hover {
+  box-shadow: 0 6px 32px 0 rgb(124 141 255 / 0.18);
+  transform: translateY(-2px) scale(1.01);
+  background: linear-gradient(180deg, rgb(22 28 42 / 0.7), rgb(18 24 36 / 0.9));
+  filter: brightness(1.08);
+}
+
+/* ---------- Animaciones ---------- */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(15px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ---------- Stats banner estilo “pill” ---------- */
+.experience-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 240px));
+  gap: 14px;
+  justify-content: center;
+  margin: 8px auto 26px;
+  max-width: 980px;
+}
+
+.stat-item {
+  position: relative;
+  background: linear-gradient(180deg, rgb(16 22 34 / 0.9), rgb(12 18 28 / 0.9));
+  border: 1px solid var(--md-outline-weak);
+  border-radius: 18px;
+  padding: 18px 22px;
+  box-shadow:
+    var(--elev-1),
+    0 0 18px 2px rgb(124 141 255 / 0.1),
+    inset 0 0 0 1px rgb(255 255 255 / 0.02);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.stat-item::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 18px;
+  background: radial-gradient(600px 180px at 50% -40px, rgb(124 141 255 / 0.15), transparent 60%);
+  pointer-events: none;
+}
+
+.stat-number {
+  font-weight: 900;
+  font-size: 28px;
+  background: linear-gradient(90deg, var(--md-primary), #9a7cff);
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 1px 10px rgb(124 141 255 / 0.25);
+}
+.stat-label {
+  color: var(--md-on-variant);
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* ---------- Grid 2 columnas ---------- */
+.experience-grid.traditional-view {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .experience-grid.traditional-view {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Panel columna con borde/glow + rail ---------- */
+.experience-column,
+.education-column {
+  position: relative;
+  overflow: hidden;
+  background: var(--md-surface-1);
+  border: 1px solid var(--md-outline-weak);
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow:
+    0 0 32px 6px rgb(45 212 191 / 0.08),
+    0 2px 24px 2px rgb(124 141 255 / 0.1);
+  transition:
+    box-shadow 0.22s,
+    filter 0.18s;
+}
+
+.experience-column::before,
+.education-column::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 16px;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.02), rgb(255 255 255 / 0)) border-box;
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.02),
+    0 0 0 1px rgb(0 0 0 / 0.25);
+  filter: blur(1px);
+}
+
+/* Rail único dentro del panel (no usar ::before en timeline) */
+.experience-column::after,
+.education-column::after {
+  content: '';
+  position: absolute;
+  top: 119px;
+  bottom: 16px;
+  left: 19px;
+  width: 2px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, rgb(124 141 255 / 0.9), rgb(154 124 255 / 0.6));
+  filter: drop-shadow(0 0 10px rgb(124 141 255 / 0.65));
+}
+
+.education-column::after {
+  background: linear-gradient(180deg, rgb(45 212 191 / 0.95), rgb(124 255 231 / 0.65));
+  filter: drop-shadow(0 0 10px rgb(45 212 191 / 0.65));
+}
+
+/* ---------- Header de columna sticky ---------- */
+.column-header {
+  position: sticky;
+  top: 8px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 8px 14px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--md-outline-weak);
+  background: linear-gradient(180deg, rgb(16 22 34 / 0.96), rgb(16 22 34 / 0.78));
+  backdrop-filter: blur(6px);
+  box-shadow: inset 0 4px 18px rgb(0 0 0 / 0.25);
+  border-top-right-radius: 12px;
+}
+
+.column-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(192 184 255 / 0.45),
+    rgb(154 124 255 / 0.45),
+    transparent
+  );
+}
+
+.education-column .column-header::after {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgb(45 212 191 / 0.45),
+    rgb(124 255 231 / 0.45),
+    transparent
+  );
+}
+
+.column-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: #141d2a;
+  border: 1px solid var(--md-outline-weak);
+}
+.column-icon i {
+  color: var(--md-primary-ctr);
+}
+.column-title {
+  margin: 0;
+  font-weight: 800;
+}
+.strong-contrast {
+  color: #fff;
+}
+
+/* ---------- Timeline interior (alineado al rail) ---------- */
+.timeline-container {
+  position: relative;
+  padding-left: 34px;
+} /* 19px rail + 15px respiro */
+/* Mejorar animación de entrada de items */
+.timeline-item {
+  animation: fade-up 0.7s cubic-bezier(0.23, 1.01, 0.32, 1) both;
+  box-shadow: 0 2px 18px 0 rgb(124 141 255 / 0.08);
+  border-radius: 12px;
+  transition:
+    box-shadow 0.18s,
+    transform 0.18s;
+}
+.timeline-item:hover {
+  box-shadow: 0 6px 32px 0 rgb(124 141 255 / 0.18);
+  transform: scale(1.02);
+  filter: brightness(1.08);
+}
+
+/* ---------- Animaciones ---------- */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Vista Cronológica ---------- */
+.chronological-view {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  position: relative;
+}
+
+.chronological-timeline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Línea central vertical */
+.timeline-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: linear-gradient(
+    180deg,
+    rgb(124 141 255 / 0.9) 0%,
+    rgb(45 212 191 / 0.9) 30%,
+    rgb(56 178 172 / 0.9) 50%,
+    rgb(45 212 191 / 0.9) 70%,
+    rgb(154 124 255 / 0.9) 100%
+  );
+  border-radius: 3px;
+  transform: translateX(-50%);
+  z-index: 1;
+  box-shadow:
+    0 0 30px rgb(124 141 255 / 0.4),
+    0 0 60px rgb(45 212 191 / 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  animation: pulse-line 3s ease-in-out infinite;
+}
+
+@keyframes pulse-line {
+  0%,
+  100% {
+    box-shadow:
+      0 0 30px rgb(124 141 255 / 0.4),
+      0 0 60px rgb(45 212 191 / 0.3),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 40px rgb(124 141 255 / 0.6),
+      0 0 80px rgb(45 212 191 / 0.5),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Responsive para la vista cronológica */
+@media (max-width: 768px) {
+  .chronological-view {
+    padding: 1rem 0.5rem;
+  }
+
+  .timeline-line {
+    display: none;
+  }
+}
+
+/* ---------- Loading / Error / Admin minimal styles ---------- */
+.experienceLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 48px 16px;
+  min-height: 220px;
+  text-align: center;
+  color: var(--md-on-surface, #e6eef8);
+}
+.loadingSpinner {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.08);
+  border-top-color: var(--md-primary, #7c8dff);
+  animation: spin 900ms linear infinite;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.loadingDetails small {
+  color: var(--md-on-variant, #9aa6bf);
+  display: block;
+  margin-top: 6px;
+}
+
+.experienceError {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 28px;
+  border-radius: 12px;
+  min-height: 180px;
+  background: var(--md-surface-1, rgba(11, 14, 20, 0.6));
+  border: 1px solid rgba(255, 80, 80, 0.12);
+  color: var(--md-error, #ff6b6b);
+  text-align: center;
+}
+.retryButton {
+  margin-top: 6px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: linear-gradient(90deg, var(--md-primary, #7c8dff), #9a7cff);
+  color: #0b0e14;
+  font-weight: 700;
+  box-shadow: var(--elev-1, 0 6px 20px rgba(0, 0, 0, 0.25));
+}
+.retryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.adminEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 18px;
+  color: var(--md-on-variant, #9aa6bf);
+  text-align: center;
+}

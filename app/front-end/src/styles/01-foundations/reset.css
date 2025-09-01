@@ -1,0 +1,10 @@
+/* Archivo placeholder: reglas de reset base.
+	Este archivo estaba vacío y causaba errores en postcss/vite.
+	Añade aquí tus reset globales cuando sea necesario. */
+
+/* Ejemplo mínimo seguro */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}

@@ -1,0 +1,169 @@
+/* layout.css — utilidades de layout, grids y breakpoints extraídos */
+.section-container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.content-grid.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.content-grid.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.content-grid.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+}
+
+/* Utilities */
+.mb-xs {
+  margin-bottom: var(--md-sys-spacing-xs);
+}
+
+.mb-sm {
+  margin-bottom: var(--md-sys-spacing-sm);
+}
+
+.mb-md {
+  margin-bottom: var(--md-sys-spacing-md);
+}
+
+.mb-lg {
+  margin-bottom: var(--md-sys-spacing-lg);
+}
+
+.mb-xl {
+  margin-bottom: var(--md-sys-spacing-xl);
+}
+
+.p-xs {
+  padding: var(--md-sys-spacing-xs);
+}
+
+.p-sm {
+  padding: var(--md-sys-spacing-sm);
+}
+
+.p-md {
+  padding: var(--md-sys-spacing-md);
+}
+
+.p-lg {
+  padding: var(--md-sys-spacing-lg);
+}
+
+.p-xl {
+  padding: var(--md-sys-spacing-xl);
+}
+
+/* Breakpoints */
+@media (max-width: 1024px) {
+  .section-container {
+    padding: 1.5rem;
+  }
+
+  .content-grid.grid-2,
+  .content-grid.grid-3,
+  .content-grid.grid-4 {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .section-container {
+    padding: 1rem;
+    max-width: 100%;
+  }
+
+  .section-header {
+    padding: 1.5rem 1rem 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .section-title-icon {
+    width: 3rem;
+    height: 3rem;
+    font-size: 1.25rem;
+    margin: 1rem;
+  }
+
+  .section-title-text {
+    font-size: 2rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-container {
+    padding: 0.75rem;
+  }
+
+  .section-header {
+    padding: 1rem 0.75rem 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1rem;
+    margin: 0.75rem;
+  }
+
+  .section-title-text {
+    font-size: 1.75rem;
+  }
+
+  .section-subtitle {
+    font-size: 0.9rem;
+  }
+}
+
+.section-disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.section-hidden {
+  display: none;
+}
+
+.section-loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+}
+
+/* Dark-mode adjustments for layout components */
+.section-card {
+  border-color: var(--md-sys-color-outline);
+}
+
+.section-header {
+  color: var(--md-sys-color-on-surface);
+  padding: 2rem 2rem 1rem;
+  margin-bottom: 3rem;
+  border-radius: var(--radius-2xl);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.title-icon {
+  box-shadow: var(--md-elevation-3);
+}

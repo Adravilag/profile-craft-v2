@@ -1,0 +1,1140 @@
+/* src/components/terminal/terminal.css */
+
+/* =============================================================================
+   INTERACTIVE TERMINAL - Estilos CSS
+   ============================================================================= */
+
+.interactive-terminal-container {
+  background-color: #1e1e1e;
+  color: #e5e5e5;
+  font-family:
+    'Consolas', 'Monaco', 'Lucida Console', 'Liberation Mono', 'DejaVu Sans Mono',
+    'Bitstream Vera Sans Mono', 'Courier New', monospace;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  max-width: 900px;
+  position: relative;
+  /* Removed terminalGlow animation for immediate display */
+}
+
+/* Terminal Header */
+.interactive-terminal-header {
+  background: #323233;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #404040;
+  user-select: none;
+  position: relative;
+}
+
+.interactive-terminal-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+}
+
+.interactive-terminal-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.interactive-terminal-button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.interactive-terminal-button:hover {
+  transform: scale(1.1);
+  filter: brightness(1.2);
+}
+
+.interactive-terminal-button.close {
+  background: #ff5f57;
+}
+
+.interactive-terminal-button.minimize {
+  background: #ffbd2e;
+}
+
+.interactive-terminal-button.maximize {
+  background: #28ca42;
+}
+
+.interactive-terminal-title {
+  flex: 1;
+  text-align: center;
+  color: #ccc;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+.interactive-terminal-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.interactive-terminal-clear-btn {
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  font-size: 11px;
+}
+
+.interactive-terminal-clear-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* Terminal Body */
+.interactive-terminal-body {
+  padding: 16px;
+  height: 400px;
+  overflow-y: auto;
+  background: #1e1e1e;
+  position: relative;
+}
+
+.interactive-terminal-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.interactive-terminal-body::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.interactive-terminal-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.interactive-terminal-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Terminal Output */
+.interactive-terminal-output {
+  color: #e5e5e5;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-bottom: 16px;
+}
+
+/* Terminal Lines */
+.interactive-terminal-line {
+  margin-bottom: 4px;
+  /* Removed fadeInLine animation for immediate display */
+}
+
+.interactive-command-line {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+/* Prompt Styling */
+.interactive-terminal-prompt {
+  margin-right: 8px;
+  user-select: none;
+  display: flex;
+  align-items: center;
+}
+
+.interactive-terminal-prompt .user {
+  color: #87ceeb;
+  font-weight: 600;
+}
+
+.interactive-terminal-prompt .at {
+  color: #e5e5e5;
+  margin: 0 2px;
+}
+
+.interactive-terminal-prompt .host {
+  color: #98fb98;
+  font-weight: 600;
+}
+
+.interactive-terminal-prompt .separator {
+  color: #e5e5e5;
+  margin: 0 2px;
+}
+
+.interactive-terminal-prompt .path {
+  color: #dda0dd;
+  font-weight: 500;
+}
+
+.interactive-terminal-prompt .dollar {
+  color: #e5e5e5;
+  margin-left: 4px;
+  font-weight: bold;
+}
+
+/* Input Field */
+.interactive-terminal-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e5e5e5;
+  font-family: inherit;
+  font-size: 14px;
+  flex: 1;
+  caret-color: #00ff00;
+  min-width: 0;
+  transition: opacity 0.2s ease;
+}
+
+.interactive-terminal-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.interactive-terminal-input::placeholder {
+  color: #666;
+  font-style: italic;
+}
+
+.interactive-terminal-input:disabled::placeholder {
+  color: #444;
+}
+
+/* Output Lines */
+.interactive-output-line {
+  margin-left: 4px;
+  padding-left: 4px;
+}
+
+/* Typewriter effect for output */
+.typewriter-output {
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 2px solid #00ff00;
+  animation:
+    typewriter 0.8s steps(50, end),
+    blinkCaret 1s step-end infinite;
+}
+
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blinkCaret {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: #00ff00;
+  }
+}
+
+/* Line-by-line reveal animation - Removed for immediate display */
+.line-reveal {
+  opacity: 1;
+  /* Removed lineReveal animation for immediate display */
+}
+
+/* Typing cursor effect */
+.typing-cursor::after {
+  content: '█';
+  color: #00ff00;
+  animation: cursorBlink 1.2s infinite;
+  margin-left: 2px;
+}
+
+@keyframes cursorBlink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Enhanced command animation */
+.command-executing {
+  opacity: 0.8;
+  transform: translateX(4px);
+  transition: all 0.2s ease-out;
+}
+
+/* Typing indicator */
+.typing-indicator {
+  color: #87ceeb;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.typing-dots {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.typing-dots span {
+  animation: typingDots 1.4s infinite;
+  color: #00ff00;
+  font-weight: bold;
+}
+
+.typing-dots span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typingDots {
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.typing-text {
+  color: #666;
+  font-size: 13px;
+}
+
+@keyframes typewriterOutput {
+  0% {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.interactive-output-line.success {
+  color: #00ff00;
+}
+
+.interactive-output-line.error {
+  color: #ff6b6b;
+}
+
+.interactive-output-line.warning {
+  color: #ffa500;
+}
+
+/* Current Input Line */
+.interactive-current-input {
+  display: flex;
+  align-items: center;
+  background: #1e1e1e;
+  padding: 4px 0;
+  margin-top: 8px;
+}
+
+/* Autocompletado */
+.interactive-autocomplete {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  background: #2d2d2d;
+  border: 1px solid #404040;
+  border-radius: 4px;
+  max-height: 120px;
+  overflow-y: auto;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.interactive-autocomplete-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-size: 13px;
+}
+
+.interactive-autocomplete-item:hover,
+.interactive-autocomplete-item.selected {
+  background: #404040;
+  color: #00ff00;
+}
+
+.interactive-autocomplete-item.selected {
+  background: #4a4a4a;
+}
+
+/* Cursor Animation */
+.interactive-cursor {
+  color: #00ff00;
+  font-weight: bold;
+  animation: blink 1s infinite;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Welcome Message */
+.interactive-welcome {
+  color: #87ceeb;
+  margin-bottom: 16px;
+  padding: 12px;
+  border-left: 3px solid #00ff00;
+  background: rgba(0, 255, 0, 0.05);
+  border-radius: 0 4px 4px 0;
+}
+
+.interactive-welcome h3 {
+  margin: 0 0 8px 0;
+  color: #00ff00;
+  font-size: 16px;
+}
+
+.interactive-welcome p {
+  margin: 4px 0;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Command History */
+.interactive-history-item {
+  opacity: 0.8;
+}
+
+.interactive-history-item:last-child {
+  opacity: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .interactive-terminal-container {
+    border-radius: 0;
+    margin: 0;
+    max-width: 100%;
+  }
+
+  .interactive-terminal-body {
+    height: 350px;
+    padding: 12px;
+  }
+
+  .interactive-terminal-output {
+    font-size: 13px;
+  }
+
+  .interactive-terminal-title {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .interactive-terminal-body {
+    height: 300px;
+    padding: 8px;
+  }
+
+  .interactive-terminal-output {
+    font-size: 12px;
+  }
+
+  .interactive-terminal-prompt {
+    margin-right: 4px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .interactive-terminal-container,
+  .interactive-terminal-line,
+  .interactive-cursor,
+  .interactive-output-line {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .interactive-cursor {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .interactive-terminal-container {
+    border: 2px solid currentColor;
+  }
+
+  .interactive-terminal-header {
+    border-bottom: 2px solid currentColor;
+  }
+}
+
+/* Focus styles */
+.interactive-terminal-input:focus {
+  outline: none;
+}
+
+.interactive-terminal-clear-btn:focus {
+  outline: 2px solid #00ff00;
+  outline-offset: 2px;
+}
+
+/* =============================================================================
+   TYPEWRITER CHARACTER-BY-CHARACTER EFFECTS
+   ============================================================================= */
+
+/* Cursor del typewriter */
+.typewriter-cursor {
+  animation: blink 1s infinite;
+  color: #00ff00;
+  font-weight: bold;
+  margin-left: 1px;
+}
+
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Contenedor activo del typewriter */
+.typewriter-active {
+  position: relative;
+}
+
+/* Línea actual siendo escrita */
+.typewriter-current {
+  position: relative;
+  display: inline-block;
+}
+
+/* =============================================================================
+   EFECTOS ESPECIALES
+   ============================================================================= */
+
+/* Efecto Hack */
+.hack-effect {
+  color: #00ff00 !important;
+  text-shadow: 0 0 5px #00ff00;
+  font-family: 'Courier New', monospace;
+  position: relative;
+}
+
+.hack-effect::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(transparent 50%, rgba(0, 255, 0, 0.03) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Efecto Undertale */
+.undertale-effect {
+  color: #fff !important;
+  text-shadow:
+    0 0 3px #fff,
+    0 0 6px #fff;
+  font-weight: bold;
+  position: relative;
+}
+
+.undertale-effect::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Animación de glitch para el modo hack */
+@keyframes glitch {
+  0% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-1px, 1px);
+  }
+  40% {
+    transform: translate(-1px, -1px);
+  }
+  60% {
+    transform: translate(1px, 1px);
+  }
+  80% {
+    transform: translate(1px, -1px);
+  }
+  100% {
+    transform: translate(0);
+  }
+}
+
+.hack-effect .typewriter-cursor {
+  color: #00ff00;
+  text-shadow: 0 0 8px #00ff00;
+  animation:
+    blink 0.5s infinite,
+    glitch 2s ease-in-out infinite;
+}
+
+.undertale-effect .typewriter-cursor {
+  color: #fff;
+  text-shadow:
+    0 0 5px #fff,
+    0 0 10px #fff;
+  animation: blink 0.8s infinite;
+}
+
+/* =============================================================================
+   EFECTOS DE TERREMOTO/TEMBLOR PARA COMANDO HACK
+   ============================================================================= */
+
+/* Temblor del contenedor completo de la terminal */
+@keyframes earthquakeContainer {
+  0% {
+    transform: translate(0);
+  }
+  10% {
+    transform: translate(-2px, -1px) rotate(-0.5deg);
+  }
+  20% {
+    transform: translate(-1px, 2px) rotate(0.3deg);
+  }
+  30% {
+    transform: translate(3px, 1px) rotate(-0.2deg);
+  }
+  40% {
+    transform: translate(-1px, -1px) rotate(0.4deg);
+  }
+  50% {
+    transform: translate(2px, 2px) rotate(-0.1deg);
+  }
+  60% {
+    transform: translate(-2px, 1px) rotate(0.2deg);
+  }
+  70% {
+    transform: translate(1px, -2px) rotate(-0.3deg);
+  }
+  80% {
+    transform: translate(-1px, 3px) rotate(0.1deg);
+  }
+  90% {
+    transform: translate(2px, -1px) rotate(-0.4deg);
+  }
+  100% {
+    transform: translate(0) rotate(0deg);
+  }
+}
+
+/* Temblor intenso para líneas individuales */
+@keyframes earthquakeLine {
+  0% {
+    transform: translateX(0);
+  }
+  5% {
+    transform: translateX(-3px);
+  }
+  10% {
+    transform: translateX(2px);
+  }
+  15% {
+    transform: translateX(-1px);
+  }
+  20% {
+    transform: translateX(4px);
+  }
+  25% {
+    transform: translateX(-2px);
+  }
+  30% {
+    transform: translateX(1px);
+  }
+  35% {
+    transform: translateX(-3px);
+  }
+  40% {
+    transform: translateX(3px);
+  }
+  45% {
+    transform: translateX(-1px);
+  }
+  50% {
+    transform: translateX(2px);
+  }
+  55% {
+    transform: translateX(-4px);
+  }
+  60% {
+    transform: translateX(1px);
+  }
+  65% {
+    transform: translateX(-2px);
+  }
+  70% {
+    transform: translateX(3px);
+  }
+  75% {
+    transform: translateX(-1px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+  85% {
+    transform: translateX(-3px);
+  }
+  90% {
+    transform: translateX(1px);
+  }
+  95% {
+    transform: translateX(-1px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Temblor de caracteres individuales */
+@keyframes earthquakeChar {
+  0% {
+    transform: translate(0, 0);
+  }
+  8% {
+    transform: translate(-1px, -1px);
+  }
+  16% {
+    transform: translate(1px, 1px);
+  }
+  24% {
+    transform: translate(-1px, 1px);
+  }
+  32% {
+    transform: translate(1px, -1px);
+  }
+  40% {
+    transform: translate(-2px, 0);
+  }
+  48% {
+    transform: translate(2px, -1px);
+  }
+  56% {
+    transform: translate(0, 1px);
+  }
+  64% {
+    transform: translate(-1px, -2px);
+  }
+  72% {
+    transform: translate(1px, 0);
+  }
+  80% {
+    transform: translate(-1px, 1px);
+  }
+  88% {
+    transform: translate(0, -1px);
+  }
+  96% {
+    transform: translate(1px, 1px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* Efecto de distorsión para texto durante hack */
+@keyframes textDistortion {
+  0% {
+    filter: blur(0px);
+    text-shadow: 0 0 0 transparent;
+  }
+  25% {
+    filter: blur(0.5px);
+    text-shadow:
+      -1px 0 #ff0000,
+      1px 0 #00ff00;
+  }
+  50% {
+    filter: blur(1px);
+    text-shadow:
+      -2px 0 #ff0000,
+      2px 0 #00ff00,
+      0 -1px #0000ff;
+  }
+  75% {
+    filter: blur(0.5px);
+    text-shadow:
+      -1px 0 #ff0000,
+      1px 0 #00ff00;
+  }
+  100% {
+    filter: blur(0px);
+    text-shadow: 0 0 0 transparent;
+  }
+}
+
+/* Efecto de glitch con colores separados */
+@keyframes glitchHack {
+  0% {
+    transform: translate(0);
+    color: #00ff00;
+  }
+  20% {
+    transform: translate(-2px, 1px);
+    color: #ff0040;
+    text-shadow: 2px 0 #00ff40;
+  }
+  40% {
+    transform: translate(-1px, -2px);
+    color: #40ff00;
+    text-shadow: -1px 0 #ff4000;
+  }
+  60% {
+    transform: translate(2px, 1px);
+    color: #0040ff;
+    text-shadow: 1px 0 #ff0040;
+  }
+  80% {
+    transform: translate(1px, -1px);
+    color: #ff4000;
+    text-shadow: -2px 0 #00ff40;
+  }
+  100% {
+    transform: translate(0);
+    color: #00ff00;
+    text-shadow: none;
+  }
+}
+
+/* Clases para aplicar efectos de terremoto */
+.earthquake-container {
+  animation: earthquakeContainer 0.3s ease-in-out infinite;
+}
+
+.earthquake-line {
+  animation: earthquakeLine 0.15s ease-in-out infinite;
+}
+
+.earthquake-char {
+  display: inline-block;
+  animation: earthquakeChar 0.1s ease-in-out infinite;
+}
+
+.hack-distortion {
+  animation: textDistortion 0.4s ease-in-out infinite;
+}
+
+.hack-glitch {
+  animation: glitchHack 0.2s ease-in-out infinite;
+}
+
+/* Combinación de efectos para hack intenso */
+.hack-earthquake-intense {
+  animation:
+    earthquakeContainer 0.2s ease-in-out infinite,
+    textDistortion 0.3s ease-in-out infinite;
+}
+
+.hack-earthquake-intense .interactive-terminal-line {
+  animation: earthquakeLine 0.1s ease-in-out infinite;
+}
+
+.hack-earthquake-intense .earthquake-char {
+  animation:
+    earthquakeChar 0.08s ease-in-out infinite,
+    glitchHack 0.25s ease-in-out infinite;
+}
+
+/* Efectos de pulsación para el contenedor durante hack */
+@keyframes hackPulse {
+  0% {
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 2px 8px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 8px 32px rgba(255, 0, 0, 0.3),
+      0 2px 8px rgba(0, 255, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      0 0 20px rgba(0, 255, 0, 0.3);
+  }
+  100% {
+    box-shadow:
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 2px 8px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+}
+
+.hack-pulse {
+  animation: hackPulse 0.5s ease-in-out infinite;
+}
+
+/* =============================================================================
+   EFECTOS DRAMÁTICOS PARA MODO OSCURO DURANTE HACK
+   ============================================================================= */
+
+/* Efectos intensificados para hack en modo oscuro */
+.hack-dark-mode {
+  background-color: #0a0a0a !important;
+  border: 2px solid #ff0000;
+  box-shadow:
+    0 0 30px rgba(255, 0, 0, 0.5),
+    0 0 60px rgba(0, 255, 0, 0.3),
+    inset 0 0 20px rgba(255, 0, 0, 0.2) !important;
+}
+
+/* Header dramático en modo oscuro */
+.hack-dark-mode .interactive-terminal-header {
+  background: linear-gradient(135deg, #1a0000 0%, #000f00 50%, #001a00 100%);
+  border-bottom-color: #ff0000;
+  animation: headerGlitch 0.3s ease-in-out infinite;
+}
+
+@keyframes headerGlitch {
+  0% {
+    background: linear-gradient(135deg, #1a0000 0%, #000f00 50%, #001a00 100%);
+  }
+  25% {
+    background: linear-gradient(135deg, #000f00 0%, #001a00 50%, #1a0000 100%);
+  }
+  50% {
+    background: linear-gradient(135deg, #001a00 0%, #1a0000 50%, #000f00 100%);
+  }
+  75% {
+    background: linear-gradient(135deg, #000f00 0%, #1a0000 50%, #001a00 100%);
+  }
+  100% {
+    background: linear-gradient(135deg, #1a0000 0%, #000f00 50%, #001a00 100%);
+  }
+}
+
+/* Título del terminal más dramático en modo oscuro */
+.hack-dark-mode .interactive-terminal-title {
+  color: #ff0000;
+  text-shadow:
+    0 0 5px #ff0000,
+    0 0 10px #00ff00,
+    0 0 15px #ff0000;
+  animation: titleFlicker 0.2s ease-in-out infinite;
+}
+
+@keyframes titleFlicker {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Botón clear más prominente en modo oscuro */
+.hack-dark-mode .interactive-terminal-clear-btn {
+  background-color: #ff0000 !important;
+  color: #ffffff !important;
+  border: 1px solid #00ff00;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+  animation: buttonPulse 0.5s ease-in-out infinite;
+}
+
+@keyframes buttonPulse {
+  0% {
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.7);
+    transform: scale(1.05);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+    transform: scale(1);
+  }
+}
+
+/* Efectos de línea más intensos en modo oscuro */
+.hack-dark-mode .earthquake-line {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.1) 0%,
+    rgba(0, 255, 0, 0.1) 50%,
+    rgba(255, 0, 0, 0.1) 100%
+  );
+  border-left: 2px solid #ff0000;
+  animation:
+    earthquakeLine 0.1s ease-in-out infinite,
+    lineGlow 1s ease-in-out infinite;
+}
+
+@keyframes lineGlow {
+  0% {
+    border-left-color: #ff0000;
+  }
+  25% {
+    border-left-color: #00ff00;
+  }
+  50% {
+    border-left-color: #0000ff;
+  }
+  75% {
+    border-left-color: #ffff00;
+  }
+  100% {
+    border-left-color: #ff0000;
+  }
+}
+
+/* Texto con efectos matrix en modo oscuro */
+.hack-dark-mode .hack-effect {
+  color: #00ff00 !important;
+  text-shadow:
+    0 0 5px #00ff00,
+    0 0 10px #00ff00,
+    0 0 15px #00ff00;
+  animation: textGlow 0.3s ease-in-out infinite;
+}
+
+@keyframes textGlow {
+  0% {
+    text-shadow:
+      0 0 5px #00ff00,
+      0 0 10px #00ff00,
+      0 0 15px #00ff00;
+  }
+  50% {
+    text-shadow:
+      0 0 10px #ff0000,
+      0 0 20px #ff0000,
+      0 0 30px #ff0000;
+  }
+  100% {
+    text-shadow:
+      0 0 5px #00ff00,
+      0 0 10px #00ff00,
+      0 0 15px #00ff00;
+  }
+}
+
+/* Prompt más dramático en modo oscuro */
+.hack-dark-mode .interactive-terminal-prompt {
+  color: #ff0000 !important;
+  text-shadow: 0 0 5px #ff0000;
+  animation: promptGlitch 0.4s ease-in-out infinite;
+}
+
+@keyframes promptGlitch {
+  0% {
+    color: #ff0000;
+  }
+  33% {
+    color: #00ff00;
+  }
+  66% {
+    color: #0000ff;
+  }
+  100% {
+    color: #ff0000;
+  }
+}
+
+/* Input más dramático en modo oscuro */
+.hack-dark-mode .interactive-terminal-input {
+  background-color: rgba(255, 0, 0, 0.1) !important;
+  border: 1px solid #00ff00;
+  color: #00ff00 !important;
+  text-shadow: 0 0 3px #00ff00;
+  box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.2);
+}
+
+/* =============================================================================
+   FIN EFECTOS DRAMÁTICOS PARA MODO OSCURO
+   ============================================================================= */
+
+/* Intensidad alta del hack */
+.hack-intensity-high {
+  animation:
+    hackPulse 0.3s ease-in-out infinite,
+    hackShake 0.2s ease-in-out infinite;
+}
+
+@keyframes hackShake {
+  0% {
+    transform: translateX(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateX(-2px) rotate(-0.5deg);
+  }
+  50% {
+    transform: translateX(2px) rotate(0.5deg);
+  }
+  75% {
+    transform: translateX(-1px) rotate(-0.25deg);
+  }
+  100% {
+    transform: translateX(0px) rotate(0deg);
+  }
+}

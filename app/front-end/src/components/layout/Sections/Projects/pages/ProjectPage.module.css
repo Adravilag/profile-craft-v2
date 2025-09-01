@@ -1,0 +1,1466 @@
+/* ================================
+   WORDPRESS-STYLE ARTICLE PAGE
+   ================================ */
+
+/* ================================
+   CONTENEDOR PRINCIPAL - WORDPRESS STYLE
+   ================================ */
+.projectPage {
+  min-height: 100vh;
+  background: #fff;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+    'Helvetica Neue', sans-serif;
+  position: relative;
+  overflow-x: hidden;
+  line-height: 1.75;
+  color: #1e1e1e;
+}
+
+.projectPage {
+  background: #0d1117;
+  color: #f0f6fc;
+}
+
+.projectContainer {
+  min-height: 100vh;
+  background: transparent;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ================================
+   WORDPRESS HEADER
+   ================================ */
+.wordpressHeader {
+  background: rgb(255, 255, 255, 0.95);
+  border-bottom: 1px solid #e1e4e8;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 1px 3px rgb(0, 0, 0, 0.1);
+}
+
+.wordpressHeader {
+  background: rgb(13, 17, 23, 0.95);
+  border-bottom: 1px solid #30363d;
+}
+
+/* ================================
+   NAVEGACIÓN - WORDPRESS STYLE
+   ================================ */
+.projectNavigation {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  color: #24292f;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.15s ease;
+}
+
+.backButton {
+  border-color: #30363d;
+  color: #f0f6fc;
+}
+
+.backButton:hover {
+  background: #f6f8fa;
+  border-color: #d0d7de;
+}
+
+.backButton:hover {
+  background: #21262d;
+  border-color: #8b949e;
+}
+
+.progressIndicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: #0969da;
+  border-radius: 1px;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+
+.progressIndicator {
+  background: #58a6ff;
+}
+
+/* ================================
+   CONTENIDO PRINCIPAL - WORDPRESS STYLE
+   ================================ */
+.mainContent {
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 60px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ================================
+   WORDPRESS ARTICLE HEADER
+   ================================ */
+.wordpressProjectHeader {
+  text-align: center;
+  margin-bottom: 48px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid #e1e4e8;
+}
+
+.wordpressProjectHeader {
+  border-bottom-color: #30363d;
+}
+
+.wordpressCategory {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #0969da;
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 16px;
+  margin-bottom: 16px;
+  transition: background-color 0.15s ease;
+}
+
+.wordpressCategory {
+  background: #58a6ff;
+  color: #0d1117;
+}
+
+.wordpressCategory:hover {
+  background: #0550ae;
+}
+
+.wordpressCategory:hover {
+  background: #79c0ff;
+}
+
+.wordpressTitle {
+  font-size: clamp(28px, 5vw, 48px);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 16px;
+  color: #1e1e1e;
+  letter-spacing: -0.5px;
+}
+
+.wordpressTitle {
+  color: #f0f6fc;
+}
+
+.wordpressExcerpt {
+  font-size: 18px;
+  line-height: 1.6;
+  color: #656d76;
+  margin: 0 0 24px;
+  font-weight: 400;
+}
+
+.wordpressExcerpt {
+  color: #8b949e;
+}
+
+/* ================================
+   WORDPRESS POST META
+   ================================ */
+.wordpressPostMeta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: #656d76;
+  margin-bottom: 32px;
+}
+
+.wordpressPostMeta {
+  color: #8b949e;
+}
+
+.wordpressMetaItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wordpressMetaIcon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.8;
+}
+
+.wordpressMetaText {
+  font-weight: 500;
+}
+
+.wordpressDivider {
+  width: 1px;
+  height: 16px;
+  background: #d0d7de;
+}
+
+.wordpressDivider {
+  background: #30363d;
+}
+
+/* ================================
+   WORDPRESS TECHNOLOGIES SECTION
+   ================================ */
+.wordpressTechnologies {
+  margin-bottom: 48px;
+  padding: 24px;
+  background: #f6f8fa;
+  border-radius: 8px;
+  border: 1px solid #d0d7de;
+}
+
+.wordpressTechnologies {
+  background: #161b22;
+  border-color: #30363d;
+}
+
+.wordpressTechHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.wordpressTechIcon {
+  width: 20px;
+  height: 20px;
+  color: #0969da;
+}
+
+.wordpressTechIcon {
+  color: #58a6ff;
+}
+
+.wordpressTechTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e1e1e;
+  margin: 0;
+}
+
+.wordpressTechTitle {
+  color: #f0f6fc;
+}
+
+.wordpressTechList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.wordpressTechChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #24292f;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.wordpressTechChip {
+  background: #21262d;
+  border-color: #30363d;
+  color: #f0f6fc;
+}
+
+.wordpressTechChip:hover {
+  background: #f6f8fa;
+  border-color: #8c959f;
+  transform: translateY(-1px);
+}
+
+.wordpressTechChip:hover {
+  background: #30363d;
+  border-color: #8b949e;
+}
+
+/* ================================
+   WORDPRESS ACTION BUTTONS
+   ================================ */
+.wordpressActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 48px;
+}
+
+.wordpressActionButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.wordpressActionPrimary {
+  background: #0969da;
+  color: #fff;
+  border: 1px solid #0969da;
+}
+
+.wordpressActionPrimary:hover {
+  background: #0550ae;
+  border-color: #0550ae;
+  transform: translateY(-1px);
+}
+
+.wordpressActionSecondary {
+  background: #fff;
+  color: #24292f;
+  border: 1px solid #d0d7de;
+}
+
+.wordpressActionSecondary {
+  background: #21262d;
+  color: #f0f6fc;
+  border-color: #30363d;
+}
+
+.wordpressActionSecondary:hover {
+  background: #f6f8fa;
+  border-color: #8c959f;
+  transform: translateY(-1px);
+}
+
+.wordpressActionSecondary:hover {
+  background: #30363d;
+  border-color: #8b949e;
+}
+
+.wordpressActionYoutube {
+  background: #f00;
+  color: #fff;
+  border-color: #f00;
+}
+
+.wordpressActionYoutube {
+  background: #f00;
+  color: #fff;
+  border-color: #f00;
+}
+
+.wordpressActionYoutube:hover {
+  background: #c00;
+  border-color: #c00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgb(255, 0, 0, 0.3);
+}
+
+.wordpressActionYoutube:hover {
+  background: #c00;
+  border-color: #c00;
+  box-shadow: 0 4px 12px rgb(255, 0, 0, 0.4);
+}
+
+/* ================================
+   WORDPRESS ARTICLE CONTENT
+   ================================ */
+.wordpressProjectContent {
+  background: #fff;
+  padding: 0;
+  margin-bottom: 48px;
+  position: relative;
+}
+
+.wordpressProjectContent {
+  background: #0d1117;
+}
+
+.wordpressProse {
+  color: #1e1e1e;
+  line-height: 1.75;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.wordpressProse {
+  color: #f0f6fc;
+}
+
+.wordpressProse h1,
+.wordpressProse h2,
+.wordpressProse h3,
+.wordpressProse h4,
+.wordpressProse h5,
+.wordpressProse h6 {
+  color: #1e1e1e;
+  font-weight: 700;
+  margin-top: 32px;
+  margin-bottom: 16px;
+  line-height: 1.3;
+}
+
+.wordpressProse h1,
+.wordpressProse h2,
+.wordpressProse h3,
+.wordpressProse h4,
+.wordpressProse h5,
+.wordpressProse h6 {
+  color: #f0f6fc;
+}
+
+.wordpressProse h1 {
+  font-size: 36px;
+}
+.wordpressProse h2 {
+  font-size: 30px;
+}
+.wordpressProse h3 {
+  font-size: 24px;
+}
+.wordpressProse h4 {
+  font-size: 20px;
+}
+.wordpressProse h5 {
+  font-size: 18px;
+}
+.wordpressProse h6 {
+  font-size: 16px;
+}
+
+.wordpressProse p {
+  margin-bottom: 24px;
+}
+
+.wordpressProse a {
+  color: #0969da;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.wordpressProse a {
+  color: #58a6ff;
+}
+
+.wordpressProse a:hover {
+  color: #0550ae;
+  text-decoration: none;
+}
+
+.wordpressProse a:hover {
+  color: #79c0ff;
+}
+
+.wordpressProse code {
+  background: #f6f8fa;
+  color: #24292f;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 14px;
+}
+
+.wordpressProse code {
+  background: #161b22;
+  color: #f0f6fc;
+}
+
+.wordpressProse pre {
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 16px;
+  overflow-x: auto;
+  margin: 24px 0;
+  font-family: SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.wordpressProse pre {
+  background: #161b22;
+  border-color: #30363d;
+}
+
+.wordpressProse blockquote {
+  border-left: 4px solid #d0d7de;
+  padding: 0 16px;
+  margin: 24px 0;
+  color: #656d76;
+  font-style: italic;
+}
+
+.wordpressProse blockquote {
+  border-left-color: #30363d;
+  color: #8b949e;
+}
+
+.wordpressProse ul,
+.wordpressProse ol {
+  padding-left: 24px;
+  margin-bottom: 24px;
+}
+
+.wordpressProse li {
+  margin-bottom: 8px;
+}
+
+.wordpressProse img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 24px 0;
+  border: 1px solid #d0d7de;
+}
+
+.wordpressProse img {
+  border-color: #30363d;
+}
+
+.wordpressProse table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 24px 0;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.wordpressProse table {
+  border-color: #30363d;
+}
+
+.wordpressProse th,
+.wordpressProse td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #d0d7de;
+}
+
+.wordpressProse th,
+.wordpressProse td {
+  border-bottom-color: #30363d;
+}
+
+.wordpressProse th {
+  background: #f6f8fa;
+  font-weight: 600;
+}
+
+.wordpressProse th {
+  background: #161b22;
+}
+
+/* ================================
+   WORDPRESS MEDIA CONTENT
+   ================================ */
+.wordpressMediaSection {
+  margin: 48px 0;
+}
+
+.wordpressMediaGrid {
+  display: grid;
+  gap: 32px;
+}
+
+@media (min-width: 1024px) {
+  .wordpressMediaGrid {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .wordpressMediaItem:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Ensure proper spacing for carousel in media section */
+.wordpressMediaItem .wordpressCarousel {
+  margin-top: 12px;
+}
+
+.wordpressMediaItem {
+  background: #f6f8fa;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 16px;
+  transition: all 0.15s ease;
+}
+
+.wordpressMediaItem {
+  background: #161b22;
+  border-color: #30363d;
+}
+
+.wordpressMediaItem:hover {
+  border-color: #8c959f;
+  transform: translateY(-2px);
+}
+
+.wordpressMediaItem:hover {
+  border-color: #8b949e;
+}
+
+.wordpressMediaTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e1e1e;
+  margin: 0 0 8px;
+}
+
+.wordpressMediaTitle {
+  color: #f0f6fc;
+}
+
+.wordpressMediaDescription {
+  font-size: 14px;
+  color: #656d76;
+  margin: 0 0 12px;
+  line-height: 1.5;
+}
+
+.wordpressMediaDescription {
+  color: #8b949e;
+}
+
+.wordpressMediaLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #0969da;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.wordpressMediaLink {
+  color: #58a6ff;
+}
+
+.wordpressMediaLink:hover {
+  color: #0550ae;
+}
+
+.wordpressMediaLink:hover {
+  color: #79c0ff;
+}
+
+.wordpressMediaIcon {
+  width: 16px;
+  height: 16px;
+}
+
+/* ================================
+   WORDPRESS SIDEBAR (para uso futuro)
+   ================================ */
+.wordpressSidebar {
+  display: none;
+}
+
+/* ================================
+   WORDPRESS PROJECT SUMMARY
+   ================================ */
+.wordpressProjectSummary {
+  margin-top: 48px;
+  padding: 32px;
+  background: #f6f8fa;
+  border-radius: 8px;
+  border: 1px solid #d0d7de;
+}
+
+.wordpressProjectSummary {
+  background: #161b22;
+  border-color: #30363d;
+}
+
+.wordpressSummaryGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.wordpressSummaryCard {
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 8px;
+  padding: 24px;
+  transition: all 0.15s ease;
+}
+
+.wordpressSummaryCard {
+  background: #21262d;
+  border-color: #30363d;
+}
+
+.wordpressSummaryCard h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #24292f;
+}
+
+.wordpressSummaryCard h3 {
+  color: #f0f6fc;
+}
+
+.wordpressSummaryCard p {
+  margin: 0;
+  color: #656d76;
+  line-height: 1.6;
+}
+
+.wordpressSummaryCard p {
+  color: #8b949e;
+}
+
+.wordpressStatusText {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  background: #dafbe1;
+  color: #0969da;
+  font-weight: 600;
+  border-radius: 16px;
+  font-size: 14px;
+}
+
+.wordpressStatusText {
+  background: #033a16;
+  color: #2ea043;
+}
+
+/* ================================
+   RESPONSIVE DESIGN
+   ================================ */
+@media (max-width: 768px) {
+  .mainContent {
+    padding: 80px 16px 60px;
+  }
+
+  .wordpressTitle {
+    font-size: clamp(24px, 6vw, 36px);
+  }
+
+  .wordpressActions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .wordpressActionButton {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .wordpressPostMeta {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .wordpressDivider {
+    display: none;
+  }
+
+  .wordpressMediaGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .wordpressProjectSummary {
+    margin-top: 32px;
+    padding: 24px;
+  }
+
+  .wordpressSummaryGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .wordpressSummaryCard {
+    padding: 20px;
+  }
+
+  /* ================================
+   RESPONSIVE VIDEO IMPROVEMENTS
+   ================================ */
+  .wordpressVideoContainer {
+    padding-bottom: 56.25%; /* Mantener aspect ratio en móvil */
+    border-radius: 8px;
+  }
+
+  .wordpressVideoSection {
+    max-width: 100% !important;
+    margin: 16px 0 !important;
+    padding: 16px !important;
+  }
+
+  .wordpressFullWidthVideoSection {
+    padding: 40px 0;
+    margin-top: 32px;
+    margin-bottom: 32px;
+  }
+
+  .wordpressVideoWrapper {
+    padding: 0 16px;
+  }
+
+  .wordpressVideoTitle {
+    font-size: 24px;
+  }
+
+  .wordpressVideoDescription {
+    font-size: 14px;
+  }
+
+  .wordpressVideoContainer {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .wordpressMediaItem {
+    padding: 12px;
+  }
+
+  .wordpressMediaTitle {
+    font-size: 14px;
+  }
+
+  .wordpressMediaDescription {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .projectNavigation {
+    padding: 0 16px;
+  }
+
+  .backButton {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+
+  .wordpressTechnologies {
+    padding: 16px;
+  }
+
+  .wordpressTechList {
+    justify-content: center;
+  }
+
+  .wordpressVideoContainer {
+    border-radius: 6px;
+  }
+
+  .wordpressVideoSection {
+    max-width: 100% !important;
+    margin: 12px 0 !important;
+    padding: 12px !important;
+  }
+
+  .wordpressFullWidthVideoSection {
+    padding: 30px 0;
+    margin-top: 24px;
+    margin-bottom: 24px;
+  }
+
+  .wordpressVideoWrapper {
+    padding: 0 12px;
+  }
+
+  .wordpressVideoTitle {
+    font-size: 20px;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .wordpressVideoDescription {
+    font-size: 13px;
+  }
+
+  .wordpressVideoContainer {
+    padding: 12px;
+    border-radius: 8px;
+  }
+
+  .wordpressVideoPlaceholder {
+    min-height: 200px;
+    padding: 16px;
+  }
+
+  .wordpressVideoPlaceholder i {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+
+  .wordpressVideoPlaceholder p {
+    font-size: 14px;
+  }
+}
+
+/* ================================
+   PRINT STYLES
+   ================================ */
+@media print {
+  .wordpressHeader,
+  .wordpressActions,
+  .wordpressTechnologies {
+    display: none !important;
+  }
+
+  .projectPage {
+    background: white !important;
+    color: black !important;
+  }
+
+  .mainContent {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  .wordpressProse {
+    color: black !important;
+  }
+
+  .wordpressProse h1,
+  .wordpressProse h2,
+  .wordpressProse h3,
+  .wordpressProse h4,
+  .wordpressProse h5,
+  .wordpressProse h6 {
+    color: black !important;
+  }
+}
+
+/* ================================
+   ACCESSIBILITY
+   ================================ */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .wordpressActionSecondary,
+  .wordpressTechChip,
+  .wordpressMediaItem {
+    border-width: 2px !important;
+  }
+}
+
+/* ================================
+   FOCUS STYLES
+   ================================ */
+.backButton:focus-visible,
+.wordpressActionButton:focus-visible,
+.wordpressTechChip:focus-visible {
+  outline: 2px solid #0969da;
+  outline-offset: 2px;
+}
+
+.backButton:focus-visible,
+.wordpressActionButton:focus-visible,
+.wordpressTechChip:focus-visible {
+  outline-color: #58a6ff;
+}
+
+/* ================================
+   ESTADOS DE CARGA Y ERROR - WORDPRESS STYLE
+   ================================ */
+.projectPageLoading,
+.projectPageError {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+}
+
+.loadingContent,
+.errorContent {
+  max-width: 400px;
+}
+
+.loadingSpinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #f6f8fa;
+  border-top: 4px solid #0969da;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 24px;
+}
+
+.loadingSpinner {
+  border-color: #161b22;
+  border-top-color: #58a6ff;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.errorActions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  min-width: 120px;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid;
+}
+
+.btnPrimary {
+  background: #0969da;
+  color: #fff;
+  border-color: #0969da;
+}
+
+.btnPrimary:hover {
+  background: #0550ae;
+  border-color: #0550ae;
+}
+
+.btnSecondary {
+  background: #fff;
+  color: #24292f;
+  border-color: #d0d7de;
+}
+
+.btnSecondary {
+  background: #21262d;
+  color: #f0f6fc;
+  border-color: #30363d;
+}
+
+.btnSecondary:hover {
+  background: #f6f8fa;
+  border-color: #8c959f;
+}
+
+.btnSecondary:hover {
+  background: #30363d;
+  border-color: #8b949e;
+}
+
+/* ================================
+   CAROUSEL INTEGRATION
+   ================================ */
+.wordpressCarousel {
+  margin-top: 16px;
+}
+
+/* ================================
+   RELATED PROJECTS INTEGRATION
+   ================================ */
+.wordpressRelatedProjects {
+  margin-top: 0;
+  border-radius: 0;
+}
+
+/* ================================
+   WORDPRESS VIDEO SECTION
+   ================================ */
+.wordpressVideoContainer {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* Aspect ratio 16:9 */
+  overflow: hidden;
+  border-radius: 12px;
+  background: #000;
+  box-shadow:
+    0 4px 12px rgb(0, 0, 0, 0.1),
+    0 1px 3px rgb(0, 0, 0, 0.08);
+  border: 1px solid #d0d7de;
+}
+
+.wordpressVideoContainer {
+  border-color: #30363d;
+  box-shadow:
+    0 4px 12px rgb(0, 0, 0, 0.3),
+    0 1px 3px rgb(0, 0, 0, 0.2);
+}
+
+.wordpressVideoContainer iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+}
+
+.wordpressVideoPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  background: linear-gradient(135deg, #f6f8fa 0%, #fff 100%);
+  border: 2px dashed #d0d7de;
+  border-radius: 12px;
+  color: #656d76;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.wordpressVideoPlaceholder {
+  background: linear-gradient(135deg, #161b22 0%, #21262d 100%);
+  border-color: #30363d;
+  color: #8b949e;
+}
+
+.wordpressVideoPlaceholder:hover {
+  border-color: #0969da;
+  color: #0969da;
+  transform: translateY(-2px);
+}
+
+.wordpressVideoPlaceholder:hover {
+  border-color: #58a6ff;
+  color: #58a6ff;
+}
+
+.wordpressVideoPlaceholder i {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.wordpressVideoPlaceholder p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.wordpressVideoError {
+  background: rgb(207, 34, 46, 0.1);
+  color: #cf222e;
+  border: 1px solid rgb(207, 34, 46, 0.3);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.wordpressVideoError {
+  background: rgb(248, 81, 73, 0.1);
+  color: #f85149;
+  border-color: rgb(248, 81, 73, 0.3);
+}
+
+/* ================================
+   RESPONSIVE VIDEO IMPROVEMENTS
+   ================================ */
+@media (max-width: 768px) {
+  .wordpressVideoContainer {
+    padding-bottom: 56.25%; /* Mantener aspect ratio en móvil */
+    border-radius: 8px;
+  }
+
+  .wordpressMediaItem {
+    padding: 12px;
+  }
+
+  .wordpressMediaTitle {
+    font-size: 14px;
+  }
+
+  .wordpressMediaDescription {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wordpressVideoContainer {
+    border-radius: 6px;
+  }
+
+  .wordpressVideoPlaceholder {
+    min-height: 200px;
+    padding: 16px;
+  }
+
+  .wordpressVideoPlaceholder i {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+
+  .wordpressVideoPlaceholder p {
+    font-size: 14px;
+  }
+}
+
+/* Loading state for video */
+.wordpressVideoLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  background: #f6f8fa;
+  border-radius: 12px;
+  color: #656d76;
+}
+
+.wordpressVideoLoading {
+  background: #161b22;
+  color: #8b949e;
+}
+
+.wordpressVideoLoading i {
+  font-size: 24px;
+  margin-right: 12px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ================================
+   WORDPRESS VIDEO PLAYER
+   ================================ */
+.wordpressVideoPlayer {
+  margin-top: 12px;
+  width: 100%;
+  max-width: 1400px; /* Aumentar anchura máxima aún más */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Sección de video de ancho completo */
+.wordpressFullWidthVideoSection {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin: 48px -50vw;
+  background: #f8f9fa;
+  padding: 60px 0;
+}
+
+.wordpressFullWidthVideoSection {
+  background: #0d1117;
+}
+
+.wordpressVideoWrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.wordpressVideoHeader {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.wordpressVideoTitle {
+  font-size: 28px;
+  font-weight: 600;
+  color: #1f2328;
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.wordpressVideoTitle {
+  color: #f0f6fc;
+}
+
+.wordpressVideoDescription {
+  font-size: 16px;
+  color: #656d76;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.wordpressVideoDescription {
+  color: #8b949e;
+}
+
+.wordpressVideoContainer {
+  position: relative;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow:
+    0 8px 24px rgb(0, 0, 0, 0.1),
+    0 2px 6px rgb(0, 0, 0, 0.05);
+  border: 1px solid #d0d7de;
+}
+
+.wordpressVideoContainer {
+  background: #161b22;
+  border-color: #30363d;
+  box-shadow:
+    0 8px 24px rgb(0, 0, 0, 0.3),
+    0 2px 6px rgb(0, 0, 0, 0.15);
+}
+
+/* Estilo específico para la sección completa de video - OBSOLETO, ahora se usa wordpressFullWidthVideoSection */
+.wordpressVideoSection {
+  max-width: 1200px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 24px !important; /* Más padding para el video */
+  background: #fff !important;
+}
+
+.wordpressVideoSection {
+  background: #0d1117 !important;
+}
+
+.wordpressVideoContainer {
+  position: relative;
+  width: 100%;
+  height: 0;
+  padding-bottom: 56.25%; /* Aspect ratio 16:9 */
+  overflow: hidden;
+  border-radius: 12px;
+  background: #000;
+  box-shadow:
+    0 4px 12px rgb(0, 0, 0, 0.1),
+    0 1px 3px rgb(0, 0, 0, 0.08);
+  border: 1px solid #d0d7de;
+}
+
+.wordpressVideoContainer {
+  border-color: #30363d;
+  box-shadow:
+    0 4px 12px rgb(0, 0, 0, 0.3),
+    0 1px 3px rgb(0, 0, 0, 0.2);
+}
+
+.wordpressVideoContainer iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+}
+
+.wordpressVideoPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  background: linear-gradient(135deg, #f6f8fa 0%, #fff 100%);
+  border: 2px dashed #d0d7de;
+  border-radius: 12px;
+  color: #656d76;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.wordpressVideoPlaceholder {
+  background: linear-gradient(135deg, #161b22 0%, #21262d 100%);
+  border-color: #30363d;
+  color: #8b949e;
+}
+
+.wordpressVideoPlaceholder:hover {
+  border-color: #0969da;
+  color: #0969da;
+  transform: translateY(-2px);
+}
+
+.wordpressVideoPlaceholder:hover {
+  border-color: #58a6ff;
+  color: #58a6ff;
+}
+
+.wordpressVideoPlaceholder i {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.wordpressVideoPlaceholder p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.wordpressVideoError {
+  background: rgb(207, 34, 46, 0.1);
+  color: #cf222e;
+  border: 1px solid rgb(207, 34, 46, 0.3);
+  border-radius: 8px;
+  padding: 16px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.wordpressVideoError {
+  background: rgb(248, 81, 73, 0.1);
+  color: #f85149;
+  border-color: rgb(248, 81, 73, 0.3);
+}

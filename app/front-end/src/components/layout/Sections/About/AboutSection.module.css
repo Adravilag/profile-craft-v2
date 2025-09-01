@@ -1,0 +1,749 @@
+/* ===========================================
+   ABOUT SECTION - MATERIAL DESIGN 3
+   Optimized CSS with performance improvements and modern UX
+   =========================================== */
+
+/* ===========================================
+   CSS CUSTOM PROPERTIES
+   =========================================== */
+:root {
+  /* About section specific colors */
+  --about-primary: var(--md-sys-color-primary);
+  --about-secondary: var(--md-sys-color-secondary);
+  --about-surface: var(--md-sys-color-surface-container);
+
+  /* Gradients */
+  --about-gradient-primary: linear-gradient(
+    135deg,
+    var(--about-primary) 0%,
+    var(--about-secondary) 100%
+  );
+  --about-gradient-shimmer: linear-gradient(135deg, transparent 0%, rgb(255, 255, 255, 0.05) 100%);
+
+  /* Shadows */
+  --about-shadow-light: 0 4px 16px rgb(0, 0, 0, 0.06), 0 1px 4px rgb(0, 0, 0, 0.03);
+  --about-shadow-medium: 0 8px 24px rgb(0, 0, 0, 0.12), 0 4px 12px rgb(0, 0, 0, 0.1);
+  --about-shadow-primary: 0 8px 25px rgb(99, 102, 241, 0.3), 0 4px 12px rgb(0, 0, 0, 0.1);
+
+  /* Transitions */
+  --about-transition-standard: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --about-transition-emphasized: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===========================================
+   SECTION LAYOUT
+   =========================================== */
+
+.aboutSection {
+  position: relative;
+  overflow: hidden;
+  /* Mantener padding pero añadir margin-top para separar del hero.
+    Usamos clamp para que responda en pantallas grandes/pequeñas. */
+  margin-top: clamp(18px, 6vh, 96px);
+  padding: var(--md-sys-spacing-xxl) 0;
+  background: var(--md-sys-color-surface);
+
+  /* Performance optimizations */
+  contain: layout style paint;
+  will-change: background-color;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.aboutContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--md-sys-spacing-xl);
+  position: relative;
+  z-index: 1;
+}
+
+.aboutDescription {
+  font-size: var(--md-sys-typescale-body-large-size);
+  color: var(--md-sys-color-on-surface-variant);
+  line-height: 1.7;
+  margin-bottom: var(--md-sys-spacing-xxxl);
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  animation: fadeInUp 0.6s ease-out 0.4s both;
+
+  /* Typography improvements */
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-rendering: optimizelegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===========================================
+   HIGHLIGHTS GRID
+   =========================================== */
+
+.aboutHighlights {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--md-sys-spacing-xxxl); /* Increased from xxl to xxxl for more vertical separation */
+  margin-bottom: var(--md-sys-spacing-xxxl);
+  justify-items: center; /* Center the cards horizontally */
+}
+
+/* ===========================================
+   COLLABORATION NOTE
+   =========================================== */
+
+.aboutCollaborationNote {
+  display: flex;
+  align-items: center;
+  gap: var(--md-sys-spacing-xl);
+  background: var(--md-sys-color-primary-container);
+  padding: var(--md-sys-spacing-xxl);
+  border-radius: var(--md-sys-shape-corner-large);
+  border: 1px solid var(--md-sys-color-primary);
+  position: relative;
+  overflow: hidden;
+  margin: var(--md-sys-spacing-xxl) 0;
+  transition: var(--about-transition-standard);
+  cursor: pointer;
+
+  /* Performance improvements */
+  contain: layout style;
+  will-change: transform, box-shadow;
+
+  /* Accessibility improvements */
+  outline: none;
+}
+
+.aboutCollaborationNote:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+}
+
+.aboutCollaborationNote:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--about-shadow-medium);
+}
+
+.aboutCollaborationNote:active {
+  transform: translateY(-2px);
+}
+
+/* Loading state for navigation */
+.aboutCollaborationNote.navigating {
+  transform: translateY(-2px);
+  box-shadow: var(--about-shadow-medium);
+  background: var(--md-sys-color-secondary-container);
+  border-color: var(--md-sys-color-secondary);
+  pointer-events: none;
+}
+
+.aboutCollaborationNote.navigating .aboutCollabIcon {
+  color: var(--md-sys-color-secondary);
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.aboutCollaborationNote::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--about-gradient-shimmer);
+  pointer-events: none;
+  animation: shimmer 3s infinite linear;
+  opacity: 0;
+  transition: opacity var(--about-transition-standard);
+}
+
+.aboutCollaborationNote:hover::before {
+  opacity: 1;
+}
+
+.aboutCollabIcon {
+  font-size: 3rem;
+  color: var(--md-sys-color-primary);
+  flex-shrink: 0;
+  animation: bounce 2s infinite ease-in-out;
+  transition: var(--about-transition-standard);
+}
+
+.aboutCollabContent h4 {
+  color: var(--md-sys-color-on-primary-container);
+  font-size: var(--md-sys-typescale-headline-small-size);
+  font-weight: 600;
+  margin: 0 0 var(--md-sys-spacing-sm) 0;
+  position: relative;
+  display: inline-block;
+  line-height: 1.3;
+}
+
+.aboutCollabContent h4::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 2px;
+  background: var(--md-sys-color-primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.aboutCollaborationNote:hover .aboutCollabContent h4::after {
+  transform: scaleX(1);
+}
+
+.aboutCollabContent p {
+  color: var(--md-sys-color-on-primary-container);
+  opacity: 0.9;
+  margin: 0;
+  line-height: 1.6;
+  font-size: var(--md-sys-typescale-body-medium-size);
+}
+
+/* ===========================================
+   LOADING AND ERROR STATES
+   =========================================== */
+
+.aboutLoading,
+.aboutError {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--md-sys-spacing-xxxl);
+  text-align: center;
+  color: var(--md-sys-color-on-surface-variant);
+  min-height: 300px;
+
+  /* Performance optimization */
+  contain: layout style;
+}
+
+.aboutLoading {
+  gap: var(--md-sys-spacing-lg);
+}
+
+.aboutError {
+  gap: var(--md-sys-spacing-md);
+}
+
+.aboutError i {
+  font-size: 2.5rem;
+  color: var(--md-sys-color-error);
+  margin-bottom: var(--md-sys-spacing-md);
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.loadingSpinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--md-sys-color-outline-variant);
+  border-top: 4px solid var(--md-sys-color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* ===========================================
+   HIGHLIGHT CARDS
+   =========================================== */
+
+.highlightCard {
+  background: var(--about-surface);
+  border-radius: 18px; /* encapsulado: menos marcado que la variable global */
+  padding: var(--md-sys-spacing-xxxl) var(--md-sys-spacing-xxl); /* More balanced padding */
+  border: 1px solid var(--md-sys-color-outline-variant);
+  position: relative;
+  overflow: hidden;
+  transition: var(--about-transition-emphasized);
+  animation: fadeInUp 0.6s ease-out both;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--md-sys-spacing-lg);
+  min-height: 280px; /* Ensure consistent card heights */
+
+  /* Performance optimizations */
+  contain: layout style;
+  will-change: transform, box-shadow, border-color;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* sutil brillo/deslizado sobre la tarjeta (encapsulado) */
+.highlightCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgb(255, 255, 255, 0.06), transparent);
+  transition: left 0.5s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.highlightCard:hover::before {
+  left: 100%;
+}
+
+.highlightCard:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.highlightCard:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.highlightCard:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.highlightCard:hover {
+  transform: translateY(-12px) scale(1.02); /* Increased lift effect */
+  box-shadow: var(--about-shadow-primary);
+  border-color: var(--md-sys-color-primary);
+}
+
+.highlightCard:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+}
+
+.highlightIcon {
+  width: 80px; /* Increased from 72px for better prominence */
+  height: 80px;
+  background: var(--about-gradient-primary);
+  border-radius: 12px; /* menos circular, más moderno y consistente con tarjeta */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.25rem; /* Increased from 2rem for better visual balance */
+  color: var(--md-sys-color-on-primary);
+  margin: 0 auto var(--md-sys-spacing-md) auto; /* Centered with auto margins */
+  flex-shrink: 0;
+  transition:
+    background-color 280ms ease,
+    color 280ms ease,
+    transform 320ms cubic-bezier(0.2, 0.9, 0.24, 1),
+    box-shadow 320ms ease;
+  box-shadow: var(--about-shadow-light);
+
+  /* Performance optimizations */
+  contain: layout style;
+  will-change: transform, box-shadow;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+.highlightCard:hover .highlightIcon {
+  transform: scale(1.06) rotate(2deg); /* animación más sutil y pulida */
+  box-shadow: var(--about-shadow-primary);
+}
+
+.highlightCard h3 {
+  font-size: var(--md-sys-typescale-headline-small-size);
+  font-weight: 700;
+  color: var(--md-sys-color-on-surface);
+  margin: 0;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+
+.highlightCard p {
+  font-size: var(--md-sys-typescale-body-medium-size);
+  color: var(--md-sys-color-on-surface-variant);
+  line-height: 1.6;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Tipografía específica para highlight card (migrada de typography.css) */
+.highlightCard h3 {
+  font-size: 1.25rem;
+  margin: 0 0 var(--md-sys-spacing-md) 0;
+}
+.highlightCard p {
+  margin: 0;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.highlightTech {
+  font-size: var(--md-sys-typescale-label-large-size);
+  color: var(--md-sys-color-primary);
+  font-weight: 600;
+  padding: var(--md-sys-spacing-sm) var(--md-sys-spacing-md);
+  background: var(--md-sys-color-primary-container);
+  border-radius: var(--md-sys-shape-corner-medium);
+  border: 1px solid var(--md-sys-color-primary);
+  display: inline-block;
+  transition: var(--about-transition-standard);
+}
+
+.highlightTech:hover {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  transform: translateY(-1px);
+}
+
+.cardAccent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--about-gradient-primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.highlightCard:hover .cardAccent {
+  transform: scaleX(1);
+}
+
+/* ===========================================
+   ANIMATIONS
+   =========================================== */
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+
+  40% {
+    transform: translateY(-10px);
+  }
+
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===========================================
+   RESPONSIVE DESIGN
+   =========================================== */
+
+/* Large Tablets and Small Desktops */
+@media (max-width: 1024px) {
+  .aboutContainer {
+    padding: 0 var(--md-sys-spacing-lg);
+  }
+
+  .aboutHighlights {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--md-sys-spacing-lg);
+  }
+
+  .highlightCard {
+    padding: var(--md-sys-spacing-xl);
+  }
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+  .aboutSection {
+    padding: var(--md-sys-spacing-xl) 0;
+  }
+
+  .aboutContainer {
+    padding: 0 var(--md-sys-spacing-md);
+  }
+
+  .aboutDescription {
+    font-size: var(--md-sys-typescale-body-medium-size);
+    margin-bottom: var(--md-sys-spacing-xxl);
+    text-align: center;
+  }
+
+  .aboutHighlights {
+    grid-template-columns: 1fr;
+    gap: var(--md-sys-spacing-lg);
+  }
+
+  .aboutCollaborationNote {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--md-sys-spacing-lg);
+    padding: var(--md-sys-spacing-xl);
+    margin: var(--md-sys-spacing-xl) 0;
+  }
+
+  .aboutCollabIcon {
+    font-size: 2.5rem;
+  }
+
+  .highlightCard {
+    padding: var(--md-sys-spacing-xl);
+  }
+
+  .highlightIcon {
+    width: 56px;
+    height: 56px;
+    font-size: 1.5rem;
+    margin-bottom: var(--md-sys-spacing-lg);
+  }
+
+  .highlightCard h3 {
+    font-size: var(--md-sys-typescale-title-medium-size);
+  }
+}
+
+/* Mobile Large */
+@media (max-width: 576px) {
+  .aboutSection {
+    padding: var(--md-sys-spacing-lg) 0;
+  }
+
+  .aboutContainer {
+    padding: 0 var(--md-sys-spacing-sm);
+  }
+
+  .aboutDescription {
+    margin-bottom: var(--md-sys-spacing-xl);
+    padding: 0 var(--md-sys-spacing-sm);
+  }
+
+  .aboutCollaborationNote {
+    padding: var(--md-sys-spacing-lg);
+    margin: var(--md-sys-spacing-lg) 0;
+    gap: var(--md-sys-spacing-md);
+  }
+
+  .aboutCollabIcon {
+    font-size: 2rem;
+  }
+
+  .aboutCollabContent h4 {
+    font-size: var(--md-sys-typescale-title-medium-size);
+  }
+
+  .highlightCard {
+    padding: var(--md-sys-spacing-lg);
+  }
+
+  .highlightIcon {
+    width: 48px;
+    height: 48px;
+    font-size: 1.25rem;
+    margin-bottom: var(--md-sys-spacing-md);
+  }
+
+  .highlightCard h3 {
+    font-size: var(--md-sys-typescale-title-small-size);
+  }
+
+  .highlightCard p {
+    font-size: var(--md-sys-typescale-body-small-size);
+  }
+
+  .highlightTech {
+    font-size: var(--md-sys-typescale-label-medium-size);
+    padding: var(--md-sys-spacing-xs) var(--md-sys-spacing-sm);
+  }
+}
+
+/* Mobile Small */
+@media (max-width: 480px) {
+  .aboutSection {
+    padding: var(--md-sys-spacing-md) 0;
+  }
+
+  .aboutContainer {
+    padding: 0 var(--md-sys-spacing-xs);
+  }
+
+  .aboutDescription {
+    font-size: var(--md-sys-typescale-body-small-size);
+    margin-bottom: var(--md-sys-spacing-lg);
+  }
+
+  .aboutCollaborationNote {
+    padding: var(--md-sys-spacing-md);
+    margin: var(--md-sys-spacing-md) 0;
+  }
+
+  .aboutCollabIcon {
+    font-size: 1.75rem;
+  }
+
+  .aboutCollabContent h4 {
+    font-size: var(--md-sys-typescale-title-small-size);
+  }
+
+  .aboutCollabContent p {
+    font-size: var(--md-sys-typescale-body-small-size);
+  }
+
+  .highlightCard {
+    padding: var(--md-sys-spacing-md);
+  }
+
+  .highlightIcon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .highlightCard h3 {
+    font-size: var(--md-sys-typescale-body-large-size);
+  }
+
+  .aboutLoading,
+  .aboutError {
+    padding: var(--md-sys-spacing-xl);
+    min-height: 200px;
+  }
+
+  .loadingSpinner {
+    width: 36px;
+    height: 36px;
+    border-width: 3px;
+  }
+}
+
+/* ===========================================
+   DARK MODE ADAPTATIONS
+   =========================================== */
+
+.aboutSection {
+  background: var(--md-sys-color-surface);
+}
+
+.highlightCard {
+  background: var(--md-sys-color-surface-container-low);
+  border-color: var(--md-sys-color-outline);
+}
+
+.highlightCard:hover {
+  border-color: var(--md-sys-color-primary);
+  box-shadow:
+    0 20px 48px rgb(0, 0, 0, 0.3),
+    0 8px 24px rgb(99, 102, 241, 0.4);
+}
+
+.aboutCollaborationNote {
+  background: var(--md-sys-color-primary-container);
+  border-color: var(--md-sys-color-primary);
+}
+
+.loadingSpinner {
+  border-color: var(--md-sys-color-outline);
+  border-top-color: var(--md-sys-color-primary);
+}
+
+/* ===========================================
+   ACCESSIBILITY IMPROVEMENTS
+   =========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .aboutDescription,
+  .highlightCard,
+  .aboutCollaborationNote,
+  .highlightIcon,
+  .aboutCollabIcon {
+    animation: none;
+  }
+
+  .highlightCard:hover,
+  .aboutCollaborationNote:hover,
+  .highlightCard:hover .highlightIcon,
+  .highlightTech:hover {
+    transform: none;
+  }
+
+  .loadingSpinner {
+    animation: none;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .highlightCard {
+    border-width: 2px;
+  }
+
+  .aboutCollaborationNote {
+    border-width: 2px;
+  }
+
+  .highlightCard:focus-visible {
+    outline-width: 3px;
+  }
+}
+
+/* ===========================================
+   PERFORMANCE OPTIMIZATIONS
+   =========================================== */
+
+@supports (content-visibility: auto) {
+  .highlightCard {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 400px;
+  }
+}
+
+/* GPU acceleration for animations */
+.highlightCard,
+.aboutCollaborationNote,
+.highlightIcon {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Optimize for 60fps animations */
+@media (prefers-reduced-motion: no-preference) {
+  .highlightCard:hover,
+  .aboutCollaborationNote:hover,
+  .highlightIcon,
+  .aboutCollabIcon {
+    will-change: transform;
+  }
+}

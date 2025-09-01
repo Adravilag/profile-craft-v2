@@ -1,0 +1,144 @@
+/* Import main styles */
+@import url('./styles/main.css');
+
+:root {
+  /* Emergency base styles - minimal, safe defaults with fallbacks */
+  box-sizing: border-box;
+
+  /* Fallback colors for browsers without CSS custom properties support */
+  --emergency-bg: #0f1112;
+  --emergency-fg: #e6eef8;
+  --emergency-muted: #9aa6b2;
+  --emergency-accent: #6b8cff;
+
+  /* Base UI font stack: prefer variable --font-sans (Inter / Poppins) */
+  font-family: var(
+    --font-sans,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif
+  );
+  line-height: var(--leading-normal, 1.5);
+  font-display: swap; /* Improve font loading performance */
+  color-scheme: dark light;
+
+  /* Use fallback values with CSS custom properties as enhancement */
+  color: var(--text-primary, var(--emergency-fg));
+  background-color: var(--bg-primary, var(--emergency-bg));
+}
+
+/* Reset and sensible defaults */
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+/* Preferencia global: scroll suave entre anclas y secciones
+   Respetamos prefers-reduced-motion en caso de que el usuario lo solicite. */
+html {
+  /* Cambiado a 'auto' para que los saltos entre secciones sean instantáneos */
+  scroll-behavior: auto;
+}
+
+html {
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  font-family: inherit;
+  background: var(--emergency-bg);
+  color: var(--emergency-fg);
+}
+
+/* Consolidated global body styles (moved here to avoid duplicates)
+   Use project-level CSS variables when available, otherwise fall back to
+   emergency values defined above. */
+
+/* Global body styles are defined in `src/styles/01-foundations/reset.css` to
+  provide a single source of truth for resets and base typography. */
+
+/* Basic link/button styles with fallbacks */
+a {
+  color: var(--color-accent, var(--emergency-accent));
+  text-decoration: none;
+  transition: var(--duration-fast, 150ms) var(--ease-out, ease);
+}
+
+a:hover {
+  text-decoration: underline;
+  color: var(--color-accent, var(--emergency-accent));
+}
+
+a:focus {
+  outline: 2px solid var(--color-accent, var(--emergency-accent));
+  outline-offset: 2px;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  transition: var(--duration-fast, 150ms) var(--ease-out, ease);
+}
+
+button:focus {
+  outline: 2px solid var(--color-accent, var(--emergency-accent));
+  outline-offset: 2px;
+}
+
+/* Emergency layout: center main app container and provide readable widths */
+.curriculum-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.curriculum-container {
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+/* Small utility */
+.center {
+  text-align: center;
+}
+
+/* Light theme fallbacks */
+@media (prefers-color-scheme: light) {
+  :root {
+    --emergency-bg: #fff;
+    --emergency-fg: #111827;
+    --emergency-muted: #4b5563;
+    --emergency-accent: #0969da;
+
+    /* Update fallback usage for light theme */
+    color: var(--text-primary, var(--emergency-fg));
+    background-color: var(--bg-primary, var(--emergency-bg));
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

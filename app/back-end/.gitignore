@@ -1,0 +1,192 @@
+# Build caches
+.cache/
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# TypeScript build output
+dist/
+dist-server/
+build/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+data/
+
+# Environment variables
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# dotenv environment variable files
+.env*
+
+# parcel-bundler cache
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+out
+
+# Nuxt.js build / generate output
+.nuxt
+
+# Vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS generated files
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Backup files
+*.bak
+*.backup
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+
+# Upload directory (si no quieres trackear las subidas)
+# uploads/
+
+# Scripts de desarrollo y archivos temporales
+test-*.js
+check_*.js
+list_*.js
+add-*.js
+migrate*.js
+*Test.js
+*test.js
+*.spec.js
+
+# Archivos JavaScript compilados desde TypeScript (ya que usamos TypeScript)
+*.js
+*.js.map
+!jest.config.js
+!*.config.js
+!webpack.config.js
+!rollup.config.js
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Deployment
+deploy/
+.deploy/
+
+# Cloud deployment files
+.vercel
+.netlify
+.railway
+.aws
+
+# SSL certificates
+*.pem
+*.crt
+*.key
+
+# Production builds
+dist-server/
+build/
+
+# Archivos eliminados durante limpieza
+*-backup.ts
+*-original.ts
+*-old.*
+
+# Configuraciones innecesarias eliminadas
+railway.toml
+nixpacks.toml
+Dockerfile
+docker-compose.yml

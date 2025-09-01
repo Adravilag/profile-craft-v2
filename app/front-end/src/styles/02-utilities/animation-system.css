@@ -1,0 +1,728 @@
+/* animation-system.css - Smooth Transition and Animation System */
+
+/* ===========================================
+   ANIMATION KEYFRAMES
+   =========================================== */
+
+/* Entrance Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Terminal-specific animations */
+@keyframes typewriter {
+  from {
+    width: 0;
+  }
+
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes cursorBlink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes terminalGlow {
+  0%,
+  100% {
+    box-shadow: var(--glow-primary);
+  }
+
+  50% {
+    box-shadow: 0 0 30px rgb(88, 166, 255, 0.5);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes bounce {
+  0%,
+  20%,
+  53%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+
+  40%,
+  43% {
+    transform: translateY(-8px);
+  }
+
+  70% {
+    transform: translateY(-4px);
+  }
+
+  90% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-2px);
+  }
+
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(2px);
+  }
+}
+
+/* Loading animations */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dots {
+  0%,
+  20% {
+    color: var(--text-muted);
+    transform: scale(1);
+  }
+
+  50% {
+    color: var(--color-accent);
+    transform: scale(1.2);
+  }
+
+  100% {
+    color: var(--text-muted);
+    transform: scale(1);
+  }
+}
+
+/* ===========================================
+   ANIMATION UTILITY CLASSES
+   =========================================== */
+
+/* Entrance animations */
+.animate-fade-in {
+  animation: fadeIn var(--duration-normal) var(--ease-out) forwards;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp var(--duration-normal) var(--ease-out) forwards;
+}
+
+.animate-fade-in-down {
+  animation: fadeInDown var(--duration-normal) var(--ease-out) forwards;
+}
+
+.animate-fade-in-left {
+  animation: fadeInLeft var(--duration-normal) var(--ease-out) forwards;
+}
+
+.animate-fade-in-right {
+  animation: fadeInRight var(--duration-normal) var(--ease-out) forwards;
+}
+
+.animate-slide-in-up {
+  animation: slideInUp var(--duration-normal) var(--ease-out) forwards;
+}
+
+.animate-slide-in-down {
+  animation: slideInDown var(--duration-normal) var(--ease-out) forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn var(--duration-normal) var(--ease-out) forwards;
+}
+
+/* Terminal-specific animations */
+.animate-typewriter {
+  overflow: hidden;
+  white-space: nowrap;
+  animation: typewriter var(--duration-slow) steps(40, end) forwards;
+}
+
+.animate-cursor-blink {
+  animation: cursorBlink 1s ease-in-out infinite;
+}
+
+.animate-terminal-glow {
+  animation: terminalGlow 2s ease-in-out infinite;
+}
+
+/* Continuous animations */
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-bounce {
+  animation: bounce 1s ease-in-out infinite;
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Loading dots animation */
+.animate-dots {
+  animation: dots 1.4s ease-in-out infinite;
+}
+
+.animate-dots:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.animate-dots:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Animation delays */
+.animate-delay-75 {
+  animation-delay: 75ms;
+}
+
+.animate-delay-100 {
+  animation-delay: 100ms;
+}
+
+.animate-delay-150 {
+  animation-delay: 150ms;
+}
+
+.animate-delay-200 {
+  animation-delay: 200ms;
+}
+
+.animate-delay-300 {
+  animation-delay: 300ms;
+}
+
+.animate-delay-500 {
+  animation-delay: 500ms;
+}
+
+.animate-delay-700 {
+  animation-delay: 700ms;
+}
+
+.animate-delay-1000 {
+  animation-delay: 1000ms;
+}
+
+/* ===========================================
+   TRANSITION UTILITY CLASSES
+   =========================================== */
+
+/* Base transitions */
+.transition-none {
+  transition: none;
+}
+
+.transition-all {
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.transition-colors {
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.transition-opacity {
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.transition-shadow {
+  transition: box-shadow var(--duration-normal) var(--ease-out);
+}
+
+.transition-transform {
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+
+/* Duration variations */
+.duration-fast {
+  transition-duration: var(--duration-fast);
+}
+
+.duration-normal {
+  transition-duration: var(--duration-normal);
+}
+
+.duration-slow {
+  transition-duration: var(--duration-slow);
+}
+
+/* Easing variations */
+.ease-linear {
+  transition-timing-function: linear;
+}
+
+.ease-in {
+  transition-timing-function: var(--ease-in);
+}
+
+.ease-out {
+  transition-timing-function: var(--ease-out);
+}
+
+.ease-in-out {
+  transition-timing-function: var(--ease-in-out);
+}
+
+/* ===========================================
+   INTERACTIVE ELEMENT ENHANCEMENTS
+   =========================================== */
+
+/* Enhanced button transitions */
+.btn-enhanced {
+  transition: all var(--duration-fast) var(--ease-out);
+  transform: translateY(0);
+}
+
+.btn-enhanced:hover {
+  transform: var(--hover-transform);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-enhanced:active {
+  transform: var(--press-transform);
+  transition-duration: 75ms;
+}
+
+.btn-enhanced:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  box-shadow: var(--glow-primary);
+}
+
+/* Enhanced input transitions */
+.input-enhanced {
+  transition: all var(--duration-fast) var(--ease-out);
+  border: 1px solid var(--border-primary);
+}
+
+.input-enhanced:hover {
+  border-color: var(--border-accent);
+}
+
+.input-enhanced:focus {
+  border-color: var(--color-accent);
+  box-shadow: var(--glow-primary);
+  outline: none;
+}
+
+/* Enhanced link transitions */
+.link-enhanced {
+  transition: all var(--duration-fast) var(--ease-out);
+  position: relative;
+}
+
+.link-enhanced::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background-color: var(--color-accent);
+  transition: width var(--duration-normal) var(--ease-out);
+}
+
+.link-enhanced:hover::after {
+  width: 100%;
+}
+
+/* Enhanced card transitions */
+.card-enhanced {
+  transition: all var(--duration-normal) var(--ease-out);
+  transform: translateY(0);
+}
+
+.card-enhanced:hover {
+  transform: var(--hover-transform);
+  box-shadow: var(--shadow-xl);
+}
+
+/* ===========================================
+   TERMINAL-SPECIFIC INTERACTIVE ENHANCEMENTS
+   =========================================== */
+
+/* Terminal command line enhancements */
+.terminal-input {
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.terminal-input:focus {
+  box-shadow: var(--glow-primary);
+}
+
+/* Terminal output animations */
+.terminal-output {
+  animation: fadeInUp var(--duration-normal) var(--ease-out) forwards;
+}
+
+.terminal-output.new-content {
+  animation: fadeInLeft var(--duration-normal) var(--ease-out) forwards;
+}
+
+/* Terminal prompt enhancements */
+.terminal-prompt {
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.terminal-prompt:hover {
+  text-shadow: var(--glow-primary);
+}
+
+/* Terminal window controls */
+.terminal-control {
+  transition: all var(--duration-fast) var(--ease-out);
+  border-radius: var(--radius-full);
+}
+
+.terminal-control:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-md);
+}
+
+.terminal-control:active {
+  transform: scale(0.95);
+}
+
+/* ===========================================
+   ACCESSIBILITY SUPPORT
+   =========================================== */
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Keep essential animations but make them instant */
+  .animate-cursor-blink {
+    animation: none;
+    opacity: 1;
+  }
+
+  /* Preserve focus indicators */
+  .btn-enhanced:focus-visible,
+  .input-enhanced:focus,
+  .link-enhanced:focus-visible {
+    transition: none;
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .btn-enhanced:focus-visible,
+  .input-enhanced:focus,
+  .link-enhanced:focus-visible {
+    outline: 3px solid;
+    outline-offset: 2px;
+  }
+}
+
+/* ===========================================
+   PERFORMANCE OPTIMIZATIONS
+   =========================================== */
+
+/* GPU acceleration for smooth animations */
+.will-change-transform {
+  will-change: transform;
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}
+
+.will-change-auto {
+  will-change: auto;
+}
+
+/* Optimize for animations */
+.animate-fade-in,
+.animate-fade-in-up,
+.animate-fade-in-down,
+.animate-fade-in-left,
+.animate-fade-in-right,
+.animate-slide-in-up,
+.animate-slide-in-down,
+.animate-scale-in {
+  will-change: transform, opacity;
+}
+
+.animate-fade-in.animation-complete,
+.animate-fade-in-up.animation-complete,
+.animate-fade-in-down.animation-complete,
+.animate-fade-in-left.animation-complete,
+.animate-fade-in-right.animation-complete,
+.animate-slide-in-up.animation-complete,
+.animate-slide-in-down.animation-complete,
+.animate-scale-in.animation-complete {
+  will-change: auto;
+}
+
+/* ===========================================
+   STAGGERED ANIMATIONS
+   =========================================== */
+
+/* Stagger children animations */
+.stagger-children > * {
+  animation-delay: calc(var(--stagger-delay, 100ms) * var(--stagger-index, 0));
+}
+
+.stagger-children-fast > * {
+  animation-delay: calc(50ms * var(--stagger-index, 0));
+}
+
+.stagger-children-slow > * {
+  animation-delay: calc(200ms * var(--stagger-index, 0));
+}
+
+/* ===========================================
+   THEME-SPECIFIC ANIMATIONS
+   =========================================== */
+
+/* Enhanced hack theme animations */
+[data-theme='hack'] .animate-terminal-glow,
+[data-hack-theme='active'] .animate-terminal-glow {
+  animation: terminalGlow 2s ease-in-out infinite;
+
+  --glow-primary: 0 0 20px rgb(0, 255, 65, 0.5);
+}
+
+[data-theme='hack'] .terminal-control:hover,
+[data-hack-theme='active'] .terminal-control:hover {
+  box-shadow:
+    0 0 10px rgb(0, 255, 65, 0.4),
+    0 0 20px rgb(0, 255, 65, 0.2);
+  transform: translateY(-1px);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+/* Matrix-style code rain animation for hack theme */
+[data-hack-theme='active'] .terminal-content {
+  position: relative;
+}
+
+[data-hack-theme='active'] .terminal-content::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0,
+    transparent 19px,
+    rgb(0, 255, 65, 0.02) 20px
+  );
+  animation: matrix-flow 3s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes matrix-flow {
+  0% {
+    transform: translateX(-20px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+/* Enhanced undertale theme animations */
+[data-theme='undertale'] .animate-terminal-glow {
+  animation: terminalGlow 2s ease-in-out infinite;
+
+  --glow-primary: 0 0 20px rgb(255, 255, 0, 0.5);
+}
+
+[data-theme='undertale'] .terminal-control:hover {
+  box-shadow:
+    0 0 10px rgb(255, 255, 0, 0.4),
+    0 0 20px rgb(255, 255, 0, 0.2);
+  transform: scale(1.05);
+  transition: all 0.1s step-end;
+}
+
+/* Undertale-style retro animations */
+[data-theme='undertale'] .terminal-line {
+  animation: undertale-text-appear 0.3s step-end;
+}
+
+@keyframes undertale-text-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(1.1);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Special typewriter effects for themes */
+[data-hack-theme='active'] .typewriter-active {
+  animation: hack-typewriter-glow 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes hack-typewriter-glow {
+  0% {
+    text-shadow: 0 0 5px var(--hack-color);
+  }
+
+  100% {
+    text-shadow:
+      0 0 10px var(--hack-color),
+      0 0 15px var(--hack-color);
+  }
+}
+
+[data-theme='undertale'] .typewriter-active {
+  animation: undertale-typewriter-bounce 0.2s step-end infinite;
+}
+
+@keyframes undertale-typewriter-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
+}

@@ -1,0 +1,186 @@
+/* ============================================
+   SORT FILTERS - CSS MODULE
+   Sorting controls and filter buttons
+   ============================================ */
+
+/* ============================================
+   MAIN CONTAINER
+   ============================================ */
+.sortFilters {
+  display: flex;
+  align-items: center;
+  gap: var(--md-sys-spacing-lg);
+  padding: var(--md-sys-spacing-md);
+  background: var(--md-sys-color-surface-container-low);
+  border-radius: var(--md-sys-shape-corner-medium);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  margin-bottom: 40px;
+}
+
+/* ============================================
+   SORT LABEL
+   ============================================ */
+.sortLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--md-sys-spacing-sm);
+  font-size: var(--md-sys-typescale-body-medium-size);
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface-variant);
+  white-space: nowrap;
+}
+
+.sortLabel i {
+  color: var(--md-sys-color-primary);
+  font-size: 1.1em;
+}
+
+/* ============================================
+   SORT BUTTONS CONTAINER
+   ============================================ */
+.sortButtons {
+  display: flex;
+  gap: var(--md-sys-spacing-sm);
+  flex-wrap: wrap;
+}
+
+/* ============================================
+   SORT BUTTON
+   ============================================ */
+.sortBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--md-sys-spacing-sm);
+  padding: var(--md-sys-spacing-sm) var(--md-sys-spacing-md);
+  background: var(--md-sys-color-surface);
+  border: 2px solid var(--md-sys-color-outline-variant);
+  border-radius: 8px;
+  color: #b5b5b5;
+  font-size: var(--md-sys-typescale-label-large-size);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  min-height: 44px;
+}
+
+.sortBtn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--md-sys-color-primary-container);
+  transition: left 0.3s ease;
+}
+
+.sortBtn:hover {
+  background: var(--md-sys-color-surface-container-high);
+  border-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgb(0, 0, 0, 0.1);
+}
+
+.sortBtn:hover::before {
+  left: 0;
+}
+
+.sortBtn.active {
+  background: var(--md-sys-color-primary-container);
+  border-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary-container);
+  box-shadow: 0 2px 8px rgb(99, 102, 241, 0.2);
+  filter: brightness(1.03);
+}
+
+.sortBtn.active:hover {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}
+
+.sortBtn i {
+  font-size: 1em;
+  position: relative;
+  z-index: 1;
+}
+
+.sortText {
+  position: relative;
+  z-index: 1;
+}
+
+.sortCheck {
+  color: var(--md-sys-color-primary);
+  font-size: 0.9em;
+  position: relative;
+  z-index: 1;
+}
+
+.sortBtn.active .sortCheck {
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.sortBtn.active:hover .sortCheck {
+  color: var(--md-sys-color-on-primary);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 768px) {
+  .sortFilters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--md-sys-spacing-md);
+  }
+
+  .sortLabel {
+    justify-content: center;
+  }
+
+  .sortButtons {
+    justify-content: center;
+  }
+
+  .sortBtn {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .sortButtons {
+    grid-template-columns: 1fr 1fr;
+    display: grid;
+    gap: var(--md-sys-spacing-sm);
+  }
+
+  .sortBtn {
+    min-width: auto;
+    padding: var(--md-sys-spacing-sm);
+  }
+
+  .sortText {
+    font-size: var(--md-sys-typescale-label-medium-size);
+  }
+}
+
+/* ============================================
+   DARK MODE ADAPTATIONS
+   ============================================ */
+.sortFilters {
+  background: var(--md-sys-color-surface-container);
+  border-color: var(--md-sys-color-outline);
+}
+
+.sortBtn {
+  background: var(--md-sys-color-surface-container-high);
+}
+
+.sortBtn:hover {
+  background: var(--md-sys-color-surface-container-highest);
+}

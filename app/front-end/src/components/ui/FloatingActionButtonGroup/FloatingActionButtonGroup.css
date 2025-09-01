@@ -1,0 +1,89 @@
+/* src/components/common/FloatingActionButtonGroup.css */
+
+.fab-group {
+  position: fixed;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 1rem;
+}
+
+.fab-group.fab-group-bottom-right {
+  bottom: 2rem;
+  right: 2rem;
+}
+
+.fab-group.fab-group-bottom-left {
+  bottom: 2rem;
+  left: 2rem;
+}
+
+.fab-group-item {
+  animation: fabGroupSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: var(--delay, 0s);
+  animation-fill-mode: both;
+}
+
+.fab-group-button.fab-container {
+  position: relative !important;
+  bottom: auto !important;
+  right: auto !important;
+  left: auto !important;
+}
+
+/* Animación de entrada secuencial */
+@keyframes fabGroupSlideIn {
+  from {
+    transform: translateX(100px) scale(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Para posición izquierda */
+.fab-group.fab-group-bottom-left .fab-group-item {
+  animation-name: fabGroupSlideInLeft;
+}
+
+@keyframes fabGroupSlideInLeft {
+  from {
+    transform: translateX(-100px) scale(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .fab-group {
+    gap: 0.75rem;
+  }
+
+  .fab-group.fab-group-bottom-right {
+    bottom: 1.5rem;
+    right: 1.5rem;
+  }
+
+  .fab-group.fab-group-bottom-left {
+    bottom: 1.5rem;
+    left: 1.5rem;
+  }
+}
+
+/* Hover effects para el grupo */
+.fab-group:hover .fab-group-item {
+  transform: scale(1.02);
+}
+
+.fab-group-item:hover {
+  transform: scale(1.05) !important;
+  z-index: 10000;
+}

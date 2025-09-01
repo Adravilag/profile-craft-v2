@@ -1,0 +1,386 @@
+/* src/components/common/FloatingActionButton.css */
+
+.fab-container {
+  position: fixed;
+  z-index: 999;
+}
+
+.fab-container.fab-bottom-right {
+  bottom: 20px;
+  right: 20px;
+}
+
+.fab-container.fab-bottom-left {
+  bottom: 20px;
+  left: 20px;
+}
+
+/* Sistema mejorado de apilamiento vertical para FABs */
+:root {
+  --fab-base-spacing: 20px; /* Espacio base desde el borde */
+  --fab-standard-height: 56px; /* Altura estándar del botón */
+  --fab-small-height: 40px; /* Altura del botón pequeño */
+  --fab-large-height: 64px; /* Altura del botón grande */
+  --fab-vertical-margin: 16px; /* Margen vertical entre botones */
+}
+
+/* Posicionamiento del primer botón (posición base) */
+.fab-container:nth-of-type(1).fab-bottom-right,
+.fab-container:nth-of-type(1).fab-bottom-left {
+  bottom: var(--fab-base-spacing);
+}
+
+/* Posicionamiento del segundo botón */
+.fab-container:nth-of-type(2).fab-bottom-right,
+.fab-container:nth-of-type(2).fab-bottom-left {
+  bottom: calc(var(--fab-base-spacing) + var(--fab-standard-height) + var(--fab-vertical-margin));
+}
+
+/* Posicionamiento del tercer botón */
+.fab-container:nth-of-type(3).fab-bottom-right,
+.fab-container:nth-of-type(3).fab-bottom-left {
+  bottom: calc(
+    var(--fab-base-spacing) + (var(--fab-standard-height) * 2) + (var(--fab-vertical-margin) * 2)
+  );
+}
+
+/* Posicionamiento del cuarto botón */
+.fab-container:nth-of-type(4).fab-bottom-right,
+.fab-container:nth-of-type(4).fab-bottom-left {
+  bottom: calc(
+    var(--fab-base-spacing) + (var(--fab-standard-height) * 3) + (var(--fab-vertical-margin) * 3)
+  );
+}
+
+/* Posicionamiento del quinto botón (por si acaso) */
+.fab-container:nth-of-type(5).fab-bottom-right,
+.fab-container:nth-of-type(5).fab-bottom-left {
+  bottom: calc(
+    var(--fab-base-spacing) + (var(--fab-standard-height) * 4) + (var(--fab-vertical-margin) * 4)
+  );
+}
+
+/* Ajustes específicos para tamaños diferentes */
+.fab-container.fab-bottom-right .fab-small,
+.fab-container.fab-bottom-left .fab-small {
+  height: var(--fab-small-height);
+}
+
+.fab-container.fab-bottom-right .fab-large,
+.fab-container.fab-bottom-left .fab-large {
+  height: var(--fab-large-height);
+}
+
+.fab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 12px rgb(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  position: relative;
+  min-width: 56px;
+  max-width: 200px;
+}
+
+.fab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgb(0, 0, 0, 0.2);
+}
+
+.fab:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgb(0, 0, 0, 0.2);
+}
+
+/* Tamaños */
+.fab.fab-small {
+  height: 40px;
+  padding: 0 12px;
+  font-size: 0.875rem;
+}
+
+.fab.fab-small i {
+  font-size: 1rem;
+  margin-right: 6px;
+}
+
+.fab.fab-medium {
+  height: 56px;
+  padding: 0 16px;
+  font-size: 0.9rem;
+}
+
+.fab.fab-medium i {
+  font-size: 1.25rem;
+  margin-right: 8px;
+}
+
+.fab.fab-large {
+  height: 64px;
+  padding: 0 20px;
+  font-size: 1rem;
+}
+
+.fab.fab-large i {
+  font-size: 1.5rem;
+  margin-right: 10px;
+}
+
+/* Colores */
+.fab.fab-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.fab.fab-primary:hover {
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+}
+
+.fab.fab-secondary {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.fab.fab-secondary:hover {
+  background: linear-gradient(135deg, #ee82f0 0%, #f34458 100%);
+}
+
+.fab.fab-success {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+}
+
+.fab.fab-success:hover {
+  background: linear-gradient(135deg, #3d8bfe 0%, #00d9fe 100%);
+}
+
+.fab.fab-warning {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  color: white;
+}
+
+.fab.fab-warning:hover {
+  background: linear-gradient(135deg, #f85a8a 0%, #fed130 100%);
+}
+
+.fab.fab-danger {
+  background: linear-gradient(135deg, #ff758c 0%, #ff7eb3 100%);
+  color: white;
+}
+
+.fab.fab-danger:hover {
+  background: linear-gradient(135deg, #ff5f7c 0%, #ff6ea3 100%);
+}
+
+/* Label de texto */
+.fab-label {
+  opacity: 1;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.3s ease;
+}
+
+/* Solo mostrar ícono en pantallas pequeñas */
+@media (max-width: 768px) {
+  :root {
+    --fab-base-spacing: 1.5rem; /* Espacio base más pequeño en móviles */
+    --fab-vertical-margin: 12px; /* Margen vertical reducido entre botones */
+  }
+
+  .fab {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    padding: 0;
+    min-width: 56px;
+    max-width: 56px;
+  }
+
+  .fab i {
+    margin-right: 0 !important;
+  }
+
+  .fab-label {
+    display: none;
+  }
+
+  .fab-container.fab-bottom-right {
+    right: 1.5rem;
+  }
+
+  .fab-container.fab-bottom-left {
+    left: 1.5rem;
+  }
+
+  /* Ajustar espaciado vertical en móviles */
+  .fab-container:nth-of-type(2).fab-bottom-right,
+  .fab-container:nth-of-type(2).fab-bottom-left {
+    bottom: calc(var(--fab-base-spacing) + var(--fab-standard-height) + var(--fab-vertical-margin));
+  }
+}
+
+/* Galaxy A51/71 específico - 420px breakpoint */
+@media (max-width: 420px) {
+  :root {
+    --fab-base-spacing: 1rem; /* Espacio aún menor para Galaxy A51/71 */
+    --fab-vertical-margin: 10px; /* Margen vertical más compacto */
+  }
+
+  .fab {
+    width: 52px;
+    height: 52px;
+
+    /* Optimizar interfaz táctil */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .fab-container.fab-bottom-right {
+    right: 1rem;
+  }
+
+  .fab-container.fab-bottom-left {
+    left: 1rem;
+  }
+
+  /* Optimizar sombras para mejorar rendimiento en móviles */
+  .fab {
+    box-shadow: 0 2px 8px rgb(0, 0, 0, 0.12);
+    backdrop-filter: none; /* Desactivar backdrop-filter para mejor rendimiento */
+  }
+
+  .fab:hover {
+    box-shadow: 0 4px 12px rgb(0, 0, 0, 0.18);
+    transform: translateY(-1px); /* Efecto más sutil */
+  }
+}
+
+/* Mobile muy pequeño - optimización adicional */
+@media (max-width: 360px) {
+  :root {
+    --fab-base-spacing: 0.75rem;
+    --fab-vertical-margin: 8px;
+  }
+
+  .fab {
+    width: 48px;
+    height: 48px;
+
+    /* Simplificar efectos para mejorar rendimiento */
+    box-shadow: 0 1px 4px rgb(0, 0, 0, 0.1);
+    backdrop-filter: none;
+  }
+
+  .fab:hover {
+    transform: none; /* Desactivar transformaciones para mejor rendimiento */
+    box-shadow: 0 2px 6px rgb(0, 0, 0, 0.15);
+  }
+
+  .fab::before {
+    display: none; /* Desactivar efectos especiales en pantallas muy pequeñas */
+  }
+}
+
+/* Landscape mobile optimizations */
+@media (max-height: 420px) and (orientation: landscape) {
+  :root {
+    --fab-base-spacing: 0.5rem;
+    --fab-vertical-margin: 6px;
+  }
+
+  .fab {
+    width: 44px;
+    height: 44px;
+  }
+
+  .fab-container.fab-bottom-right {
+    right: 0.5rem;
+    bottom: 0.5rem;
+  }
+
+  .fab-container.fab-bottom-left {
+    left: 0.5rem;
+    bottom: 0.5rem;
+  }
+
+  /* Posicionar FABs más cerca en landscape para no ocupar espacio vertical */
+  .fab-container:nth-of-type(2).fab-bottom-right,
+  .fab-container:nth-of-type(2).fab-bottom-left {
+    bottom: calc(0.5rem + 44px + 6px);
+  }
+}
+
+/* Animación de entrada */
+@keyframes fabSlideIn {
+  from {
+    transform: translateY(100px) scale(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.fab-container {
+  animation: fabSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Tiempo de retraso por nivel */
+  transition: bottom 0.3s ease-out;
+}
+
+/* Retraso escalonado para cada botón */
+.fab-container:nth-of-type(1) {
+  animation-delay: 0s;
+}
+
+.fab-container:nth-of-type(2) {
+  animation-delay: 0.1s;
+}
+
+.fab-container:nth-of-type(3) {
+  animation-delay: 0.2s;
+}
+
+.fab-container:nth-of-type(4) {
+  animation-delay: 0.3s;
+}
+
+.fab-container:nth-of-type(5) {
+  animation-delay: 0.4s;
+}
+
+/* Estados de focus para accesibilidad */
+.fab:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(102, 126, 234, 0.4);
+}
+
+.fab:focus:not(:focus-visible) {
+  box-shadow: 0 4px 12px rgb(0, 0, 0, 0.15);
+}
+
+/* Efectos especiales */
+.fab::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, transparent, rgb(255, 255, 255, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+}
+
+.fab:hover::before {
+  transform: translateX(100%);
+}

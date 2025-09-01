@@ -1,0 +1,248 @@
+:root {
+  /* Paleta de colores (dark) */
+  --c-primary: #8b63ff; /* acento púrpura */
+  --c-primary-2: #3fd4ff; /* acento secundario */
+  --c-bg-1: #161518; /* fondo modal */
+  --c-bg-2: #232028; /* contenedor interior */
+  --c-surface: #1f1d22;
+  --c-on-surface: #efe9f6;
+  --c-muted: #bdb5c6;
+  --c-outline: rgba(255, 255, 255, 0.06);
+  --c-error: #b91c1c;
+  --c-error-bg: rgba(185, 28, 28, 0.12);
+}
+
+/* Panel principal del modal de login moved to ModalShell.module.css */
+
+/* Cabecera: título + botón cerrar */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.heading {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  color: var(--c-on-surface);
+}
+
+.close {
+  background: rgba(255, 255, 255, 0.02);
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 8px;
+  color: var(--c-muted);
+  transition:
+    transform 0.12s ease,
+    background-color 0.12s ease,
+    color 0.12s ease;
+}
+
+.close:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--c-on-surface);
+}
+
+.close:focus {
+  outline: none;
+  box-shadow: 0 6px 20px rgba(139, 99, 255, 0.12);
+}
+
+/* Formulario de login */
+.loginForm {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.icon {
+  color: rgba(255, 255, 255, 0.36);
+  flex: 0 0 18px;
+  margin-left: 4px;
+}
+.input {
+  padding-left: 6px;
+}
+
+.fieldError {
+  color: #ffb4b4;
+  font-size: 0.85rem;
+  margin-top: 6px;
+}
+
+.label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--c-muted);
+}
+
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--c-outline);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.02));
+  font-size: 0.98rem;
+  color: var(--c-on-surface);
+  box-shadow: inset 0 -6px 12px rgba(0, 0, 0, 0.35);
+  transition:
+    transform 120ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease;
+}
+
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.28);
+  font-weight: 400;
+}
+
+.input:focus {
+  outline: none;
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--c-primary) 75%, white);
+  box-shadow:
+    0 6px 24px rgba(11, 8, 20, 0.6),
+    0 0 0 6px rgba(139, 99, 255, 0.06);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.primary {
+  width: 100%;
+  padding: 12px 14px;
+  background: linear-gradient(90deg, var(--c-primary), var(--c-primary-2));
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  box-shadow:
+    0 8px 20px rgba(59, 20, 84, 0.32),
+    0 2px 6px rgba(0, 0, 0, 0.4);
+  transition:
+    transform 120ms ease,
+    box-shadow 160ms ease,
+    opacity 120ms ease;
+}
+
+.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 40px rgba(59, 20, 84, 0.28);
+}
+
+.primary[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.secondary {
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  color: var(--c-muted);
+  font-size: 0.9rem;
+  text-align: center;
+  text-decoration: underline transparent;
+  transition:
+    color 0.12s ease,
+    text-decoration-color 0.12s ease;
+}
+
+.secondary:hover {
+  color: var(--c-on-surface);
+  text-decoration-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Spinner inside button */
+.spinner {
+  display: inline-flex;
+  vertical-align: middle;
+  margin-right: 8px;
+  animation: spin 1s linear infinite;
+}
+.primaryLabel {
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Microanimations: lift and modal open subtle pop */
+.panel {
+  transform-origin: top center;
+}
+.panel[data-open='true'] {
+  animation: panelEnter 220ms cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+.panel:hover {
+  transform: translateY(-2px) scale(1.003);
+  transition: transform 140ms ease;
+}
+
+/* Avatar lift: (the avatar element in PatternLogin uses inline style, but we can add class hooks if needed) */
+.avatarLift {
+  transition: transform 160ms cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+/* Inner wrapper used when ModalShell provides outer panel */
+.inner {
+  padding: 12px 8px 6px 8px;
+}
+
+.error {
+  color: var(--c-error);
+  background: var(--c-error-bg);
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  margin-top: 6px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.error::before {
+  content: '⚠';
+  display: inline-block;
+  font-weight: 700;
+}
+
+/* Responsividad */
+@media (max-width: 420px) {
+  .panel {
+    padding: 16px;
+    border-radius: 20px;
+  }
+  .heading {
+    font-size: 1.375rem;
+  }
+}

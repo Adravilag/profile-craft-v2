@@ -1,0 +1,129 @@
+:root {
+  --fab-size: 56px;
+  --fab-gap: 12px;
+  --fab-z: 600;
+}
+
+.fab-group {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  gap: var(--fab-gap);
+  z-index: var(--md-sys-z-index-fab, var(--fab-z));
+  right: 24px;
+  bottom: 24px;
+}
+
+.fab-group.fab-bottom-left {
+  left: 24px;
+  right: auto;
+}
+.fab-group.fab-top-right {
+  top: 24px;
+  bottom: auto;
+}
+.fab-group.fab-top-left {
+  top: 24px;
+  bottom: auto;
+  left: 24px;
+  right: auto;
+}
+
+.fab-button {
+  width: var(--md-comp-fab-container-width, var(--fab-size));
+  height: var(--md-comp-fab-container-height, var(--fab-size));
+  border-radius: 50%;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--md-sys-color-on-primary, #fff);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+  font-size: 1.25rem;
+}
+
+.fab-button:active {
+  transform: scale(0.96);
+}
+
+/* Animación de entrada y pulso sutil */
+.fab-group {
+  animation: fabFadeIn 240ms ease-out;
+}
+
+.fab-button {
+  will-change: transform;
+}
+
+.fab-button::after {
+  content: '';
+  position: absolute;
+  width: calc(var(--md-comp-fab-container-width, var(--fab-size)) + 12px);
+  height: calc(var(--md-comp-fab-container-height, var(--fab-size)) + 12px);
+  border-radius: 50%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.fab-button.fab-success:hover::after,
+.fab-button.fab-primary:hover::after {
+  animation: fabPulse 1.6s infinite ease-out;
+}
+
+@keyframes fabFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes fabPulse {
+  0% {
+    opacity: 0.25;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+  50% {
+    opacity: 0.06;
+    transform: translate(-50%, -50%) scale(1.06);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+}
+
+.fab-primary {
+  background: var(--md-sys-color-primary, #2563eb);
+}
+.fab-success {
+  background: var(--md-sys-color-secondary, #16a34a);
+}
+.fab-danger {
+  background: #dc2626;
+}
+.fab-neutral {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.fab-icon {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .fab-group {
+    right: 16px;
+    bottom: 16px;
+  }
+}

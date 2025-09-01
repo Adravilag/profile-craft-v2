@@ -1,0 +1,338 @@
+/* ============================================
+   SKILLS GRID - CSS MODULE
+   Grid layout y animaciones de ordenación
+   ============================================ */
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: var(--md-sys-spacing-xxl);
+  min-height: 400px;
+  background: var(--md-sys-color-surface-container-low);
+  border-radius: var(--md-sys-shape-corner-large);
+  border: 2px dashed var(--md-sys-color-outline);
+  gap: var(--md-sys-spacing-lg);
+}
+
+.emptyIcon {
+  font-size: 4rem;
+  color: var(--md-sys-color-outline);
+  margin-bottom: var(--md-sys-spacing-md);
+}
+
+.emptyState h3 {
+  font-size: var(--md-sys-typescale-headline-medium-size);
+  color: var(--md-sys-color-on-surface);
+  margin: 0;
+}
+
+.emptyState p {
+  font-size: var(--md-sys-typescale-body-large-size);
+  color: var(--md-sys-color-on-surface-variant);
+  margin: 0;
+}
+
+/* ============================================
+   CATEGORIES LAYOUT
+   ============================================ */
+.skillsCategories {
+  display: flex;
+  flex-direction: column;
+  gap: var(--md-sys-spacing-xxl);
+}
+
+.skillsCategory {
+  margin-bottom: var(--md-sys-spacing-xxl);
+}
+
+.skillsCategory:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================
+   CATEGORY HEADER
+   ============================================ */
+.categoryHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--md-sys-spacing-lg);
+  padding: var(--md-sys-spacing-md) 0;
+  border-bottom: 2px solid var(--md-sys-color-outline-variant);
+}
+
+.categoryTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--md-sys-spacing-md);
+  font-size: var(--md-sys-typescale-headline-small-size);
+  font-weight: var(--md-sys-typescale-headline-small-weight);
+  color: var(--md-sys-color-on-surface);
+  margin: 0;
+}
+
+.categoryIcon {
+  color: var(--md-sys-color-primary);
+  font-size: 1.2em;
+}
+
+.featuredBadge {
+  display: inline-block;
+  margin-right: 8px;
+  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+  color: #111827;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.categoryName {
+  color: var(--md-sys-color-on-surface);
+}
+
+.categoryCount {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  padding: var(--md-sys-spacing-xs) var(--md-sys-spacing-sm);
+  border-radius: var(--md-sys-shape-corner-full);
+  font-size: var(--md-sys-typescale-label-medium-size);
+  font-weight: 600;
+  min-width: 24px;
+  text-align: center;
+}
+
+/* ============================================
+   SORT CONTROLS
+   ============================================ */
+.sortControls {
+  display: flex;
+  align-items: center;
+  gap: var(--md-sys-spacing-md);
+}
+
+.sortLabel {
+  font-size: var(--md-sys-typescale-body-small-size);
+  color: var(--md-sys-color-on-surface-variant);
+  font-weight: 500;
+}
+
+.sortButtons {
+  display: flex;
+  gap: var(--md-sys-spacing-xs);
+}
+
+.sortButton {
+  display: flex;
+  align-items: center;
+  gap: var(--md-sys-spacing-xs);
+  padding: var(--md-sys-spacing-xs) var(--md-sys-spacing-sm);
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 8px;
+  font-size: var(--md-sys-typescale-label-medium-size);
+  color: #b5b5b5;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  position: relative;
+}
+
+.sortButton:hover {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  border-color: var(--md-sys-color-primary);
+  transform: translateY(-1px);
+}
+
+.sortButton.active {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  border-color: var(--md-sys-color-primary);
+  font-weight: 600;
+  filter: brightness(1.03);
+}
+
+.sortButton.active:hover {
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.sortButton i {
+  font-size: 0.9em;
+}
+
+.sortButton i:last-child {
+  font-size: 0.8em;
+  margin-left: var(--md-sys-spacing-xs);
+}
+
+/* ============================================
+   MAIN GRID LAYOUT
+   ============================================ */
+.skillsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--md-sys-spacing-md);
+  padding: var(--md-sys-spacing-sm) 0 32px;
+  justify-content: center;
+  transition: all 0.5s ease-in-out;
+}
+
+/* Asegurar que todas las skill cards aprovechen el ancho disponible */
+.skillsGrid :global(.skillCard) {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* ============================================
+   SORTING ANIMATIONS
+   ============================================ */
+.sortChange {
+  animation: sortChangeAnimation 0.5s ease-in-out;
+}
+
+@keyframes sortChangeAnimation {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ============================================
+   RESPONSIVE LAYOUT
+   ============================================ */
+
+/* Pantallas grandes (desktop) - aprovechamiento de ancho */
+@media (max-width: 1400px) {
+  .skillsGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--md-sys-spacing-md);
+  }
+
+  /* Aprovechar mejor el ancho disponible */
+  .skillsGrid :global(.skillCard) {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
+
+/* Tablets grandes y pantallas medianas - mejor aprovechamiento del ancho */
+@media (max-width: 1200px) {
+  .skillsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--md-sys-spacing-sm);
+  }
+
+  /* Aprovechar mejor el ancho disponible */
+  .skillsGrid :global(.skillCard) {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
+
+/* Tablets medianos - optimizado para dos columnas con más ancho */
+@media (max-width: 992px) {
+  .skillsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--md-sys-spacing-md);
+    padding: var(--md-sys-spacing-sm) var(--md-sys-spacing-xs);
+  }
+
+  /* Aprovechar mejor el ancho disponible en tablets */
+  .skillsGrid :global(.skillCard) {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}
+
+/* Tablets pequeños - mantener dos columnas hasta 700px con aprovechamiento de ancho */
+@media (max-width: 768px) {
+  .skillsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--md-sys-spacing-sm);
+    padding: var(--md-sys-spacing-sm) var(--md-sys-spacing-xs);
+  }
+
+  /* Aprovechar mejor el ancho disponible */
+  .skillsGrid :global(.skillCard) {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .categoryHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--md-sys-spacing-sm);
+  }
+
+  .sortControls {
+    align-self: stretch;
+    justify-content: space-between;
+  }
+
+  .sortButtons {
+    gap: var(--md-sys-spacing-xs);
+  }
+
+  .sortButton {
+    flex: 1;
+    justify-content: center;
+    min-width: 0;
+    font-size: var(--md-sys-typescale-label-small-size);
+  }
+}
+
+/* Móviles - Layout con icono de fondo optimizado */
+@media (max-width: 700px) {
+  /* Aprovechar completamente el ancho disponible */
+  .skillsGrid :global(.skillCard) {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  .sortControls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--md-sys-spacing-xs);
+  }
+
+  .sortButtons {
+    width: 100%;
+  }
+
+  .sortButton {
+    padding: var(--md-sys-spacing-sm);
+  }
+}
+
+/* Móviles muy pequeños */
+@media (max-width: 380px) {
+  .skillsGrid {
+    grid-template-columns: 1fr;
+    gap: var(--md-sys-spacing-xs);
+    padding: var(--md-sys-spacing-xs) 0;
+  }
+
+  /* Aprovechar completamente el ancho disponible */
+  .skillsGrid :global(.skillCard) {
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+}

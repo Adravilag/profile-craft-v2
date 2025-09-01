@@ -1,0 +1,344 @@
+/* src/components/sections/skills/components/SkillsFilterFAB.module.css */
+
+/* ===== POSICIÓN Y VISIBILIDAD ===== */
+.floatingFilterPanel {
+  position: absolute;
+  left: 16px;
+  top: 0;
+  z-index: 1400;
+  background: var(--md-sys-color-surface-container-high);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 24px; /* Más redondeado para MD3 */
+  box-shadow:
+    0 8px 24px rgb(0, 0, 0, 0.15),
+    0 4px 12px rgb(0, 0, 0, 0.1);
+  backdrop-filter: blur(16px);
+  min-width: 300px;
+  max-width: 320px;
+  max-height: 70vh;
+  overflow: hidden;
+
+  /* Animación de entrada mejorada */
+  transform: translateY(20px) scale(0.9);
+  opacity: 0;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-property: transform, opacity, visibility;
+  pointer-events: none;
+  visibility: hidden;
+  will-change: transform, opacity, visibility; /* Mejora rendimiento en animaciones */
+
+  /* Indicador visual de la sección activa */
+  border-left: 4px solid var(--md-sys-color-primary);
+}
+
+.floatingFilterPanel.visible {
+  transform: translateY(0) translateX(0) scale(1);
+  opacity: 1;
+  pointer-events: all;
+  visibility: visible;
+}
+
+/* Efecto al seleccionar una categoría */
+.floatingFilterPanel.selecting {
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform: translateY(-2px) scale(1.01);
+  box-shadow:
+    0 12px 24px rgb(0, 0, 0, 0.18),
+    0 6px 12px rgb(0, 0, 0, 0.14);
+}
+
+.floatingFilterPanel.selecting .selectedCategory {
+  animation: badgePulse 0.6s ease-in-out;
+  background: var(--md-sys-color-tertiary);
+  color: var(--md-sys-color-on-tertiary);
+  box-shadow: 0 2px 8px rgb(0, 0, 0, 0.2);
+}
+
+.floatingFilterPanel.pulse {
+  animation: badgePulse 0.6s ease-in-out;
+}
+
+/* ===== COMPORTAMIENTO STICKY ===== */
+.floatingFilterPanel.sticky {
+  position: fixed;
+  top: var(--skills-filter-offset-top, 80px); /* Offset desde el top de la página */
+  width: var(--container-width, 300px);
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+  transition: top 0.2s ease;
+}
+
+@keyframes badgePulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ===== CONTENIDO DEL PANEL ===== */
+.filterPanelContent {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* ===== HEADER DEL PANEL MEJORADO ===== */
+.filterPanelHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px 16px;
+  background: var(--md-sys-color-surface-container-highest);
+  color: var(--md-sys-color-on-surface);
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  font-weight: 600;
+  font-size: 1rem;
+  position: relative;
+}
+
+.filterPanelHeader i {
+  font-size: 1.1rem;
+  color: var(--md-sys-color-primary);
+  background: var(--md-sys-color-primary-container);
+  padding: 8px;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filterPanelHeader span:first-of-type {
+  flex: 1;
+  font-weight: 700;
+  color: var(--md-sys-color-on-surface);
+}
+
+.selectedCategory {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+  border-radius: 16px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-left: auto;
+  transition: all 0.25s ease;
+  cursor: default;
+}
+
+/* Acciones en cabecera: chips de orden */
+.headerActions {
+  display: inline-flex;
+  gap: 8px;
+  margin-left: 12px;
+}
+
+.sortChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 16px;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-surface);
+  color: var(--md-sys-color-on-surface);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sortChip:hover {
+  transform: translateY(-1px);
+}
+.sortChip i {
+  color: var(--md-sys-color-primary);
+}
+.sortChip.active {
+  background: var(--md-sys-color-primary-container);
+  border-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.selectedCategory i {
+  color: inherit;
+  background: none;
+  padding: 0;
+  width: auto;
+  height: auto;
+  font-size: 0.9rem;
+}
+
+.selectedCategory span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+
+/* ===== BOTONES DE FILTRO ===== */
+.filterButtons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+  padding: 12px;
+  overflow-y: auto;
+  max-height: 60vh;
+  scrollbar-width: thin;
+  scrollbar-color: var(--md-sys-color-outline) transparent;
+}
+
+.filterButtons::-webkit-scrollbar {
+  width: 8px;
+}
+
+.filterButtons::-webkit-scrollbar-thumb {
+  background-color: var(--md-sys-color-outline-variant);
+  border-radius: 20px;
+}
+
+.filterButtons::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.filterBtn {
+  background: var(--md-sys-color-surface);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: 16px;
+  text-align: left;
+  transition: all 0.25s ease;
+  cursor: pointer;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  color: var(--md-sys-color-on-surface);
+}
+
+.filterBtnContent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px;
+}
+
+.filterBtn i {
+  font-size: 0.9rem;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--md-sys-color-primary);
+  background-color: var(--md-sys-color-surface-variant);
+  border-radius: 50%;
+  transition: all 0.25s ease;
+}
+
+.filterBtn.active i {
+  color: var(--md-sys-color-on-primary);
+  background-color: var(--md-sys-color-primary);
+  transform: scale(1.1);
+}
+
+.categoryName {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.filterCount {
+  background-color: var(--md-sys-color-surface-variant);
+  color: var(--md-sys-color-on-surface-variant);
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.25s ease;
+}
+
+/* Botón activo */
+.filterBtn.active {
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  border-color: var(--md-sys-color-primary);
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgb(0, 0, 0, 0.1);
+  z-index: 2;
+}
+
+.filterBtn.active .filterCount {
+  background-color: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+}
+
+/* Estados de hover */
+.filterBtn:hover:not(.active) {
+  background-color: var(--md-sys-color-surface-variant);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgb(0, 0, 0, 0.1);
+}
+
+.filterBtn:active:not(.active) {
+  transform: translateY(1px);
+}
+
+/* Focus para accesibilidad */
+.filterBtn:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+}
+
+/* ===== MEDIA QUERIES ===== */
+@media (max-width: 1200px) {
+  .filterButtons {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .floatingFilterPanel {
+    position: fixed;
+    bottom: 90px;
+    left: 16px;
+    right: 16px;
+    max-width: none;
+    width: auto;
+    margin: 0 16px;
+  }
+
+  .filterPanelHeader {
+    padding: 16px 20px 14px;
+    font-size: 0.95rem;
+  }
+
+  .headerActions {
+    display: none;
+  }
+
+  .filterBtnContent {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .filterButtons {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    padding: 10px;
+  }
+
+  .selectedCategory {
+    display: none;
+  }
+}

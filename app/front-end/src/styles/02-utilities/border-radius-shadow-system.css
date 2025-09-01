@@ -1,0 +1,453 @@
+/* border-radius-shadow-system.css - Enhanced Border Radius and Shadow System */
+
+/* ===========================================
+   BORDER RADIUS SYSTEM IMPLEMENTATION
+   =========================================== */
+
+/* Base border radius utilities */
+.radius-none {
+  border-radius: 0;
+}
+.radius-sm {
+  border-radius: var(--radius-sm);
+}
+.radius-md {
+  border-radius: var(--radius-md);
+}
+.radius-lg {
+  border-radius: var(--radius-lg);
+}
+.radius-xl {
+  border-radius: var(--radius-xl);
+}
+.radius-2xl {
+  border-radius: var(--radius-2xl);
+}
+.radius-full {
+  border-radius: var(--radius-full);
+}
+
+/* Directional border radius utilities */
+.radius-t-sm {
+  border-top-left-radius: var(--radius-sm);
+  border-top-right-radius: var(--radius-sm);
+}
+.radius-t-md {
+  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-md);
+}
+.radius-t-lg {
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+}
+.radius-t-xl {
+  border-top-left-radius: var(--radius-xl);
+  border-top-right-radius: var(--radius-xl);
+}
+
+.radius-b-sm {
+  border-bottom-left-radius: var(--radius-sm);
+  border-bottom-right-radius: var(--radius-sm);
+}
+.radius-b-md {
+  border-bottom-left-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+}
+.radius-b-lg {
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+}
+.radius-b-xl {
+  border-bottom-left-radius: var(--radius-xl);
+  border-bottom-right-radius: var(--radius-xl);
+}
+
+.radius-l-sm {
+  border-top-left-radius: var(--radius-sm);
+  border-bottom-left-radius: var(--radius-sm);
+}
+.radius-l-md {
+  border-top-left-radius: var(--radius-md);
+  border-bottom-left-radius: var(--radius-md);
+}
+.radius-l-lg {
+  border-top-left-radius: var(--radius-lg);
+  border-bottom-left-radius: var(--radius-lg);
+}
+.radius-l-xl {
+  border-top-left-radius: var(--radius-xl);
+  border-bottom-left-radius: var(--radius-xl);
+}
+
+.radius-r-sm {
+  border-top-right-radius: var(--radius-sm);
+  border-bottom-right-radius: var(--radius-sm);
+}
+.radius-r-md {
+  border-top-right-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+}
+.radius-r-lg {
+  border-top-right-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+}
+.radius-r-xl {
+  border-top-right-radius: var(--radius-xl);
+  border-bottom-right-radius: var(--radius-xl);
+}
+
+/* ===========================================
+   SHADOW SYSTEM IMPLEMENTATION
+   =========================================== */
+
+/* Base shadow utilities */
+.shadow-none {
+  box-shadow: none;
+}
+.shadow-sm {
+  box-shadow: var(--shadow-sm);
+}
+.shadow-md {
+  box-shadow: var(--shadow-md);
+}
+.shadow-lg {
+  box-shadow: var(--shadow-lg);
+}
+.shadow-xl {
+  box-shadow: var(--shadow-xl);
+}
+.shadow-2xl {
+  box-shadow: var(--shadow-2xl);
+}
+
+/* Colored shadows for interactive elements */
+.shadow-accent {
+  box-shadow: 0 4px 14px rgb(88, 166, 255, 0.15);
+}
+.shadow-success {
+  box-shadow: 0 4px 14px rgb(86, 211, 100, 0.15);
+}
+.shadow-warning {
+  box-shadow: 0 4px 14px rgb(242, 204, 96, 0.15);
+}
+.shadow-error {
+  box-shadow: 0 4px 14px rgb(255, 123, 114, 0.15);
+}
+
+/* Glow effects for special states */
+.glow-accent {
+  box-shadow: var(--glow-primary);
+}
+.glow-success {
+  box-shadow: var(--glow-success);
+}
+.glow-warning {
+  box-shadow: var(--glow-warning);
+}
+.glow-error {
+  box-shadow: var(--glow-error);
+}
+
+/* Combined shadow and glow effects */
+.shadow-glow-accent {
+  box-shadow: var(--shadow-md), var(--glow-primary);
+}
+
+.shadow-glow-success {
+  box-shadow: var(--shadow-md), var(--glow-success);
+}
+
+.shadow-glow-warning {
+  box-shadow: var(--shadow-md), var(--glow-warning);
+}
+
+.shadow-glow-error {
+  box-shadow: var(--shadow-md), var(--glow-error);
+}
+
+/* ===========================================
+   ELEVATION SYSTEM (MATERIAL DESIGN COMPATIBILITY)
+   =========================================== */
+
+.elevation-0 {
+  box-shadow: none;
+}
+.elevation-1 {
+  box-shadow: var(--md-elevation-1);
+}
+.elevation-2 {
+  box-shadow: var(--md-elevation-2);
+}
+.elevation-3 {
+  box-shadow: var(--md-elevation-3);
+}
+.elevation-4 {
+  box-shadow: var(--md-elevation-4);
+}
+.elevation-5 {
+  box-shadow: var(--md-elevation-5);
+}
+.elevation-6 {
+  box-shadow: var(--md-elevation-6);
+}
+
+/* ===========================================
+   COMPONENT-SPECIFIC IMPLEMENTATIONS
+   =========================================== */
+
+/* Terminal Container */
+.terminal-container {
+  border-radius: var(--terminal-radius);
+  box-shadow: var(--terminal-shadow);
+}
+
+/* Cards and Surfaces */
+.card {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  transition: box-shadow var(--duration-normal) var(--ease-out);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.card-elevated {
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-elevated:hover {
+  box-shadow: var(--shadow-xl);
+}
+
+/* Buttons */
+.btn {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.btn:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(0);
+}
+
+.btn-primary {
+  box-shadow: var(--shadow-accent);
+}
+
+.btn-primary:hover {
+  box-shadow: var(--shadow-glow-accent);
+}
+
+.btn-round {
+  border-radius: var(--radius-full);
+}
+
+/* Input Fields */
+.input {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.input:focus {
+  box-shadow:
+    var(--shadow-md),
+    0 0 0 2px rgb(88, 166, 255, 0.2);
+}
+
+/* Modals and Overlays */
+.modal {
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-2xl);
+}
+
+.modal-header {
+  border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+}
+
+.modal-footer {
+  border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
+}
+
+/* Dropdowns and Menus */
+.dropdown {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.menu {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.menu-item {
+  border-radius: var(--radius-sm);
+}
+
+/* Tooltips */
+.tooltip {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+/* Toast Notifications */
+.toast {
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.toast-success {
+  box-shadow: var(--shadow-glow-success);
+}
+
+.toast-warning {
+  box-shadow: var(--shadow-glow-warning);
+}
+
+.toast-error {
+  box-shadow: var(--shadow-glow-error);
+}
+
+/* ===========================================
+   INTERACTIVE STATES
+   =========================================== */
+
+/* Hover states with enhanced shadows */
+.interactive:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.interactive-subtle:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+/* Focus states */
+.focusable:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-md);
+}
+
+/* Active/pressed states */
+.pressable:active {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ===========================================
+   PERFORMANCE OPTIMIZATIONS
+   =========================================== */
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .btn,
+  .input,
+  .interactive,
+  .interactive-subtle,
+  .pressable {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Lower-end device optimizations */
+@media (max-width: 768px) and (max-resolution: 150dpi) {
+  /* Reduce shadow complexity on lower-end devices */
+  .shadow-2xl,
+  .shadow-xl {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .shadow-glow-accent,
+  .shadow-glow-success,
+  .shadow-glow-warning,
+  .shadow-glow-error {
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Disable complex animations on lower-end devices */
+  .interactive:hover,
+  .interactive-subtle:hover,
+  .btn:hover {
+    transform: none;
+  }
+}
+
+/* High contrast mode adjustments */
+@media (prefers-contrast: high) {
+  .shadow-sm,
+  .shadow-md,
+  .shadow-lg,
+  .shadow-xl,
+  .shadow-2xl {
+    box-shadow: 0 0 0 1px currentcolor;
+  }
+}
+
+/* Print styles */
+@media print {
+  .shadow-sm,
+  .shadow-md,
+  .shadow-lg,
+  .shadow-xl,
+  .shadow-2xl,
+  .shadow-accent,
+  .shadow-success,
+  .shadow-warning,
+  .shadow-error,
+  .glow-accent,
+  .glow-success,
+  .glow-warning,
+  .glow-error {
+    box-shadow: none !important;
+  }
+}
+
+/* ===========================================
+   THEME-SPECIFIC ADJUSTMENTS
+   =========================================== */
+
+/* Light theme shadow adjustments */
+@media (prefers-color-scheme: light) {
+  .shadow-accent {
+    box-shadow: 0 4px 14px rgb(9, 105, 218, 0.15);
+  }
+  .shadow-success {
+    box-shadow: 0 4px 14px rgb(26, 127, 55, 0.15);
+  }
+  .shadow-warning {
+    box-shadow: 0 4px 14px rgb(154, 103, 0, 0.15);
+  }
+  .shadow-error {
+    box-shadow: 0 4px 14px rgb(207, 34, 46, 0.15);
+  }
+}
+
+/* Hack theme adjustments */
+[data-theme='hack'] .card,
+[data-theme='hack'] .btn,
+[data-theme='hack'] .modal,
+[data-theme='hack'] .dropdown,
+[data-theme='hack'] .menu {
+  box-shadow: 0 0 20px rgb(0, 255, 65, 0.3);
+}
+
+/* Undertale theme adjustments */
+[data-theme='undertale'] .card,
+[data-theme='undertale'] .btn,
+[data-theme='undertale'] .modal,
+[data-theme='undertale'] .dropdown,
+[data-theme='undertale'] .menu {
+  box-shadow: 0 0 20px rgb(255, 255, 0, 0.3);
+}

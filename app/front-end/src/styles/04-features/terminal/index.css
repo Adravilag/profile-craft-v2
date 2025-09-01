@@ -1,0 +1,9 @@
+/* =====================================================
+   TERMINAL FEATURE STYLES
+   ===================================================== */
+
+/* Terminal-specific optimizations and styling */
+@import url('./terminal-macos-style.css');
+@import url('./terminal-header-optimization.css');
+@import url('./terminal-output-styling.css');
+@import url('./terminal-response-formatting.css');

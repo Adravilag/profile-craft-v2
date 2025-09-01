@@ -1,0 +1,232 @@
+.videoWidget {
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}
+.video {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  background: #000;
+}
+.emptyPlaceholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: var(--muted-text, #9aa0a6);
+}
+.icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.embedWrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+}
+
+.embed {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 10px;
+}
+
+.embedContainer {
+  position: absolute;
+  inset: 0;
+}
+
+.animatedOverlay {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  z-index: 5;
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.85);
+  opacity: 0;
+  transform: scale(0.8) rotate(-10deg);
+  transition:
+    opacity 300ms ease,
+    transform 400ms cubic-bezier(0.2, 0.9, 0.2, 1);
+  pointer-events: none;
+  text-shadow: 0 6px 18px rgba(122, 60, 240, 0.35);
+}
+
+/* When the container has the animate class, show overlay and pulse */
+.animate .animatedOverlay {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+  animation: pulseGlow 1200ms infinite alternate;
+}
+
+@keyframes pulseGlow {
+  from {
+    filter: drop-shadow(0 0 6px rgba(122, 60, 240, 0.45));
+    transform: scale(1) rotate(0deg);
+  }
+  to {
+    filter: drop-shadow(0 0 18px rgba(122, 60, 240, 0.8));
+    transform: scale(1.08) rotate(0deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .videoWidget {
+    max-width: 100%;
+    box-shadow: none;
+    border: none;
+  }
+  .embed {
+    border-radius: 8px;
+  }
+}
+
+/* Skeleton styles for loading state */
+.videoSkeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  height: 100%;
+  box-sizing: border-box;
+}
+.skeletonBar {
+  height: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.12),
+    rgba(255, 255, 255, 0.06)
+  );
+  border-radius: 4px;
+  animation: shimmer 1.2s infinite linear;
+}
+.skeletonThumb {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 0; /* will expand to maintain aspect via parent */
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04),
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.04)
+  );
+  border-radius: 8px;
+  animation: shimmer 1.2s infinite linear;
+}
+.skeletonLines {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.line {
+  height: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  animation: shimmer 1.2s infinite linear;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Poster / clickable thumbnail */
+.posterWrap {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.posterButton {
+  position: relative;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+.posterImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  display: block;
+}
+.playIcon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  color: rgba(255, 255, 255, 0.95);
+  text-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+/* copy link button */
+.copyButton {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  z-index: 6;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+/* YouTube badge bottom-left */
+.youtubeBadge {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  text-decoration: none;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.youtubeBadgeIcon {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background: #ff0000;
+  color: #fff;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+.youtubeBadgeText {
+  font-weight: 600;
+}

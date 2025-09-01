@@ -1,0 +1,285 @@
+/* modal.css - estilos centralizados para modales */
+:root {
+  --modal-overlay-bg: rgb(30, 30, 40, 0.65);
+  --modal-content-bg: rgb(24, 28, 40, 0.92);
+  --modal-border-color: #6f7bf1;
+  --modal-header-bg: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+  --modal-text-primary: #e3e8ff;
+  --modal-text-secondary: #bfc7e6;
+  --modal-text-light: #d1d5db;
+  --modal-input-bg: rgb(36, 40, 56, 0.95);
+  --modal-input-border: #6f7bf1;
+  --modal-input-focus: #8b5cf6;
+  --modal-btn-primary: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);
+  --modal-btn-secondary-bg: rgb(36, 40, 56, 0.95);
+  --modal-btn-secondary-border: #6f7bf1;
+  --modal-filter-bg: #374151;
+  --modal-filter-border: #4b5563;
+  --modal-filter-active: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  --modal-dropdown-bg: #242838;
+  --modal-dropdown-border: #8b5cf6;
+  --modal-z-index: 1000;
+  --modal-dropdown-z-index: 99999;
+  --modal-dropdown-container-z-index: 10000;
+  --modal-padding: 24px;
+  --modal-gap: 14px;
+  --modal-border-radius: 22px;
+  --modal-small-radius: 10px;
+}
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--modal-overlay-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--modal-z-index);
+  padding: var(--modal-padding);
+  animation: modalOverlayFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalOverlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.modal-content {
+  background: var(--modal-content-bg);
+  border-radius: var(--modal-border-radius);
+  box-shadow: 0 8px 32px rgb(30, 30, 40, 0.22);
+  max-width: 60vw;
+  width: 100%;
+  overflow: visible;
+  animation: modalSlideInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1.5px solid var(--modal-border-color);
+  padding: 0;
+  backdrop-filter: blur(8px);
+}
+
+@keyframes modalSlideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.modal-header {
+  background: var(--modal-header-bg);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px 16px;
+  gap: 10px;
+  border-bottom: 1.5px solid var(--modal-border-color);
+}
+.modal-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--modal-gap);
+}
+.modal-icon {
+  font-size: 1.7rem;
+  color: #fff;
+  background: rgb(255, 255, 255, 0.13);
+  border-radius: 50%;
+  padding: 10px;
+}
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  color: #fff;
+}
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.3rem;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+.modal-close-btn:hover {
+  background: rgb(255, 255, 255, 0.15);
+}
+.modal-form {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  overflow: visible;
+}
+.form-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+  overflow: visible;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--modal-overlay-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--modal-z-index);
+  padding: var(--modal-padding);
+  animation: modalOverlayFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalOverlayFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: var(--modal-content-bg);
+  border-radius: var(--modal-border-radius);
+  box-shadow: 0 8px 32px rgb(30, 30, 40, 0.22);
+  max-width: 60vw;
+  width: 100%;
+  overflow: visible;
+  animation: modalSlideInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1.5px solid var(--modal-border-color);
+  padding: 0;
+  backdrop-filter: blur(8px);
+}
+
+@keyframes modalSlideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ============================================
+   HEADER DEL MODAL
+   ============================================ */
+.modal-header {
+  background: var(--modal-header-bg);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 28px 16px;
+  gap: 10px;
+  border-bottom: 1.5px solid var(--modal-border-color);
+}
+
+.modal-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--modal-gap);
+}
+
+.modal-icon {
+  font-size: 1.7rem;
+  color: #fff;
+  background: rgb(255, 255, 255, 0.13);
+  border-radius: 50%;
+  padding: 10px;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  color: #fff;
+}
+
+.modal-close-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.3rem;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.modal-close-btn:hover {
+  background: rgb(255, 255, 255, 0.15);
+}
+
+/* ============================================
+   FORMULARIO DEL MODAL
+   ============================================ */
+.modal-form {
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  overflow: visible;
+}
+
+.form-grid {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  align-items: flex-start;
+  overflow: visible;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.form-group.form-group-inline {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  overflow: visible;
+}
+
+.form-group.form-group-inline:first-child {
+  flex: 1.2;
+}
+
+.form-group.form-group-inline:last-child {
+  flex: 0.8;
+}
+
+.form-group label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--modal-text-secondary);
+  margin-bottom: 2px;
+}

@@ -1,0 +1,13 @@
+/* =====================================================
+   UTILITIES INDEX - REUSABLE STYLES
+   ===================================================== */
+
+@import url('./animations.css');
+@import url('./spacing.css');
+@import url('./spacing-utilities.css');
+@import url('./typography-utilities.css');
+@import url('./colors.css');
+@import url('./borders.css');
+@import url('./animation-system.css');
+@import url('./special-effects.css');
+@import url('./border-radius-shadow-system.css');

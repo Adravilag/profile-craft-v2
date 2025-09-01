@@ -1,0 +1,1547 @@
+/* ===========================================
+   1. VARIABLES & PALETTE
+   =========================================== */
+
+:root {
+  /* Main Dark Palette */
+  --color-background: #0d0d0d;
+  --color-surface-100: #1a1a1a;
+  --color-surface-200: #2c2c2c;
+  --color-text-primary: #f0f0f0;
+  --color-text-secondary: #a0a0a0;
+
+  /* Accent & Interactive Colors */
+
+  /* Darker accents to meet WCAG contrast for white text on buttons */
+  --color-accent: #7a3cf0; /* primary accent (darker) */
+  --color-accent-200: #5a2bd8; /* secondary accent (darker) */
+  --color-accent-accessible: #a583ff;
+  --color-success: #34d399; /* Green for status */
+  --color-error: #f87171; /* Red for errors */
+  --color-link: #4299e1;
+
+  /* Shadows and Effects - simplified: single soft elevation */
+  --shadow-elevation-1: 0 8px 20px rgb(0, 0, 0, 0.5);
+  --shadow-elevation-2: var(--shadow-elevation-1);
+
+  /* Accent glows */
+  --glow-accent: 0 0 40px rgb(122, 60, 240, 0.36);
+  --glow-accent-strong: 0 0 64px rgb(122, 60, 240, 0.48);
+  --glow-status: 0 0 6px rgb(52, 211, 153, 0.12);
+
+  /* Spacing Scale */
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+}
+
+/* ===========================================
+  2. GLOBAL STYLES
+  =========================================== */
+
+/* Nota: las propiedades globales de `body` se consolidan en `src/index.css`.
+  Evitamos duplicar reglas globales en módulos CSS. Variables de color y
+  tipografía permanecen aquí como tokens, pero la regla `body { ... }`
+  fue eliminada para prevenir declaraciones múltiples. */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--color-text-primary);
+}
+
+p {
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+code {
+  background: rgb(255, 255, 255, 0.05);
+  color: var(--color-text-primary);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-family: Consolas, Monaco, monospace;
+  font-weight: 500;
+}
+
+/* ===========================================
+   3. HEADER / PROFILE HERO
+   =========================================== */
+
+.headerCurriculum {
+  border-bottom: none;
+  padding-right: var(--spacing-xxl);
+  /* mantener padding interno pero usar valores responsivos para evitar cortes
+    y permitir que la separación entre secciones se controle por margin-bottom */
+  padding-bottom: clamp(var(--spacing-lg), 2vh, var(--spacing-xxl));
+  padding-left: var(--spacing-xxl);
+  /* Separación visual entre el hero y la siguiente sección (About). Use clamp para responsive */
+  position: relative;
+  min-height: calc(100vh - 76px);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: all 0.5s ease-in-out;
+  overflow: hidden;
+  border: none;
+  box-shadow: none;
+  background: linear-gradient(180deg, var(--color-background) 0%, var(--color-surface-100) 100%);
+}
+
+.headerContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* --- Profile Card --- */
+.headerTop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+  position: relative;
+  z-index: 4;
+  overflow: visible;
+  border-radius: 16px;
+  border: none; /* evita doble caja */
+  box-shadow: 0 12px 32px rgb(0, 0, 0, 0.45); /* una sola elevación */
+  isolation: isolate;
+  /* Reduce scope of repaints/paints to this element where possible */
+  contain: layout paint;
+}
+
+/* Fondo borroso + edge-fade */
+.headerTop::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url('../../../../assets/img/profilehero-background.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+
+  /* más vida al fondo */
+  opacity: 0.35; /* ↓ de 0.42 */
+  filter: saturate(0.75) blur(4px) brightness(1.05);
+  /* evitar escala para que el pseudo-elemento no provoque "descuadres" visuales
+    ni artefactos de layout en distintos navegadores */
+  transform: none;
+  transform-origin: center center;
+  will-change: opacity, filter;
+  border-radius: inherit;
+
+  /* desvanecido hacia los bordes para fusionar */
+  mask-image: radial-gradient(120% 120% at 50% 50%, black 62%, transparent 92%);
+  /* prefijo para compatibilidad en navegadores basados en WebKit */
+  -webkit-mask-image: radial-gradient(120% 120% at 50% 50%, black 62%, transparent 92%);
+  transition:
+    opacity 0.5s ease-in-out,
+    filter 0.5s ease-in-out;
+}
+
+/* Overlay homogéneo (menos oscuro) */
+.headerTop::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(0, 0, 0, 0.18), rgb(0, 0, 0, 0.4));
+  border-radius: inherit;
+  transition: background 0.3s ease-in-out;
+}
+
+/* sutil highlight tras avatar/título */
+.headerAvatarContainer::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 20%,
+    rgb(255, 255, 255, 0.06),
+    rgb(255, 255, 255, 0) 40%
+  );
+  border-radius: 50%;
+  filter: blur(6px);
+}
+
+.headerTextSection {
+  position: relative;
+  z-index: 4;
+}
+
+.headerTextSection::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 120%;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at center,
+    rgb(255, 255, 255, 0.03),
+    rgb(255, 255, 255, 0) 50%
+  );
+  border-radius: 12px;
+  filter: blur(8px);
+}
+
+.headerAvatarContainer {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  overflow: visible;
+  position: relative;
+  padding: 6px;
+  background: linear-gradient(180deg, rgb(255, 255, 255, 0.02), rgb(0, 0, 0, 0.24));
+  box-shadow: var(--shadow-elevation-1);
+  transition:
+    transform 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.headerAvatarContainer:hover {
+  transform: translateY(-4px) scale(1.04);
+  box-shadow: 0 14px 30px rgb(0, 0, 0, 0.55);
+}
+
+/* Contenedor marcado cuando el usuario está autenticado: anillo nítido con gradient */
+.headerAvatarContainerLogged {
+  position: relative;
+}
+
+.headerAvatarContainerLogged::before {
+  content: '';
+  position: absolute;
+  inset: -6px; /* ajusta el grosor del anillo */
+  z-index: 1;
+  pointer-events: none;
+  border-radius: 50%;
+  background: conic-gradient(from 180deg at 50% 50%, #7b61ff, #00d4ff, #34d399, #7b61ff);
+  /* máscara para crear solo un anillo: transparente en el centro */
+  -webkit-mask: radial-gradient(circle, transparent 58%, black 59%);
+  mask: radial-gradient(circle, transparent 58%, black 59%);
+  box-shadow: 0 6px 18px rgba(123, 97, 255, 0.12);
+  transition:
+    transform 260ms ease,
+    opacity 220ms ease;
+}
+
+/* Menu flotante para acciones de cuenta (Cerrar sesión) */
+.logoutMenu {
+  position: absolute;
+  top: calc(100% + -30px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 160px;
+  background: linear-gradient(180deg, rgba(20, 20, 20, 0.98), rgba(12, 12, 12, 0.98));
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+  padding: 8px;
+  z-index: 60;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.logoutButton {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 8px 10px;
+  background: transparent;
+  color: var(--color-text-primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.logoutButton:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Evitar anillo morado en el avatar: anular utilidades globales de foco y usar un ring neutro */
+.headerAvatarContainer button:focus,
+.headerAvatarContainer button:focus-visible {
+  outline: none;
+  /* ring neutro y sutil, conserva accesibilidad pero sin morado */
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
+  border-radius: 50%;
+}
+
+.headerProfileImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  filter: grayscale(0%);
+  z-index: 3;
+  transition:
+    filter 0.5s ease,
+    transform 0.35s ease;
+  border: 2px solid rgb(255, 255, 255, 0.06);
+}
+
+.headerProfileImage:hover {
+  transform: scale(1.03);
+}
+
+/* Indicador visual cuando el usuario está autenticado: borde radial y glow sutil */
+.headerProfileImageLogged {
+  position: relative;
+  border-color: transparent; /* la capa radial reemplaza el borde */
+}
+
+.headerProfileImageLogged::after {
+  /* suavizar el efecto interior para evitar doble anillo cuando el contenedor ya pinta el ring */
+  content: '';
+  position: absolute;
+  inset: -8px;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 50% 30%,
+    rgba(52, 211, 153, 0.06) 0%,
+    rgba(122, 60, 240, 0.02) 35%,
+    transparent 60%
+  );
+  filter: blur(4px);
+  opacity: 0.85;
+  transform: scale(0.99);
+  transition:
+    transform 360ms cubic-bezier(0.2, 0.9, 0.2, 1),
+    opacity 220ms ease,
+    filter 220ms ease;
+}
+
+/* pulso sutil para atraer la atención cuando está autenticado */
+@keyframes authPulse {
+  0% {
+    transform: scale(0.98);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.98);
+    opacity: 0.85;
+  }
+}
+
+.headerProfileImageLoggedPulse::after,
+.headerProfileImageLogged::after {
+  animation: authPulse 2800ms ease-in-out infinite;
+}
+
+.headerInfo {
+  margin-top: var(--spacing-lg);
+  z-index: 3;
+}
+
+.headerTextSection {
+  margin-bottom: var(--spacing-xs);
+} /* compacto */
+
+.headerNameTitle {
+  font-family: Poppins, Inter, system-ui, sans-serif;
+  font-size: clamp(28px, 2.6vw, 40px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: #fff;
+  margin-bottom: var(--spacing-xs);
+  text-transform: none;
+  text-shadow: 0 3px 10px rgb(0, 0, 0, 0.55);
+}
+
+.headerTagline {
+  margin-top: 6px;
+  font-size: 1.05rem;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.typingRotator {
+  font-family: Poppins, Inter, system-ui, sans-serif;
+  font-weight: 700;
+  color: #fff;
+}
+
+.cursor {
+  display: inline-block;
+  margin-left: 6px;
+  opacity: 0.9;
+  animation: blink 1s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.headerLocationAvailability {
+  margin-top: 8px;
+  display: flex;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+}
+
+.headerLocationAvailability .location i {
+  margin-right: 6px;
+  color: var(--color-link);
+}
+
+/* Location badges */
+.headerLocationAvailability .location,
+.headerLocationAvailability .availability {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgb(255, 255, 255, 0.02);
+  border: 1px solid rgb(255, 255, 255, 0.03);
+  font-weight: 600;
+}
+
+.headerLocationAvailability .availability {
+  color: #86efac;
+}
+
+/* Métricas */
+.headerHighlights {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  justify-content: center;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.statBadge {
+  background: rgb(255, 255, 255, 0.03);
+  color: var(--color-text-primary);
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: 1px solid rgb(255, 255, 255, 0.03);
+}
+
+/* Skeleton for stat badges */
+.statSkeleton {
+  display: inline-block;
+  width: 110px;
+  height: 28px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 25%,
+    rgba(255, 255, 255, 0.06) 50%,
+    rgba(255, 255, 255, 0.03) 75%
+  );
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  animation: shimmer 1.2s infinite linear;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: 200px 0;
+  }
+}
+
+.statPrimary {
+  background: linear-gradient(90deg, rgb(255, 255, 255, 0.02), rgb(255, 255, 255, 0.01));
+  box-shadow: none;
+  border-color: rgb(255, 255, 255, 0.04);
+  color: var(--color-text-primary);
+}
+
+/* Ver más */
+.moreStatsButton {
+  background: transparent;
+  border: 1px dashed rgb(255, 255, 255, 0.06);
+  color: var(--color-text-secondary);
+  padding: 6px 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-left: 4px;
+  position: relative;
+  overflow: visible;
+  transition:
+    background 220ms ease,
+    border-color 220ms ease,
+    color 220ms ease,
+    transform 220ms ease;
+}
+
+.moreStatsButton:hover {
+  background: rgb(255, 255, 255, 0.02);
+  color: var(--color-text-primary);
+}
+
+/* Animación al hacer clic en 'Más' para dar feedback visual */
+
+@keyframes ms-pop {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    box-shadow: none;
+  }
+
+  25% {
+    transform: translateY(-8px) scale(1.12);
+    opacity: 1;
+    box-shadow: 0 18px 40px rgb(122, 60, 240, 0.26);
+  }
+
+  60% {
+    transform: translateY(-4px) scale(1.06);
+    box-shadow: 0 12px 28px rgb(122, 60, 240, 0.18);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    box-shadow: none;
+  }
+}
+
+@keyframes ms-pulse {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: scale(3.2);
+    opacity: 0;
+  }
+}
+
+/* Clase temporal aplicada desde React para reproducir la animación */
+.moreStatsButtonActive {
+  animation: ms-pop 520ms cubic-bezier(0.16, 0.84, 0.24, 1);
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-200));
+  color: var(--color-text-primary);
+  border-color: rgb(255, 255, 255, 0.12);
+  transform-origin: center;
+}
+
+/* Pulso radial sutil */
+.moreStatsButtonActive::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: rgb(122, 60, 240, 0.16);
+  pointer-events: none;
+  animation: ms-pulse 520ms cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+
+/* Respetar preferencia de reducir movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .moreStatsButtonActive {
+    animation: none !important;
+    transform: translateY(-2px);
+  }
+}
+
+/* Extra stats expansion: animate container max-height + stagger children
+   We use max-height transition because height:auto is not animatable.
+   The expanded max-height is conservative (enough for a few badges). */
+.extraStatsMount {
+  overflow: hidden;
+  max-height: 0;
+  transition:
+    max-height 420ms cubic-bezier(0.16, 0.84, 0.24, 1),
+    opacity 220ms ease;
+  opacity: 0;
+}
+
+.extraStatsMount.expanded {
+  max-height: 360px; /* suficiente para varias badges */
+  opacity: 1;
+}
+
+/* Badges transition in stagger via transition-delay */
+.extraStatsMount .statBadge {
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 320ms cubic-bezier(0.2, 0.9, 0.24, 1),
+    transform 320ms cubic-bezier(0.2, 0.9, 0.24, 1);
+}
+.extraStatsMount.expanded .statBadge:nth-child(1) {
+  transition-delay: 100ms;
+  opacity: 1;
+  transform: translateY(0);
+}
+.extraStatsMount.expanded .statBadge:nth-child(2) {
+  transition-delay: 160ms;
+  opacity: 1;
+  transform: translateY(0);
+}
+.extraStatsMount.expanded .statBadge:nth-child(3) {
+  transition-delay: 220ms;
+  opacity: 1;
+  transform: translateY(0);
+}
+.extraStatsMount.expanded .statBadge:nth-child(4) {
+  transition-delay: 280ms;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .extraStatsMount,
+  .extraStatsMount .statBadge,
+  /* Reducir movimiento: neutralizar micro-transiciones en iconos de stack */
+  .stackIcon,
+  .stackIcon .skillHoverLabel {
+    transition: none !important;
+    opacity: 1;
+    transform: none;
+    max-height: none;
+    filter: none;
+  }
+}
+
+/* STACK / skills — centrado real en múltiples filas */
+.stackRow {
+  display: flex;
+  flex-wrap: wrap;
+  place-content: center center;
+  align-items: center;
+  gap: 10px 12px;
+  width: 100%;
+  margin-top: 12px;
+  margin-inline: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  padding: 6px 4px;
+}
+
+.stackRow::-webkit-scrollbar {
+  height: 8px;
+}
+
+.stackRow::-webkit-scrollbar-thumb {
+  background: rgb(255, 255, 255, 0.04);
+  border-radius: 999px;
+}
+
+.stackIcon {
+  flex: 0 0 auto;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative; /* para la barra de nivel absoluta */
+  background: rgb(255, 255, 255, 0.02);
+  color: rgb(255, 255, 255, 0.95);
+  transition:
+    transform 200ms cubic-bezier(0.2, 0.9, 0.24, 1),
+    box-shadow 280ms ease,
+    border-color 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease,
+    filter 200ms ease;
+  cursor: pointer;
+  border: 1px solid rgb(255, 255, 255, 0.04);
+}
+
+.stackIcon:hover {
+  /* ligera elevación + pequeña escala y brillo (mejora visual sutil) */
+  transform: translateY(-4px) scale(1.06);
+  filter: brightness(1.06) saturate(1.04);
+  box-shadow: 0 10px 22px rgb(0, 0, 0, 0.5);
+  border-color: rgb(139, 92, 246, 0.28);
+}
+
+.stackIcon i {
+  font-size: 18px;
+}
+
+/* Etiqueta que aparece al pasar el ratón mostrando el nivel */
+.skillHoverLabel {
+  position: absolute;
+  bottom: -26px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgb(0, 0, 0, 0.6);
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.stackIcon:hover .skillHoverLabel,
+.stackIcon:focus-within .skillHoverLabel {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-4px);
+}
+
+/* Focus accesible */
+.stackIcon:focus-visible {
+  outline: none;
+
+  /* mantener la sensación de hover pero más conservador en foco */
+  transform: translateY(-3px) scale(1.04);
+  filter: brightness(1.04) saturate(1.03);
+  box-shadow:
+    var(--glow-accent-strong),
+    0 16px 36px rgb(0, 0, 0, 0.55);
+}
+
+/* Per-technology hover colors */
+.stackIcon--js:hover {
+  background: linear-gradient(180deg, #f7df1e, #e5c515);
+  color: rgb(0, 0, 0, 0.7);
+  border-color: rgb(0, 0, 0, 0.08);
+  box-shadow: 0 10px 30px rgb(247, 223, 30, 0.12);
+}
+
+.stackIcon--ts:hover {
+  background: linear-gradient(180deg, #3178c6, #245a9a);
+  color: #fff;
+  border-color: rgb(49, 120, 198, 0.18);
+  box-shadow: 0 10px 30px rgb(49, 120, 198, 0.12);
+}
+
+.stackIcon--react:hover {
+  background: linear-gradient(180deg, #61dafb, #3ac1f3);
+  color: rgb(0, 0, 0, 0.7);
+  border-color: rgb(97, 218, 251, 0.16);
+  box-shadow: 0 10px 30px rgb(97, 218, 251, 0.12);
+}
+
+.stackIcon--node:hover {
+  background: linear-gradient(180deg, #3c873a, #2f6b2c);
+  color: #fff;
+  border-color: rgb(60, 135, 58, 0.16);
+  box-shadow: 0 10px 30px rgb(60, 135, 58, 0.12);
+}
+
+.stackIcon--docker:hover {
+  background: linear-gradient(180deg, #0db7ff, #0a8bc2);
+  color: #fff;
+  border-color: rgb(13, 183, 255, 0.16);
+  box-shadow: 0 10px 30px rgb(13, 183, 255, 0.12);
+}
+
+.stackIcon--html:hover {
+  background: linear-gradient(180deg, #e34f26, #c23b16);
+  color: #fff;
+  border-color: rgb(227, 79, 38, 0.16);
+  box-shadow: 0 10px 30px rgb(227, 79, 38, 0.12);
+}
+
+.stackIcon--css:hover {
+  background: linear-gradient(180deg, #2965f1, #234eb2);
+  color: #fff;
+  border-color: rgb(41, 101, 241, 0.16);
+  box-shadow: 0 10px 30px rgb(41, 101, 241, 0.12);
+}
+
+/* Si usas data-tech */
+.stackIcon[data-tech='js']:hover {
+  background: linear-gradient(180deg, #f7df1e, #e5c515);
+  color: rgb(0, 0, 0, 0.8);
+  border-color: rgb(0, 0, 0, 0.08);
+  box-shadow: 0 10px 30px rgb(247, 223, 30, 0.12);
+}
+
+.stackIcon[data-tech='ts']:hover {
+  background: linear-gradient(180deg, #3178c6, #245a9a);
+  color: #fff;
+  border-color: rgb(49, 120, 198, 0.18);
+  box-shadow: 0 10px 30px rgb(49, 120, 198, 0.12);
+}
+
+.stackIcon[data-tech='react']:hover {
+  background: linear-gradient(180deg, #61dafb, #3ac1f3);
+  color: rgb(0, 0, 0, 0.7);
+  border-color: rgb(97, 218, 251, 0.16);
+  box-shadow: 0 10px 30px rgb(97, 218, 251, 0.12);
+}
+
+.stackIcon:focus-visible {
+  outline: none;
+  box-shadow: 0 10px 36px rgb(122, 60, 240, 0.14);
+  transform: translateY(-3px) scale(1.04);
+  filter: brightness(1.04) saturate(1.03);
+}
+
+.stackIcon[data-tech='node']:hover {
+  background: linear-gradient(180deg, #3c873a, #2f6b2c);
+  color: #fff;
+  border-color: rgb(60, 135, 58, 0.16);
+  box-shadow: 0 10px 30px rgb(60, 135, 58, 0.12);
+}
+
+.stackIcon[data-tech='docker']:hover {
+  background: linear-gradient(180deg, #0db7ff, #0a8bc2);
+  color: #fff;
+  border-color: rgb(13, 183, 255, 0.16);
+  box-shadow: 0 10px 30px rgb(13, 183, 255, 0.12);
+}
+
+.stackIcon[data-tech='html']:hover {
+  background: linear-gradient(180deg, #e34f26, #c23b16);
+  color: #fff;
+  border-color: rgb(227, 79, 38, 0.16);
+  box-shadow: 0 10px 30px rgb(227, 79, 38, 0.12);
+}
+
+.stackIcon[data-tech='css']:hover {
+  background: linear-gradient(180deg, #2965f1, #234eb2);
+  color: #fff;
+  border-color: rgb(41, 101, 241, 0.16);
+  box-shadow: 0 10px 30px rgb(41, 101, 241, 0.12);
+}
+
+/* Previews proyectos */
+.projectsPreview {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  justify-content: center;
+  align-items: center;
+}
+
+.projectThumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(180deg, rgb(255, 255, 255, 0.02), rgb(255, 255, 255, 0.01));
+  border: 1px solid rgb(255, 255, 255, 0.03);
+}
+
+.projectThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.projectPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  font-weight: 700;
+}
+
+/* Botones acción */
+.headerActionButton.secondary {
+  background: transparent;
+  border: 1px solid rgb(255, 255, 255, 0.06);
+  color: var(--color-text-primary);
+}
+
+.headerActionButton.secondary:hover {
+  background: rgb(255, 255, 255, 0.03);
+  transform: translateY(-3px);
+}
+
+.headerRoleTitle {
+  font-family: Poppins, Inter, system-ui, sans-serif;
+  font-size: clamp(14px, 1.2vw, 18px);
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: var(--spacing-xs);
+  text-transform: none;
+  opacity: 0.95;
+}
+
+.techHighlight {
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-200));
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Fondo gradual sutil del área completa */
+.headerCurriculum::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: 0.95;
+  transition: opacity 0.6s ease;
+}
+
+/* Textura + anillo de fusión (edge-only blur) */
+.headerCurriculum::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+
+  /* textura ruido */
+  background-repeat: repeat;
+  background-size: 220px 220px;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  filter: blur(0.6px) contrast(1.02);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='60' height='60'><filter id='n'><feTurbulence baseFrequency='0.8' numOctaves='1' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)' fill='%23000' opacity='0.04'/></svg>");
+
+  /* fusión en bordes */
+  backdrop-filter: blur(14px) saturate(120%);
+  mask: radial-gradient(closest-side, transparent calc(100% - 12px), black calc(100% - 11px));
+}
+
+.roleBadgeContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+  flex-wrap: wrap;
+}
+
+.headerStatusBadgeInline {
+  background-color: var(--color-success);
+  color: var(--color-text-primary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: var(--spacing-xxs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 5px var(--color-success);
+  transition: all 0.3s ease;
+  animation: pulse-glow 2s infinite ease-in-out;
+}
+
+.headerStatusBadgeInline:hover {
+  box-shadow: var(--glow-status);
+}
+
+.headerRoleSubtitle {
+  font-size: 1rem;
+  color: #cbd5e1;
+  margin-top: calc(var(--spacing-sm) + 4px);
+}
+
+.headerContactSection {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.headerActionSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--spacing-md);
+}
+
+.headerActionButtons {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+}
+
+.headerActionButtons .themeToggle,
+.headerActionButtons .shareButton {
+  display: none;
+}
+
+.headerActionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 18px;
+  gap: 8px;
+  border-radius: 50px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-elevation-1);
+}
+
+.primary {
+  background: linear-gradient(90deg, var(--color-accent) 0%, var(--color-accent-200) 100%);
+  color: var(--color-text-primary);
+  box-shadow:
+    var(--glow-accent),
+    0 8px 22px rgb(0, 0, 0, 0.55);
+}
+
+.primary:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    var(--glow-accent-strong),
+    0 20px 60px rgb(0, 0, 0, 0.55);
+  filter: saturate(1.06) brightness(1.05);
+}
+
+.primary:focus-visible {
+  outline: none;
+  box-shadow:
+    var(--glow-accent-strong),
+    0 8px 28px rgb(0, 0, 0, 0.35);
+  transform: translateY(-2px);
+}
+
+/* --- Interactive Terminal --- */
+.headerTerminalSection {
+  backdrop-filter: blur(8px);
+  padding: var(--spacing-lg);
+  transition: all 0.5s ease-in-out;
+}
+
+.headerTerminalIntro {
+  text-align: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.headerTerminalIntroRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.widgetControls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.widgetButtons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.headerTerminalTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  margin-bottom: var(--spacing-sm);
+}
+
+.headerTerminalHint {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+}
+
+.headerTerminalContainer {
+  /* Centrado vertical del contenido del widget/terminal */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* centra verticalmente */
+  overflow: auto;
+  font-family: Consolas, monospace;
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0));
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+  /* Mantener espacio mínimo estable para evitar 'baile' entre cambios de página */
+  min-height: 499px; /* fijo: evita reflow brusco al cambiar contenido */
+}
+
+/* Footer slot inside the terminal container where widgets can render controls/pagination */
+.headerTerminalFooter {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  pointer-events: none; /* por defecto los hijos controlan si aceptan eventos */
+}
+
+.widgetButton {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--color-text-secondary);
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease,
+    color 160ms ease;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+
+.widgetButton:hover {
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--color-accent-accessible);
+}
+
+.widgetButton:focus {
+  outline: none;
+  box-shadow: 0 6px 26px rgba(122, 60, 240, 0.18);
+}
+
+.widgetButtonActive {
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-200));
+  color: white;
+  border-color: transparent;
+  box-shadow:
+    0 12px 40px rgba(122, 60, 240, 0.32),
+    var(--glow-accent-strong);
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* ===========================================
+   4. DYNAMIC STATES (Loading, Error, Scroll)
+   =========================================== */
+
+.loading {
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerSkeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.headerSkeletonContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.headerSkeletonImage {
+  width: 150px;
+  height: 150px;
+  background: var(--color-surface-200);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--spacing-lg);
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.headerSkeletonText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.headerSkeletonLine {
+  height: 20px;
+  background: var(--color-surface-200);
+  border-radius: var(--radius-sm);
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.long {
+  width: 300px;
+}
+
+.medium {
+  width: 250px;
+}
+
+.short {
+  width: 150px;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.8;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(52, 211, 153, 0.7);
+  }
+
+  50% {
+    box-shadow: 0 0 10px 5px rgb(52, 211, 153, 0);
+  }
+}
+
+/* Error */
+.error {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-color: var(--color-error);
+}
+
+.headerErrorMessage {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  color: var(--color-error);
+  font-weight: 600;
+}
+
+.headerErrorMessage i {
+  font-size: 1.5rem;
+}
+
+/* Scroll progress */
+.headerScrollProgress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-200));
+  z-index: 10;
+  transition: width 0.1s linear;
+}
+
+/* ===========================================
+   5. TOP RIGHT ACTION ICONS & SHARE MENU
+   =========================================== */
+
+.headerTopRightActions {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  display: flex;
+  gap: var(--spacing-md);
+  z-index: 100;
+}
+
+.headerIconButton {
+  background-color: var(--color-surface-200);
+  color: var(--color-text-secondary);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-elevation-1);
+}
+
+.headerIconButton:hover {
+  color: var(--color-accent);
+  background-color: #3f3f3f;
+  box-shadow: var(--glow-accent);
+  transform: translateY(-2px);
+}
+
+/* Share Menu */
+.headerShareContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.headerShareMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--color-surface-200);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-elevation-2);
+  padding: var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  z-index: 10;
+  margin-top: var(--spacing-sm);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.headerShareOption {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: transparent;
+  border: none;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  white-space: nowrap;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.headerShareOption:hover {
+  background-color: var(--color-surface-100);
+  transform: translateX(4px);
+}
+
+.headerShareOption i {
+  color: var(--color-text-secondary);
+  transition: color 0.2s ease;
+}
+
+.headerShareOption:hover i {
+  color: var(--color-accent);
+}
+
+/* Fixed small controls (theme + language) placed in the top-right corner */
+.fixedTopRight {
+  position: fixed;
+  top: var(--spacing-md);
+  right: var(--spacing-sm);
+  display: flex;
+  gap: 8px;
+  z-index: 1001;
+  align-items: center;
+}
+
+.topRightButton {
+  background-color: var(--color-surface-200);
+  color: var(--color-text-secondary);
+  min-width: 40px;
+  height: 40px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  box-shadow: var(--shadow-elevation-1);
+  font-weight: 700;
+}
+
+.topRightButton:hover {
+  color: var(--color-accent);
+  background-color: #333333;
+  transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===========================================
+   6. RESPONSIVE DESIGN
+   =========================================== */
+
+@media (max-width: 768px) {
+  .headerCurriculum {
+    margin: var(--spacing-md);
+    padding: var(--spacing-lg);
+    /* reducir la separación en móvil para evitar scroll extra grande */
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+  }
+
+  .headerContent {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .headerTop {
+    padding: var(--spacing-md) 0;
+  }
+
+  .headerAvatarContainer {
+    width: 120px;
+    height: 120px;
+  }
+
+  .headerNameTitle {
+    font-size: 2rem;
+  }
+
+  .headerRoleTitle {
+    font-size: 1rem;
+  }
+
+  .headerTerminalSection {
+    margin-top: var(--spacing-lg);
+  }
+
+  .headerActionButtons {
+    display: none;
+  }
+
+  .headerTopRightActions {
+    display: flex;
+    position: fixed;
+    top: auto;
+    bottom: var(--spacing-md);
+    right: var(--spacing-md);
+    z-index: 1000;
+  }
+}
+
+/* Compact pill for location + availability */
+.availabilityPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgb(255, 255, 255, 0.02);
+  border: 1px solid rgb(255, 255, 255, 0.04);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.availabilityPill .location {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-primary);
+}
+
+.availabilityPill .availabilityText {
+  color: #86efac;
+  font-weight: 700;
+}
+
+.availabilityPill .modalities {
+  color: var(--color-text-secondary);
+}
+
+.availabilitySeparator {
+  color: rgb(255, 255, 255, 0.08);
+  margin: 0 6px;
+}
+
+/* ===========================================
+   7. ACCESIBILIDAD: reducir transparencias
+   =========================================== */
+@media (prefers-reduced-transparency: reduce) {
+  .headerTop,
+  .headerTop::before,
+  .headerTop::after,
+  .headerCurriculum::after {
+    backdrop-filter: none !important;
+  }
+
+  .headerTop::before {
+    opacity: 0.28;
+    filter: saturate(0.7) blur(3px) brightness(1.02);
+  }
+}
+
+/* Additional responsive tweaks for widget controls */
+@media (max-width: 768px) {
+  .headerTerminalIntroRow {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: left;
+    gap: 8px;
+  }
+
+  .widgetControls {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .widgetButtons {
+    justify-content: flex-end;
+  }
+
+  /* .headerTerminalContainer override removed to preserve responsive min-height above */
+}
+
+/* Global helper class applied temporarily by the VideoCurriculum widget to
+   visually mark the header red during a segment of the video (2:18-2:22).
+   This class uses high-specificity rules and !important sparingly to ensure
+   it is visible above module pseudo-elements. It's safe as it's only toggled
+   briefly by JS and removed afterwards. */
+:global(.vc-header-red) {
+  background: red !important;
+}
+
+:global(.vc-header-red)::before,
+:global(.vc-header-red)::after {
+  /* hide overlays that could mask the red background */
+  opacity: 0 !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+}

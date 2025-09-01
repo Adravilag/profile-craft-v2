@@ -1,0 +1,387 @@
+/* ===== ENHANCED SPECIAL EFFECTS =====
+   Enhanced visual effects for hack and undertale themes
+   Integrates with the new design system while maintaining performance
+   ============================================= */
+
+/* ===========================================
+   HACK THEME ENHANCED EFFECTS
+   =========================================== */
+
+/* Matrix-style digital rain effect */
+@keyframes matrix-rain {
+  0% {
+    transform: translateY(-100vh) scaleY(0);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+    transform: translateY(-90vh) scaleY(0.2);
+  }
+
+  90% {
+    opacity: 1;
+    transform: translateY(90vh) scaleY(1);
+  }
+
+  100% {
+    transform: translateY(100vh) scaleY(0);
+    opacity: 0;
+  }
+}
+
+/* Enhanced hack theme container effects */
+[data-hack-theme='active'] .interactive-terminal-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Matrix rain background effect */
+[data-hack-theme='active'] .interactive-terminal-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent 98%, rgb(0, 255, 65, 0.03) 100%),
+    linear-gradient(180deg, transparent 98%, rgb(0, 255, 65, 0.03) 100%);
+  background-size: 20px 20px;
+  animation: matrix-scan 4s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes matrix-scan {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 20px 20px;
+  }
+}
+
+/* Enhanced hack text effects */
+[data-hack-theme='active'] .terminal-line {
+  position: relative;
+  text-shadow:
+    0 0 5px currentcolor,
+    0 0 10px currentcolor,
+    0 0 15px currentcolor;
+  animation: hack-text-glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes hack-text-glow {
+  0% {
+    text-shadow:
+      0 0 5px currentcolor,
+      0 0 10px currentcolor,
+      0 0 15px currentcolor;
+  }
+
+  100% {
+    text-shadow:
+      0 0 8px currentcolor,
+      0 0 16px currentcolor,
+      0 0 24px currentcolor;
+  }
+}
+
+/* Enhanced hack glitch effect */
+[data-hack-theme='active'] .terminal-prompt,
+[data-hack-theme='active'] .terminal-input {
+  animation: hack-glitch-enhanced 0.3s ease-in-out infinite;
+}
+
+@keyframes hack-glitch-enhanced {
+  0%,
+  90%,
+  100% {
+    transform: translate(0);
+    filter: hue-rotate(0deg);
+  }
+
+  10% {
+    transform: translate(-1px, 1px);
+    filter: hue-rotate(90deg);
+  }
+
+  20% {
+    transform: translate(1px, -1px);
+    filter: hue-rotate(180deg);
+  }
+
+  30% {
+    transform: translate(-1px, -1px);
+    filter: hue-rotate(270deg);
+  }
+
+  40% {
+    transform: translate(1px, 1px);
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* Enhanced hack cursor with pulsing effect */
+[data-hack-theme='active'] .typewriter-cursor {
+  color: var(--hack-color);
+  text-shadow:
+    0 0 5px currentcolor,
+    0 0 10px currentcolor;
+  animation: hack-cursor-pulse 1s ease-in-out infinite;
+}
+
+@keyframes hack-cursor-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    text-shadow:
+      0 0 5px currentcolor,
+      0 0 10px currentcolor;
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+    text-shadow:
+      0 0 8px currentcolor,
+      0 0 16px currentcolor,
+      0 0 24px currentcolor;
+  }
+}
+
+/* Enhanced hack terminal border effect */
+[data-hack-theme='active'] .interactive-terminal {
+  border: 2px solid var(--hack-border);
+  box-shadow:
+    0 0 20px rgb(0, 255, 65, 0.3),
+    inset 0 0 20px rgb(0, 255, 65, 0.1);
+  animation: hack-border-pulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes hack-border-pulse {
+  0% {
+    box-shadow:
+      0 0 20px rgb(0, 255, 65, 0.3),
+      inset 0 0 20px rgb(0, 255, 65, 0.1);
+  }
+
+  100% {
+    box-shadow:
+      0 0 30px rgb(0, 255, 65, 0.5),
+      inset 0 0 30px rgb(0, 255, 65, 0.2);
+  }
+}
+
+/* Enhanced hack scrollbar */
+[data-hack-theme='active'] .terminal-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--hack-color), rgb(0, 255, 65, 0.5));
+  box-shadow: 0 0 10px rgb(0, 255, 65, 0.5);
+}
+
+/* ===========================================
+   UNDERTALE THEME ENHANCED EFFECTS
+   =========================================== */
+
+/* Undertale-style pixel perfect effects */
+[data-theme='undertale'] .interactive-terminal-container {
+  position: relative;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* Undertale retro scan lines effect */
+[data-theme='undertale'] .interactive-terminal-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgb(255, 255, 0, 0.02) 2px,
+    rgb(255, 255, 0, 0.02) 4px
+  );
+  animation: undertale-scanlines 0.1s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes undertale-scanlines {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(4px);
+  }
+}
+
+/* Enhanced undertale text effects */
+[data-theme='undertale'] .terminal-line {
+  font-weight: 700;
+  text-shadow:
+    2px 2px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000;
+  animation: undertale-text-bounce 2s ease-in-out infinite;
+}
+
+@keyframes undertale-text-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
+}
+
+/* Enhanced undertale prompt with pixel-perfect styling */
+[data-theme='undertale'] .terminal-prompt {
+  position: relative;
+  font-weight: 900;
+  text-shadow:
+    2px 2px 0 #000,
+    -2px -2px 0 #000,
+    2px -2px 0 #000,
+    -2px 2px 0 #000;
+}
+
+/* Undertale-style cursor with retro blink */
+[data-theme='undertale'] .typewriter-cursor {
+  color: var(--undertale-color);
+  font-weight: 900;
+  text-shadow:
+    2px 2px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000;
+  animation: undertale-cursor-blink 0.8s step-end infinite;
+}
+
+@keyframes undertale-cursor-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Enhanced undertale terminal border */
+[data-theme='undertale'] .interactive-terminal {
+  border: 3px solid var(--undertale-border);
+  box-shadow:
+    0 0 0 1px #000,
+    0 0 20px rgb(255, 255, 0, 0.4);
+  image-rendering: pixelated;
+}
+
+/* Undertale-style button effects */
+[data-theme='undertale'] .btn,
+[data-theme='undertale'] .terminal-control {
+  font-weight: 700;
+  text-shadow:
+    1px 1px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000;
+  transition: none;
+  image-rendering: pixelated;
+}
+
+[data-theme='undertale'] .btn:hover,
+[data-theme='undertale'] .terminal-control:hover {
+  transform: scale(1.05);
+  transition: transform 0.1s step-end;
+}
+
+/* ===========================================
+   PERFORMANCE OPTIMIZATIONS
+   =========================================== */
+
+/* Reduce animations on low-end devices */
+@media (prefers-reduced-motion: reduce) {
+  [data-hack-theme='active'] .terminal-line,
+  [data-hack-theme='active'] .typewriter-cursor,
+  [data-hack-theme='active'] .interactive-terminal,
+  [data-theme='undertale'] .terminal-line,
+  [data-theme='undertale'] .typewriter-cursor {
+    animation: none;
+  }
+
+  [data-hack-theme='active'] .interactive-terminal-container::before,
+  [data-theme='undertale'] .interactive-terminal-container::before {
+    display: none;
+  }
+}
+
+/* GPU acceleration for smooth animations */
+[data-hack-theme='active'] .terminal-line,
+[data-hack-theme='active'] .typewriter-cursor,
+[data-hack-theme='active'] .interactive-terminal,
+[data-theme='undertale'] .terminal-line,
+[data-theme='undertale'] .typewriter-cursor,
+[data-theme='undertale'] .interactive-terminal {
+  will-change: transform, opacity, text-shadow;
+  transform: translateZ(0);
+}
+
+/* Optimize for 60fps animations */
+[data-hack-theme='active'] .interactive-terminal-container::before,
+[data-theme='undertale'] .interactive-terminal-container::before {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+/* ===========================================
+   INTEGRATION WITH DESIGN SYSTEM
+   =========================================== */
+
+/* Ensure special effects work with existing color tokens */
+[data-hack-theme='active'] {
+  --glow-primary: 0 0 20px rgb(0, 255, 65, 0.5);
+  --glow-secondary: 0 0 15px rgb(0, 255, 65, 0.3);
+  --shadow-glow-accent: var(--shadow-lg), 0 0 20px rgb(0, 255, 65, 0.4);
+}
+
+[data-theme='undertale'] {
+  --glow-primary: 0 0 20px rgb(255, 255, 0, 0.5);
+  --glow-secondary: 0 0 15px rgb(255, 255, 0, 0.3);
+  --shadow-glow-accent: var(--shadow-lg), 0 0 20px rgb(255, 255, 0, 0.4);
+}
+
+/* Ensure transitions work with special effects */
+[data-hack-theme='active'] .btn,
+[data-hack-theme='active'] .input,
+[data-theme='undertale'] .btn:not(:hover),
+[data-theme='undertale'] .input {
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+/* ===========================================
+   ACCESSIBILITY ENHANCEMENTS
+   =========================================== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  [data-hack-theme='active'] .terminal-line {
+    text-shadow: none;
+    font-weight: 700;
+  }
+
+  [data-theme='undertale'] .terminal-line {
+    text-shadow:
+      1px 1px 0 #000,
+      -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000;
+  }
+}

@@ -1,0 +1,503 @@
+/* Variables CSS para la sección de proyectos */
+:root {
+  --projects-bg: #0a0f1c;
+  --projects-card-bg: rgba(255, 255, 255, 0.02);
+  --projects-card-border: rgba(255, 255, 255, 0.05);
+  --projects-text: #ffffff;
+  --projects-text-muted: #b8c4ce;
+  --projects-accent: #67b0ff;
+  --projects-accent-secondary: #6ee6a6;
+  --projects-shadow: rgba(0, 0, 0, 0.3);
+  --projects-radius: 12px;
+  --projects-radius-sm: 8px;
+}
+
+/* ------------------ Panel Principal ------------------ */
+.panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ------------------ Filtros de Proyectos ------------------ */
+.filtersContainer {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: var(--projects-radius);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px) saturate(120%);
+}
+
+.filterButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--projects-radius-sm);
+  color: var(--projects-text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(8px);
+  position: relative;
+  overflow: hidden;
+}
+
+.filterButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+  transition: left 400ms ease;
+}
+
+.filterButton:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: var(--projects-text);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px var(--projects-shadow);
+}
+
+.filterButton:hover::before {
+  left: 100%;
+}
+
+.filterButton.active {
+  background: linear-gradient(135deg, var(--projects-accent), var(--projects-accent-secondary));
+  border-color: transparent;
+  color: #000;
+  font-weight: 700;
+  box-shadow: 0 8px 25px rgba(103, 176, 255, 0.3);
+}
+
+.filterButton.active:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 35px rgba(103, 176, 255, 0.4);
+}
+
+.filterButton i {
+  font-size: 16px;
+  transition: transform 200ms ease;
+}
+
+.filterButton:hover i {
+  transform: scale(1.1);
+}
+
+/* ------------------ Grid de Proyectos ------------------ */
+.projectsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+  transition:
+    opacity 400ms ease,
+    transform 300ms ease;
+}
+
+.projectsGrid.loading {
+  opacity: 0.6;
+  transform: translateY(10px);
+}
+
+.projectCard {
+  background: var(--projects-card-bg);
+  border: 1px solid var(--projects-card-border);
+  border-radius: var(--projects-radius);
+  overflow: hidden;
+  transition: all 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(12px) saturate(120%);
+  cursor: pointer;
+  position: relative;
+  isolation: isolate;
+}
+
+.projectCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(103, 176, 255, 0.02) 0%, rgba(110, 230, 166, 0.02) 100%);
+  opacity: 0;
+  transition: opacity 300ms ease;
+  z-index: -1;
+}
+
+.projectCard:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 20px 50px var(--projects-shadow),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.projectCard:hover::before {
+  opacity: 1;
+}
+
+.projectRow {
+  display: block;
+  width: 100%;
+}
+
+/* ------------------ Estados de Carga (Skeleton) ------------------ */
+.projectCardSkeleton {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: var(--projects-radius);
+  padding: 20px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+.skeletonImage {
+  width: 200px;
+  height: 120px;
+  background: linear-gradient(90deg, #222 25%, #2a2a2a 50%, #222 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+  border-radius: var(--projects-radius-sm);
+  flex-shrink: 0;
+}
+
+.skeletonContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeletonBadges {
+  display: flex;
+  gap: 8px;
+}
+
+.skeletonBadge {
+  width: 80px;
+  height: 24px;
+  background: linear-gradient(90deg, #222 25%, #2a2a2a 50%, #222 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+  border-radius: 12px;
+}
+
+.skeletonTitle {
+  width: 60%;
+  height: 28px;
+  background: linear-gradient(90deg, #222 25%, #2a2a2a 50%, #222 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+  border-radius: 4px;
+}
+
+.skeletonDescription {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.skeletonLine {
+  height: 16px;
+  background: linear-gradient(90deg, #222 25%, #2a2a2a 50%, #222 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+  border-radius: 4px;
+}
+
+.skeletonLine:nth-child(1) {
+  width: 100%;
+}
+.skeletonLine:nth-child(2) {
+  width: 75%;
+}
+
+.skeletonTechs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.skeletonTech {
+  width: 60px;
+  height: 20px;
+  background: linear-gradient(90deg, #222 25%, #2a2a2a 50%, #222 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s linear infinite;
+  border-radius: 10px;
+}
+
+/* ------------------ Estados de Error y Vacío ------------------ */
+.projectsError {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 60px 20px;
+  text-align: center;
+  background: rgba(255, 76, 76, 0.05);
+  border: 1px solid rgba(255, 76, 76, 0.2);
+  border-radius: var(--projects-radius);
+  color: #ff9999;
+}
+
+.projectsError p {
+  font-size: 16px;
+  margin: 0;
+}
+
+.retryButton {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #ff6b6b, #ff8a8a);
+  border: none;
+  border-radius: var(--projects-radius-sm);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.retryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+}
+
+.projectsEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 80px 20px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--projects-radius);
+  color: var(--projects-text-muted);
+}
+
+.projectsEmpty i {
+  font-size: 48px;
+  color: var(--projects-accent);
+  opacity: 0.6;
+}
+
+.projectsEmpty p {
+  font-size: 18px;
+  margin: 0;
+}
+
+.adminButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--projects-accent), var(--projects-accent-secondary));
+  border: none;
+  border-radius: var(--projects-radius-sm);
+  color: #000;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+.adminButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(103, 176, 255, 0.3);
+}
+
+/* ------------------ Fondo con Gradiente ------------------ */
+.bgFade {
+  position: relative;
+  --fade-bg: var(--projects-bg, #0a0f1c);
+  background: linear-gradient(135deg, rgba(103, 176, 255, 0.02) 0%, rgba(110, 230, 166, 0.02) 100%);
+}
+
+.bgFade::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60%;
+  height: 100%;
+  background-image: var(--projects-bg-image);
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  z-index: 0;
+  pointer-events: none;
+  filter: blur(2px) opacity(0.3);
+}
+
+.bgFade::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(10, 15, 28, 0) 0%,
+    rgba(10, 15, 28, 0.1) 30%,
+    rgba(10, 15, 28, 0.3) 55%,
+    var(--fade-bg) 100%
+  );
+  z-index: 0;
+  pointer-events: none;
+}
+
+.bgFade > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ------------------ Animaciones ------------------ */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes skeletonPulse {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.projectCard {
+  animation: fadeInUp 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.projectCard:nth-child(1) {
+  animation-delay: 0ms;
+}
+.projectCard:nth-child(2) {
+  animation-delay: 100ms;
+}
+.projectCard:nth-child(3) {
+  animation-delay: 200ms;
+}
+
+/* ------------------ Responsive Design ------------------ */
+@media (max-width: 720px) {
+  .panel {
+    padding: 0 16px;
+  }
+
+  .filtersContainer {
+    gap: 8px;
+    padding: 12px;
+    margin-bottom: 24px;
+  }
+
+  .filterButton {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  .projectsGrid {
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .projectCardSkeleton {
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .skeletonImage {
+    width: 100%;
+    height: 180px;
+  }
+
+  .bgFade::before {
+    display: none;
+  }
+
+  .bgFade::after {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, var(--fade-bg) 90%);
+  }
+}
+
+@media (max-width: 480px) {
+  .filtersContainer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filterButton {
+    justify-content: center;
+  }
+
+  .projectsEmpty {
+    padding: 60px 16px;
+  }
+
+  .projectsEmpty i {
+    font-size: 36px;
+  }
+
+  .projectsEmpty p {
+    font-size: 16px;
+  }
+}
+
+/* Respeta la preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  .projectCard,
+  .filterButton,
+  .projectCardSkeleton,
+  .skeletonImage,
+  .skeletonBadge,
+  .skeletonTitle,
+  .skeletonLine,
+  .skeletonTech {
+    animation: none !important;
+    transition:
+      opacity 200ms ease,
+      color 200ms ease !important;
+  }
+
+  .projectCard:hover {
+    transform: none;
+  }
+
+  .filterButton:hover {
+    transform: none;
+  }
+}

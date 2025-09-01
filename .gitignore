@@ -1,0 +1,86 @@
+## Consolidated .gitignore for profile-craft
+
+# Node
+node_modules/
+
+# Builds / outputs
+dist/
+dist-ssr/
+dist-server/
+build/
+out/
+storybook-static/
+
+# Vite / bundler caches
+.vite/
+.vite-deps/
+.cache/
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment / secrets
+.env
+.env.*
+secrets.local
+*.key
+*.pem
+*.p12
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Coverage / test
+coverage/
+.nyc_output/
+.vitest/
+*.lcov
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editors / IDEs
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Runtime / temp
+tmp/
+temp/
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Archives and backups
+*.zip
+*.tar.gz
+*.rar
+*.bak
+*.backup
+
+# Misc
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Keep lockfiles (recommended)
+# package-lock.json, pnpm-lock.yaml, yarn.lock should be committed
+
+# If you intentionally keep build artifacts for deployment, remove the corresponding rule above.

@@ -1,0 +1,359 @@
+/* ===========================================
+   TYPOGRAPHY SYSTEM
+   Terminal Visual Improvements
+   =========================================== */
+
+/* Font Loading Optimization */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('JetBrains Mono Regular'), local('JetBrainsMono-Regular');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local('JetBrains Mono Medium'), local('JetBrainsMono-Medium');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('JetBrains Mono Bold'), local('JetBrainsMono-Bold');
+}
+
+/* Typography Base Classes */
+.text-xs {
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-tight);
+}
+
+.text-sm {
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-tight);
+}
+
+.text-base {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+}
+
+.text-lg {
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-normal);
+}
+
+.text-xl {
+  font-size: var(--font-size-xl);
+  line-height: var(--line-height-relaxed);
+}
+
+.text-2xl {
+  font-size: var(--font-size-2xl);
+  line-height: var(--line-height-relaxed);
+}
+
+.text-3xl {
+  font-size: var(--font-size-3xl);
+  line-height: var(--line-height-relaxed);
+}
+
+/* Font Weight Classes */
+.font-light {
+  font-weight: var(--font-weight-light);
+}
+
+.font-normal {
+  font-weight: var(--font-weight-normal);
+}
+
+.font-medium {
+  font-weight: var(--font-weight-medium);
+}
+
+.font-semibold {
+  font-weight: var(--font-weight-semibold);
+}
+
+.font-bold {
+  font-weight: var(--font-weight-bold);
+}
+
+.font-extrabold {
+  font-weight: var(--font-weight-extrabold);
+}
+
+/* Font Family Classes */
+.font-mono {
+  font-family: var(--font-family-mono);
+  font-feature-settings:
+    'liga' 1,
+    'calt' 1;
+  font-variant-ligatures: common-ligatures;
+}
+
+.font-sans {
+  font-family: var(--font-family-sans);
+}
+
+.font-system {
+  font-family: var(--font-family-system);
+}
+
+/* Line Height Classes */
+.leading-none {
+  line-height: var(--line-height-none);
+}
+
+.leading-tight {
+  line-height: var(--line-height-tight);
+}
+
+.leading-snug {
+  line-height: var(--line-height-snug);
+}
+
+.leading-normal {
+  line-height: var(--line-height-normal);
+}
+
+.leading-relaxed {
+  line-height: var(--line-height-relaxed);
+}
+
+.leading-loose {
+  line-height: var(--line-height-loose);
+}
+
+/* Letter Spacing Classes */
+.tracking-tighter {
+  letter-spacing: var(--letter-spacing-tighter);
+}
+
+.tracking-tight {
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.tracking-normal {
+  letter-spacing: var(--letter-spacing-normal);
+}
+
+.tracking-wide {
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.tracking-wider {
+  letter-spacing: var(--letter-spacing-wider);
+}
+
+.tracking-widest {
+  letter-spacing: var(--letter-spacing-widest);
+}
+
+/* Text Alignment Classes */
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+/* Text Color Classes */
+.text-primary {
+  color: var(--color-text-primary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.text-muted {
+  color: var(--color-text-muted);
+}
+
+.text-inverse {
+  color: var(--color-text-inverse);
+}
+
+.text-accent {
+  color: var(--color-accent);
+}
+
+.text-success {
+  color: var(--color-success);
+}
+
+.text-warning {
+  color: var(--color-warning);
+}
+
+.text-error {
+  color: var(--color-error);
+}
+
+/* Text Decoration Classes */
+.no-underline {
+  text-decoration: none;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.line-through {
+  text-decoration: line-through;
+}
+
+/* Text Transform Classes */
+.uppercase {
+  text-transform: uppercase;
+}
+
+.lowercase {
+  text-transform: lowercase;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.normal-case {
+  text-transform: none;
+}
+
+/* Text Overflow Classes */
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-ellipsis {
+  text-overflow: ellipsis;
+}
+
+.text-clip {
+  text-overflow: clip;
+}
+
+/* White Space Classes */
+.whitespace-normal {
+  white-space: normal;
+}
+
+.whitespace-nowrap {
+  white-space: nowrap;
+}
+
+.whitespace-pre {
+  white-space: pre;
+}
+
+.whitespace-pre-line {
+  white-space: pre-line;
+}
+
+.whitespace-pre-wrap {
+  white-space: pre-wrap;
+}
+
+/* Word Break Classes */
+.break-normal {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.break-words {
+  overflow-wrap: break-word;
+}
+
+.break-all {
+  word-break: break-all;
+}
+
+/* Terminal-Specific Typography */
+.terminal-text {
+  font-family: var(--font-family-mono);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-normal);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: var(--letter-spacing-normal);
+  font-feature-settings:
+    'liga' 1,
+    'calt' 1;
+  font-variant-ligatures: common-ligatures;
+}
+
+.terminal-prompt {
+  color: var(--color-accent);
+  font-weight: var(--font-weight-medium);
+}
+
+.terminal-command {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-normal);
+}
+
+.terminal-output {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-normal);
+}
+
+.terminal-error {
+  color: var(--color-error);
+  font-weight: var(--font-weight-medium);
+}
+
+.terminal-success {
+  color: var(--color-success);
+  font-weight: var(--font-weight-medium);
+}
+
+.terminal-warning {
+  color: var(--color-warning);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Responsive Typography */
+@media (max-width: 768px) {
+  .text-responsive-sm {
+    font-size: var(--font-size-sm);
+  }
+
+  .text-responsive-base {
+    font-size: var(--font-size-base);
+  }
+
+  .text-responsive-lg {
+    font-size: var(--font-size-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .text-responsive-xs {
+    font-size: var(--font-size-xs);
+  }
+
+  .text-responsive-sm {
+    font-size: var(--font-size-xs);
+  }
+
+  .text-responsive-base {
+    font-size: var(--font-size-sm);
+  }
+}

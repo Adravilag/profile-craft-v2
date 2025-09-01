@@ -1,0 +1,298 @@
+/* Typography Utilities - Enhanced system for terminal visual improvements */
+
+/* ===========================================
+   FONT FAMILY UTILITIES
+   =========================================== */
+
+.font-mono {
+  font-family: var(--font-mono);
+  font-feature-settings:
+    'liga' 1,
+    'calt' 1;
+  font-variant-ligatures: common-ligatures;
+}
+
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+.font-system {
+  font-family: var(--font-system);
+}
+
+/* ===========================================
+   FONT SIZE UTILITIES
+   =========================================== */
+
+.text-xs {
+  font-size: var(--text-xs);
+}
+.text-sm {
+  font-size: var(--text-sm);
+}
+.text-base {
+  font-size: var(--text-base);
+}
+.text-lg {
+  font-size: var(--text-lg);
+}
+.text-xl {
+  font-size: var(--text-xl);
+}
+.text-2xl {
+  font-size: var(--text-2xl);
+}
+.text-3xl {
+  font-size: var(--text-3xl);
+}
+
+/* ===========================================
+   FONT WEIGHT UTILITIES
+   =========================================== */
+
+.font-light {
+  font-weight: var(--font-weight-light);
+}
+.font-normal {
+  font-weight: var(--font-weight-normal);
+}
+.font-medium {
+  font-weight: var(--font-weight-medium);
+}
+.font-semibold {
+  font-weight: var(--font-weight-semibold);
+}
+.font-bold {
+  font-weight: var(--font-weight-bold);
+}
+.font-extrabold {
+  font-weight: var(--font-weight-extrabold);
+}
+
+/* ===========================================
+   LINE HEIGHT UTILITIES
+   =========================================== */
+
+.leading-none {
+  line-height: var(--leading-none);
+}
+.leading-tight {
+  line-height: var(--leading-tight);
+}
+.leading-snug {
+  line-height: var(--leading-snug);
+}
+.leading-normal {
+  line-height: var(--leading-normal);
+}
+.leading-relaxed {
+  line-height: var(--leading-relaxed);
+}
+.leading-loose {
+  line-height: var(--leading-loose);
+}
+
+/* ===========================================
+   LETTER SPACING UTILITIES
+   =========================================== */
+
+.tracking-tighter {
+  letter-spacing: var(--tracking-tighter);
+}
+.tracking-tight {
+  letter-spacing: var(--tracking-tight);
+}
+.tracking-normal {
+  letter-spacing: var(--tracking-normal);
+}
+.tracking-wide {
+  letter-spacing: var(--tracking-wide);
+}
+.tracking-wider {
+  letter-spacing: var(--tracking-wider);
+}
+.tracking-widest {
+  letter-spacing: var(--tracking-widest);
+}
+
+/* ===========================================
+   TERMINAL-SPECIFIC TYPOGRAPHY COMBINATIONS
+   =========================================== */
+
+/* Terminal prompt styling */
+.terminal-prompt {
+  font-family: var(--terminal-font);
+  font-size: var(--terminal-font-size);
+  line-height: var(--terminal-line-height);
+  font-weight: var(--terminal-font-weight-medium);
+  letter-spacing: var(--terminal-letter-spacing);
+  color: var(--terminal-prompt);
+}
+
+/* Terminal command styling */
+.terminal-command {
+  font-family: var(--terminal-font);
+  font-size: var(--terminal-font-size);
+  line-height: var(--terminal-line-height);
+  font-weight: var(--terminal-font-weight);
+  letter-spacing: var(--terminal-letter-spacing);
+  color: var(--terminal-command);
+}
+
+/* Terminal output styling */
+.terminal-output {
+  font-family: var(--terminal-font);
+  font-size: var(--terminal-font-size-sm);
+  line-height: var(--terminal-line-height-relaxed);
+  font-weight: var(--terminal-font-weight);
+  letter-spacing: var(--terminal-letter-spacing);
+  color: var(--terminal-output);
+}
+
+/* Terminal header styling */
+.terminal-header {
+  font-family: var(--terminal-font);
+  font-size: var(--terminal-font-size-lg);
+  line-height: var(--terminal-line-height-tight);
+  font-weight: var(--terminal-font-weight-bold);
+  letter-spacing: var(--terminal-letter-spacing-wide);
+  color: var(--terminal-header-text);
+}
+
+/* ===========================================
+   RESPONSIVE TYPOGRAPHY MODIFIERS
+   =========================================== */
+
+/* Mobile-first responsive typography */
+@media (max-width: 768px) {
+  .terminal-font,
+  .terminal-prompt,
+  .terminal-command {
+    font-size: var(--terminal-font-size-sm);
+    line-height: var(--terminal-line-height-tight);
+  }
+
+  .terminal-header {
+    font-size: var(--terminal-font-size);
+    line-height: var(--terminal-line-height-normal);
+  }
+}
+
+@media (min-width: 1024px) {
+  .terminal-header {
+    font-size: var(--terminal-font-size-lg);
+  }
+}
+
+/* ===========================================
+   ACCESSIBILITY ENHANCEMENTS
+   =========================================== */
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .terminal-font,
+  .terminal-prompt,
+  .terminal-command,
+  .terminal-output,
+  .terminal-header {
+    transition: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .terminal-font,
+  .terminal-prompt,
+  .terminal-command,
+  .terminal-output,
+  .terminal-header {
+    font-weight: var(--font-weight-medium);
+    letter-spacing: var(--tracking-wide);
+  }
+}
+
+/* Large text preference support */
+@media (prefers-reduced-data: reduce) {
+  .font-mono,
+  .terminal-font {
+    font-feature-settings: normal; /* Disable ligatures to save bandwidth */
+    font-variant-ligatures: none;
+  }
+}
+
+/* ===========================================
+   FONT LOADING OPTIMIZATION
+   =========================================== */
+
+/* Preload critical fonts */
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-display: swap;
+  font-weight: 400 700;
+  src: local('JetBrains Mono');
+}
+
+@font-face {
+  font-family: 'Fira Code';
+  font-display: swap;
+  font-weight: 400 700;
+  src: local('Fira Code');
+}
+
+/* Fallback for when web fonts fail to load */
+.font-mono,
+.terminal-font {
+  font-synthesis: none; /* Prevent synthetic bold/italic */
+}
+
+/* ===========================================
+   CONTENT-SPECIFIC TYPOGRAPHY
+   =========================================== */
+
+/* Code blocks and inline code */
+code,
+pre,
+.code {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: var(--tracking-normal);
+  font-feature-settings:
+    'liga' 1,
+    'calt' 1;
+  font-variant-ligatures: common-ligatures;
+}
+
+/* Terminal-like input fields */
+.terminal-input {
+  font-family: var(--terminal-font);
+  font-size: var(--terminal-font-size);
+  line-height: var(--terminal-line-height);
+  font-weight: var(--terminal-font-weight);
+  letter-spacing: var(--terminal-letter-spacing);
+  background: var(--terminal-input-bg);
+  border: 1px solid var(--terminal-input-border);
+  color: var(--terminal-text);
+}
+
+/* Terminal cursor animation */
+.terminal-cursor {
+  display: inline-block;
+  background: var(--terminal-cursor);
+  color: var(--terminal-cursor);
+  animation: var(--terminal-cursor-blink);
+  width: 0.5em;
+  height: 1em;
+}
+
+@keyframes terminal-cursor-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}

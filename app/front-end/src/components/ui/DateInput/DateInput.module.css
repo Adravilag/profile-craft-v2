@@ -1,0 +1,43 @@
+:root {
+  --date-bg: #0f1624;
+  --date-foreground: #e6eef8;
+}
+.wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.06);
+  background: var(--date-bg);
+  color: var(--date-foreground);
+  outline: none;
+}
+.input:focus {
+  border-color: var(--md-primary);
+}
+.icon {
+  background: transparent;
+  border: none;
+  margin-left: -36px;
+  cursor: pointer;
+}
+
+/* Basic overrides for flatpickr popup to match dark theme */
+.flatpickr-calendar {
+  background: var(--date-bg) !important;
+  color: var(--date-foreground) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+.flatpickr-weekdays,
+.flatpickr-days,
+.flatpickr-months {
+  color: var(--date-foreground) !important;
+}
+.flatpickr-day.today {
+  background: var(--md-primary) !important;
+  color: #fff !important;
+}

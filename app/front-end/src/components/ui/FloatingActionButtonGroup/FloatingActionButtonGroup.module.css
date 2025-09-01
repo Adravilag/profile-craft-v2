@@ -1,0 +1,273 @@
+/* FloatingActionButtonGroup.module.css */
+
+/* Variables para el sistema de posicionamiento automático */
+:root {
+  --fab-group-base-spacing: 2rem;
+  --fab-group-vertical-gap: 1rem;
+  --fab-group-item-spacing: 1rem;
+  --fab-group-standard-height: 56px;
+}
+
+.fabGroup {
+  position: fixed;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--fab-group-item-spacing);
+  pointer-events: none;
+}
+
+/* Sistema de posicionamiento inteligente para múltiples grupos */
+.fabGroupBottomRight {
+  bottom: var(--fab-group-base-spacing);
+  right: var(--fab-group-base-spacing);
+}
+
+.fabGroupBottomLeft {
+  bottom: var(--fab-group-base-spacing);
+  left: var(--fab-group-base-spacing);
+}
+
+/* Sistema de apilamiento automático para evitar colisiones entre grupos */
+.fabGroup:nth-of-type(1) {
+  /* Primer grupo - posición base */
+  z-index: 1000;
+}
+
+.fabGroup:nth-of-type(2) {
+  /* Segundo grupo - desplazado para evitar colisiones */
+  z-index: 999;
+}
+
+.fabGroup.fabGroupBottomRight:nth-of-type(2) {
+  right: calc(var(--fab-group-base-spacing) + 80px); /* Desplazar a la izquierda */
+}
+
+.fabGroup.fabGroupBottomLeft:nth-of-type(2) {
+  left: calc(var(--fab-group-base-spacing) + 80px); /* Desplazar a la derecha */
+}
+
+.fabGroup:nth-of-type(3) {
+  /* Tercer grupo - más desplazamiento */
+  z-index: 998;
+}
+
+.fabGroup.fabGroupBottomRight:nth-of-type(3) {
+  right: calc(var(--fab-group-base-spacing) + 160px);
+}
+
+.fabGroup.fabGroupBottomLeft:nth-of-type(3) {
+  left: calc(var(--fab-group-base-spacing) + 160px);
+}
+
+.fabGroupItem {
+  animation: fabGroupSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-delay: var(--delay, 0s);
+  animation-fill-mode: both;
+  pointer-events: auto;
+}
+
+/* Deshabilitar posicionamiento individual de FABs en grupos */
+.fabGroupButton {
+  position: relative !important;
+  bottom: auto !important;
+  right: auto !important;
+  left: auto !important;
+}
+
+/* Animación de entrada secuencial */
+@keyframes fabGroupSlideIn {
+  from {
+    transform: translateX(100px) scale(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Para posición izquierda */
+.fabGroupBottomLeft .fabGroupItem {
+  animation-name: fabGroupSlideInLeft;
+}
+
+@keyframes fabGroupSlideInLeft {
+  from {
+    transform: translateX(-100px) scale(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  :root {
+    --fab-group-base-spacing: 1.5rem;
+    --fab-group-item-spacing: 0.75rem;
+  }
+
+  .fabGroup.fabGroupBottomRight:nth-of-type(2) {
+    right: calc(var(--fab-group-base-spacing) + 60px);
+  }
+
+  .fabGroup.fabGroupBottomLeft:nth-of-type(2) {
+    left: calc(var(--fab-group-base-spacing) + 60px);
+  }
+
+  .fabGroup.fabGroupBottomRight:nth-of-type(3) {
+    right: calc(var(--fab-group-base-spacing) + 120px);
+  }
+
+  .fabGroup.fabGroupBottomLeft:nth-of-type(3) {
+    left: calc(var(--fab-group-base-spacing) + 120px);
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --fab-group-base-spacing: 1rem;
+    --fab-group-item-spacing: 0.5rem;
+  }
+
+  /* En móviles muy pequeños, apilar verticalmente en lugar de horizontalmente */
+  .fabGroup.fabGroupBottomRight:nth-of-type(2) {
+    right: var(--fab-group-base-spacing);
+    bottom: calc(var(--fab-group-base-spacing) + 160px); /* Apilado vertical */
+  }
+
+  .fabGroup.fabGroupBottomLeft:nth-of-type(2) {
+    left: var(--fab-group-base-spacing);
+    bottom: calc(var(--fab-group-base-spacing) + 160px); /* Apilado vertical */
+  }
+
+  .fabGroup.fabGroupBottomRight:nth-of-type(3) {
+    right: var(--fab-group-base-spacing);
+    bottom: calc(var(--fab-group-base-spacing) + 240px); /* Más arriba */
+  }
+
+  .fabGroup.fabGroupBottomLeft:nth-of-type(3) {
+    left: var(--fab-group-base-spacing);
+    bottom: calc(var(--fab-group-base-spacing) + 240px); /* Más arriba */
+  }
+}
+
+/* Galaxy A51/71 específico - 420px breakpoint */
+@media (max-width: 420px) {
+  :root {
+    --fab-group-base-spacing: 0.75rem;
+    --fab-group-item-spacing: 0.4rem;
+  }
+
+  .fabGroup.fabGroupBottomRight,
+  .fabGroup.fabGroupBottomLeft {
+    /* Compactar más en Galaxy A51/71 */
+    gap: var(--fab-group-item-spacing);
+  }
+
+  .fabGroup.fabGroupBottomRight:nth-of-type(2) {
+    right: var(--fab-group-base-spacing);
+    bottom: calc(var(--fab-group-base-spacing) + 140px);
+  }
+
+  .fabGroup.fabGroupBottomLeft:nth-of-type(2) {
+    left: var(--fab-group-base-spacing);
+    bottom: calc(var(--fab-group-base-spacing) + 140px);
+  }
+
+  .fabGroup.fabGroupBottomRight:nth-of-type(3) {
+    right: var(--fab-group-base-spacing);
+    bottom: calc(var(--fab-group-base-spacing) + 200px);
+  }
+
+  .fabGroup.fabGroupBottomLeft:nth-of-type(3) {
+    left: var(--fab-group-base-spacing);
+    bottom: calc(var(--fab-group-base-spacing) + 200px);
+  }
+}
+
+/* Mobile muy pequeño - 360px */
+@media (max-width: 360px) {
+  :root {
+    --fab-group-base-spacing: 0.5rem;
+    --fab-group-item-spacing: 0.3rem;
+  }
+
+  .fabGroup {
+    /* Simplificar efectos en pantallas muy pequeñas */
+    transition: none;
+  }
+
+  .fabGroupItem {
+    transition: none;
+  }
+
+  .fabGroup.fabGroupBottomRight:nth-of-type(2) {
+    bottom: calc(var(--fab-group-base-spacing) + 120px);
+  }
+
+  .fabGroup.fabGroupBottomLeft:nth-of-type(2) {
+    bottom: calc(var(--fab-group-base-spacing) + 120px);
+  }
+}
+
+/* Landscape mobile optimizations for FAB groups */
+@media (max-height: 420px) and (orientation: landscape) {
+  :root {
+    --fab-group-base-spacing: 0.25rem;
+    --fab-group-item-spacing: 0.25rem;
+  }
+
+  .fabGroup {
+    /* En landscape, cambiar a disposición horizontal si es posible */
+    flex-direction: row;
+    gap: var(--fab-group-item-spacing);
+  }
+
+  .fabGroup.fabGroupBottomRight {
+    bottom: var(--fab-group-base-spacing);
+    right: var(--fab-group-base-spacing);
+  }
+
+  .fabGroup.fabGroupBottomLeft {
+    bottom: var(--fab-group-base-spacing);
+    left: var(--fab-group-base-spacing);
+  }
+
+  .fabGroup.fabGroupBottomRight:nth-of-type(2) {
+    right: calc(var(--fab-group-base-spacing) + 100px);
+    bottom: var(--fab-group-base-spacing);
+  }
+
+  .fabGroup.fabGroupBottomLeft:nth-of-type(2) {
+    left: calc(var(--fab-group-base-spacing) + 100px);
+    bottom: var(--fab-group-base-spacing);
+  }
+}
+
+/* Hover effects para el grupo */
+.fabGroup:hover .fabGroupItem {
+  transform: scale(1.02);
+}
+
+.fabGroupItem:hover {
+  transform: scale(1.05) !important;
+  z-index: 10001;
+}
+
+/* Estados de accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .fabGroupItem {
+    animation: none;
+  }
+
+  .fabGroup:hover .fabGroupItem,
+  .fabGroupItem:hover {
+    transform: none !important;
+  }
+}

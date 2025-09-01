@@ -1,0 +1,437 @@
+/* Material Design 3 Projects Admin Page */
+
+.adminPage {
+  min-height: 100vh;
+  background: var(--md3-surface-dim);
+  font-family:
+    Roboto,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Contenedor principal */
+.projectsAdminContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--md3-space-2xl);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Patrón de fondo sutil */
+.adminPage::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(
+      circle at 25% 25%,
+      color-mix(in srgb, var(--md3-primary) 4%, transparent) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 75% 75%,
+      color-mix(in srgb, var(--md3-secondary) 4%, transparent) 0%,
+      transparent 50%
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Header Material Design 3 */
+.adminHeader {
+  background: color-mix(in srgb, var(--md3-surface-container) 95%, transparent);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--md3-outline-variant);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--md3-elevation-2);
+}
+
+.headerContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--md3-space-lg) var(--md3-space-2xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: var(--md3-space-lg);
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: var(--md3-space-lg);
+}
+
+/* Título */
+.title {
+  margin: 0;
+  font-size: var(--md3-headline-small);
+  color: var(--md3-on-surface);
+  font-weight: var(--md3-weight-bold);
+}
+
+/* Botón de regreso */
+.backButton {
+  color: var(--md3-on-surface-variant);
+  text-decoration: none;
+  font-size: var(--md3-body-medium);
+  font-weight: var(--md3-weight-medium);
+  transition: color var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+}
+
+.backButton:hover {
+  color: var(--md3-on-surface);
+}
+
+/* Botón de vista previa Material Design 3 */
+.previewButton {
+  display: flex;
+  align-items: center;
+  gap: var(--md3-space-sm);
+  padding: var(--md3-space-md) var(--md3-space-lg);
+  background: var(--md3-primary);
+  color: var(--md3-on-primary);
+  border: none;
+  border-radius: var(--md3-corner-xl);
+  font-size: var(--md3-label-large);
+  font-weight: var(--md3-weight-medium);
+  cursor: pointer;
+  transition: all var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+  text-decoration: none;
+  box-shadow: var(--md3-elevation-1);
+}
+
+.previewButton:hover {
+  box-shadow: var(--md3-elevation-2);
+  background: color-mix(in srgb, var(--md3-primary) 92%, var(--md3-on-primary) 8%);
+  transform: translateY(-1px);
+}
+
+.previewButton i {
+  font-size: var(--md3-title-medium);
+}
+
+/* Botón tema Material Design 3 */
+.themeToggle {
+  display: flex;
+  align-items: center;
+  gap: var(--md3-space-sm);
+  padding: var(--md3-space-md) var(--md3-space-lg);
+  border: 1px solid var(--md3-outline);
+  border-radius: var(--md3-corner-md);
+  background: var(--md3-surface-container-highest);
+  color: var(--md3-on-surface-variant);
+  cursor: pointer;
+  transition: all var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+  position: relative;
+  overflow: hidden;
+  font-size: var(--md3-label-large);
+  font-weight: var(--md3-weight-medium);
+  white-space: nowrap;
+}
+
+.themeToggle:hover {
+  background: var(--md3-surface-container-high);
+  border-color: var(--md3-outline-variant);
+  transform: translateY(-1px);
+  box-shadow: var(--md3-elevation-1);
+}
+
+.themeToggle i {
+  font-size: var(--md3-title-medium);
+  transition: all var(--md3-motion-duration-medium1) var(--md3-motion-easing-emphasized);
+}
+
+.themeToggle .sunIcon {
+  color: var(--md3-tertiary);
+}
+
+.themeToggle .moonIcon {
+  color: var(--md3-primary);
+}
+
+/* Contenido principal */
+.adminMain {
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+  min-height: calc(100vh - 80px);
+}
+
+/* Estados de carga Material Design 3 */
+.loadingContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  padding: var(--md3-space-3xl);
+  text-align: center;
+  background: var(--md3-surface-container-low);
+  backdrop-filter: blur(20px);
+  border-radius: var(--md3-corner-lg);
+  margin: var(--md3-space-3xl);
+  border: 1px solid var(--md3-outline-variant);
+  box-shadow: var(--md3-elevation-1);
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--md3-outline-variant);
+  border-top: 3px solid var(--md3-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--md3-space-lg);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Cards con efecto glassmorphism */
+.glassCard {
+  background: color-mix(in srgb, var(--md3-surface-container) 80%, transparent);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--md3-outline-variant);
+  box-shadow: var(--md3-elevation-2);
+  border-radius: var(--md3-corner-lg);
+  transition: all var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+}
+
+.glassCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--md3-elevation-3);
+}
+
+/* Animaciones */
+.fadeIn {
+  animation: fadeIn 0.6s var(--md3-motion-easing-emphasized);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(var(--md3-space-xl));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slideInLeft {
+  animation: slideInLeft 0.5s var(--md3-motion-easing-emphasized-decelerate);
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(calc(-1 * var(--md3-space-3xl)));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slideInRight {
+  animation: slideInRight 0.5s var(--md3-motion-easing-emphasized-decelerate);
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(var(--md3-space-3xl));
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Focus states Material Design 3 */
+.previewButton:focus-visible,
+.themeToggle:focus-visible {
+  outline: 2px solid var(--md3-primary);
+  outline-offset: 2px;
+}
+
+/* Indicador de estado de conexión */
+.connectionStatus {
+  position: fixed;
+  top: 90px;
+  right: var(--md3-space-xl);
+  padding: var(--md3-space-sm) var(--md3-space-lg);
+  border-radius: var(--md3-corner-full);
+  font-size: var(--md3-label-small);
+  font-weight: var(--md3-weight-medium);
+  z-index: 1000;
+  transition: all var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+  backdrop-filter: blur(10px);
+}
+
+.connectionStatus.online {
+  background: var(--md3-tertiary-container);
+  color: var(--md3-on-tertiary-container);
+  border: 1px solid var(--md3-tertiary);
+}
+
+.connectionStatus.offline {
+  background: var(--md3-error-container);
+  color: var(--md3-on-error-container);
+  border: 1px solid var(--md3-error);
+}
+
+/* Tooltip Material Design 3 */
+.tooltip {
+  position: relative;
+}
+
+.tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--md3-surface-container-highest);
+  color: var(--md3-on-surface);
+  padding: var(--md3-space-sm) var(--md3-space-md);
+  border-radius: var(--md3-corner-xs);
+  font-size: var(--md3-label-small);
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+  z-index: 1001;
+  margin-bottom: var(--md3-space-xs);
+  box-shadow: var(--md3-elevation-2);
+  border: 1px solid var(--md3-outline-variant);
+}
+
+.tooltip:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Scrollbar Material Design 3 */
+.adminPage ::-webkit-scrollbar {
+  width: 8px;
+}
+
+.adminPage ::-webkit-scrollbar-track {
+  background: var(--md3-surface-container-low);
+  border-radius: var(--md3-corner-xs);
+}
+
+.adminPage ::-webkit-scrollbar-thumb {
+  background: var(--md3-outline-variant);
+  border-radius: var(--md3-corner-xs);
+  transition: background var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+}
+
+.adminPage ::-webkit-scrollbar-thumb:hover {
+  background: var(--md3-outline);
+}
+
+/* Transiciones suaves para el cambio de tema */
+.adminPage,
+.adminPage *,
+.adminPage::before {
+  transition:
+    background-color var(--md3-motion-duration-medium1) var(--md3-motion-easing-standard),
+    color var(--md3-motion-duration-medium1) var(--md3-motion-easing-standard),
+    border-color var(--md3-motion-duration-medium1) var(--md3-motion-easing-standard),
+    box-shadow var(--md3-motion-duration-medium1) var(--md3-motion-easing-standard);
+}
+
+/* Responsive Design Material Design 3 */
+@media (max-width: 768px) {
+  .projectsAdminContainer {
+    padding: 0 var(--md3-space-lg);
+  }
+
+  .headerContent {
+    padding: var(--md3-space-md) var(--md3-space-lg);
+    flex-direction: column;
+    gap: var(--md3-space-lg);
+    align-items: stretch;
+  }
+
+  .headerLeft,
+  .headerRight {
+    justify-content: center;
+  }
+
+  .title {
+    font-size: var(--md3-title-large);
+    text-align: center;
+  }
+
+  .connectionStatus {
+    top: var(--md3-space-xl);
+    right: var(--md3-space-lg);
+  }
+}
+
+@media (max-width: 480px) {
+  .projectsAdminContainer {
+    padding: 0 var(--md3-space-md);
+  }
+
+  .headerContent {
+    padding: var(--md3-space-sm) var(--md3-space-md);
+  }
+
+  .previewButton,
+  .themeToggle {
+    padding: var(--md3-space-sm) var(--md3-space-md);
+    font-size: var(--md3-label-medium);
+  }
+
+  .loadingContent {
+    margin: var(--md3-space-lg);
+    padding: var(--md3-space-2xl);
+  }
+}
+
+/* Soporte para preferencias de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  .fadeIn,
+  .slideInLeft,
+  .slideInRight {
+    animation: none;
+  }
+
+  .loadingSpinner {
+    animation: none;
+  }
+
+  .adminPage,
+  .adminPage *,
+  .adminPage::before {
+    transition: none;
+  }
+}

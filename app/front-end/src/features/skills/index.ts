@@ -1,0 +1,28 @@
+// Barrel exports para el feature skills
+
+// Utils
+export { normalizeSkillName, generateSkillVariants } from './utils/normalizeSkillName';
+export { findSkillIcon, svgMap, TECH_ALIASES, getIconLoaderStats } from './utils/iconLoader';
+export * from './utils/skillUtils';
+
+// Data
+export * from './data/skillResources';
+
+// Types
+export * from './types/skills';
+
+// Hooks
+export { useSkills } from './hooks/useSkills';
+export { useSkillsIcons } from './hooks/useSkillsIcons';
+export { useSkillPreview } from './hooks/useSkillPreview';
+export { useFilterFAB } from './hooks/useFilterFAB';
+export { useResponsive } from './hooks/useResponsive';
+export { useStickyFilter } from './hooks/useStickyFilter';
+
+// Components
+export { default as SkillCard } from './components/cards/SkillCard';
+export { default as CategoryFilters } from './components/filters/CategoryFilters';
+export { default as SortFilters } from './components/filters/SortFilters';
+export { default as SkillsGrid } from './components/grid/SkillsGrid';
+export { default as SkillModal } from './components/modal/SkillModal';
+export { default as SkillPreviewModal } from './components/modal/SkillPreviewModal';

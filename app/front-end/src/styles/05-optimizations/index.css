@@ -1,0 +1,10 @@
+/* =====================================================
+   OPTIMIZATIONS INDEX - PERFORMANCE & COMPATIBILITY
+   ===================================================== */
+
+@import url('./performance-optimization.css');
+@import url('./accessibility-improvements.css');
+@import url('./font-loading.css');
+@import url('./cross-browser-compatibility.css');
+@import url('./browser-specific-fixes.css');
+@import url('./mobile-responsiveness.css');

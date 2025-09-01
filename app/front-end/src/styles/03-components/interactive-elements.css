@@ -1,0 +1,387 @@
+/* Interactive Elements Styling System
+ * Enhanced hover, focus, and interactive states for better user experience
+ * Requirements: 3.3, 2.2, 1.1
+ */
+
+/* ===== BUTTON SYSTEM ===== */
+
+/* Base button styles with consistent design tokens */
+.btn,
+button:not(.unstyled) {
+  /* Base properties */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+
+  /* Typography */
+  font-family: inherit;
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--leading-tight);
+  text-decoration: none;
+
+  /* Layout */
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+
+  /* Interaction */
+  cursor: pointer;
+  user-select: none;
+
+  /* Transitions */
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+/* Button variants */
+.btn-primary {
+  background: var(--color-accent-button);
+  color: var(--color-on-accent);
+  border-color: var(--color-accent-button);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn-primary:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  box-shadow:
+    var(--shadow-md),
+    0 0 0 4px rgb(68, 147, 248, 0.2);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--color-primary);
+  border-color: var(--border-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn-secondary:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  box-shadow:
+    var(--shadow-md),
+    0 0 0 4px rgb(68, 147, 248, 0.2);
+}
+
+.btn-secondary:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-secondary);
+  border-color: transparent;
+}
+
+.btn-ghost:hover {
+  background: var(--state-layer-hover);
+  color: var(--color-primary);
+  transform: translateY(-1px);
+}
+
+.btn-ghost:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  background: var(--state-layer-focus);
+}
+
+.btn-ghost:active {
+  transform: translateY(0);
+  background: var(--state-layer-pressed);
+}
+
+/* Button sizes */
+.btn-sm {
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  border-radius: var(--radius-sm);
+}
+
+.btn-lg {
+  padding: var(--space-4) var(--space-6);
+  font-size: var(--text-lg);
+  border-radius: var(--radius-lg);
+}
+
+/* Button states */
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.btn:disabled:hover,
+.btn[disabled]:hover {
+  background: var(--state-layer-disabled);
+  border-color: var(--border-primary);
+  transform: none;
+}
+
+/* ===== ENHANCED DROPDOWN SYSTEM ===== */
+
+/* Improved autocomplete dropdown */
+.dropdown,
+.autocomplete-dropdown,
+.combo-dropdown-list {
+  /* Layout */
+  position: absolute;
+  z-index: var(--modal-dropdown-z-index);
+  width: 100%;
+  max-height: 240px;
+  overflow-y: auto;
+
+  /* Appearance */
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    var(--shadow-xl),
+    0 0 0 1px rgb(68, 147, 248, 0.1),
+    0 20px 40px rgb(0, 0, 0, 0.15);
+
+  /* Backdrop effect */
+  backdrop-filter: blur(12px);
+
+  /* Animation */
+  animation: dropdownFadeIn var(--duration-normal) var(--ease-out);
+  transform-origin: top;
+}
+
+/* Dropdown animation */
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Dropdown items */
+.dropdown-item,
+.autocomplete-item,
+.combo-dropdown-list li {
+  /* Layout */
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+
+  /* Typography */
+  font-size: var(--text-base);
+  color: var(--color-primary);
+
+  /* Interaction */
+  cursor: pointer;
+  user-select: none;
+
+  /* Transitions */
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+/* Dropdown item hover state */
+.dropdown-item:hover,
+.autocomplete-item:hover,
+.combo-dropdown-list li:hover {
+  background: var(--state-layer-hover);
+  color: var(--color-accent);
+  transform: translateX(2px);
+}
+
+/* Dropdown item selected/active state */
+.dropdown-item.selected,
+.dropdown-item.active,
+.autocomplete-item.selected,
+.autocomplete-item.active,
+.combo-dropdown-list li.selected {
+  background: var(--state-layer-selected);
+  color: var(--color-accent);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Dropdown item focus state for keyboard navigation */
+.dropdown-item:focus,
+.autocomplete-item:focus,
+.combo-dropdown-list li:focus {
+  outline: none;
+  background: var(--state-layer-focus);
+  color: var(--color-accent);
+  box-shadow: inset 2px 0 0 var(--color-accent);
+}
+
+/* ===== LOADING STATES ===== */
+
+/* Loading button state */
+.btn.loading {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+}
+
+.btn.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid currentcolor;
+  border-radius: 50%;
+  border-top-color: transparent;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+
+/* Touch-friendly sizing on mobile */
+@media (max-width: 768px) {
+  .btn,
+  button:not(.unstyled) {
+    min-height: 44px;
+    padding: var(--space-3) var(--space-5);
+  }
+
+  .input,
+  input:not(.unstyled),
+  textarea:not(.unstyled),
+  select:not(.unstyled) {
+    min-height: 44px;
+    padding: var(--space-4);
+  }
+
+  .dropdown-item,
+  .autocomplete-item,
+  .combo-dropdown-list li {
+    min-height: 44px;
+    padding: var(--space-4);
+  }
+}
+
+/* ===== ACCESSIBILITY IMPROVEMENTS ===== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .btn,
+  button:not(.unstyled) {
+    border-width: 2px;
+  }
+
+  .input,
+  input:not(.unstyled),
+  textarea:not(.unstyled),
+  select:not(.unstyled) {
+    border-width: 2px;
+  }
+
+  *:focus-visible {
+    outline-width: 3px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  button:not(.unstyled),
+  .input,
+  input:not(.unstyled),
+  textarea:not(.unstyled),
+  select:not(.unstyled),
+  .dropdown,
+  .autocomplete-dropdown,
+  .combo-dropdown-list {
+    transition: none;
+    animation: none;
+  }
+
+  .dropdown,
+  .autocomplete-dropdown,
+  .combo-dropdown-list {
+    animation: none;
+  }
+}
+
+/* ===== THEME INTEGRATION ===== */
+
+/* Special theme effects for hack theme */
+[data-theme='hack'] .btn:focus-visible,
+[data-theme='hack'] .input:focus,
+[data-theme='hack'] input:not(.unstyled):focus,
+[data-theme='hack'] textarea:not(.unstyled):focus,
+[data-theme='hack'] select:not(.unstyled):focus {
+  box-shadow:
+    var(--shadow-md),
+    0 0 0 3px rgb(0, 255, 65, 0.3),
+    0 0 20px rgb(0, 255, 65, 0.1);
+}
+
+[data-theme='hack'] .dropdown,
+[data-theme='hack'] .autocomplete-dropdown,
+[data-theme='hack'] .combo-dropdown-list {
+  box-shadow:
+    var(--shadow-xl),
+    0 0 0 1px rgb(0, 255, 65, 0.2),
+    0 0 30px rgb(0, 255, 65, 0.15);
+}
+
+/* Special theme effects for undertale theme */
+[data-theme='undertale'] .btn:focus-visible,
+[data-theme='undertale'] .input:focus,
+[data-theme='undertale'] input:not(.unstyled):focus,
+[data-theme='undertale'] textarea:not(.unstyled):focus,
+[data-theme='undertale'] select:not(.unstyled):focus {
+  box-shadow:
+    var(--shadow-md),
+    0 0 0 3px rgb(255, 255, 0, 0.3),
+    0 0 20px rgb(255, 255, 0, 0.1);
+}
+
+[data-theme='undertale'] .dropdown,
+[data-theme='undertale'] .autocomplete-dropdown,
+[data-theme='undertale'] .combo-dropdown-list {
+  box-shadow:
+    var(--shadow-xl),
+    0 0 0 1px rgb(255, 255, 0, 0.2),
+    0 0 30px rgb(255, 255, 0, 0.15);
+}

@@ -1,0 +1,1273 @@
+/* ================================
+   MATERIAL DESIGN 3 ARTICLE VIEW
+   ================================ */
+
+/* ================================
+   CONTENEDOR PRINCIPAL - MATERIAL DESIGN 3
+   ================================ */
+.projectPage {
+  min-height: 100vh;
+  background: var(--md3-surface-dim);
+  font-family:
+    Roboto,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  position: relative;
+  overflow-x: hidden;
+  animation: containerFadeIn var(--md3-motion-duration-medium2) var(--md3-motion-easing-emphasized);
+}
+
+.projectContainer {
+  min-height: 100vh;
+  background: var(--md3-surface);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Patrón de fondo Material Design 3 */
+.projectPage::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(
+      circle at 25% 25%,
+      color-mix(in srgb, var(--md3-primary) 4%, transparent) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 75% 75%,
+      color-mix(in srgb, var(--md3-secondary) 4%, transparent) 0%,
+      transparent 50%
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ================================
+   NAVEGACIÓN - MATERIAL DESIGN 3
+   ================================ */
+.projectNavigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  backdrop-filter: blur(20px) saturate(180%);
+  background: color-mix(in srgb, var(--md3-surface-container) 95%, transparent);
+  border-bottom: 1px solid var(--md3-outline-variant);
+  box-shadow: var(--md3-elevation-2);
+  animation: navigationSlideDown var(--md3-motion-duration-medium2)
+    var(--md3-motion-easing-emphasized);
+}
+
+.navigationContent {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--md3-space-2xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 80px;
+  position: relative;
+  z-index: 1;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: var(--md3-space-sm);
+  padding: var(--md3-space-md) var(--md3-space-lg);
+  background: var(--md3-surface-container-highest);
+  border: 1px solid var(--md3-outline-variant);
+  border-radius: var(--md3-corner-lg);
+  color: var(--md3-on-surface-variant);
+  text-decoration: none;
+  font-weight: var(--md3-weight-medium);
+  font-size: var(--md3-label-large);
+  transition: all var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+
+.backButton:hover {
+  background: var(--md3-surface-container-high);
+  color: var(--md3-on-surface);
+  transform: translateX(-4px);
+  box-shadow: var(--md3-elevation-2);
+  border-color: var(--md3-outline);
+}
+
+.backButton:active {
+  transform: translateX(-2px) scale(0.98);
+}
+
+.progressIndicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--md3-primary);
+  border-radius: 1px;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform var(--md3-motion-duration-short4) var(--md3-motion-easing-standard);
+}
+
+/* ================================
+   CONTENIDO PRINCIPAL - MATERIAL DESIGN 3
+   ================================ */
+.mainContent {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 120px var(--md3-space-2xl) var(--md3-space-6xl);
+  position: relative;
+  z-index: 1;
+}
+
+/* ================================
+   HERO SECTION - MATERIAL DESIGN 3
+   ================================ */
+.heroSection {
+  text-align: center;
+  margin-bottom: var(--md3-space-6xl);
+  animation: heroSlideUp var(--md3-motion-duration-medium4) var(--md3-motion-easing-emphasized);
+}
+
+.mainBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--md3-space-sm);
+  padding: var(--md3-space-sm) var(--md3-space-lg);
+  background: var(--md3-secondary-container);
+  border: 1px solid var(--md3-outline-variant);
+  border-radius: var(--md3-corner-full);
+  color: var(--md3-on-secondary-container);
+  font-size: var(--md3-label-large);
+  font-weight: var(--md3-weight-medium);
+  margin-bottom: var(--md3-space-3xl);
+  backdrop-filter: blur(10px);
+  animation: badgeShimmer var(--md3-motion-duration-medium4) var(--md3-motion-easing-emphasized);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--md3-elevation-1);
+}
+
+.mainBadge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--md3-on-secondary-container) 20%, transparent),
+    transparent
+  );
+  animation: shimmerEffect 2s ease-in-out infinite;
+}
+
+.heroTitle {
+  font-size: clamp(var(--md3-display-small), 8vw, var(--md3-display-large));
+  font-weight: var(--md3-weight-bold);
+  line-height: 1.1;
+  margin-bottom: var(--md3-space-2xl);
+  background: linear-gradient(135deg, var(--md3-primary), var(--md3-tertiary));
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--md3-on-surface);
+  animation: titleGradientShift 3s ease-in-out infinite alternate;
+}
+
+.heroDescription {
+  font-size: var(--md3-body-large);
+  line-height: 1.6;
+  color: var(--md3-on-surface-variant);
+  max-width: 700px;
+  margin: 0 auto var(--md3-space-4xl);
+  position: relative;
+  padding: var(--md3-space-3xl);
+  background: var(--md3-surface-container-low);
+  border-radius: var(--md3-corner-lg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--md3-outline-variant);
+  animation: descriptionFadeIn var(--md3-motion-duration-medium4)
+    var(--md3-motion-easing-emphasized) 0.3s both;
+  box-shadow: var(--md3-elevation-1);
+}
+
+.heroDescription::before {
+  content: '"';
+  position: absolute;
+  top: var(--md3-space-lg);
+  left: var(--md3-space-lg);
+  font-size: 3rem;
+  color: var(--md3-primary);
+  opacity: 0.3;
+  font-family: serif;
+}
+
+.heroDescription::after {
+  content: '"';
+  position: absolute;
+  bottom: var(--md3-space-lg);
+  right: var(--md3-space-lg);
+  font-size: 3rem;
+  color: var(--md3-primary);
+  opacity: 0.3;
+  font-family: serif;
+}
+
+/* ================================
+   METADATOS - MATERIAL DESIGN 3
+   ================================ */
+.metadataGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--md3-space-2xl);
+  margin-bottom: var(--md3-space-4xl);
+  animation: metadataSlideIn var(--md3-motion-duration-medium4) var(--md3-motion-easing-emphasized)
+    0.5s both;
+}
+
+.metadataCard {
+  display: flex;
+  align-items: center;
+  gap: var(--md3-space-lg);
+  padding: var(--md3-space-2xl);
+  background: var(--md3-surface-container);
+  border: 1px solid var(--md3-outline-variant);
+  border-radius: var(--md3-corner-lg);
+  backdrop-filter: blur(10px);
+  transition: all var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--md3-elevation-1);
+}
+
+.metadataCard:hover {
+  background: var(--md3-surface-container-high);
+  transform: translateY(-4px);
+  box-shadow: var(--md3-elevation-3);
+  border-color: var(--md3-outline);
+}
+
+.metadataCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--md3-primary);
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition: transform var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+}
+
+.metadataCard:hover::before {
+  transform: scaleY(1);
+}
+
+.metadataIcon {
+  width: 24px;
+  height: 24px;
+  color: var(--md3-primary);
+  animation: iconPulse 2s ease-in-out infinite;
+}
+
+.metadataLabel {
+  font-size: var(--md3-label-medium);
+  color: var(--md3-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: var(--md3-weight-medium);
+}
+
+.metadataValue {
+  font-size: var(--md3-body-medium);
+  color: var(--md3-on-surface);
+  font-weight: var(--md3-weight-medium);
+  margin-top: 2px;
+}
+
+/* ================================
+   SECCIÓN DE TECNOLOGÍAS - MATERIAL DESIGN 3
+   ================================ */
+.technologiesSection {
+  margin-bottom: var(--md3-space-4xl);
+  animation: technologiesSlideIn var(--md3-motion-duration-medium4)
+    var(--md3-motion-easing-emphasized) 0.7s both;
+}
+
+.technologiesHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--md3-space-lg);
+  margin-bottom: var(--md3-space-3xl);
+  justify-content: center;
+}
+
+.technologiesIcon {
+  width: 24px;
+  height: 24px;
+  color: var(--md3-primary);
+}
+
+.technologiesTitle {
+  font-size: var(--md3-headline-small);
+  font-weight: var(--md3-weight-bold);
+  color: var(--md3-on-surface);
+  margin: 0;
+}
+
+.technologiesList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--md3-space-lg);
+  justify-content: center;
+}
+
+.techItem {
+  padding: var(--md3-space-sm) var(--md3-space-2xl);
+  background: var(--md3-tertiary-container);
+  border: 1px solid var(--md3-outline-variant);
+  border-radius: var(--md3-corner-full);
+  color: var(--md3-on-tertiary-container);
+  font-size: var(--md3-label-large);
+  font-weight: var(--md3-weight-medium);
+  backdrop-filter: blur(10px);
+  transition: all var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+  position: relative;
+  overflow: hidden;
+  animation: techItemPop var(--md3-motion-duration-short2) var(--md3-motion-easing-emphasized)
+    calc(var(--i, 0) * 0.1s) both;
+  box-shadow: var(--md3-elevation-1);
+}
+
+.techItem:hover {
+  background: var(--md3-primary);
+  color: var(--md3-on-primary);
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: var(--md3-elevation-3);
+  border-color: transparent;
+}
+
+.techItem::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--md3-on-primary) 30%, transparent) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+}
+
+.techItem:hover::before {
+  width: 120%;
+  height: 120%;
+}
+
+/* ================================
+   BOTONES DE ACCIÓN - MATERIAL DESIGN 3
+   ================================ */
+.actionButtonsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--md3-space-2xl);
+  justify-content: center;
+  margin-bottom: var(--md3-space-4xl);
+  animation: buttonsSlideIn var(--md3-motion-duration-medium4) var(--md3-motion-easing-emphasized)
+    0.9s both;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--md3-space-lg);
+  padding: var(--md3-space-2xl) var(--md3-space-4xl);
+  border: none;
+  border-radius: var(--md3-corner-lg);
+  font-size: var(--md3-label-large);
+  font-weight: var(--md3-weight-medium);
+  text-decoration: none;
+  transition: all var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  min-width: 160px;
+  justify-content: center;
+  box-shadow: var(--md3-elevation-1);
+}
+
+.actionBtnDemo {
+  background: var(--md3-primary);
+  color: var(--md3-on-primary);
+  border: 1px solid var(--md3-outline-variant);
+}
+
+.actionBtnDemo:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: var(--md3-elevation-3);
+  background: color-mix(in srgb, var(--md3-primary) 92%, var(--md3-on-primary) 8%);
+}
+
+.actionBtnGithub {
+  background: var(--md3-surface-container-highest);
+  color: var(--md3-on-surface);
+  border: 1px solid var(--md3-outline);
+}
+
+.actionBtnGithub:hover {
+  background: var(--md3-surface-container-high);
+  color: var(--md3-on-surface);
+  transform: translateY(-2px);
+  box-shadow: var(--md3-elevation-2);
+  border-color: var(--md3-outline-variant);
+}
+
+.actionBtnExternal {
+  background: var(--md3-tertiary);
+  color: var(--md3-on-tertiary);
+  border: 1px solid var(--md3-outline-variant);
+}
+
+.actionBtnExternal:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: var(--md3-elevation-3);
+  background: color-mix(in srgb, var(--md3-tertiary) 92%, var(--md3-on-tertiary) 8%);
+}
+
+.actionBtn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, currentcolor 20%, transparent) 0%,
+    transparent 70%
+  );
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all var(--md3-motion-duration-short1) var(--md3-motion-easing-standard);
+}
+
+.actionBtn:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+.actionBtnIcon {
+  width: 20px;
+  height: 20px;
+  transition: transform var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+}
+
+.actionBtn:hover .actionBtnIcon {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* ================================
+   IMAGEN HERO Y VIDEO - MATERIAL DESIGN 3
+   ================================ */
+.heroImageSection {
+  margin: var(--md3-space-4xl) 0;
+  animation: heroImageSlideIn var(--md3-motion-duration-medium4) var(--md3-motion-easing-emphasized)
+    1s both;
+}
+
+.heroImageContainer {
+  position: relative;
+  border-radius: var(--md3-corner-xl);
+  overflow: hidden;
+  box-shadow: var(--md3-elevation-3);
+  background: var(--md3-surface-container);
+}
+
+.heroImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  transition: transform var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+}
+
+.heroImage:hover {
+  transform: scale(1.02);
+}
+
+.videoSection {
+  margin: var(--md3-space-6xl) 0;
+  animation: videoSlideIn var(--md3-motion-duration-medium4) var(--md3-motion-easing-emphasized)
+    1.2s both;
+}
+
+.videoTitle {
+  font-size: var(--md3-headline-medium);
+  font-weight: var(--md3-weight-bold);
+  color: var(--md3-on-surface);
+  margin-bottom: var(--md3-space-3xl);
+  text-align: center;
+}
+
+.videoContainer {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  border-radius: var(--md3-corner-xl);
+  overflow: hidden;
+  box-shadow: var(--md3-elevation-3);
+  background: var(--md3-surface-container);
+}
+
+.videoEmbed,
+.videoElement {
+  width: 100%;
+  height: 450px;
+  border: none;
+  display: block;
+}
+
+.videoElement {
+  height: auto;
+}
+
+/* ================================
+   CONTENIDO DEL ARTÍCULO - MATERIAL DESIGN 3
+   ================================ */
+.projectBody {
+  background: var(--md3-surface-container-low);
+  border: 1px solid var(--md3-outline-variant);
+  border-radius: var(--md3-corner-lg);
+  padding: var(--md3-space-4xl);
+  backdrop-filter: blur(20px);
+  animation: bodySlideIn var(--md3-motion-duration-medium4) var(--md3-motion-easing-emphasized) 1.1s
+    both;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--md3-elevation-1);
+}
+
+.projectBody::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--md3-primary);
+  animation: progressBar 2s ease-out;
+}
+
+.projectProse {
+  color: var(--md3-on-surface-variant);
+  line-height: 1.8;
+  font-size: var(--md3-body-large);
+}
+
+.projectProse h1,
+.projectProse h2,
+.projectProse h3,
+.projectProse h4,
+.projectProse h5,
+.projectProse h6 {
+  color: var(--md3-on-surface);
+  font-weight: var(--md3-weight-bold);
+  margin-top: var(--md3-space-4xl);
+  margin-bottom: var(--md3-space-2xl);
+  position: relative;
+}
+
+.projectProse h1 {
+  font-size: var(--md3-display-small);
+}
+.projectProse h2 {
+  font-size: var(--md3-headline-large);
+}
+.projectProse h3 {
+  font-size: var(--md3-headline-medium);
+}
+.projectProse h4 {
+  font-size: var(--md3-headline-small);
+}
+.projectProse h5 {
+  font-size: var(--md3-title-large);
+}
+.projectProse h6 {
+  font-size: var(--md3-title-medium);
+}
+
+.projectProse h2::before {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--md3-space-2xl));
+  top: 50%;
+  width: 4px;
+  height: 60%;
+  background: var(--md3-primary);
+  border-radius: 2px;
+  transform: translateY(-50%);
+}
+
+.projectProse p {
+  margin-bottom: var(--md3-space-2xl);
+}
+
+.projectProse a {
+  color: var(--md3-primary);
+  text-decoration: none;
+  position: relative;
+  font-weight: var(--md3-weight-medium);
+}
+
+.projectProse a::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--md3-primary);
+  transition: width var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+}
+
+.projectProse a:hover::before {
+  width: 100%;
+}
+
+.projectProse code {
+  background: var(--md3-tertiary-container);
+  color: var(--md3-on-tertiary-container);
+  padding: 2px 6px;
+  border-radius: var(--md3-corner-xs);
+  font-family: Monaco, Menlo, monospace;
+  font-size: 0.9em;
+}
+
+.projectProse pre {
+  background: var(--md3-surface-container-highest);
+  border: 1px solid var(--md3-outline-variant);
+  border-radius: var(--md3-corner-lg);
+  padding: var(--md3-space-2xl);
+  overflow-x: auto;
+  margin: var(--md3-space-2xl) 0;
+  box-shadow: var(--md3-elevation-1);
+}
+
+.projectProse blockquote {
+  border-left: 4px solid var(--md3-primary);
+  padding: var(--md3-space-2xl);
+  margin: var(--md3-space-2xl) 0;
+  background: var(--md3-surface-container);
+  border-radius: 0 var(--md3-corner-lg) var(--md3-corner-lg) 0;
+  font-style: italic;
+  position: relative;
+  box-shadow: var(--md3-elevation-1);
+}
+
+.projectProse ul,
+.projectProse ol {
+  padding-left: var(--md3-space-3xl);
+  margin-bottom: var(--md3-space-2xl);
+}
+
+.projectProse li {
+  margin-bottom: var(--md3-space-sm);
+}
+
+.projectProse img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--md3-corner-lg);
+  margin: var(--md3-space-2xl) 0;
+  box-shadow: var(--md3-elevation-2);
+  transition: transform var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+}
+
+.projectProse img:hover {
+  transform: scale(1.02);
+  box-shadow: var(--md3-elevation-3);
+}
+
+/* ================================
+   FOOTER SECTION - MATERIAL DESIGN 3
+   ================================ */
+.footerSection {
+  margin-top: var(--md3-space-6xl);
+  padding-top: var(--md3-space-4xl);
+  border-top: 1px solid var(--md3-outline-variant);
+  text-align: center;
+  animation: footerSlideIn var(--md3-motion-duration-medium4) var(--md3-motion-easing-emphasized)
+    1.5s both;
+}
+
+.shareButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--md3-space-lg);
+  padding: var(--md3-space-2xl) var(--md3-space-3xl);
+  background: var(--md3-tertiary);
+  color: var(--md3-on-tertiary);
+  border: none;
+  border-radius: var(--md3-corner-lg);
+  font-weight: var(--md3-weight-medium);
+  font-size: var(--md3-label-large);
+  cursor: pointer;
+  transition: all var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+  margin-bottom: var(--md3-space-3xl);
+  box-shadow: var(--md3-elevation-1);
+}
+
+.shareButton:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--md3-elevation-3);
+  background: color-mix(in srgb, var(--md3-tertiary) 92%, var(--md3-on-tertiary) 8%);
+}
+
+/* ================================
+   FLOATING ACTION BUTTONS - MATERIAL DESIGN 3
+   ================================ */
+.fabContainer {
+  position: fixed;
+  bottom: var(--md3-space-3xl);
+  right: var(--md3-space-3xl);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: var(--md3-space-lg);
+}
+
+.fab {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--md3-corner-lg);
+  border: none;
+  background: var(--md3-primary);
+  color: var(--md3-on-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--md3-elevation-3);
+  transition: all var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+  backdrop-filter: blur(10px);
+  animation: fabSlideIn var(--md3-motion-duration-short2) var(--md3-motion-easing-emphasized)
+    calc(var(--i, 0) * 0.1s) both;
+}
+
+.fab:hover {
+  transform: scale(1.1);
+  box-shadow: var(--md3-elevation-4);
+  background: color-mix(in srgb, var(--md3-primary) 92%, var(--md3-on-primary) 8%);
+}
+
+.fab:active {
+  transform: scale(0.95);
+}
+
+.fabIcon {
+  width: 24px;
+  height: 24px;
+  transition: transform var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+}
+
+.fab:hover .fabIcon {
+  transform: rotate(360deg);
+}
+
+/* ================================
+   ESTADOS DE CARGA Y ERROR - MATERIAL DESIGN 3
+   ================================ */
+.projectPageLoading,
+.projectPageError {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--md3-surface);
+  position: relative;
+}
+
+.loadingContent,
+.errorContent {
+  text-align: center;
+  padding: var(--md3-space-6xl);
+  background: var(--md3-surface-container-low);
+  border-radius: var(--md3-corner-xl);
+  box-shadow: var(--md3-elevation-2);
+  border: 1px solid var(--md3-outline-variant);
+  max-width: 500px;
+  margin: var(--md3-space-3xl);
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--md3-outline-variant);
+  border-top: 3px solid var(--md3-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto var(--md3-space-2xl);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.errorContent i {
+  font-size: 3rem;
+  color: var(--md3-error);
+  margin-bottom: var(--md3-space-2xl);
+}
+
+.errorContent h1,
+.loadingContent h1 {
+  font-size: var(--md3-headline-medium);
+  color: var(--md3-on-surface);
+  margin-bottom: var(--md3-space-lg);
+  font-weight: var(--md3-weight-bold);
+}
+
+.errorContent p,
+.loadingContent p {
+  color: var(--md3-on-surface-variant);
+  margin-bottom: var(--md3-space-3xl);
+  font-size: var(--md3-body-large);
+}
+
+.errorActions {
+  display: flex;
+  gap: var(--md3-space-lg);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--md3-space-sm);
+  padding: var(--md3-space-lg) var(--md3-space-2xl);
+  border-radius: var(--md3-corner-lg);
+  font-size: var(--md3-label-large);
+  font-weight: var(--md3-weight-medium);
+  text-decoration: none;
+  transition: all var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+  cursor: pointer;
+  box-shadow: var(--md3-elevation-1);
+}
+
+.btnPrimary {
+  background: var(--md3-primary);
+  color: var(--md3-on-primary);
+  border: none;
+}
+
+.btnPrimary:hover {
+  background: color-mix(in srgb, var(--md3-primary) 92%, var(--md3-on-primary) 8%);
+  box-shadow: var(--md3-elevation-2);
+  transform: translateY(-2px);
+}
+
+.btnSecondary {
+  background: var(--md3-surface-container-highest);
+  color: var(--md3-on-surface);
+  border: 1px solid var(--md3-outline);
+}
+
+.btnSecondary:hover {
+  background: var(--md3-surface-container-high);
+  box-shadow: var(--md3-elevation-1);
+  transform: translateY(-1px);
+}
+
+/* ================================
+   ANIMACIONES KEYFRAMES - MATERIAL DESIGN 3
+   ================================ */
+@keyframes containerFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes navigationSlideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes heroSlideUp {
+  from {
+    transform: translateY(60px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes badgeShimmer {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes shimmerEffect {
+  0% {
+    left: -100%;
+  }
+
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes titleGradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes descriptionFadeIn {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes metadataSlideIn {
+  from {
+    transform: translateX(-40px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes technologiesSlideIn {
+  from {
+    transform: translateX(40px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes techItemPop {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes buttonsSlideIn {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes bodySlideIn {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes progressBar {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes fabSlideIn {
+  from {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes footerSlideIn {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes iconPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes heroImageSlideIn {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes videoSlideIn {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ================================
+   RESPONSIVE DESIGN - MATERIAL DESIGN 3
+   ================================ */
+@media (max-width: 768px) {
+  .navigationContent {
+    padding: 0 var(--md3-space-lg);
+  }
+
+  .mainContent {
+    padding: 100px var(--md3-space-lg) var(--md3-space-4xl);
+  }
+
+  .heroTitle {
+    font-size: clamp(var(--md3-headline-large), 10vw, var(--md3-display-medium));
+  }
+
+  .heroDescription {
+    font-size: var(--md3-body-large);
+    padding: var(--md3-space-2xl);
+  }
+
+  .metadataGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .actionButtonsContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .actionBtn {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .projectBody {
+    padding: var(--md3-space-3xl);
+  }
+
+  .fabContainer {
+    bottom: var(--md3-space-2xl);
+    right: var(--md3-space-2xl);
+  }
+
+  .fab {
+    width: 48px;
+    height: 48px;
+  }
+
+  .fabIcon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .videoContainer {
+    margin: 0 var(--md3-space-lg);
+  }
+
+  .videoEmbed {
+    height: 250px;
+  }
+}
+
+@media (max-width: 480px) {
+  .mainContent {
+    padding: 90px var(--md3-space-md) var(--md3-space-3xl);
+  }
+
+  .heroDescription::before,
+  .heroDescription::after {
+    font-size: 2rem;
+  }
+
+  .technologiesList {
+    gap: var(--md3-space-sm);
+  }
+
+  .techItem {
+    font-size: var(--md3-label-medium);
+    padding: 6px var(--md3-space-lg);
+  }
+
+  .projectProse {
+    font-size: var(--md3-body-medium);
+  }
+
+  .projectProse h2::before {
+    left: calc(-1 * var(--md3-space-lg));
+  }
+
+  .videoEmbed {
+    height: 200px;
+  }
+}
+
+/* ================================
+   PREFERENCIAS DE ACCESIBILIDAD - MATERIAL DESIGN 3
+   ================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-contrast: high) {
+  .projectPage {
+    --md3-outline: #000;
+    --md3-outline-variant: #333;
+  }
+
+  .projectBody,
+  .metadataCard {
+    border-width: 2px;
+  }
+}
+
+/* ================================
+   PRINT STYLES - MATERIAL DESIGN 3
+   ================================ */
+@media print {
+  .projectNavigation,
+  .fabContainer,
+  .actionButtonsContainer,
+  .footerSection {
+    display: none !important;
+  }
+
+  .projectPage,
+  .projectContainer {
+    background: white !important;
+    color: black !important;
+  }
+
+  .mainContent {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  .projectBody {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .projectProse {
+    color: black !important;
+  }
+
+  .projectProse h1,
+  .projectProse h2,
+  .projectProse h3,
+  .projectProse h4,
+  .projectProse h5,
+  .projectProse h6 {
+    color: black !important;
+  }
+}

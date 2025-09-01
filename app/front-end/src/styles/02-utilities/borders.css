@@ -1,0 +1,585 @@
+/* ===========================================
+   BORDER AND SHADOW UTILITIES
+   Terminal Visual Improvements
+   =========================================== */
+
+/* Border Radius Utilities */
+.rounded-none {
+  border-radius: 0;
+}
+
+.rounded-sm {
+  border-radius: var(--radius-sm);
+}
+
+.rounded {
+  border-radius: var(--radius-md);
+}
+
+.rounded-md {
+  border-radius: var(--radius-md);
+}
+
+.rounded-lg {
+  border-radius: var(--radius-lg);
+}
+
+.rounded-xl {
+  border-radius: var(--radius-xl);
+}
+
+.rounded-2xl {
+  border-radius: var(--radius-2xl);
+}
+
+.rounded-full {
+  border-radius: var(--radius-full);
+}
+
+/* Directional Border Radius */
+.rounded-t-none {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.rounded-t-sm {
+  border-top-left-radius: var(--radius-sm);
+  border-top-right-radius: var(--radius-sm);
+}
+
+.rounded-t {
+  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-md);
+}
+
+.rounded-t-md {
+  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-md);
+}
+
+.rounded-t-lg {
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+}
+
+.rounded-t-xl {
+  border-top-left-radius: var(--radius-xl);
+  border-top-right-radius: var(--radius-xl);
+}
+
+.rounded-t-2xl {
+  border-top-left-radius: var(--radius-2xl);
+  border-top-right-radius: var(--radius-2xl);
+}
+
+.rounded-r-none {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.rounded-r-sm {
+  border-top-right-radius: var(--radius-sm);
+  border-bottom-right-radius: var(--radius-sm);
+}
+
+.rounded-r {
+  border-top-right-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+}
+
+.rounded-r-md {
+  border-top-right-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+}
+
+.rounded-r-lg {
+  border-top-right-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+}
+
+.rounded-r-xl {
+  border-top-right-radius: var(--radius-xl);
+  border-bottom-right-radius: var(--radius-xl);
+}
+
+.rounded-r-2xl {
+  border-top-right-radius: var(--radius-2xl);
+  border-bottom-right-radius: var(--radius-2xl);
+}
+
+.rounded-b-none {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.rounded-b-sm {
+  border-bottom-left-radius: var(--radius-sm);
+  border-bottom-right-radius: var(--radius-sm);
+}
+
+.rounded-b {
+  border-bottom-left-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+}
+
+.rounded-b-md {
+  border-bottom-left-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+}
+
+.rounded-b-lg {
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+}
+
+.rounded-b-xl {
+  border-bottom-left-radius: var(--radius-xl);
+  border-bottom-right-radius: var(--radius-xl);
+}
+
+.rounded-b-2xl {
+  border-bottom-left-radius: var(--radius-2xl);
+  border-bottom-right-radius: var(--radius-2xl);
+}
+
+.rounded-l-none {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.rounded-l-sm {
+  border-top-left-radius: var(--radius-sm);
+  border-bottom-left-radius: var(--radius-sm);
+}
+
+.rounded-l {
+  border-top-left-radius: var(--radius-md);
+  border-bottom-left-radius: var(--radius-md);
+}
+
+.rounded-l-md {
+  border-top-left-radius: var(--radius-md);
+  border-bottom-left-radius: var(--radius-md);
+}
+
+.rounded-l-lg {
+  border-top-left-radius: var(--radius-lg);
+  border-bottom-left-radius: var(--radius-lg);
+}
+
+.rounded-l-xl {
+  border-top-left-radius: var(--radius-xl);
+  border-bottom-left-radius: var(--radius-xl);
+}
+
+.rounded-l-2xl {
+  border-top-left-radius: var(--radius-2xl);
+  border-bottom-left-radius: var(--radius-2xl);
+}
+
+/* Corner-Specific Border Radius */
+.rounded-tl-none {
+  border-top-left-radius: 0;
+}
+
+.rounded-tl-sm {
+  border-top-left-radius: var(--radius-sm);
+}
+
+.rounded-tl {
+  border-top-left-radius: var(--radius-md);
+}
+
+.rounded-tl-md {
+  border-top-left-radius: var(--radius-md);
+}
+
+.rounded-tl-lg {
+  border-top-left-radius: var(--radius-lg);
+}
+
+.rounded-tl-xl {
+  border-top-left-radius: var(--radius-xl);
+}
+
+.rounded-tl-2xl {
+  border-top-left-radius: var(--radius-2xl);
+}
+
+.rounded-tr-none {
+  border-top-right-radius: 0;
+}
+
+.rounded-tr-sm {
+  border-top-right-radius: var(--radius-sm);
+}
+
+.rounded-tr {
+  border-top-right-radius: var(--radius-md);
+}
+
+.rounded-tr-md {
+  border-top-right-radius: var(--radius-md);
+}
+
+.rounded-tr-lg {
+  border-top-right-radius: var(--radius-lg);
+}
+
+.rounded-tr-xl {
+  border-top-right-radius: var(--radius-xl);
+}
+
+.rounded-tr-2xl {
+  border-top-right-radius: var(--radius-2xl);
+}
+
+.rounded-br-none {
+  border-bottom-right-radius: 0;
+}
+
+.rounded-br-sm {
+  border-bottom-right-radius: var(--radius-sm);
+}
+
+.rounded-br {
+  border-bottom-right-radius: var(--radius-md);
+}
+
+.rounded-br-md {
+  border-bottom-right-radius: var(--radius-md);
+}
+
+.rounded-br-lg {
+  border-bottom-right-radius: var(--radius-lg);
+}
+
+.rounded-br-xl {
+  border-bottom-right-radius: var(--radius-xl);
+}
+
+.rounded-br-2xl {
+  border-bottom-right-radius: var(--radius-2xl);
+}
+
+.rounded-bl-none {
+  border-bottom-left-radius: 0;
+}
+
+.rounded-bl-sm {
+  border-bottom-left-radius: var(--radius-sm);
+}
+
+.rounded-bl {
+  border-bottom-left-radius: var(--radius-md);
+}
+
+.rounded-bl-md {
+  border-bottom-left-radius: var(--radius-md);
+}
+
+.rounded-bl-lg {
+  border-bottom-left-radius: var(--radius-lg);
+}
+
+.rounded-bl-xl {
+  border-bottom-left-radius: var(--radius-xl);
+}
+
+.rounded-bl-2xl {
+  border-bottom-left-radius: var(--radius-2xl);
+}
+
+/* Shadow Utilities */
+.shadow-none {
+  box-shadow: none;
+}
+
+.shadow-sm {
+  box-shadow: var(--shadow-sm);
+}
+
+.shadow {
+  box-shadow: var(--shadow-md);
+}
+
+.shadow-md {
+  box-shadow: var(--shadow-md);
+}
+
+.shadow-lg {
+  box-shadow: var(--shadow-lg);
+}
+
+.shadow-xl {
+  box-shadow: var(--shadow-xl);
+}
+
+.shadow-2xl {
+  box-shadow: var(--shadow-2xl);
+}
+
+/* Colored Shadow Utilities */
+.shadow-accent {
+  box-shadow: var(--shadow-accent);
+}
+
+.shadow-success {
+  box-shadow: var(--shadow-success);
+}
+
+.shadow-warning {
+  box-shadow: var(--shadow-warning);
+}
+
+.shadow-error {
+  box-shadow: var(--shadow-error);
+}
+
+/* Glow Effect Utilities */
+.glow-accent {
+  box-shadow: var(--shadow-accent);
+}
+
+.glow-success {
+  box-shadow: var(--shadow-success);
+}
+
+.glow-warning {
+  box-shadow: var(--shadow-warning);
+}
+
+.glow-error {
+  box-shadow: var(--shadow-error);
+}
+
+/* Combined Shadow and Glow */
+.shadow-glow-accent {
+  box-shadow: var(--shadow-md), var(--shadow-accent);
+}
+
+.shadow-glow-success {
+  box-shadow: var(--shadow-md), var(--shadow-success);
+}
+
+.shadow-glow-warning {
+  box-shadow: var(--shadow-md), var(--shadow-warning);
+}
+
+.shadow-glow-error {
+  box-shadow: var(--shadow-md), var(--shadow-error);
+}
+
+/* Inner Shadow Utilities */
+.shadow-inner {
+  box-shadow: inset 0 2px 4px 0 rgb(0, 0, 0, 0.06);
+}
+
+.shadow-inner-sm {
+  box-shadow: inset 0 1px 2px 0 rgb(0, 0, 0, 0.05);
+}
+
+.shadow-inner-md {
+  box-shadow: inset 0 2px 4px 0 rgb(0, 0, 0, 0.06);
+}
+
+.shadow-inner-lg {
+  box-shadow: inset 0 4px 6px -1px rgb(0, 0, 0, 0.1);
+}
+
+/* Outline Utilities */
+.outline-none {
+  outline: none;
+}
+
+.outline {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.outline-accent {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.outline-success {
+  outline: 2px solid var(--color-success);
+  outline-offset: 2px;
+}
+
+.outline-warning {
+  outline: 2px solid var(--color-warning);
+  outline-offset: 2px;
+}
+
+.outline-error {
+  outline: 2px solid var(--color-error);
+  outline-offset: 2px;
+}
+
+/* Outline Offset Utilities */
+.outline-offset-0 {
+  outline-offset: 0;
+}
+
+.outline-offset-1 {
+  outline-offset: 1px;
+}
+
+.outline-offset-2 {
+  outline-offset: 2px;
+}
+
+.outline-offset-4 {
+  outline-offset: 4px;
+}
+
+.outline-offset-8 {
+  outline-offset: 8px;
+}
+
+/* Ring Utilities (Alternative to Outline) */
+.ring-0 {
+  box-shadow: 0 0 0 0 var(--color-accent);
+}
+
+.ring-1 {
+  box-shadow: 0 0 0 1px var(--color-accent);
+}
+
+.ring-2 {
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+.ring-4 {
+  box-shadow: 0 0 0 4px var(--color-accent);
+}
+
+.ring-8 {
+  box-shadow: 0 0 0 8px var(--color-accent);
+}
+
+.ring-accent {
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+.ring-success {
+  box-shadow: 0 0 0 2px var(--color-success);
+}
+
+.ring-warning {
+  box-shadow: 0 0 0 2px var(--color-warning);
+}
+
+.ring-error {
+  box-shadow: 0 0 0 2px var(--color-error);
+}
+
+/* Ring Offset Utilities */
+.ring-offset-0 {
+  box-shadow:
+    0 0 0 0 var(--color-bg-primary),
+    0 0 0 2px var(--color-accent);
+}
+
+.ring-offset-1 {
+  box-shadow:
+    0 0 0 1px var(--color-bg-primary),
+    0 0 0 3px var(--color-accent);
+}
+
+.ring-offset-2 {
+  box-shadow:
+    0 0 0 2px var(--color-bg-primary),
+    0 0 0 4px var(--color-accent);
+}
+
+.ring-offset-4 {
+  box-shadow:
+    0 0 0 4px var(--color-bg-primary),
+    0 0 0 6px var(--color-accent);
+}
+
+.ring-offset-8 {
+  box-shadow:
+    0 0 0 8px var(--color-bg-primary),
+    0 0 0 10px var(--color-accent);
+}
+
+/* Hover State Utilities */
+.hover\:shadow-sm:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.hover\:shadow:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.hover\:shadow-md:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.hover\:shadow-lg:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.hover\:shadow-xl:hover {
+  box-shadow: var(--shadow-xl);
+}
+
+.hover\:shadow-2xl:hover {
+  box-shadow: var(--shadow-2xl);
+}
+
+.hover\:glow-accent:hover {
+  box-shadow: var(--shadow-accent);
+}
+
+.hover\:glow-success:hover {
+  box-shadow: var(--shadow-success);
+}
+
+.hover\:glow-warning:hover {
+  box-shadow: var(--shadow-warning);
+}
+
+.hover\:glow-error:hover {
+  box-shadow: var(--shadow-error);
+}
+
+/* Focus State Utilities */
+.focus\:shadow-sm:focus {
+  box-shadow: var(--shadow-sm);
+}
+
+.focus\:shadow:focus {
+  box-shadow: var(--shadow-md);
+}
+
+.focus\:shadow-md:focus {
+  box-shadow: var(--shadow-md);
+}
+
+.focus\:shadow-lg:focus {
+  box-shadow: var(--shadow-lg);
+}
+
+.focus\:glow-accent:focus {
+  box-shadow: var(--shadow-accent);
+}
+
+.focus\:ring-accent:focus {
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+.focus\:ring-success:focus {
+  box-shadow: 0 0 0 2px var(--color-success);
+}
+
+.focus\:ring-warning:focus {
+  box-shadow: 0 0 0 2px var(--color-warning);
+}
+
+.focus\:ring-error:focus {
+  box-shadow: 0 0 0 2px var(--color-error);
+}

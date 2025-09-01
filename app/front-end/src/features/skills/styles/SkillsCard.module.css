@@ -1,0 +1,1701 @@
+/* ============================================
+   FRIENDLY SKILL CARDS - MODERN DESIGN
+   Diseño amigable y profesional similar a la imagen de referencia
+   ============================================ */
+
+/* ============================================
+   SKILL CARD CONTAINER - FRIENDLY DESIGN
+   ============================================ */
+.skillCard {
+  background: var(--md-sys-color-surface, #0f1220);
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 12px;
+  padding: 18px;
+  transition:
+    background-color 150ms ease,
+    transform 150ms ease,
+    box-shadow 150ms ease,
+    border-color 150ms ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 240px;
+  max-width: 280px;
+  margin: 0 auto;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: #e5e7eb;
+  overflow: visible;
+  margin-top: 20px;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 20%);
+  /* Fondo gradiente dinámico basado en --skill-color */
+  background-image:
+    radial-gradient(
+      120px 80px at 20% 0%,
+      color-mix(in oklab, var(--skill-color) 16%, transparent),
+      transparent 70%
+    ),
+    radial-gradient(
+      140px 100px at 120% 20%,
+      color-mix(in oklab, var(--skill-color) 10%, transparent),
+      transparent 70%
+    );
+}
+
+/* Eliminar fondo de icono; usamos solo el gradiente */
+
+.skillCard:hover {
+  transform: translateY(-3px);
+  border-color: rgb(99 102 241 / 40%);
+  box-shadow: 0 10px 24px rgb(0 0 0 / 35%);
+}
+
+/* Hover mantiene el gradiente sin distraer */
+
+.skillCard:focus-within {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+/* modo dark */
+.skillCard {
+  background: #1a1d29;
+  border: 1px solid rgb(255, 255, 255, 0.05);
+}
+
+/* No pseudo-elementos en modo dark; gradiente ya aplica */
+
+/* Mejoras para alto contraste */
+@media (prefers-contrast: high) {
+  .skillCard::before {
+    opacity: 0.15;
+  }
+
+  .skillCard::before {
+    opacity: 0.12;
+  }
+}
+
+/* ============================================
+   HEADER SECTION - FRIENDLY DESIGN
+   ============================================ */
+.skillCardHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+  position: relative;
+  width: 100%;
+  gap: 8px;
+  z-index: 1;
+}
+
+.skillIconWrapper {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  position: relative;
+  transition: all 150ms ease;
+  /* Colores por defecto basados en --skill-color */
+  background: color-mix(in oklab, var(--skill-color) 18%, transparent);
+  border: 1px solid color-mix(in oklab, var(--skill-color) 35%, transparent);
+}
+
+.skillIcon {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.skillName {
+  font-size: 16px;
+  font-weight: 700;
+  color: #e5e7eb;
+  margin: 0;
+  text-align: center;
+}
+
+.featuredIcon {
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  color: #fbbf24;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card variant for featured skills */
+.featuredCard {
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  box-shadow:
+    0 12px 30px rgba(251, 191, 36, 0.08),
+    0 6px 18px rgba(0, 0, 0, 0.45);
+  transform: translateY(-4px);
+}
+
+.featuredCard .skillIconWrapper {
+  box-shadow:
+    0 6px 18px rgba(251, 191, 36, 0.06) inset,
+    0 4px 12px rgba(251, 191, 36, 0.06);
+}
+
+.featuredBadgeSmall {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background: #fbbf24;
+  color: #0f172a;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* ============================================
+   MENU CONTEXTUAL - MODERN & FRIENDLY
+   ============================================ */
+.skillActions {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  z-index: 10;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.menuBtn {
+  background: rgb(255, 255, 255, 0.1) !important;
+  border: 1px solid rgb(255, 255, 255, 0.2) !important;
+  padding: 8px !important;
+  border-radius: 8px !important;
+  cursor: pointer;
+  color: rgb(255, 255, 255, 0.7) !important;
+  transition: all 150ms ease !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px !important;
+  height: 32px !important;
+  opacity: 0 !important;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 8px rgb(0, 0, 0, 0.1);
+}
+
+.skillCard:hover .menuBtn {
+  opacity: 1 !important;
+}
+
+.menuBtn:hover,
+.menuBtn.menuBtnActive {
+  background: rgb(255, 255, 255, 0.2) !important;
+  border-color: rgb(255, 255, 255, 0.3) !important;
+  color: #fff !important;
+  transform: scale(1.05);
+}
+
+.dropdownContent {
+  position: absolute;
+  top: 100%;
+  right: -2px;
+  background: #1a1d29;
+  border: 1px solid rgb(255, 255, 255, 0.15);
+  border-radius: 8px;
+  box-shadow:
+    0 8px 32px rgb(0, 0, 0, 0.4),
+    0 2px 8px rgb(0, 0, 0, 0.1);
+  z-index: 100;
+  min-width: 160px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px) scale(0.95);
+  transition: all 150ms ease;
+  backdrop-filter: blur(20px);
+  overflow: hidden;
+}
+
+.dropdownContent::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 12px;
+  width: 12px;
+  height: 12px;
+  background: #1a1d29;
+  border: 1px solid rgb(255, 255, 255, 0.15);
+  border-bottom: none;
+  border-right: none;
+  transform: rotate(45deg);
+}
+
+.dropdownContentOpen {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 120ms ease;
+  width: 100%;
+  text-align: left;
+  position: relative;
+}
+
+.dropdownItem::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgb(255, 255, 255, 0.05);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.dropdownItem:hover::before {
+  opacity: 1;
+}
+
+.dropdownItem:hover {
+  color: #60a5fa;
+}
+
+.dropdownItem.delete:hover {
+  color: #ef4444;
+}
+
+.dropdownItem i {
+  width: 16px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================
+   BODY SECTION - FRIENDLY DESIGN
+   ============================================ */
+.skillCardBody {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+}
+
+/* ============================================
+   SKILL CARD CONTENT LAYOUT
+   ============================================ */
+.skillCardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.levelSection {
+  /* Estilos específicos para la sección de nivel si son necesarios */
+  position: relative;
+}
+
+.difficultySection {
+  /* Estilos específicos para la sección de dificultad si son necesarios */
+  position: relative;
+}
+
+/* ============================================
+   NIVEL - FRIENDLY DESIGN
+   ============================================ */
+.skillLevel {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.levelHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.levelLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface-variant, #6b7280);
+  text-transform: none;
+  position: relative;
+  cursor: help;
+}
+
+.tooltipHint {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f2937;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 10;
+  border: 1px solid rgb(255, 255, 255, 0.1);
+}
+
+.levelLabel:hover .tooltipHint,
+.difficultyLabel:hover .tooltipHint {
+  opacity: 1;
+  visibility: visible;
+}
+
+.levelValue {
+  font-size: 16px;
+  font-weight: 700;
+  color: #60a5fa;
+  text-shadow: 0 0 8px rgb(96, 165, 250, 0.3);
+}
+
+.levelBar {
+  width: 100%;
+  height: 4px;
+  background: rgb(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.levelProgress {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.8s ease-out;
+  position: relative;
+  background: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--skill-color) 85%, black 0%),
+    color-mix(in oklab, var(--skill-color) 65%, white 15%)
+  );
+  box-shadow: 0 0 8px rgb(96, 165, 250, 0.4);
+}
+
+.levelProgress::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgb(255, 255, 255, 0.2) 50%, transparent 100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* ============================================
+   DIFICULTAD - FRIENDLY DESIGN
+   ============================================ */
+.skillDifficulty {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid rgb(255 255 255 / 8%);
+}
+
+.difficultyLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9ca3af;
+  position: relative;
+  cursor: default;
+}
+
+.difficultyStars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.star {
+  font-size: 16px;
+  transition:
+    transform 0.15s ease,
+    color 0.15s ease;
+}
+
+.star.filled {
+  color: #fbbf24;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 40%));
+}
+
+.star.empty {
+  color: rgb(255 255 255 / 20%);
+}
+
+.star:hover.filled {
+  transform: scale(1.1);
+  color: #f59e0b;
+}
+
+/* ============================================
+   POPULARIDAD - FRIENDLY DESIGN
+   ============================================ */
+.skillPopularity {
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.popularityLabel {
+  font-size: 13px;
+  font-weight: 500;
+  color: rgb(255, 255, 255, 0.7);
+}
+
+.popularityIndicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.popularityText {
+  font-size: 12px;
+  font-weight: 600;
+  color: #60a5fa;
+  padding: 4px 12px;
+  background: rgb(96, 165, 250, 0.1);
+  border-radius: 12px;
+  border: 1px solid rgb(96, 165, 250, 0.2);
+}
+
+/* ============================================
+   FOOTER - FRIENDLY DESIGN
+   ============================================ */
+.skillCardFooter {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid rgb(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.skillLinks {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.linkBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: 1px solid;
+  cursor: pointer;
+  background: none;
+  min-height: 44px;
+  min-width: 44px;
+  position: relative;
+}
+
+.linkBtn.details {
+  background: rgb(59, 130, 246, 0.1);
+  color: #60a5fa;
+  border-color: rgb(59, 130, 246, 0.2);
+}
+
+.linkBtn.details:hover {
+  background: rgb(59, 130, 246, 0.2);
+  border-color: rgb(59, 130, 246, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgb(59, 130, 246, 0.2);
+}
+
+.linkBtn.details:focus {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+.linkBtn.docs {
+  background: rgb(59, 130, 246, 0.1);
+  color: #60a5fa;
+  border-color: rgb(59, 130, 246, 0.2);
+}
+
+.linkBtn.docs:hover {
+  background: rgb(59, 130, 246, 0.2);
+  border-color: rgb(59, 130, 246, 0.3);
+}
+
+.linkBtn.repo {
+  background: rgb(75, 85, 99, 0.1);
+  color: #d1d5db;
+  border-color: rgb(75, 85, 99, 0.2);
+}
+
+.linkBtn.repo:hover {
+  background: rgb(75, 85, 99, 0.2);
+  border-color: rgb(75, 85, 99, 0.3);
+}
+
+/* ============================================
+   LIKES COMPONENT - FRIENDLY DESIGN
+   ============================================ */
+.likesContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgb(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgb(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+  min-height: 44px;
+  min-width: 60px;
+}
+
+.likesContainer:hover {
+  background: rgb(255, 255, 255, 0.08);
+  border-color: rgb(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.likesButton {
+  background: none;
+  border: none;
+  color: rgb(255, 255, 255, 0.6);
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.2s ease;
+  padding: 6px;
+  border-radius: 6px;
+  min-height: 32px;
+  min-width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.likesButton:hover {
+  color: #ef4444;
+  transform: scale(1.1);
+  background: rgb(239, 68, 68, 0.1);
+}
+
+.likesButton.liked {
+  color: #ef4444;
+  animation: heartBeat 0.5s ease-in-out;
+}
+
+.likesButton:focus {
+  outline: 2px solid #ef4444;
+  outline-offset: 2px;
+}
+
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.2);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.likesCount {
+  font-size: 14px;
+  color: #fff;
+  font-weight: 600;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* ============================================
+   COLORES ESPECÍFICOS POR TECNOLOGÍA - FRIENDLY DESIGN
+   ============================================ */
+
+/* React */
+.skillCard[data-skill='react'] .skillIconWrapper {
+  background: rgb(97, 218, 251, 0.15);
+  border: 1px solid rgb(97, 218, 251, 0.3);
+}
+
+.skillCard[data-skill='react'] .levelProgress {
+  background: #61dafb;
+}
+
+/* Vue */
+.skillCard[data-skill='vue'] .skillIconWrapper {
+  background: rgb(79, 192, 141, 0.15);
+  border: 1px solid rgb(79, 192, 141, 0.3);
+}
+
+.skillCard[data-skill='vue'] .levelProgress {
+  background: #4fc08d;
+}
+
+/* Angular */
+.skillCard[data-skill='angular'] .skillIconWrapper {
+  background: rgb(221, 0, 49, 0.15);
+  border: 1px solid rgb(221, 0, 49, 0.3);
+}
+
+.skillCard[data-skill='angular'] .levelProgress {
+  background: #dd0031;
+}
+
+/* JavaScript */
+.skillCard[data-skill='javascript'] .skillIconWrapper,
+.skillCard[data-skill='js'] .skillIconWrapper {
+  background: rgb(247, 223, 30, 0.15);
+  border: 1px solid rgb(247, 223, 30, 0.3);
+}
+
+.skillCard[data-skill='javascript'] .levelProgress,
+.skillCard[data-skill='js'] .levelProgress {
+  background: #f7df1e;
+}
+
+/* TypeScript */
+.skillCard[data-skill='typescript'] .skillIconWrapper,
+.skillCard[data-skill='ts'] .skillIconWrapper {
+  background: rgb(49, 120, 198, 0.15);
+  border: 1px solid rgb(49, 120, 198, 0.3);
+}
+
+.skillCard[data-skill='typescript'] .levelProgress,
+.skillCard[data-skill='ts'] .levelProgress {
+  background: #3178c6;
+}
+
+/* Node.js */
+.skillCard[data-skill='nodejs'] .skillIconWrapper,
+.skillCard[data-skill='node'] .skillIconWrapper {
+  background: rgb(104, 160, 99, 0.15);
+  border: 1px solid rgb(104, 160, 99, 0.3);
+}
+
+.skillCard[data-skill='nodejs'] .levelProgress,
+.skillCard[data-skill='node'] .levelProgress {
+  background: #68a063;
+}
+
+/* Python */
+.skillCard[data-skill='python'] .skillIconWrapper {
+  background: rgb(55, 118, 171, 0.15);
+  border: 1px solid rgb(55, 118, 171, 0.3);
+}
+
+.skillCard[data-skill='python'] .levelProgress {
+  background: #3776ab;
+}
+
+/* MongoDB */
+.skillCard[data-skill='mongodb'] .skillIconWrapper {
+  background: rgb(71, 162, 72, 0.15);
+  border: 1px solid rgb(71, 162, 72, 0.3);
+}
+
+.skillCard[data-skill='mongodb'] .levelProgress {
+  background: #47a248;
+}
+
+/* Bootstrap */
+.skillCard[data-skill='bootstrap'] .skillIconWrapper {
+  background: rgb(123, 20, 255, 0.15);
+  border: 1px solid rgb(123, 20, 255, 0.3);
+}
+
+.skillCard[data-skill='bootstrap'] .levelProgress {
+  background: #7b14ff;
+}
+
+/* Tailwind CSS */
+.skillCard[data-skill='tailwind'] .skillIconWrapper,
+.skillCard[data-skill='tailwindcss'] .skillIconWrapper {
+  background: rgb(6, 182, 212, 0.15);
+  border: 1px solid rgb(6, 182, 212, 0.3);
+}
+
+.skillCard[data-skill='tailwind'] .levelProgress,
+.skillCard[data-skill='tailwindcss'] .levelProgress {
+  background: #06b6d4;
+}
+
+/* Next.js */
+.skillCard[data-skill='nextjs'] .skillIconWrapper,
+.skillCard[data-skill='next'] .skillIconWrapper {
+  background: rgb(255, 255, 255, 0.15);
+  border: 1px solid rgb(255, 255, 255, 0.3);
+}
+
+.skillCard[data-skill='nextjs'] .levelProgress,
+.skillCard[data-skill='next'] .levelProgress {
+  background: #fff;
+}
+
+/* CSS3 */
+.skillCard[data-skill='css3'] .skillIconWrapper {
+  background: rgb(21, 114, 182, 0.15);
+  border: 1px solid rgb(21, 114, 182, 0.3);
+}
+
+.skillCard[data-skill='css3'] .levelProgress {
+  background: #1572b6;
+}
+
+/* HTML5 */
+.skillCard[data-skill='html5'] .skillIconWrapper {
+  background: rgb(227, 79, 38, 0.15);
+  border: 1px solid rgb(227, 79, 38, 0.3);
+}
+
+.skillCard[data-skill='html5'] .levelProgress {
+  background: #e34f26;
+}
+
+/* PHP */
+.skillCard[data-skill='php'] .skillIconWrapper {
+  background: rgb(119, 123, 179, 0.15);
+  border: 1px solid rgb(119, 123, 179, 0.3);
+}
+
+.skillCard[data-skill='php'] .levelProgress {
+  background: #777bb3;
+}
+
+/* MySQL */
+.skillCard[data-skill='mysql'] .skillIconWrapper {
+  background: rgb(0, 117, 143, 0.15);
+  border: 1px solid rgb(0, 117, 143, 0.3);
+}
+
+.skillCard[data-skill='mysql'] .levelProgress {
+  background: #00758f;
+}
+
+/* Docker */
+.skillCard[data-skill='docker'] .skillIconWrapper {
+  background: rgb(41, 149, 221, 0.15);
+  border: 1px solid rgb(41, 149, 221, 0.3);
+}
+
+.skillCard[data-skill='docker'] .levelProgress {
+  background: #2995dd;
+}
+
+/* Git */
+.skillCard[data-skill='git'] .skillIconWrapper {
+  background: rgb(240, 80, 51, 0.15);
+  border: 1px solid rgb(240, 80, 51, 0.3);
+}
+
+.skillCard[data-skill='git'] .levelProgress {
+  background: #f05033;
+}
+
+/* GitHub */
+.skillCard[data-skill='github'] .skillIconWrapper {
+  background: rgb(255, 255, 255, 0.15);
+  border: 1px solid rgb(255, 255, 255, 0.3);
+}
+
+.skillCard[data-skill='github'] .levelProgress {
+  background: #fff;
+}
+
+/* Sass/SCSS */
+.skillCard[data-skill='sass'] .skillIconWrapper,
+.skillCard[data-skill='scss'] .skillIconWrapper {
+  background: rgb(207, 100, 154, 0.15);
+  border: 1px solid rgb(207, 100, 154, 0.3);
+}
+
+.skillCard[data-skill='sass'] .levelProgress,
+.skillCard[data-skill='scss'] .levelProgress {
+  background: #cf649a;
+}
+
+/* Webpack */
+.skillCard[data-skill='webpack'] .skillIconWrapper {
+  background: rgb(142, 214, 251, 0.15);
+  border: 1px solid rgb(142, 214, 251, 0.3);
+}
+
+.skillCard[data-skill='webpack'] .levelProgress {
+  background: #8ed6fb;
+}
+
+/* Express */
+.skillCard[data-skill='express'] .skillIconWrapper,
+.skillCard[data-skill='expressjs'] .skillIconWrapper {
+  background: rgb(255, 255, 255, 0.15);
+  border: 1px solid rgb(255, 255, 255, 0.3);
+}
+
+.skillCard[data-skill='express'] .levelProgress,
+.skillCard[data-skill='expressjs'] .levelProgress {
+  background: #fff;
+}
+
+/* PostgreSQL */
+.skillCard[data-skill='postgresql'] .skillIconWrapper,
+.skillCard[data-skill='postgres'] .skillIconWrapper {
+  background: rgb(50, 103, 145, 0.15);
+  border: 1px solid rgb(50, 103, 145, 0.3);
+}
+
+.skillCard[data-skill='postgresql'] .levelProgress,
+.skillCard[data-skill='postgres'] .levelProgress {
+  background: #326791;
+}
+
+/* SQLite */
+.skillCard[data-skill='sqlite'] .skillIconWrapper {
+  background: rgb(1, 57, 84, 0.15);
+  border: 1px solid rgb(1, 57, 84, 0.3);
+}
+
+.skillCard[data-skill='sqlite'] .levelProgress {
+  background: #013954;
+}
+
+/* Redis */
+.skillCard[data-skill='redis'] .skillIconWrapper {
+  background: rgb(220, 54, 47, 0.15);
+  border: 1px solid rgb(220, 54, 47, 0.3);
+}
+
+.skillCard[data-skill='redis'] .levelProgress {
+  background: #dc362f;
+}
+
+/* Java */
+.skillCard[data-skill='java'] .skillIconWrapper {
+  background: rgb(237, 117, 36, 0.15);
+  border: 1px solid rgb(237, 117, 36, 0.3);
+}
+
+.skillCard[data-skill='java'] .levelProgress {
+  background: #ed7524;
+}
+
+/* C# */
+.skillCard[data-skill='csharp'] .skillIconWrapper,
+.skillCard[data-skill='c#'] .skillIconWrapper {
+  background: rgb(146, 80, 171, 0.15);
+  border: 1px solid rgb(146, 80, 171, 0.3);
+}
+
+.skillCard[data-skill='csharp'] .levelProgress,
+.skillCard[data-skill='c#'] .levelProgress {
+  background: #9250ab;
+}
+
+/* C++ */
+.skillCard[data-skill='cpp'] .skillIconWrapper,
+.skillCard[data-skill='c++'] .skillIconWrapper,
+.skillCard[data-skill='cplusplus'] .skillIconWrapper {
+  background: rgb(0, 89, 157, 0.15);
+  border: 1px solid rgb(0, 89, 157, 0.3);
+}
+
+.skillCard[data-skill='cpp'] .levelProgress,
+.skillCard[data-skill='c++'] .levelProgress,
+.skillCard[data-skill='cplusplus'] .levelProgress {
+  background: #00599d;
+}
+
+/* Go */
+.skillCard[data-skill='go'] .skillIconWrapper,
+.skillCard[data-skill='golang'] .skillIconWrapper {
+  background: rgb(0, 173, 181, 0.15);
+  border: 1px solid rgb(0, 173, 181, 0.3);
+}
+
+.skillCard[data-skill='go'] .levelProgress,
+.skillCard[data-skill='golang'] .levelProgress {
+  background: #00adb5;
+}
+
+/* Rust */
+.skillCard[data-skill='rust'] .skillIconWrapper {
+  background: rgb(222, 165, 132, 0.15);
+  border: 1px solid rgb(222, 165, 132, 0.3);
+}
+
+.skillCard[data-skill='rust'] .levelProgress {
+  background: #dea584;
+}
+
+/* Ruby */
+.skillCard[data-skill='ruby'] .skillIconWrapper {
+  background: rgb(204, 52, 45, 0.15);
+  border: 1px solid rgb(204, 52, 45, 0.3);
+}
+
+.skillCard[data-skill='ruby'] .levelProgress {
+  background: #cc342d;
+}
+
+/* Laravel */
+.skillCard[data-skill='laravel'] .skillIconWrapper {
+  background: rgb(255, 45, 32, 0.15);
+  border: 1px solid rgb(255, 45, 32, 0.3);
+}
+
+.skillCard[data-skill='laravel'] .levelProgress {
+  background: #ff2d20;
+}
+
+/* Django */
+.skillCard[data-skill='django'] .skillIconWrapper {
+  background: rgb(9, 46, 32, 0.15);
+  border: 1px solid rgb(9, 46, 32, 0.3);
+}
+
+.skillCard[data-skill='django'] .levelProgress {
+  background: #092e20;
+}
+
+/* Flask */
+.skillCard[data-skill='flask'] .skillIconWrapper {
+  background: rgb(255, 255, 255, 0.15);
+  border: 1px solid rgb(255, 255, 255, 0.3);
+}
+
+.skillCard[data-skill='flask'] .levelProgress {
+  background: #fff;
+}
+
+/* Kubernetes */
+.skillCard[data-skill='kubernetes'] .skillIconWrapper,
+.skillCard[data-skill='k8s'] .skillIconWrapper {
+  background: rgb(50, 108, 229, 0.15);
+  border: 1px solid rgb(50, 108, 229, 0.3);
+}
+
+.skillCard[data-skill='kubernetes'] .levelProgress,
+.skillCard[data-skill='k8s'] .levelProgress {
+  background: #326ce5;
+}
+
+/* AWS */
+.skillCard[data-skill='aws'] .skillIconWrapper,
+.skillCard[data-skill='amazonwebservices'] .skillIconWrapper {
+  background: rgb(255, 153, 0, 0.15);
+  border: 1px solid rgb(255, 153, 0, 0.3);
+}
+
+.skillCard[data-skill='aws'] .levelProgress,
+.skillCard[data-skill='amazonwebservices'] .levelProgress {
+  background: #f90;
+}
+
+/* Azure */
+.skillCard[data-skill='azure'] .skillIconWrapper {
+  background: rgb(0, 120, 215, 0.15);
+  border: 1px solid rgb(0, 120, 215, 0.3);
+}
+
+.skillCard[data-skill='azure'] .levelProgress {
+  background: #0078d7;
+}
+
+/* Google Cloud */
+.skillCard[data-skill='gcp'] .skillIconWrapper,
+.skillCard[data-skill='googlecloud'] .skillIconWrapper {
+  background: rgb(66, 133, 244, 0.15);
+  border: 1px solid rgb(66, 133, 244, 0.3);
+}
+
+.skillCard[data-skill='gcp'] .levelProgress,
+.skillCard[data-skill='googlecloud'] .levelProgress {
+  background: #4285f4;
+}
+
+/* Firebase */
+.skillCard[data-skill='firebase'] .skillIconWrapper {
+  background: rgb(255, 202, 40, 0.15);
+  border: 1px solid rgb(255, 202, 40, 0.3);
+}
+
+.skillCard[data-skill='firebase'] .levelProgress {
+  background: #ffca28;
+}
+
+/* Vercel */
+.skillCard[data-skill='vercel'] .skillIconWrapper {
+  background: rgb(255, 255, 255, 0.15);
+  border: 1px solid rgb(255, 255, 255, 0.3);
+}
+
+.skillCard[data-skill='vercel'] .levelProgress {
+  background: #fff;
+}
+
+/* Netlify */
+.skillCard[data-skill='netlify'] .skillIconWrapper {
+  background: rgb(0, 173, 181, 0.15);
+  border: 1px solid rgb(0, 173, 181, 0.3);
+}
+
+.skillCard[data-skill='netlify'] .levelProgress {
+  background: #00adb5;
+}
+
+/* Jest */
+.skillCard[data-skill='jest'] .skillIconWrapper {
+  background: rgb(153, 66, 91, 0.15);
+  border: 1px solid rgb(153, 66, 91, 0.3);
+}
+
+.skillCard[data-skill='jest'] .levelProgress {
+  background: #99425b;
+}
+
+/* Cypress */
+.skillCard[data-skill='cypress'] .skillIconWrapper {
+  background: rgb(23, 24, 25, 0.15);
+  border: 1px solid rgb(23, 24, 25, 0.3);
+}
+
+.skillCard[data-skill='cypress'] .levelProgress {
+  background: #171819;
+}
+
+/* Figma */
+.skillCard[data-skill='figma'] .skillIconWrapper {
+  background: rgb(245, 101, 101, 0.15);
+  border: 1px solid rgb(245, 101, 101, 0.3);
+}
+
+.skillCard[data-skill='figma'] .levelProgress {
+  background: #f56565;
+}
+
+/* Adobe XD */
+.skillCard[data-skill='adobexd'] .skillIconWrapper,
+.skillCard[data-skill='xd'] .skillIconWrapper {
+  background: rgb(255, 97, 218, 0.15);
+  border: 1px solid rgb(255, 97, 218, 0.3);
+}
+
+.skillCard[data-skill='adobexd'] .levelProgress,
+.skillCard[data-skill='xd'] .levelProgress {
+  background: #ff61da;
+}
+
+/* Photoshop */
+.skillCard[data-skill='photoshop'] .skillIconWrapper {
+  background: rgb(49, 168, 255, 0.15);
+  border: 1px solid rgb(49, 168, 255, 0.3);
+}
+
+.skillCard[data-skill='photoshop'] .levelProgress {
+  background: #31a8ff;
+}
+
+/* Illustrator */
+.skillCard[data-skill='illustrator'] .skillIconWrapper {
+  background: rgb(255, 154, 0, 0.15);
+  border: 1px solid rgb(255, 154, 0, 0.3);
+}
+
+.skillCard[data-skill='illustrator'] .levelProgress {
+  background: #ff9a00;
+}
+
+/* VS Code */
+.skillCard[data-skill='vscode'] .skillIconWrapper {
+  background: rgb(0, 122, 204, 0.15);
+  border: 1px solid rgb(0, 122, 204, 0.3);
+}
+
+.skillCard[data-skill='vscode'] .levelProgress {
+  background: #007acc;
+}
+
+/* Vim */
+.skillCard[data-skill='vim'] .skillIconWrapper {
+  background: rgb(0, 150, 57, 0.15);
+  border: 1px solid rgb(0, 150, 57, 0.3);
+}
+
+.skillCard[data-skill='vim'] .levelProgress {
+  background: #009639;
+}
+
+/* Linux */
+.skillCard[data-skill='linux'] .skillIconWrapper {
+  background: rgb(255, 188, 0, 0.15);
+  border: 1px solid rgb(255, 188, 0, 0.3);
+}
+
+.skillCard[data-skill='linux'] .levelProgress {
+  background: #ffbc00;
+}
+
+/* Ubuntu */
+.skillCard[data-skill='ubuntu'] .skillIconWrapper {
+  background: rgb(233, 84, 32, 0.15);
+  border: 1px solid rgb(233, 84, 32, 0.3);
+}
+
+.skillCard[data-skill='ubuntu'] .levelProgress {
+  background: #e95420;
+}
+
+/* Jenkins */
+.skillCard[data-skill='jenkins'] .skillIconWrapper {
+  background: rgb(213, 80, 54, 0.15);
+  border: 1px solid rgb(213, 80, 54, 0.3);
+}
+
+.skillCard[data-skill='jenkins'] .levelProgress {
+  background: #d55036;
+}
+
+/* Terraform */
+.skillCard[data-skill='terraform'] .skillIconWrapper {
+  background: rgb(98, 70, 237, 0.15);
+  border: 1px solid rgb(98, 70, 237, 0.3);
+}
+
+.skillCard[data-skill='terraform'] .levelProgress {
+  background: #6246ed;
+}
+
+/* Ansible */
+.skillCard[data-skill='ansible'] .skillIconWrapper {
+  background: rgb(238, 43, 51, 0.15);
+  border: 1px solid rgb(238, 43, 51, 0.3);
+}
+
+.skillCard[data-skill='ansible'] .levelProgress {
+  background: #ee2b33;
+}
+
+/* Unity */
+.skillCard[data-skill='unity'] .skillIconWrapper {
+  background: rgb(255, 255, 255, 0.15);
+  border: 1px solid rgb(255, 255, 255, 0.3);
+}
+
+.skillCard[data-skill='unity'] .levelProgress {
+  background: #fff;
+}
+
+/* Unreal Engine */
+.skillCard[data-skill='unrealengine'] .skillIconWrapper,
+.skillCard[data-skill='unreal'] .skillIconWrapper {
+  background: rgb(255, 255, 255, 0.15);
+  border: 1px solid rgb(255, 255, 255, 0.3);
+}
+
+.skillCard[data-skill='unrealengine'] .levelProgress,
+.skillCard[data-skill='unreal'] .levelProgress {
+  background: #fff;
+}
+
+/* Figma */
+.skillCard[data-skill='figma'] .skillIconWrapper {
+  background: rgb(245, 101, 101, 0.15);
+  border: 1px solid rgb(245, 101, 101, 0.3);
+}
+
+.skillCard[data-skill='figma'] .levelProgress {
+  background: #f56565;
+}
+
+/* Adobe XD */
+.skillCard[data-skill='adobexd'] .skillIconWrapper,
+.skillCard[data-skill='xd'] .skillIconWrapper {
+  background: rgb(255, 97, 218, 0.15);
+  border: 1px solid rgb(255, 97, 218, 0.3);
+}
+
+.skillCard[data-skill='adobexd'] .levelProgress,
+.skillCard[data-skill='xd'] .levelProgress {
+  background: #ff61da;
+}
+
+/* Photoshop */
+.skillCard[data-skill='photoshop'] .skillIconWrapper {
+  background: rgb(49, 168, 255, 0.15);
+  border: 1px solid rgb(49, 168, 255, 0.3);
+}
+
+.skillCard[data-skill='photoshop'] .levelProgress {
+  background: #31a8ff;
+}
+
+/* Illustrator */
+.skillCard[data-skill='illustrator'] .skillIconWrapper {
+  background: rgb(255, 154, 0, 0.15);
+  border: 1px solid rgb(255, 154, 0, 0.3);
+}
+
+.skillCard[data-skill='illustrator'] .levelProgress {
+  background: #ff9a00;
+}
+
+/* ============================================
+   TOOLTIPS - ACCESIBILIDAD Y UX
+   ============================================ */
+.tooltipHint {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgb(0, 0, 0, 0.9);
+  color: #fff;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 400;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 100;
+  pointer-events: none;
+  margin-bottom: 4px;
+}
+
+.tooltipHint::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-top-color: rgb(0, 0, 0, 0.9);
+}
+
+.levelLabel:hover .tooltipHint,
+.difficultyLabel:hover .tooltipHint {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ============================================
+   ANIMACIONES DE CARGA
+   ============================================ */
+@keyframes levelBarLoad {
+  0% {
+    width: 0%;
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.skillCard .levelProgress {
+  animation: levelBarLoad 1.2s ease-out;
+}
+
+.skillCard:nth-child(1) .levelProgress {
+  animation-delay: 0.1s;
+}
+.skillCard:nth-child(2) .levelProgress {
+  animation-delay: 0.2s;
+}
+.skillCard:nth-child(3) .levelProgress {
+  animation-delay: 0.3s;
+}
+.skillCard:nth-child(4) .levelProgress {
+  animation-delay: 0.4s;
+}
+.skillCard:nth-child(5) .levelProgress {
+  animation-delay: 0.5s;
+}
+
+@keyframes starAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-90deg);
+  }
+
+  70% {
+    transform: scale(1.1) rotate(0deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.star.filled {
+  animation: starAppear 0.4s ease-out;
+}
+
+.star.filled:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.star.filled:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.star.filled:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.star.filled:nth-child(4) {
+  animation-delay: 0.4s;
+}
+.star.filled:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 768px) {
+  .skillCard {
+    max-width: 100%;
+    min-height: 200px;
+    padding: 14px;
+  }
+
+  /* Mantener el fondo opacado incluso en responsive */
+  /* Sin pseudo-elemento; gradiente se adapta automáticamente */
+
+  .skillIconWrapper {
+    width: 48px;
+    height: 48px;
+  }
+
+  .skillIcon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .skillName {
+    font-size: 15px;
+  }
+}
+
+/* ============================================
+   MEJORAS RESPONSIVE Y ACCESIBILIDAD - CONSOLIDADAS
+   ============================================ */
+
+/* Mejoras para móviles - reglas unificadas */
+@media (max-width: 768px) {
+  .skillCard {
+    max-width: 100%;
+    padding: 20px;
+    min-height: 220px;
+  }
+
+  /* Ajustar el fondo opacado para dispositivos móviles */
+  /* Sin pseudo-elemento en móviles */
+
+  .skillCardHeader {
+    margin-bottom: 14px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .skillIconWrapper {
+    width: 52px;
+    height: 52px;
+  }
+
+  .skillIcon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .skillName {
+    font-size: 15px;
+  }
+
+  .levelLabel,
+  .difficultyLabel {
+    font-size: 12px;
+  }
+
+  .levelValue {
+    font-size: 15px;
+  }
+
+  .star {
+    font-size: 15px;
+  }
+
+  .linkBtn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .tooltipHint {
+    font-size: 10px;
+    padding: 4px 6px;
+  }
+}
+
+/* Mejoras para pantallas muy pequeñas */
+@media (max-width: 480px) {
+  .skillCard {
+    padding: 16px;
+    min-height: 200px;
+  }
+
+  /* Reducir aún más el fondo opacado en pantallas pequeñas */
+  /* Sin pseudo-elemento en móviles pequeños */
+
+  .skillCardFooter {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .linkBtn {
+    justify-content: center;
+  }
+
+  .likesContainer {
+    justify-content: center;
+    align-self: center;
+    min-width: 80px;
+  }
+}
+
+/* Soporte para usuarios que prefieren menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .skillCard,
+  .levelProgress,
+  .star,
+  .linkBtn,
+  .likesButton {
+    transition: none;
+    animation: none;
+  }
+
+  .skillCard:hover {
+    transform: none;
+  }
+
+  .linkBtn.details:hover {
+    transform: none;
+  }
+
+  .star:hover.filled {
+    transform: none;
+  }
+}
+
+/* Soporte para contraste alto */
+@media (prefers-contrast: high) {
+  .skillCard {
+    border-color: rgb(255, 255, 255, 0.5);
+    background: #1a1a1a;
+  }
+
+  .levelLabel,
+  .difficultyLabel {
+    color: #fff;
+  }
+
+  .levelProgress {
+    background: #fff;
+  }
+
+  .star.filled {
+    color: #fff;
+  }
+
+  .linkBtn.details {
+    border-color: #fff;
+    color: #fff;
+  }
+}
+
+/* ============================================
+   LAYOUT HORIZONTAL RESPONSIVE
+   Configuración para tarjetas horizontales en modo responsive
+   ============================================ */
+
+/* Layout horizontal para pantallas pequeñas */
+
+/* Layout con icono de fondo semitransparente - NUEVO DISEÑO */
+@media (max-width: 600px) {
+  .skillCard {
+    max-width: 100% !important;
+    min-height: 100px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    padding: 16px !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+  }
+
+  .skillCardHeader {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 12px !important;
+    margin-bottom: 8px !important;
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  .skillIconWrapper {
+    flex-shrink: 0 !important;
+    margin-bottom: 0 !important;
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .skillIcon {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .skillName {
+    text-align: left !important;
+    margin: 0 !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    flex: 1 !important;
+  }
+
+  .skillCardContent {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 16px !important;
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  .skillLevel {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+    flex: 1 !important;
+    max-width: 120px !important;
+  }
+
+  .levelHeader {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 6px !important;
+    align-items: center !important;
+    margin-bottom: 2px !important;
+    width: 100% !important;
+  }
+
+  .levelLabel {
+    font-size: 10px !important;
+    margin-bottom: 0 !important;
+    color: #888 !important;
+    white-space: nowrap !important;
+  }
+
+  .levelValue {
+    font-size: 12px !important;
+    font-weight: bold !important;
+    color: #4caf50 !important;
+    margin-left: auto !important;
+  }
+
+  .levelBar {
+    width: 100% !important;
+    height: 4px !important;
+    background: rgb(255, 255, 255, 0.1) !important;
+    border-radius: 2px !important;
+  }
+
+  .levelProgress {
+    height: 100% !important;
+    border-radius: 2px !important;
+    background: #4caf50 !important;
+  }
+
+  .skillDifficulty {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 4px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .difficultyLabel {
+    font-size: 10px !important;
+    margin-bottom: 0 !important;
+    color: #888 !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+
+  .difficultyStars {
+    display: flex !important;
+    gap: 2px !important;
+  }
+
+  .star {
+    font-size: 12px !important;
+  }
+
+  .skillCardFooter {
+    display: none !important;
+  }
+}

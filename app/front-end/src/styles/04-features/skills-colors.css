@@ -1,0 +1,452 @@
+/*
+  skills-colors.css
+  Mejorado por Gemini.
+  Se ha refactorizado el código para que sea más limpio, escalable y fácil de mantener.
+  - Los colores de fondo (`--skill-bg`) se generan automáticamente a partir de
+    los colores principales (`--skill-color`), eliminando la repetición.
+  - Se han centralizado las variables de opacidad para facilitar los cambios globales.
+*/
+
+:root {
+  --skill-fallback-color: #777777;
+  --skill-fallback-bg: rgba(0, 0, 0, 0.04);
+  /* Opciones de opacidad para los fondos, centralizadas */
+  /* Aumentadas para conseguir fondos más marcados en las badges */
+  --skill-bg-opacity-standard: 0.14;
+  --skill-bg-opacity-strong: 0.22;
+}
+
+/* helper: apply variables to the stackIcon */
+.stackIcon {
+  --skill-color: var(--skill-fallback-color);
+  --skill-bg: var(--skill-fallback-bg);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  /* keep a stable, square hit area so icons are always centered */
+  min-width: 36px;
+  min-height: 36px;
+  padding: 6px;
+  box-sizing: border-box;
+  position: relative; /* needed for pseudo-element background */
+  background: var(--skill-bg); /* Se aplica una sola vez aquí */
+  cursor: pointer;
+  transition:
+    transform 200ms cubic-bezier(0.2, 0.9, 0.24, 1),
+    box-shadow 280ms ease,
+    border-color 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease,
+    filter 200ms ease;
+}
+
+.stackIcon img {
+  width: 20px;
+  height: 20px;
+  display: block;
+  object-fit: contain; /* avoid intrinsic svg whitespace problems */
+  margin: 0 auto; /* ensure centering inside the flex container */
+  line-height: 0; /* remove descender gaps */
+}
+
+/* Small spacing rule: cuando el componente muestra la etiqueta textual
+   junto al icono (variant `colored` / `.skillLabel`), aseguramos una
+   separación cómoda entre el icono y el texto. */
+.stackIcon > .skillLabel {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px; /* espacio entre icono y texto */
+  font-size: 13px;
+  color: inherit;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.stackIcon i {
+  color: var(--skill-color);
+  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center; /* center icon glyphs */
+  margin: 0;
+}
+
+/* stronger colored background on hover: use a pseudo-element with --skill-color */
+.stackIcon::before {
+  content: '';
+  position: absolute;
+  /* contain the colored background within the icon bounds to avoid overlapping neighbors */
+  inset: 0;
+  border-radius: 8px;
+  background: var(--skill-color);
+  opacity: 0; /* hidden by default */
+  transition: opacity 180ms ease;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ensure children render above the colored background */
+.stackIcon > img,
+.stackIcon > i,
+.stackIcon .skillHoverLabel {
+  position: relative;
+  z-index: 1; /* Esto ya estaba en tu código y es una buena práctica */
+}
+
+/* Individual skill colors (data-tech values normalized from filenames) */
+.stackIcon .skillHoverLabel {
+  position: absolute;
+  bottom: -32px; /* Ajusta la distancia desde la parte inferior del ícono */
+  left: 50%;
+  transform: translateX(-50%);
+
+  white-space: nowrap; /* Evita que el texto se envuelva en varias líneas */
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font-size: 12px;
+
+  /* Inicialmente oculta la etiqueta */
+  opacity: 0;
+  transition: opacity 160ms ease;
+
+  /* Asegura que la etiqueta esté sobre el ícono de al lado */
+  z-index: 2;
+}
+
+/* Definimos solo los colores principales. Los fondos se generarán automáticamente. */
+.stackIcon[data-tech='amazonwebservices'],
+.stackIcon[data-tech='aws'] {
+  --skill-color: #ff9900;
+}
+
+.stackIcon[data-tech='angular'] {
+  --skill-color: #dd0031;
+}
+.stackIcon[data-tech='ansible'] {
+  --skill-color: #ee0000;
+}
+.stackIcon[data-tech='apache'] {
+  --skill-color: #d22128;
+}
+.stackIcon[data-tech='babel'] {
+  --skill-color: #f9dc3e;
+}
+.stackIcon[data-tech='bootstrap'] {
+  --skill-color: #7952b3;
+}
+.stackIcon[data-tech='cplusplus'],
+.stackIcon[data-tech='c-plus-plus'] {
+  --skill-color: #00599c;
+}
+.stackIcon[data-tech='circleci'] {
+  --skill-color: #343434;
+}
+.stackIcon[data-tech='claude'] {
+  --skill-color: #6c5ce7;
+}
+.stackIcon[data-tech='csharp'] {
+  --skill-color: #239120;
+}
+.stackIcon[data-tech='css3'] {
+  --skill-color: #1572b6;
+}
+.stackIcon[data-tech='django'] {
+  --skill-color: #092e20;
+}
+.stackIcon[data-tech='docker'] {
+  --skill-color: #2496ed;
+}
+.stackIcon[data-tech='elasticsearch'],
+.stackIcon[data-tech='elastic-search'] {
+  --skill-color: #005571;
+}
+.stackIcon[data-tech='eslint'] {
+  --skill-color: #4b32c3;
+}
+.stackIcon[data-tech='express'] {
+  --skill-color: #000000;
+}
+.stackIcon[data-tech='fastapi'] {
+  --skill-color: #009688;
+}
+.stackIcon[data-tech='firebase'] {
+  --skill-color: #ffcb2b;
+}
+.stackIcon[data-tech='flask'] {
+  --skill-color: #000000;
+}
+.stackIcon[data-tech='flutter'] {
+  --skill-color: #02569b;
+}
+.stackIcon[data-tech='generic-code'] {
+  --skill-color: #7f8c8d;
+}
+.stackIcon[data-tech='git'] {
+  --skill-color: #f05032;
+}
+.stackIcon[data-tech='github-actions'],
+.stackIcon[data-tech='githubactions'] {
+  --skill-color: #2088ff;
+}
+.stackIcon[data-tech='go'] {
+  --skill-color: #00add8;
+}
+.stackIcon[data-tech='googlegemini'] {
+  --skill-color: #00a0ff;
+}
+.stackIcon[data-tech='graphql'] {
+  --skill-color: #e10098;
+}
+.stackIcon[data-tech='hashicorp-terraform'],
+.stackIcon[data-tech='terraform'] {
+  --skill-color: #6f42c1;
+}
+.stackIcon[data-tech='html5'] {
+  --skill-color: #e34f26;
+}
+.stackIcon[data-tech='java'] {
+  --skill-color: #007396;
+}
+.stackIcon[data-tech='javascript'] {
+  --skill-color: #f7df1e;
+}
+.stackIcon[data-tech='jenkins'] {
+  --skill-color: #d24939;
+}
+.stackIcon[data-tech='jira'] {
+  --skill-color: #0052cc;
+}
+.stackIcon[data-tech='kotlin'] {
+  --skill-color: #0095d5;
+}
+.stackIcon[data-tech='kubernetes'] {
+  --skill-color: #326ce5;
+}
+.stackIcon[data-tech='laravel'] {
+  --skill-color: #ff2d20;
+}
+.stackIcon[data-tech='linux'] {
+  --skill-color: #000000;
+}
+.stackIcon[data-tech='material-ui'],
+.stackIcon[data-tech='mui'] {
+  --skill-color: #007fff;
+}
+.stackIcon[data-tech='microsoftazure'] {
+  --skill-color: #0078d4;
+}
+.stackIcon[data-tech='mongodb'] {
+  --skill-color: #47a248;
+}
+.stackIcon[data-tech='mysql'] {
+  --skill-color: #4479a1;
+}
+.stackIcon[data-tech='nextdotjs'],
+.stackIcon[data-tech='next.js'] {
+  --skill-color: #000000;
+}
+.stackIcon[data-tech='nginx'] {
+  --skill-color: #009639;
+}
+.stackIcon[data-tech='nodedotjs'] {
+  --skill-color: #83cd29;
+}
+.stackIcon[data-tech='openai'] {
+  --skill-color: #10a37f;
+}
+.stackIcon[data-tech='php'] {
+  --skill-color: #8993be;
+}
+.stackIcon[data-tech='postgresql'],
+.stackIcon[data-tech='postgres-sql'] {
+  --skill-color: #336791;
+}
+.stackIcon[data-tech='postman'] {
+  --skill-color: #ff6c37;
+}
+.stackIcon[data-tech='prettier'] {
+  --skill-color: #f7b93e;
+}
+.stackIcon[data-tech='python'] {
+  --skill-color: #3776ab;
+}
+.stackIcon[data-tech='react'] {
+  --skill-color: #040a0c;
+}
+.stackIcon[data-tech='redis'] {
+  --skill-color: #dc382d;
+}
+.stackIcon[data-tech='redux'] {
+  --skill-color: #764abc;
+}
+.stackIcon[data-tech='restapi'] {
+  --skill-color: #e34f26;
+}
+.stackIcon[data-tech='rubyonrails'],
+.stackIcon[data-tech='ruby-on-rails'] {
+  --skill-color: #cc0000;
+}
+.stackIcon[data-tech='rust'] {
+  --skill-color: #dea584;
+}
+.stackIcon[data-tech='sass'] {
+  --skill-color: #cc6699;
+}
+.stackIcon[data-tech='springboot'] {
+  --skill-color: #6db33f;
+}
+.stackIcon[data-tech='sql'] {
+  --skill-color: #003b57;
+}
+.stackIcon[data-tech='sqlite'] {
+  --skill-color: #003b57;
+}
+.stackIcon[data-tech='svelte'] {
+  --skill-color: #ff3e00;
+}
+.stackIcon[data-tech='swift'] {
+  --skill-color: #fa7343;
+}
+.stackIcon[data-tech='symfony'] {
+  --skill-color: #000000;
+}
+.stackIcon[data-tech='tailwind-css'],
+.stackIcon[data-tech='tailwindcss'] {
+  --skill-color: #06b6d4;
+}
+.stackIcon[data-tech='trello'] {
+  --skill-color: #0079bf;
+}
+.stackIcon[data-tech='typescript'] {
+  --skill-color: #3178c6;
+}
+.stackIcon[data-tech='visual-studio-code'],
+.stackIcon[data-tech='vscode'] {
+  --skill-color: #007acc;
+}
+.stackIcon[data-tech='vuedotjs'],
+.stackIcon[data-tech='vue-dot-js'],
+.stackIcon[data-tech='vuejs'] {
+  --skill-color: #42b883;
+}
+.stackIcon[data-tech='webpack'] {
+  --skill-color: #8ed6f9;
+}
+.stackIcon[data-tech='wordpress'] {
+  --skill-color: #21759b;
+}
+
+/* Colores añadidos para skills que faltaban o vienen como variantes */
+.stackIcon[data-tech='excel'] {
+  --skill-color: #217346;
+}
+.stackIcon[data-tech='access'] {
+  --skill-color: #990000;
+}
+.stackIcon[data-tech='cypress'] {
+  --skill-color: #17202a;
+}
+.stackIcon[data-tech='jest'] {
+  --skill-color: #c63d91;
+}
+.stackIcon[data-tech='svn'] {
+  --skill-color: #e64a19;
+}
+.stackIcon[data-tech='dotnet'],
+.stackIcon[data-tech='dotnet-svgrepo-com'],
+.stackIcon[data-tech='dot-net'] {
+  --skill-color: #512bd4;
+}
+.stackIcon[data-tech='c'] {
+  --skill-color: #239120;
+}
+.stackIcon[data-tech='jsp'] {
+  --skill-color: #007396;
+}
+
+/*
+  Reglas para generar los fondos automáticamente.
+  Esto reduce la repetición en el listado de habilidades.
+*/
+.stackIcon[data-tech] {
+  --skill-bg: color-mix(in srgb, var(--skill-color) var(--skill-bg-opacity-standard), transparent);
+}
+/* Excepciones que tienen una opacidad de fondo diferente */
+.stackIcon[data-tech='express'],
+.stackIcon[data-tech='flask'],
+.stackIcon[data-tech='linux'],
+.stackIcon[data-tech='nextdotjs'],
+.stackIcon[data-tech='next.js'],
+.stackIcon[data-tech='symfony'] {
+  --skill-bg: var(--skill-fallback-bg);
+}
+.stackIcon[data-tech='aws'],
+.stackIcon[data-tech='javascript'],
+.stackIcon[data-tech='react'] {
+  --skill-bg: color-mix(in srgb, var(--skill-color) var(--skill-bg-opacity-strong), transparent);
+}
+
+/* Generic hover that uses the per-skill variables to give identity */
+.stackIcon:hover {
+  /* stronger background using the skill bg as tint */
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.03), var(--skill-bg));
+  /* ligera elevación + escala y brillo sutil */
+  transform: translateY(-4px) scale(1.06);
+  filter: brightness(1.06) saturate(1.04);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  border-color: rgba(255, 255, 255, 0.04);
+}
+
+/* reveal the colored pill contained inside the icon on hover */
+.stackIcon:hover::before {
+  opacity: 0.22; /* slightly stronger but contained */
+}
+
+.stackIcon:hover i {
+  color: var(--skill-color);
+  transition: color 160ms ease;
+}
+
+.stackIcon:hover img {
+  /* subtle colored glow for image icons */
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+}
+
+/* Foco accesible: similar al hover pero más conservador */
+.stackIcon:focus-visible {
+  outline: none;
+  transform: translateY(-3px) scale(1.04);
+  filter: brightness(1.04) saturate(1.03);
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.16),
+    0 6px 18px rgba(122, 60, 240, 0.06);
+}
+
+/* make hover label more visible against colored backgrounds */
+.stackIcon:hover .skillHoverLabel {
+  opacity: 1;
+}
+
+/* Clase utilitaria para forzar el estado activo/hover desde JS */
+.stackIcon--active {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.02), var(--skill-bg));
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  border-color: rgba(255, 255, 255, 0.04);
+}
+.stackIcon--active::before {
+  opacity: 0.22;
+}
+.stackIcon--active i {
+  color: var(--skill-color);
+}
+.stackIcon--active img {
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+}
+.stackIcon--active .skillHoverLabel {
+  opacity: 1;
+}

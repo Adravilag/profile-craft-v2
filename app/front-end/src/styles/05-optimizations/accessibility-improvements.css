@@ -1,0 +1,8 @@
+/* Placeholder: mejoras de accesibilidad. Añadir reglas aquí según necesidades.
+	Archivo creado para evitar errores cuando está vacío. */
+
+/* Ejemplo: foco visible claro */
+:focus {
+  outline: 3px solid Highlight;
+  outline-offset: 2px;
+}

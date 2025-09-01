@@ -1,0 +1,721 @@
+/* terminal-header-optimization.css - Enhanced terminal header and controls */
+
+/* ===========================================
+   TERMINAL HEADER OPTIMIZATION
+   =========================================== */
+
+/* Enhanced header base styles */
+.interactive-terminal-header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  padding: var(--terminal-header-padding);
+  display: flex;
+  align-items: center;
+  gap: var(--terminal-controls-gap);
+  background: var(--terminal-header-bg);
+  border-bottom: 1px solid var(--terminal-header-border);
+  transition:
+    box-shadow var(--terminal-transition),
+    background-color var(--terminal-transition),
+    border-color var(--terminal-transition);
+  backdrop-filter: blur(8px);
+}
+
+/* Sticky header shadow effect */
+.interactive-terminal-header.headerStickyShadow {
+  box-shadow: var(--shadow-md);
+  border-bottom-color: var(--color-accent);
+  background: rgb(var(--terminal-header-bg-rgb, 33, 38, 45), 0.95);
+}
+
+/* Enhanced header layout */
+.header-top {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--terminal-gap-lg);
+  min-height: 32px; /* Ensure consistent header height */
+}
+
+/* Left section with controls and title */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--terminal-gap-md);
+  flex: 1;
+  min-width: 0; /* Allow text truncation */
+}
+
+/* Right section with buttons */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--terminal-gap-sm);
+  flex-shrink: 0;
+}
+
+/* ===========================================
+   ENHANCED WINDOW CONTROLS
+   =========================================== */
+
+.interactive-terminal-controls {
+  display: inline-flex;
+  gap: var(--terminal-gap-sm);
+  align-items: center;
+  padding: var(--terminal-padding-xs);
+  border-radius: var(--radius-md);
+  background: rgb(var(--bg-tertiary-rgb, 33, 38, 45), 0.5);
+  border: 1px solid var(--border-secondary);
+  transition: all var(--terminal-transition);
+}
+
+.interactive-terminal-controls:hover {
+  background: rgb(var(--bg-tertiary-rgb, 33, 38, 45), 0.8);
+  border-color: var(--border-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Enhanced window control buttons */
+.interactive-terminal-button {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgb(0, 0, 0, 0.2);
+  position: relative;
+  cursor: pointer;
+  transition: all var(--terminal-transition);
+  box-shadow:
+    inset 0 1px 0 rgb(255, 255, 255, 0.2),
+    0 1px 2px rgb(0, 0, 0, 0.1);
+}
+
+/* macOS-style window controls with enhanced colors */
+.interactive-terminal-button.close {
+  background: linear-gradient(135deg, #ff6b5a 0%, #ff5f56 100%);
+  border-color: rgb(255, 95, 86, 0.3);
+}
+
+.interactive-terminal-button.minimize {
+  background: linear-gradient(135deg, #ffca2c 0%, #ffbd2e 100%);
+  border-color: rgb(255, 189, 46, 0.3);
+}
+
+.interactive-terminal-button.maximize {
+  background: linear-gradient(135deg, #2dd651 0%, #27ca3f 100%);
+  border-color: rgb(39, 202, 63, 0.3);
+}
+
+/* Enhanced hover states */
+.interactive-terminal-button:hover {
+  transform: scale(1.1);
+  filter: brightness(1.1) saturate(1.1);
+  box-shadow:
+    inset 0 1px 0 rgb(255, 255, 255, 0.3),
+    0 2px 4px rgb(0, 0, 0, 0.15);
+}
+
+.interactive-terminal-button:active {
+  transform: scale(1.05);
+  filter: brightness(0.95);
+}
+
+/* Add subtle icons to buttons on hover */
+.interactive-terminal-button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity var(--terminal-transition);
+  font-size: 8px;
+  font-weight: bold;
+  color: rgb(0, 0, 0, 0.6);
+}
+
+.interactive-terminal-button.close:hover::after {
+  content: '×';
+  opacity: 1;
+}
+
+.interactive-terminal-button.minimize:hover::after {
+  content: '−';
+  opacity: 1;
+}
+
+.interactive-terminal-button.maximize:hover::after {
+  content: '□';
+  opacity: 1;
+  font-size: 6px;
+}
+
+/* ===========================================
+   ENHANCED TERMINAL TITLE
+   =========================================== */
+
+.interactive-terminal-title {
+  margin: 0;
+  color: var(--terminal-header-text);
+  font-family: var(--terminal-font);
+  font-size: var(--terminal-font-size-sm);
+  font-weight: var(--terminal-font-weight-medium);
+  letter-spacing: var(--terminal-letter-spacing);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.4;
+  text-shadow: 0 1px 2px rgb(0, 0, 0, 0.1);
+  transition: color var(--terminal-transition);
+}
+
+/* Enhanced title on header shadow */
+.interactive-terminal-header.headerStickyShadow .interactive-terminal-title {
+  color: var(--color-accent);
+  font-weight: var(--terminal-font-weight-bold);
+}
+
+/* ===========================================
+   ENHANCED HEADER BUTTONS
+   =========================================== */
+
+.stop-btn,
+.icon-btn,
+.toolbar-btn {
+  border-radius: var(--radius-md);
+  padding: var(--terminal-padding-xs) var(--terminal-padding-sm);
+  font-family: var(--terminal-font);
+  font-size: var(--terminal-font-size-sm);
+  font-weight: var(--terminal-font-weight-medium);
+  cursor: pointer;
+  border: 1px solid var(--border-primary);
+  background: var(--bg-tertiary);
+  color: var(--terminal-text);
+  transition: all var(--terminal-transition);
+  white-space: nowrap;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--terminal-gap-xs);
+}
+
+/* Enhanced button hover states */
+.icon-btn:hover,
+.toolbar-btn:hover {
+  background: var(--bg-elevated);
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+  color: var(--color-accent);
+}
+
+/* Enhanced stop button */
+.stop-btn {
+  background: linear-gradient(135deg, #ff4757 0%, #da3633 100%);
+  border-color: #da3633;
+  color: #fff;
+  box-shadow: var(--shadow-error);
+  font-weight: var(--terminal-font-weight-bold);
+}
+
+.stop-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ff3742 0%, #c33030 100%);
+  border-color: #c33030;
+  box-shadow: var(--shadow-glow-error);
+  transform: translateY(-1px);
+}
+
+.stop-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Button focus states */
+.stop-btn:focus-visible,
+.icon-btn:focus-visible,
+.toolbar-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  box-shadow:
+    var(--shadow-md),
+    0 0 0 4px rgb(var(--color-accent-rgb, 68, 147, 248), 0.2);
+}
+
+/* ===========================================
+   ENHANCED STATUS PILL
+   =========================================== */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--terminal-gap-xs);
+  padding: var(--terminal-padding-xs) var(--terminal-padding-sm);
+  border-radius: var(--radius-full);
+  font-family: var(--terminal-font);
+  font-size: var(--text-xs);
+  font-weight: var(--terminal-font-weight-bold);
+  letter-spacing: 0.5px;
+  border: 1px solid var(--pill-border);
+  background: var(--pill-bg);
+  color: var(--pill-color);
+  text-transform: uppercase;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--terminal-transition);
+  backdrop-filter: blur(4px);
+}
+
+.pill:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.pill.warn {
+  background: rgb(187, 128, 9, 0.2);
+  color: #d29922;
+  border-color: rgb(187, 128, 9, 0.4);
+}
+
+.pill.ok {
+  background: rgb(46, 160, 67, 0.2);
+  color: #3fb950;
+  border-color: rgb(46, 160, 67, 0.4);
+}
+
+.pill.info {
+  background: rgb(88, 166, 255, 0.2);
+  color: #58a6ff;
+  border-color: rgb(88, 166, 255, 0.4);
+}
+
+/* Enhanced status dot */
+.statusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.statusDot.ready {
+  background: #3fb950;
+  box-shadow:
+    0 0 6px rgb(63, 185, 80, 0.6),
+    inset 0 1px 0 rgb(255, 255, 255, 0.2);
+}
+
+.statusDot.aiLoading {
+  background: #d29922;
+  animation: pulse 1.5s infinite;
+  box-shadow: 0 0 6px rgb(210, 153, 34, 0.6);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+/* ===========================================
+   ENHANCED CONFIGURATION POPUP
+   =========================================== */
+
+.header-menu {
+  position: absolute;
+  top: calc(100% + var(--terminal-gap-sm));
+  right: var(--terminal-padding-md);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  z-index: var(--z-menu);
+  min-width: 280px;
+  max-width: 320px;
+  box-shadow: var(--shadow-xl);
+  backdrop-filter: blur(12px);
+  animation: menuSlideIn var(--duration-fast) var(--ease-out);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+@keyframes menuSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Configuration sections */
+.config-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.config-section:not(:last-child) {
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.config-title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  margin: 0;
+  letter-spacing: 0.025em;
+}
+
+/* Enhanced menu items */
+.menu-item {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  width: 100%;
+  box-sizing: border-box;
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  border-radius: var(--radius-md);
+  position: relative;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.menu-item:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.menu-item:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  background: var(--bg-tertiary);
+}
+
+/* Checkbox and select styling within menu items */
+.menu-item label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  color: var(--color-primary);
+  width: 100%;
+}
+
+.menu-item input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border-primary);
+  border-radius: var(--radius-sm);
+  background: var(--bg-primary);
+  cursor: pointer;
+  position: relative;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.menu-item input[type='checkbox']:checked {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.menu-item input[type='checkbox']:checked::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.menu-item select {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-3);
+  color: var(--color-primary);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  min-width: 120px;
+}
+
+.menu-item select:hover {
+  border-color: var(--color-accent);
+  background: var(--bg-tertiary);
+}
+
+.menu-item select:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-color: var(--color-accent);
+}
+
+/* Label styling for select elements */
+.menu-item label[style*='flex-direction: column'] {
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.menu-item label[style*='flex-direction: column'] > span:first-child {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-secondary);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ===========================================
+   VISUAL SEPARATION ENHANCEMENTS
+   =========================================== */
+
+/* Enhanced border between header and content */
+.interactive-terminal-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-accent) 20%,
+    var(--color-accent) 80%,
+    transparent 100%
+  );
+  opacity: 0;
+  transition: opacity var(--terminal-transition);
+}
+
+.interactive-terminal-header.headerStickyShadow::after {
+  opacity: 0.6;
+}
+
+/* ===========================================
+   RESPONSIVE ENHANCEMENTS
+   =========================================== */
+
+@media (max-width: 768px) {
+  .interactive-terminal-header {
+    padding: var(--terminal-padding-sm);
+  }
+
+  .header-top {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--terminal-gap-sm);
+    min-height: auto;
+  }
+
+  .header-left {
+    order: 1;
+    justify-content: space-between;
+  }
+
+  .header-right {
+    order: 2;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .interactive-terminal-title {
+    font-size: var(--text-xs);
+    text-align: left;
+    flex: 1;
+  }
+
+  .interactive-terminal-controls {
+    flex-shrink: 0;
+  }
+
+  .stop-btn,
+  .icon-btn,
+  .toolbar-btn {
+    padding: var(--terminal-gap-sm) var(--terminal-padding-sm);
+    font-size: var(--text-xs);
+    min-height: 24px;
+  }
+
+  .pill {
+    font-size: 9px;
+    padding: var(--terminal-padding-xs) var(--terminal-gap-sm);
+  }
+
+  .interactive-terminal-button {
+    width: 12px;
+    height: 12px;
+  }
+
+  .header-menu {
+    position: fixed;
+    top: var(--space-16);
+    left: var(--terminal-margin-sm);
+    right: var(--terminal-margin-sm);
+    width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .interactive-terminal-header {
+    padding: var(--terminal-padding-xs);
+  }
+
+  .header-top {
+    gap: var(--terminal-gap-xs);
+  }
+
+  .header-left,
+  .header-right {
+    gap: var(--terminal-gap-xs);
+  }
+
+  .stop-btn,
+  .icon-btn,
+  .toolbar-btn {
+    padding: var(--terminal-padding-xs) var(--terminal-gap-sm);
+    font-size: 9px;
+    min-height: 20px;
+  }
+
+  .pill {
+    padding: var(--terminal-padding-xs) var(--terminal-gap-sm);
+    font-size: 8px;
+  }
+
+  .interactive-terminal-button {
+    width: 10px;
+    height: 10px;
+  }
+
+  .interactive-terminal-controls {
+    padding: 2px;
+    gap: var(--terminal-gap-xs);
+  }
+}
+
+/* ===========================================
+   THEME-SPECIFIC ENHANCEMENTS
+   =========================================== */
+
+/* Hack theme header enhancements */
+[data-hack-theme='active'] .interactive-terminal-header {
+  background: var(--hack-bg);
+  border-bottom-color: var(--hack-border);
+  box-shadow: 0 0 10px rgb(0, 255, 0, 0.2);
+}
+
+[data-hack-theme='active'] .interactive-terminal-header.headerStickyShadow {
+  box-shadow: 0 0 20px rgb(0, 255, 0, 0.4);
+  background: rgb(0, 0, 0, 0.95);
+}
+
+[data-hack-theme='active'] .interactive-terminal-title {
+  color: var(--hack-color);
+  text-shadow: 0 0 4px currentcolor;
+}
+
+[data-hack-theme='active'] .interactive-terminal-controls {
+  background: rgb(0, 255, 0, 0.1);
+  border-color: var(--hack-border);
+}
+
+/* Undertale theme header enhancements */
+[data-theme='undertale'] .interactive-terminal-header {
+  background: var(--undertale-bg);
+  border-bottom-color: #ff0;
+  box-shadow: 0 0 10px rgb(255, 255, 0, 0.2);
+}
+
+[data-theme='undertale'] .interactive-terminal-header.headerStickyShadow {
+  box-shadow: 0 0 20px rgb(255, 255, 0, 0.4);
+  background: rgb(26, 26, 26, 0.95);
+}
+
+[data-theme='undertale'] .interactive-terminal-title {
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+  font-weight: var(--terminal-font-weight-bold);
+}
+
+/* ===========================================
+   ACCESSIBILITY ENHANCEMENTS
+   =========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .interactive-terminal-header,
+  .interactive-terminal-button,
+  .stop-btn,
+  .icon-btn,
+  .toolbar-btn,
+  .pill,
+  .statusDot,
+  .header-menu,
+  .menu-item {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .statusDot.aiLoading {
+    animation: none !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .interactive-terminal-header {
+    border-bottom-width: 2px;
+  }
+
+  .interactive-terminal-button {
+    border-width: 2px;
+  }
+
+  .stop-btn,
+  .icon-btn,
+  .toolbar-btn {
+    border-width: 2px;
+  }
+}
+
+/* Focus visible enhancements for keyboard navigation */
+.interactive-terminal-controls:focus-within {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.interactive-terminal-button:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  z-index: 1;
+}

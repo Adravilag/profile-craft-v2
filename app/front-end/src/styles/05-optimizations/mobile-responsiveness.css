@@ -1,0 +1,8 @@
+/* Placeholder: reglas mobile/responsive. Evita error de archivo vacío.
+	 Añadir media queries aquí según diseño. */
+
+@media (max-width: 600px) {
+  .container {
+    padding: 0 1rem;
+  }
+}
