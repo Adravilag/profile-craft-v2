@@ -1,0 +1,50 @@
+/* [REFACTORIZACION] - Estilos mejorados para Card y sus subcomponentes */
+
+.card {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.cardHeader {
+  padding: 1rem 1.5rem 0.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.cardMedia {
+  position: relative;
+  overflow: hidden;
+}
+
+.cardMedia img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.cardBody {
+  padding: 1rem 1.5rem;
+  flex: 1;
+}
+
+.cardFooter {
+  padding: 0.5rem 1.5rem 1rem;
+  border-top: 1px solid var(--border-color);
+  margin-top: auto;
+}
+
+.cardTags {
+  padding: 0.5rem 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

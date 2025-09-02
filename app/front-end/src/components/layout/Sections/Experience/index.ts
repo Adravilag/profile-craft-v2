@@ -4,6 +4,9 @@ export { default as ExperienceCard } from './components/cards/ExperienceCard';
 export { default as EducationCard } from './components/cards/EducationCard';
 export { default as ChronologicalItem } from './components/items/ChronologicalItem';
 
+// Componentes de administración reutilizables
+export { AddExperienceForm, AddEducationForm } from './admin';
+
 // Importar tipos de la API
 import type { Experience as ApiExperience, Education as ApiEducation } from '@/types/api';
 export type { ApiExperience as Experience, ApiEducation as Education };

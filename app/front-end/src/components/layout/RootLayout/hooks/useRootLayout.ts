@@ -10,7 +10,6 @@ import { useAutoNavigation } from './useAutoNavigation';
 import { useAppLoadingState } from './useAppLoadingState';
 import { useFABActions } from './useFABActions';
 import { useContactForm } from './useContactForm';
-import { useExperienceFABActions } from './useExperienceFABActions.tsx';
 import { useNavItems } from './useNavItems';
 
 // --- Definiciones de Tipos Locales ---
@@ -83,13 +82,11 @@ export const useRootLayout = ({
 
   const { navItems } = useNavItems({ isCheckingUsers });
   const { handleContactSubmit } = useContactForm();
-  const { testimonialsFABActions, skillsFABActions, projectsFABActions } = useFABActions({
-    isAuthenticated,
-    currentSection: currentSection || '',
-  });
-  const { experienceFABActions } = useExperienceFABActions({
-    isAuthenticated,
-  });
+  const { testimonialsFABActions, skillsFABActions, projectsFABActions, experienceFABActions } =
+    useFABActions({
+      isAuthenticated,
+      currentSection: currentSection || '',
+    });
 
   // Efecto para la carga inicial de datos (perfil y estado de usuarios)
   useEffect(() => {

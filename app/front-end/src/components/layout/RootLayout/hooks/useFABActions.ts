@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useFab } from '@/contexts/FabContext';
+import { useModal } from '@/contexts/ModalContext';
 
 // Local FAB action shape matching the FloatingActionButtonGroup implementation
 type LocalFABAction = {
@@ -20,6 +21,7 @@ interface UseFABActionsReturn {
   testimonialsFABActions: LocalFABAction[];
   skillsFABActions: LocalFABAction[];
   projectsFABActions: LocalFABAction[];
+  experienceFABActions: LocalFABAction[];
 }
 
 /**
@@ -31,6 +33,7 @@ export const useFABActions = ({
   isAuthenticated,
 }: UseFABActionsProps): UseFABActionsReturn => {
   const { openTestimonialModal, openTestimonialsAdmin, openSkillModal } = useFab();
+  const { openModal, closeModal } = useModal();
   const navigate = useNavigate();
 
   // Acciones del FAB para la sección de testimonios
@@ -123,9 +126,69 @@ export const useFABActions = ({
     return base;
   }, [isAuthenticated, navigate]);
 
+  // Acciones del FAB para la sección de experiencias (con soporte JSX completo)
+  const experienceFABActions = useMemo<LocalFABAction[]>(() => {
+    const base: LocalFABAction[] = [
+      {
+        id: 'add-experience',
+        onClick: async () => {
+          try {
+            // Cargar el componente del modal de forma dinámica para mantener bundle ligero
+            const mod = await import(
+              '@/components/layout/Sections/Experience/components/ExperienceModal'
+            );
+            const ExperienceModalComp = mod.default;
+
+            // Crear el contenido JSX del modal
+            const modalContent = React.createElement(ExperienceModalComp, {
+              isOpen: true,
+              onClose: () => closeModal('experience-add'),
+              formType: 'experience',
+              initialData: {},
+              isEditing: false,
+              onSubmit: async (data: any) => {
+                try {
+                  const endpoints = await import('@/services/endpoints');
+                  const created = await endpoints.experiences.createExperience(data as any);
+                  // Notificar al resto de la app que hubo un cambio (opcional)
+                  try {
+                    window.dispatchEvent(
+                      new CustomEvent('experience-changed', { detail: created })
+                    );
+                  } catch (e) {}
+                  closeModal('experience-add');
+                } catch (err) {
+                  // Dejar que el modal muestre los errores si implementa notificaciones
+                  console.error('Error creando experiencia desde FAB:', err);
+                  throw err;
+                }
+              },
+            });
+
+            openModal('experience-add', modalContent, {
+              title: 'Nueva Experiencia',
+              disableAutoFocus: true,
+            });
+          } catch (err) {
+            console.error('No se pudo abrir modal de añadir experiencia:', err);
+          }
+        },
+        icon: 'fas fa-plus',
+        label: 'Añadir Experiencia',
+        color: 'success',
+      },
+    ];
+
+    // Acción de administración de experiencias eliminada intencionalmente
+    // (antes añadía un FAB con label 'Gestionar Experiencias')
+
+    return base;
+  }, [isAuthenticated, openModal, closeModal]);
+
   return {
     testimonialsFABActions,
     skillsFABActions,
     projectsFABActions,
+    experienceFABActions,
   };
 };

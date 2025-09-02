@@ -1,0 +1,427 @@
+/* ===================================================
+   ChronologicalCard.module.css — Tarjeta de Contenido
+   Estilos específicos para el contenido de la tarjeta
+   =================================================== */
+
+/* ---------- Variables CSS ---------- */
+:root {
+  --card-border-radius: 20px;
+  --card-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --card-z-content: 15;
+
+  /* Colores adaptativos para modo oscuro */
+  --card-bg: var(--md-sys-color-surface-1);
+  --card-shadow-light: rgba(255, 255, 255, 0.08);
+  --card-shadow-dark: rgba(0, 0, 0, 0.12);
+}
+
+/* Ajustes para modo oscuro */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --card-shadow-light: rgba(255, 255, 255, 0.03);
+    --card-shadow-dark: rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* ---------- Contenedor principal de la tarjeta ---------- */
+.chronological-card {
+  background: var(--card-bg);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--card-border-radius);
+  padding: 32px; /* Incrementado de 28px a 32px */
+  box-shadow:
+    0 8px 32px var(--card-shadow-dark),
+    0 0 0 1px var(--card-shadow-light),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: var(--card-transition);
+  backdrop-filter: blur(12px);
+  contain: layout style paint;
+  transform: translate3d(0, 0, 0); /* Forzar aceleración de hardware */
+  width: 100%;
+  margin-bottom: 24px; /* Separación entre tarjetas */
+}
+
+.chronological-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.02) 100%
+  );
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.chronological-card:hover {
+  transform: translate3d(0, -6px, 0) scale(1.02);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(255, 255, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  will-change: transform, box-shadow;
+}
+
+/* ---------- Clases de contexto ---------- */
+.education-context {
+  border-left: 4px solid rgb(45 212 191);
+  box-shadow:
+    0 12px 40px rgba(45, 212, 191, 0.08),
+    0 4px 16px rgba(45, 212, 191, 0.04),
+    0 0 0 1px rgba(45, 212, 191, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+}
+
+.education-context:hover {
+  box-shadow:
+    0 20px 60px rgba(45, 212, 191, 0.15),
+    0 8px 24px rgba(45, 212, 191, 0.08),
+    0 0 0 1px rgba(45, 212, 191, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translate3d(0, -8px, 0) scale(1.015);
+  border-left-color: rgb(45 212 191);
+  border-left-width: 5px;
+}
+
+.experience-context {
+  border-left: 4px solid rgb(124 141 255);
+  box-shadow:
+    0 12px 40px rgba(124, 141, 255, 0.08),
+    0 4px 16px rgba(124, 141, 255, 0.04),
+    0 0 0 1px rgba(124, 141, 255, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(16px);
+}
+
+.experience-context:hover {
+  box-shadow:
+    0 20px 60px rgba(124, 141, 255, 0.15),
+    0 8px 24px rgba(124, 141, 255, 0.08),
+    0 0 0 1px rgba(124, 141, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translate3d(0, -8px, 0) scale(1.015);
+  border-left-color: rgb(124 141 255);
+  border-left-width: 5px;
+}
+
+.category-context {
+  margin-bottom: 20px;
+  transition:
+    transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.category-context:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* Ocultar chronological-type en contextos de categorías */
+.education-context .chronological-header,
+.experience-context .chronological-header {
+  display: none;
+}
+
+/* ---------- Media de la tarjeta ---------- */
+.card-media {
+  position: relative;
+  margin: -32px -32px 28px -32px; /* Ajustado para el nuevo padding */
+  height: 160px; /* Incrementado de 140px a 160px */
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.05));
+}
+
+.card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: saturate(0.95) brightness(0.9) contrast(1.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chronological-card:hover .card-media img {
+  transform: scale(1.08);
+  filter: saturate(1.1) brightness(1) contrast(1.1);
+}
+
+.pill {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  background: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 24px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Específico para el pill de período - estilos heredados de .pill */
+
+/* ---------- Header del contenido ---------- */
+.chronological-header {
+  margin-bottom: 12px;
+}
+
+.chronological-type {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 24px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: default;
+}
+
+.chronological-type.experience {
+  background: linear-gradient(135deg, rgb(124 141 255 / 0.25), rgb(154 124 255 / 0.2));
+  color: rgb(124 141 255);
+  border: 1.5px solid rgb(124 141 255 / 0.4);
+  box-shadow:
+    0 2px 8px rgb(124 141 255 / 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.chronological-type.education {
+  background: linear-gradient(135deg, rgb(45 212 191 / 0.25), rgb(56 178 172 / 0.2));
+  color: rgb(45 212 191);
+  border: 1.5px solid rgb(45 212 191 / 0.4);
+  box-shadow:
+    0 2px 8px rgb(45 212 191 / 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.chronological-type:hover {
+  transform: scale(1.05);
+}
+
+.chronological-type.experience:hover {
+  background: linear-gradient(135deg, rgb(124 141 255 / 0.35), rgb(154 124 255 / 0.3));
+  box-shadow:
+    0 4px 12px rgb(124 141 255 / 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.chronological-type.education:hover {
+  background: linear-gradient(135deg, rgb(45 212 191 / 0.35), rgb(56 178 172 / 0.3));
+  box-shadow:
+    0 4px 12px rgb(45 212 191 / 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* ---------- Título ---------- */
+.chronological-title {
+  margin: 0 0 20px 0; /* Incrementado de 16px a 20px */
+  font-size: 1.2rem; /* Incrementado de 1.5rem a 1.6rem */
+  font-weight: 800;
+  color: var(--md-sys-color-on-surface);
+  line-height: 1.3;
+}
+
+/* ---------- Meta información ---------- */
+.meta-row {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Incrementado de 8px a 10px */
+  margin-bottom: 16px; /* Incrementado de 12px a 16px */
+  color: var(--md-sys-color-on-surface-variant);
+  font-weight: 600;
+  font-size: 0.95rem; /* Ligeramente más grande */
+}
+
+.meta-row i {
+  color: var(--md-sys-color-primary);
+  width: 16px;
+}
+
+/* ---------- Período y duración ---------- */
+.chronological-period,
+.chronological-duration {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Incrementado de 8px a 10px */
+  margin-bottom: 12px; /* Incrementado de 8px a 12px */
+  color: var(--md-sys-color-on-surface-variant);
+  font-size: 0.9rem; /* Incrementado de 0.875rem a 0.9rem */
+  font-weight: 500; /* Añadido weight */
+}
+
+.chronological-period i,
+.chronological-duration i {
+  color: var(--md-sys-color-primary);
+  width: 16px;
+}
+
+/* ---------- Descripción ---------- */
+.chronological-description {
+  margin: 20px 0; /* Incrementado de 16px a 20px */
+  color: var(--md-sys-color-on-surface-variant);
+  line-height: 1.7; /* Incrementado de 1.6 a 1.7 */
+  font-size: 0.95rem; /* Incrementado de 0.9rem a 0.95rem */
+}
+
+/* ---------- Habilidades ---------- */
+.chronological-skills {
+  margin-top: 24px; /* Incrementado de 20px a 24px */
+}
+
+.skills-label {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Incrementado de 8px a 10px */
+  margin-bottom: 16px; /* Incrementado de 12px a 16px */
+  color: var(--md-sys-color-on-surface);
+  font-weight: 600;
+  font-size: 0.9rem; /* Incrementado de 0.875rem a 0.9rem */
+}
+
+.skills-label i {
+  color: var(--md-sys-color-primary);
+  width: 18px; /* Incrementado de 16px a 18px */
+}
+
+.skills-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px; /* Incrementado de 8px a 12px */
+}
+
+/* Tooltip solo en hover dentro de ChronologicalCard */
+.skills-tags :global(.stackIcon .skillHoverLabel) {
+  opacity: 0;
+}
+
+.skills-tags :global(.stackIcon:hover .skillHoverLabel),
+.skills-tags :global(.stackIcon.stackIcon--active:hover .skillHoverLabel) {
+  opacity: 1;
+}
+
+/* ---------- Calificación educativa ---------- */
+.education-grade {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Incrementado de 8px a 12px */
+  margin-top: 20px; /* Incrementado de 16px a 20px */
+  padding: 16px 20px; /* Incrementado padding */
+  background: linear-gradient(135deg, rgb(45 212 191 / 0.12), rgb(56 178 172 / 0.08));
+  border: 1.5px solid rgb(45 212 191 / 0.25); /* Border más grueso */
+  border-radius: 16px; /* Incrementado de 12px a 16px */
+  color: var(--md-sys-color-on-surface);
+  font-weight: 600;
+  font-size: 0.95rem; /* Ligeramente más grande */
+  backdrop-filter: blur(8px);
+  box-shadow:
+    0 4px 12px rgba(45, 212, 191, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.education-grade i {
+  color: rgb(45 212 191);
+  font-size: 1.2rem; /* Incrementado de 1.1rem a 1.2rem */
+}
+
+/* ---------- Respeto por las preferencias de reducción de movimiento ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .chronological-card:hover,
+  .chronological-type:hover {
+    transform: none;
+  }
+
+  .chronological-card:hover .card-media img {
+    transform: none;
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .chronological-card {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .education-context,
+  .experience-context {
+    margin: 0 8px 20px 8px; /* Menos margen lateral en móviles */
+  }
+
+  .card-media {
+    margin: -20px -20px 20px -20px;
+    height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chronological-title {
+    font-size: 1.25rem;
+  }
+
+  .chronological-card {
+    padding: 18px;
+    margin-bottom: 18px;
+  }
+
+  .education-context,
+  .experience-context {
+    margin: 0 4px 18px 4px; /* Margen mínimo en pantallas pequeñas */
+  }
+
+  .card-media {
+    margin: -18px -18px 18px -18px;
+    height: 100px;
+  }
+}
+
+/* ---------- Acciones de la tarjeta (editar) ---------- */
+.cardActions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  z-index: var(--card-z-content);
+}
+
+.editBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  color: var(--md-sys-color-on-surface);
+  padding: 8px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: var(--card-transition);
+}
+
+.editBtn i {
+  font-size: 0.9rem;
+}
+
+.editBtn:hover {
+  transform: translateY(-2px);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.editLabel {
+  display: inline-block;
+  font-size: 0.85rem;
+}

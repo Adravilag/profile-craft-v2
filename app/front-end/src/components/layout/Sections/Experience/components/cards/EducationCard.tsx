@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import TimelineCard from './TimelineCard';
+import React from 'react';
+import ChronologicalCard from '../items/ChronologicalCard';
 
 interface Education {
   _id?: string;
@@ -17,15 +17,29 @@ interface EducationCardProps {
   index: number;
   animationDelay?: number;
   showDuration?: boolean;
+  onEdit?: (item: any) => void;
 }
 
 const EducationCard: React.FC<EducationCardProps> = ({
   education,
   index,
   animationDelay = 0.1,
+  onEdit,
 }) => {
-  // TimelineCard will derive dates, images and grade from the education object
-  return <TimelineCard education={education} index={index} animationDelay={animationDelay} />;
+  // Convertir education a CombinedItem para ChronologicalCard
+  const combinedItem = {
+    _id: education._id || String(education.id) || `edu-${index}`,
+    id: education.id,
+    title: education.title,
+    start_date: education.start_date,
+    end_date: education.end_date,
+    description: education.description,
+    type: 'education' as const,
+    institution: education.institution,
+    grade: education.grade,
+  };
+
+  return <ChronologicalCard item={combinedItem} context="education" onEdit={onEdit} />;
 };
 
 export default EducationCard;
