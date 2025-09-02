@@ -11,6 +11,7 @@ import ExperienceCard from './components/cards/ExperienceCard';
 import EducationCard from './components/cards/EducationCard';
 import ChronologicalItem from './components/items/ChronologicalItem';
 import { useFab } from '@/contexts/FabContext';
+import { useAuth } from '@/contexts';
 import { useModal } from '@/contexts/ModalContext';
 import FormModal from './components/FormModal';
 
@@ -318,6 +319,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
 
   // Registrar handler para que el FAB global pueda abrir el formulario de nueva experiencia/educación
   const { onOpenExperienceModal } = useFab();
+  const { isAuthenticated } = useAuth();
   useEffect(() => {
     const unregister = onOpenExperienceModal(handleNewItem);
     return unregister;
@@ -784,13 +786,15 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
                   <div>Cargando experiencias...</div>
                 )}
 
-                {/* Botón para añadir nueva experiencia */}
-                <div className={styles.addNewContainer}>
-                  <button className={styles.addNewButton} onClick={handleAddExperience}>
-                    <i className="fas fa-plus"></i>
-                    Añadir Nueva Experiencia
-                  </button>
-                </div>
+                {/* Botón para añadir nueva experiencia (visible solo para usuarios autenticados) */}
+                {isAuthenticated && (
+                  <div className={styles.addNewContainer}>
+                    <button className={styles.addNewButton} onClick={handleAddExperience}>
+                      <i className="fas fa-plus"></i>
+                      Añadir Nueva Experiencia
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -822,12 +826,14 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
                   ))}
 
                 {/* Botón para añadir nueva educación */}
-                <div className={styles.addNewContainer}>
-                  <button className={styles.addNewButton} onClick={handleAddEducation}>
-                    <i className="fas fa-plus"></i>
-                    Añadir Nueva Educación
-                  </button>
-                </div>
+                {isAuthenticated && (
+                  <div className={styles.addNewContainer}>
+                    <button className={styles.addNewButton} onClick={handleAddEducation}>
+                      <i className="fas fa-plus"></i>
+                      Añadir Nueva Educación
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
