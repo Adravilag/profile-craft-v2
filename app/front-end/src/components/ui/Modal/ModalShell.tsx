@@ -2,6 +2,22 @@ import React, { type FC, type ReactNode, useEffect, useRef, useCallback, useStat
 import { createPortal } from 'react-dom';
 import styles from './ModalShell.module.css';
 
+// Tipos para manejo de progreso de formularios
+interface FormData {
+  title: string;
+  company: string;
+  start_date: string;
+  end_date: string;
+  description: string;
+  technologies?: string;
+  order_index: number;
+  is_current?: boolean;
+}
+
+interface ValidationErrors {
+  [key: string]: string | undefined;
+}
+
 interface ModalShellProps {
   title?: string;
   children?: ReactNode;
@@ -33,6 +49,14 @@ interface ModalShellProps {
   maxHeight?: number | string;
   /** minWidth can be a number (px) or any CSS size string */
   minWidth?: number | string;
+  /** Mostrar barra de progreso del formulario */
+  showProgress?: boolean;
+  /** Datos del formulario para calcular progreso */
+  formData?: FormData;
+  /** Errores de validación del formulario */
+  validationErrors?: ValidationErrors;
+  /** Tecnologías seleccionadas (para forms que las requieran) */
+  selectedTechnologies?: string[];
 }
 
 const ModalShell: FC<ModalShellProps> = ({
@@ -47,11 +71,107 @@ const ModalShell: FC<ModalShellProps> = ({
   actions,
   actionButtons,
   formRef,
+  showProgress = false,
+  formData,
+  validationErrors = {},
+  selectedTechnologies = [],
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
 
   const [containerReady, setContainerReady] = useState(false);
+  const [formProgress, setFormProgress] = useState(0);
+
+  // Calcular progreso del formulario basado en validaciones
+  useEffect(() => {
+    if (!showProgress || !formData) {
+      setFormProgress(0);
+      return;
+    }
+
+    const stepCompletion: { [key: string]: boolean } = {
+      basic: false, // título + empresa
+      period: false, // fecha inicio (+ fin o actual)
+      technologies: false, // tecnologías añadidas
+      description: false, // descripción válida
+    };
+
+    // Validar información básica
+    const titleValid = (() => {
+      const v = (formData.title || '').toString().trim();
+      return v.length >= 3 && /[\p{L}]/u.test(v) && !validationErrors.title;
+    })();
+
+    const companyValid = (() => {
+      const v = (formData.company || '').toString().trim();
+      return v.length >= 2 && /[\p{L}]/u.test(v) && !validationErrors.company;
+    })();
+
+    stepCompletion.basic = titleValid && companyValid;
+
+    // Validar período
+    const startValid = (() => {
+      const s = (formData.start_date || '').toString().trim();
+      const isValidFormat = /^(\d{2})[-\/](\d{2})[-\/](\d{4})$/.test(s);
+      if (!isValidFormat) return false;
+
+      const [d, m, y] = s.split(/[-\/]/).map(Number);
+      const date = new Date(y, m - 1, d);
+      return (
+        date.getFullYear() === y &&
+        date.getMonth() === m - 1 &&
+        date.getDate() === d &&
+        !validationErrors.start_date
+      );
+    })();
+
+    const endValid = (() => {
+      if (formData.is_current) return true;
+      const e = (formData.end_date || '').toString().trim();
+      if (!e) return false;
+      const isValidFormat = /^(\d{2})[-\/](\d{2})[-\/](\d{4})$/.test(e);
+      if (!isValidFormat) return false;
+
+      const [d, m, y] = e.split(/[-\/]/).map(Number);
+      const date = new Date(y, m - 1, d);
+      return (
+        date.getFullYear() === y &&
+        date.getMonth() === m - 1 &&
+        date.getDate() === d &&
+        !validationErrors.end_date
+      );
+    })();
+
+    stepCompletion.period = startValid && endValid;
+
+    // Validar tecnologías (requeridas para experiencia)
+    stepCompletion.technologies = selectedTechnologies.length > 0;
+
+    // Validar descripción
+    const descValid = (() => {
+      const desc = (formData.description || '').toString().trim();
+      return desc.length >= 20 && desc.length <= 500 && !validationErrors.description;
+    })();
+
+    stepCompletion.description = descValid;
+
+    // Calcular porcentaje con pesos
+    const weights = {
+      basic: 20,
+      period: 20,
+      technologies: 30,
+      description: 30,
+    } as const;
+
+    const total = Object.values(weights).reduce((acc, w) => acc + w, 0);
+    const achieved = Object.keys(stepCompletion).reduce(
+      (acc, key) => acc + (stepCompletion[key] ? weights[key as keyof typeof weights] : 0),
+      0
+    );
+
+    const percent = total > 0 ? Math.round((achieved / total) * 100) : 0;
+    setFormProgress(percent);
+  }, [showProgress, formData, validationErrors, selectedTechnologies]);
 
   useEffect(() => {
     // eslint-disable-next-line no-console
@@ -205,6 +325,21 @@ const ModalShell: FC<ModalShellProps> = ({
             ✕
           </button>
         </div>
+
+        {/* Barra de progreso del formulario */}
+        {showProgress && (
+          <div className={styles.progressIndicator}>
+            <div className={styles.progressBar} role="progressbar">
+              <div className={styles.progressFill} style={{ width: `${formProgress}%` }}></div>
+            </div>
+            <div>
+              <span className={styles.progressText}>
+                {formProgress === 100 ? 'Formulario completo' : `Completado: ${formProgress}%`}
+              </span>
+            </div>
+          </div>
+        )}
+
         <div className={styles.modalContent}>{children}</div>
 
         {(actions || (actionButtons && actionButtons.length > 0)) && (

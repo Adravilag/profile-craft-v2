@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Experience } from '@/types/api';
 import ChronologicalCard from '../items/ChronologicalCard';
+import { useExperienceCard } from './hooks/useExperienceCard';
 
 interface ExperienceCardProps {
   experience: Experience;
@@ -15,20 +16,20 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({
   animationDelay = 0.1,
   onEdit,
 }) => {
-  // Convertir experience a CombinedItem para ChronologicalCard
-  const combinedItem = {
-    _id: experience._id || String(experience.id) || `exp-${index}`,
-    id: experience.id,
-    title: experience.position,
-    start_date: experience.start_date,
-    end_date: experience.end_date || '',
-    description: experience.description,
-    type: 'experience' as const,
-    company: experience.company,
-    technologies: experience.technologies,
-  };
+  // Usar el hook para manejar lógica del componente
+  const { isHovered, formattedItem, handleMouseEnter, handleMouseLeave, handleEdit } =
+    useExperienceCard({
+      experience,
+      index,
+      animationDelay,
+      onEdit,
+    });
 
-  return <ChronologicalCard item={combinedItem} context="experience" onEdit={onEdit} />;
+  return (
+    <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+      <ChronologicalCard item={formattedItem} context="experience" onEdit={handleEdit} />
+    </div>
+  );
 };
 
 export default ExperienceCard;

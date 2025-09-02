@@ -1,5 +1,6 @@
 import React from 'react';
 import ChronologicalCard from '../items/ChronologicalCard';
+import { useEducationCard } from './hooks/useEducationCard';
 
 interface Education {
   _id?: string;
@@ -26,20 +27,15 @@ const EducationCard: React.FC<EducationCardProps> = ({
   animationDelay = 0.1,
   onEdit,
 }) => {
-  // Convertir education a CombinedItem para ChronologicalCard
-  const combinedItem = {
-    _id: education._id || String(education.id) || `edu-${index}`,
-    id: education.id,
-    title: education.title,
-    start_date: education.start_date,
-    end_date: education.end_date,
-    description: education.description,
-    type: 'education' as const,
-    institution: education.institution,
-    grade: education.grade,
-  };
+  // Usar el hook para manejar lógica del componente
+  const { formattedItem, handleEdit } = useEducationCard({
+    education,
+    index,
+    animationDelay,
+    onEdit,
+  });
 
-  return <ChronologicalCard item={combinedItem} context="education" onEdit={onEdit} />;
+  return <ChronologicalCard item={formattedItem} context="education" onEdit={handleEdit} />;
 };
 
 export default EducationCard;

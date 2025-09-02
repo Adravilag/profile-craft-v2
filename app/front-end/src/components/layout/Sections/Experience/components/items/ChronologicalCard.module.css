@@ -231,8 +231,36 @@
   margin: 0 0 20px 0; /* Incrementado de 16px a 20px */
   font-size: 1.2rem; /* Incrementado de 1.5rem a 1.6rem */
   font-weight: 800;
+  padding-right: 60px; /* Espacio para el botón de editar */
   color: var(--md-sys-color-on-surface);
   line-height: 1.3;
+}
+
+/* ---------- Estilos específicos para empresa ---------- */
+.company-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.4rem;
+  color: var(--md-sys-color-primary);
+  margin-bottom: 8px;
+}
+
+.company-title i {
+  color: var(--md-sys-color-primary);
+  font-size: 1.2rem;
+}
+
+.position-subtitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 16px;
+}
+
+.position-subtitle i {
+  color: var(--md-sys-color-tertiary);
+  font-size: 0.9rem;
 }
 
 /* ---------- Meta información ---------- */
@@ -424,4 +452,30 @@
 .editLabel {
   display: inline-block;
   font-size: 0.85rem;
+}
+
+/* Botón de eliminar (solo icono) */
+.deleteBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 0, 0, 0.06);
+  border: 1px solid rgba(255, 0, 0, 0.08);
+  color: var(--md-sys-color-on-surface);
+  padding: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: var(--card-transition);
+}
+
+.deleteBtn i {
+  font-size: 0.95rem;
+  color: rgba(200, 30, 30, 0.95);
+}
+
+.deleteBtn:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 0, 0, 0.08);
 }

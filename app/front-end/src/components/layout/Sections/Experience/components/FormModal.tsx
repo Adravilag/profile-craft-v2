@@ -4,7 +4,7 @@ import AddExperienceForm from '../admin/AddExperienceForm';
 import AddEducationForm from '../admin/AddEducationForm';
 import { useTranslation } from '@/contexts/TranslationContext';
 
-interface ExperienceModalProps {
+interface FormModalProps {
   isOpen: boolean;
   onClose: () => void;
   formType: 'experience' | 'education';
@@ -13,7 +13,7 @@ interface ExperienceModalProps {
   onSubmit: (data: any) => Promise<void>;
 }
 
-const ExperienceModal: React.FC<ExperienceModalProps> = ({
+const FormModal: React.FC<FormModalProps> = ({
   isOpen,
   onClose,
   formType,
@@ -96,4 +96,4 @@ const ExperienceModal: React.FC<ExperienceModalProps> = ({
   );
 };
 
-export default ExperienceModal;
+export default FormModal;

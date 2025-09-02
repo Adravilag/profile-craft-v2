@@ -12,6 +12,10 @@ interface SkillPillProps {
   forceActive?: boolean;
   /** Alias más explícito: aplicar el fondo de color correspondiente desde props */
   colored?: boolean;
+  /** Callback cuando se hace clic en el botón de cerrar */
+  onClose?: (skillName: string) => void;
+  /** Mostrar el botón de cerrar */
+  closable?: boolean;
 }
 
 const normalize = (nameRaw: string) => {
@@ -24,6 +28,8 @@ const SkillPill: React.FC<SkillPillProps> = ({
   className,
   forceActive = false,
   colored = false,
+  onClose,
+  closable = false,
 }) => {
   const { normalized, canonical, original } = normalize(name);
 
@@ -40,6 +46,46 @@ const SkillPill: React.FC<SkillPillProps> = ({
   };
 
   const isActive = forceActive || colored;
+
+  const handleClose = (e: React.MouseEvent | React.KeyboardEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (onClose) {
+      onClose(original);
+    }
+  };
+
+  const handleCloseKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      handleClose(e);
+    }
+  };
+
+  const renderCloseButton = () => {
+    if (!closable || !onClose) return null;
+
+    return (
+      <button
+        type="button"
+        className="skillPill__close"
+        onClick={handleClose}
+        onKeyDown={handleCloseKeyDown}
+        aria-label={`Eliminar ${original}`}
+        style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          padding: '2px',
+          marginLeft: '4px',
+          fontSize: '12px',
+          color: 'inherit',
+          opacity: 0.7,
+        }}
+      >
+        ×
+      </button>
+    );
+  };
 
   return (
     <div
@@ -73,6 +119,7 @@ const SkillPill: React.FC<SkillPillProps> = ({
           aria-hidden="true"
         >{`${original}${typeof level === 'number' ? ` — ${level}%` : ''}`}</span>
       )}
+      {renderCloseButton()}
     </div>
   );
 };

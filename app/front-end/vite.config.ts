@@ -48,6 +48,8 @@ const config: any = {
       '@assets': path.resolve(__dirname, 'src/assets'),
       '@locales': path.resolve(__dirname, 'src/locales'),
     },
+    // Evitar que Vite resuelva varias copias de React (causa frecuente de "Invalid hook call")
+    dedupe: ['react', 'react-dom'],
   },
   test: {
     projects: [

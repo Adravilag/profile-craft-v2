@@ -574,6 +574,25 @@
   margin-top: 12px;
 }
 
+/* DEPRECATED: chipWrapper y chipRemove ya no se usan.
+   Ahora SkillPill tiene funcionalidad de cerrar integrada.
+   Mantenidas temporalmente por compatibilidad. */
+
+/* Wrapper para combinar SkillPill con botón de eliminar */
+.chipWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Estilo específico para SkillPill dentro del formulario */
+.skillChip {
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all var(--md-motion-short) var(--md-motion-easing);
+}
+
 .chip {
   display: inline-flex;
   align-items: center;
@@ -610,6 +629,7 @@
 }
 
 .chipRemove {
+  /* DEPRECATED: SkillPill ahora tiene botón de cerrar integrado */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -625,6 +645,7 @@
 }
 
 .chipRemove:hover {
+  /* DEPRECATED: SkillPill ahora tiene botón de cerrar integrado */
   background: rgb(255, 255, 255, 0.3);
   transform: scale(1.1);
 }

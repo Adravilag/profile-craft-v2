@@ -100,6 +100,12 @@
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4"
   },
+  "overrides": {
+    "react-datepicker": {
+      "react": "^19.1.1",
+      "react-dom": "^19.1.1"
+    }
+  },
   "browserslist": [
     "defaults",
     "not ie <= 11"

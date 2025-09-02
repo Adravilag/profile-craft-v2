@@ -48,7 +48,7 @@ export const useFABActions = ({
             console.error('No se pudo abrir modal de testimonial:', err);
           }
         },
-        icon: 'fas fa-plus',
+        icon: 'fas fa-comment-plus',
         label: 'Añadir Testimonio',
         color: 'success',
       },
@@ -64,7 +64,7 @@ export const useFABActions = ({
             console.error('No se pudo abrir admin de testimonios:', err);
           }
         },
-        icon: 'fas fa-shield-alt',
+        icon: 'fas fa-comments',
         label: 'Gestionar Testimonios',
         color: 'primary',
       });
@@ -79,7 +79,7 @@ export const useFABActions = ({
       {
         id: 'add-skill',
         onClick: () => openSkillModal(),
-        icon: 'fas fa-plus',
+        icon: 'fas fa-star-of-life',
         label: 'Añadir Habilidad',
         color: 'success',
       },
@@ -100,7 +100,7 @@ export const useFABActions = ({
             console.error('No se pudo navegar a crear proyecto:', err);
           }
         },
-        icon: 'fas fa-plus',
+        icon: 'fas fa-folder-plus',
         label: 'Añadir Proyecto',
         color: 'success',
       },
@@ -117,7 +117,7 @@ export const useFABActions = ({
             console.error('No se pudo navegar a admin de proyectos:', err);
           }
         },
-        icon: 'fas fa-shield-alt',
+        icon: 'fas fa-folder-open',
         label: 'Gestionar Proyectos',
         color: 'primary',
       });
@@ -135,12 +135,12 @@ export const useFABActions = ({
           try {
             // Cargar el componente del modal de forma dinámica para mantener bundle ligero
             const mod = await import(
-              '@/components/layout/Sections/Experience/components/ExperienceModal'
+              '@/components/layout/Sections/Experience/components/FormModal'
             );
-            const ExperienceModalComp = mod.default;
+            const FormModalComp = mod.default;
 
             // Crear el contenido JSX del modal
-            const modalContent = React.createElement(ExperienceModalComp, {
+            const modalContent = React.createElement(FormModalComp, {
               isOpen: true,
               onClose: () => closeModal('experience-add'),
               formType: 'experience',
@@ -173,8 +173,54 @@ export const useFABActions = ({
             console.error('No se pudo abrir modal de añadir experiencia:', err);
           }
         },
-        icon: 'fas fa-plus',
+        icon: 'fas fa-briefcase',
         label: 'Añadir Experiencia',
+        color: 'success',
+      },
+      {
+        id: 'add-company',
+        onClick: async () => {
+          try {
+            // Cargar el componente del modal de forma dinámica para mantener bundle ligero
+            const mod = await import(
+              '@/components/layout/Sections/Experience/components/FormModal'
+            );
+            const FormModalComp = mod.default;
+
+            // Crear el contenido JSX del modal
+            const modalContent = React.createElement(FormModalComp, {
+              isOpen: true,
+              onClose: () => closeModal('company-add'),
+              formType: 'company',
+              initialData: {},
+              isEditing: false,
+              onSubmit: async (data: any) => {
+                try {
+                  const endpoints = await import('@/services/endpoints');
+                  const created = await endpoints.companies.createCompany(data as any);
+                  // Notificar al resto de la app que hubo un cambio (opcional)
+                  try {
+                    window.dispatchEvent(new CustomEvent('company-changed', { detail: created }));
+                  } catch (e) {}
+                  closeModal('company-add');
+                } catch (err) {
+                  // Dejar que el modal muestre los errores si implementa notificaciones
+                  console.error('Error creando empresa desde FAB:', err);
+                  throw err;
+                }
+              },
+            });
+
+            openModal('company-add', modalContent, {
+              title: 'Nueva Empresa',
+              disableAutoFocus: true,
+            });
+          } catch (err) {
+            console.error('No se pudo abrir modal de añadir empresa:', err);
+          }
+        },
+        icon: 'fas fa-building',
+        label: 'Añadir Empresa',
         color: 'success',
       },
     ];

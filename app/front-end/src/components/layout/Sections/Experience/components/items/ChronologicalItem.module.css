@@ -168,9 +168,24 @@
 }
 
 /* ---------- Contenido principal ---------- */
-.chronological-content {
+.cardWrapper {
   flex: 1;
-  max-width: 42%;
+  display: flex;
+  max-width: 50%;
+}
+
+.chronological-item.left .cardWrapper {
+  justify-content: flex-start;
+  padding-right: 4rem;
+}
+
+.chronological-item.right .cardWrapper {
+  justify-content: flex-end;
+  padding-left: 4rem;
+}
+
+.chronological-content {
+  width: 100%;
   background: var(--chronological-card-bg);
   border: 1px solid var(--md-sys-color-outline-variant);
   border-radius: var(--chronological-border-radius);
@@ -210,13 +225,13 @@
   will-change: transform, box-shadow;
 }
 
-.chronological-item.left .chronological-content {
+/* .chronological-item.left .chronological-content {
   margin-right: 4rem;
 }
 
 .chronological-item.right .chronological-content {
   margin-left: 4rem;
-}
+} */
 
 /* ---------- Media de la tarjeta ---------- */
 .card-media {

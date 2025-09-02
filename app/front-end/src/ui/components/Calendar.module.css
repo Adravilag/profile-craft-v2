@@ -1,0 +1,150 @@
+/* --- Componente de entrada (Input Field) --- */
+
+.calendarWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.datePickerInput {
+  width: 100%;
+  padding: 16px 24px 16px 16px; /* Aumentar padding para más espacio vertical */
+  border: 1px solid var(--modal-input-border, var(--border-primary));
+  border-radius: var(--radius-xl, 16px); /* Radio de borde más grande, típico de M3 */
+  font-size: var(--text-base, 1rem);
+  background-color: var(--modal-input-bg, var(--bg-tertiary));
+  color: var(--modal-text-primary, var(--text-primary));
+  box-shadow:
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px 0 rgba(0, 0, 0, 0.06); /* Sombra más sutil */
+  transition:
+    box-shadow 150ms ease,
+    border-color 150ms ease;
+}
+
+.calendarWrapper .inputWithIcon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Cambios en el icono para que se integre con la estética de M3 */
+.calendarIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--md-sys-color-on-surface); /* Iconos del mismo color que el texto */
+}
+
+.datePickerInput:hover {
+  background-color: var(--md-sys-color-surface-container-high);
+  border-color: var(--color-accent);
+}
+
+.datePickerInput:focus {
+  outline: none;
+  border: 2px solid var(--color-accent); /* Borde más visible en focus */
+  box-shadow: 0 0 0 4px var(--md-primary-ctr); /* Anillo de foco usando token del design system */
+}
+
+/* --- Popover del Calendario (Datepicker) --- */
+
+.react-datepicker-popper {
+  z-index: 9999;
+}
+
+.react-datepicker {
+  font-family: var(--font-sans, 'Roboto', 'Inter', sans-serif); /* Fuente del design system */
+  border: none; /* Eliminar borde del contenedor */
+  border-radius: var(--radius-2xl, 28px); /* Radio grande */
+  box-shadow: var(--shadow-lg);
+  background: var(--modal-dropdown-bg, var(--bg-elevated));
+  padding: 8px; /* Añadir padding interior */
+}
+
+.react-datepicker__header {
+  background-color: transparent; /* No hay un fondo de cabecera distinto en M3 */
+  border-bottom: none; /* Sin borde de separación */
+  padding: 16px 8px 8px; /* Más espacio */
+}
+
+.react-datepicker__current-month,
+.react-datepicker-time__header,
+.react-datepicker-year-header {
+  color: var(--modal-text-primary, var(--text-primary));
+  font-weight: var(--font-weight-medium, 500);
+  font-size: var(--text-base, 1rem);
+}
+
+.react-datepicker__day-name {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-medium, 500);
+}
+
+/* Estilo de los días y la selección */
+.react-datepicker__day--selected,
+.react-datepicker__day--in-selecting-range,
+.react-datepicker__day--in-range {
+  background-color: var(--color-accent);
+  color: var(--md-sys-color-on-primary) !important;
+  border-radius: 50%; /* Los días seleccionados son círculos en M3 */
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.react-datepicker__day--selected:hover {
+  background-color: var(--color-accent); /* Mantener el color en hover */
+}
+
+.react-datepicker__day {
+  border-radius: 50%; /* Hacer todos los días circulares para consistencia */
+}
+
+.react-datepicker__day:not(.react-datepicker__day--selected):not(
+    .react-datepicker__day--disabled
+  ):hover {
+  background-color: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+}
+
+.react-datepicker__day--keyboard-selected {
+  background-color: var(--md-primary-ctr);
+  color: var(--modal-text-primary, var(--text-primary));
+}
+
+.react-datepicker__day--today {
+  border: 2px solid var(--color-accent); /* Borde más visible para el día actual */
+  background-color: transparent !important;
+}
+
+.react-datepicker__day--today:not(.react-datepicker__day--selected) {
+  color: var(--color-accent);
+}
+
+.react-datepicker__day--disabled {
+  color: var(--md-sys-color-outline);
+  opacity: 0.5;
+}
+
+/* Navegación */
+.react-datepicker__navigation {
+  top: 16px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  transition: background-color 0.2s;
+}
+
+.react-datepicker__navigation:hover {
+  background-color: var(--md-sys-color-on-surface);
+}
+
+.react-datepicker__navigation--previous {
+  left: 8px;
+}
+
+.react-datepicker__navigation--next {
+  right: 8px;
+}
+
+.react-datepicker__triangle {
+  display: none;
+}

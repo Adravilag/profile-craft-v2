@@ -1,9 +1,9 @@
 import React from 'react';
 import type { Experience } from '@/types/api';
-import { formatDateFromInput } from '@/utils/dateUtils';
 import styles from './ChronologicalItem.module.css';
 import { useTranslation } from '@/contexts/TranslationContext';
 import ChronologicalCard from './ChronologicalCard';
+import { useChronologicalItem } from './hooks/useChronologicalItem';
 
 interface Education {
   id?: number; // Para compatibilidad con código antiguo
@@ -36,6 +36,7 @@ interface ChronologicalItemProps {
   position: 'left' | 'right';
   animationDelay?: number;
   onEdit?: (item: CombinedItem) => void;
+  onDelete?: (item: CombinedItem) => void;
 }
 
 const ChronologicalItem: React.FC<ChronologicalItemProps> = ({
@@ -44,25 +45,40 @@ const ChronologicalItem: React.FC<ChronologicalItemProps> = ({
   position,
   animationDelay = 0.15,
   onEdit,
+  onDelete,
 }) => {
   const { t } = useTranslation();
+
+  // Usar el hook para manejar lógica del componente
+  const {
+    positionClass,
+    animationDelay: hookAnimationDelay,
+    timelineDate,
+    typeIcon,
+    handleEdit,
+  } = useChronologicalItem(item, index, position, onEdit);
 
   return (
     <div
       className={`${styles.chronologicalItem} chronological-item ${styles[item.type]} ${item.type} ${styles[position]} ${position}`}
-      style={{ animationDelay: `${index * animationDelay}s` }}
+      style={{ animationDelay: hookAnimationDelay }}
     >
       <div className={styles.chronologicalMarker}>
         <div className={`${styles.markerDot} ${styles[item.type]}`}>
-          <i
-            className={item.type === 'experience' ? 'fas fa-briefcase' : 'fas fa-graduation-cap'}
-          />
+          <i className={typeIcon} />
         </div>
         <div className={styles.chronologicalYearExternal}>
-          {formatDateFromInput(item.end_date) || t.time.present}
+          {timelineDate === new Date().getFullYear().toString() ? t.time.present : timelineDate}
         </div>
       </div>
-      <ChronologicalCard item={item} context="chronological" onEdit={onEdit} />
+      <div className={styles.cardWrapper}>
+        <ChronologicalCard
+          item={item}
+          context="chronological"
+          onEdit={handleEdit}
+          onDelete={onDelete}
+        />
+      </div>
     </div>
   );
 };

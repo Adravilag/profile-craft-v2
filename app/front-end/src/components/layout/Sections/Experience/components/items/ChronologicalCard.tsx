@@ -37,12 +37,14 @@ interface ChronologicalCardProps {
   item: CombinedItem;
   context?: 'education' | 'experience' | 'chronological';
   onEdit?: (item: CombinedItem) => void;
+  onDelete?: (item: CombinedItem) => void;
 }
 
 const ChronologicalCard: React.FC<ChronologicalCardProps> = ({
   item,
   context = 'chronological',
   onEdit,
+  onDelete,
 }) => {
   const { t } = useTranslation();
   const imgCandidate = findImageForName(item.company ?? item.institution);
@@ -83,70 +85,105 @@ const ChronologicalCard: React.FC<ChronologicalCardProps> = ({
         </div>
       )}
 
-      {/* Header solo en contexto cronológico */}
-      {context === 'chronological' && (
-        <div className={styles.chronologicalHeader}>
-          <div className={`${styles.chronologicalType} ${styles[item.type]}`}>
-            {item.type === 'experience' ? t.experience.title : t.experience.education}
+      <div className={styles.chronologicalContent}>
+        {/* Header con enfoque diferente según el tipo */}
+        {context === 'chronological' && (
+          <div className={styles.chronologicalHeader}>
+            <div className={`${styles.chronologicalType} ${styles[item.type]}`}>
+              {item.type === 'experience' ? (
+                <>
+                  <i className="fas fa-building"></i>
+                  {t.experience.title}
+                </>
+              ) : (
+                <>
+                  <i className="fas fa-graduation-cap"></i>
+                  {t.experience.education}
+                </>
+              )}
+            </div>
           </div>
+        )}
+
+        {/* Para experiencias: Mostrar empresa como principal, puesto como secundario */}
+        {item.type === 'experience' ? (
+          <>
+            <h4 className={`${styles.chronologicalTitle} ${styles.companyTitle}`}>
+              <i className="fas fa-building"></i>
+              {item.company}
+            </h4>
+            <p className={`${styles.metaRow} ${styles.positionSubtitle}`}>
+              <i className="fas fa-user-tie"></i>
+              <span>{item.title}</span>
+            </p>
+          </>
+        ) : (
+          <>
+            <h4 className={styles.chronologicalTitle}>{item.title}</h4>
+            <p className={styles.metaRow}>
+              <i className="fas fa-university"></i>
+              <span>{item.institution}</span>
+            </p>
+          </>
+        )}
+
+        <div className={styles.chronologicalPeriod}>
+          <i className="fas fa-calendar-alt"></i>
+          <span>{formatDateRange(item.start_date, item.end_date)}</span>
         </div>
-      )}
 
-      <h4 className={styles.chronologicalTitle}>{item.title}</h4>
+        <div className={styles.chronologicalDuration}>
+          <i className="fas fa-hourglass-half"></i>
+          <span>{calculateDuration(item.start_date, item.end_date)}</span>
+        </div>
 
-      <p className={styles.metaRow}>
-        <i className={item.type === 'experience' ? 'fas fa-building' : 'fas fa-university'} />
-        <span>{item.type === 'experience' ? item.company : item.institution}</span>
-      </p>
+        {item.description && <p className={styles.chronologicalDescription}>{item.description}</p>}
 
-      <div className={styles.chronologicalPeriod}>
-        <i className="fas fa-calendar-alt" />
-        <span>{formatDateRange(item.start_date, item.end_date)}</span>
-      </div>
-
-      <div className={styles.chronologicalDuration}>
-        <i className="fas fa-hourglass-half" />
-        <span>{calculateDuration(item.start_date, item.end_date)}</span>
-      </div>
-
-      <p className={styles.chronologicalDescription}>{item.description}</p>
-
-      {/* Tecnologías para experiencias */}
-      {item.type === 'experience' && item.technologies && item.technologies.length > 0 && (
-        <div className={styles.chronologicalSkills}>
-          <div className={styles.skillsLabel}>
-            <i className="fas fa-tools" />
-            <span>{t.forms.experience.technologies}:</span>
+        {/* Tecnologías para experiencias */}
+        {item.type === 'experience' && item.technologies && item.technologies.length > 0 && (
+          <div className={styles.chronologicalSkills}>
+            <div className={styles.skillsLabel}>
+              <i className="fas fa-tools"></i>
+              <span>{t.forms.experience.technologies}:</span>
+            </div>
+            <div className={styles.skillsTags}>
+              {item.technologies.map((tech: string, idx: number) => (
+                <SkillPill key={idx} name={tech} colored={true} />
+              ))}
+            </div>
           </div>
-          <div className={styles.skillsTags}>
-            {item.technologies.map((tech: string, idx: number) => (
-              <SkillPill key={idx} name={tech} colored={true} />
-            ))}
+        )}
+
+        {/* Calificación para educación */}
+        {item.type === 'education' && item.grade && (
+          <div className={styles.educationGrade}>
+            <i className="fas fa-medal"></i>
+            <span>
+              {t.forms.experience.grade}: {item.grade}
+            </span>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Calificación para educación */}
-      {item.type === 'education' && item.grade && (
-        <div className={styles.educationGrade}>
-          <i className="fas fa-medal" />
-          <span>
-            {t.forms.experience.grade}: {item.grade}
-          </span>
-        </div>
-      )}
+        {/* Acciones: editar + eliminar. Mostramos solo iconos (sin labels) */}
+        <div className={cardStyles.cardActions}>
+          <button
+            className={cardStyles.editBtn}
+            type="button"
+            onClick={() => onEdit && onEdit(item)}
+            aria-label={t.experience.admin?.edit || 'Editar'}
+          >
+            <i className="fas fa-edit" />
+          </button>
 
-      {/* Botón de editar: siempre visible pero puede ser estilizado por CSS */}
-      <div className={cardStyles.cardActions}>
-        <button
-          className={cardStyles.editBtn}
-          type="button"
-          onClick={() => onEdit && onEdit(item)}
-          aria-label={t.experience.admin?.edit || 'Editar'}
-        >
-          <i className="fas fa-edit" />
-          <span className={cardStyles.editLabel}>{t.experience.admin?.edit || 'Editar'}</span>
-        </button>
+          <button
+            className={cardStyles.deleteBtn}
+            type="button"
+            onClick={() => onDelete && onDelete(item)}
+            aria-label={t.experience.admin?.delete || 'Eliminar'}
+          >
+            <i className="fas fa-trash" />
+          </button>
+        </div>
       </div>
     </div>
   );

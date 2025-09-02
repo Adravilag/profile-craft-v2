@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { experiences as experiencesApi, education as educationApi } from '@/services/endpoints';
-const { getExperiences, createExperience, updateExperience, deleteExperience } = experiencesApi;
-const { getEducation, createEducation, updateEducation, deleteEducation } = educationApi;
+import { useExperienceSection } from '@/hooks/useExperienceSection';
 import type { Experience, Education } from '@/types/api';
 import { useTimelineAnimation } from '@/hooks/useTimelineAnimation';
 import { useNotificationContext } from '@/contexts';
@@ -12,9 +10,9 @@ import styles from './ExperienceSection.module.css';
 import ExperienceCard from './components/cards/ExperienceCard';
 import EducationCard from './components/cards/EducationCard';
 import ChronologicalItem from './components/items/ChronologicalItem';
-import { FloatingActionButton, AdminModal } from '@/ui';
 import { useFab } from '@/contexts/FabContext';
-import ExperienceModal from './components/ExperienceModal';
+import { useModal } from '@/contexts/ModalContext';
+import FormModal from './components/FormModal';
 
 interface ExperienceSectionProps {
   className?: string;
@@ -22,23 +20,34 @@ interface ExperienceSectionProps {
   onAdminClick?: () => void;
 }
 
-const ExperienceSection: React.FC<ExperienceSectionProps> = ({
-  className,
-  showAdminFAB = false,
-  onAdminClick,
-}) => {
+const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
   const { t } = useTranslation();
-  const [experiences, setExperiences] = useState<Experience[]>([]);
-  const [education, setEducation] = useState<Education[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [retryCount, setRetryCount] = useState<number>(0);
+  const { openModal, closeModal } = useModal();
+  const { showSuccess, showError } = useNotificationContext();
+  const timelineRef = useTimelineAnimation();
+
+  // Usar el hook unificado de experiencia
+  const {
+    experiences,
+    education,
+    chronologicalData,
+    loading,
+    error,
+    retryCount,
+    stats,
+    createExperience,
+    updateExperience,
+    removeExperience,
+    retryExperiences,
+    createEducation,
+    updateEducation,
+    removeEducation,
+    refreshAll,
+  } = useExperienceSection();
+
+  // Estados para UI y administración
   const [viewMode, setViewMode] = useState<'traditional' | 'chronological'>('traditional');
-  const [showAdminModal, setShowAdminModal] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [activeAdminSection, setActiveAdminSection] = useState<'experience' | 'education'>(
-    'experience'
-  );
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingType, setEditingType] = useState<'experience' | 'education' | null>(null);
   const [experienceForm, setExperienceForm] = useState<any>({
@@ -59,9 +68,6 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
     grade: '',
     order_index: 0,
   });
-  // educationForm already defined above when initializing component state
-  const { showSuccess, showError } = useNotificationContext();
-  const timelineRef = useTimelineAnimation();
 
   // Helper para resolver nombres de clase desde CSS Modules.
   // Intenta variantes kebab-case y camelCase porque la convención de export puede variar.
@@ -82,135 +88,208 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
       .map(k => (typeof k === 'string' ? resolveStyle(k) : ''))
       .filter(Boolean)
       .join(' ');
-
-  // Función para cargar educación
-  const loadEducation = useCallback(async () => {
-    try {
-      const data = await getEducation();
-      setEducation(Array.isArray(data) ? data : []);
-    } catch (err) {
-      console.error('Error loading education:', err);
-      // En caso de error, establecer array vacío para evitar errores de renderizado
-      setEducation([]);
-      showError('Error', 'No se pudo cargar la información de educación');
-    }
-  }, [showError]);
-
-  // Función para reintentar la carga de experiencias
-  const retryLoadExperiences = useCallback(async () => {
-    if (retryCount >= 3) return;
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const data = await getExperiences();
-      setExperiences(data);
-      setLoading(false);
-      setRetryCount(0);
-    } catch (err) {
-      setRetryCount(prev => prev + 1);
-      setError(`Error al cargar experiencias (Intento ${retryCount + 1}/3)`);
-      setLoading(false);
-
-      // Auto-retry después de 2 segundos si no hemos alcanzado el límite
-      if (retryCount < 2) {
-        setTimeout(() => retryLoadExperiences(), 2000);
-      }
-    }
-  }, [retryCount]);
-
-  // Efecto mejorado para cargar experiencias y educación
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        // Cargar experiencias y educación en paralelo
-        const [experiencesData, educationData] = await Promise.allSettled([
-          getExperiences(),
-          getEducation(),
-        ]);
-
-        // Procesar experiencias
-        if (experiencesData.status === 'fulfilled') {
-          setExperiences(Array.isArray(experiencesData.value) ? experiencesData.value : []);
-        } else {
-          console.error('Error loading experiences:', experiencesData.reason);
-          setExperiences([]); // Asegurar que siempre sea un array
-          setError('Usando datos de ejemplo para experiencias (API no disponible)');
-        }
-
-        // Procesar educación
-        if (educationData.status === 'fulfilled') {
-          setEducation(Array.isArray(educationData.value) ? educationData.value : []);
-        } else {
-          console.error('Error loading education:', educationData.reason);
-          setEducation([]); // Asegurar que siempre sea un array
-          // Llamar a loadEducation que maneja los datos mock
-          await loadEducation();
-          if (!error) {
-            setError('Usando datos de ejemplo para educación (API no disponible)');
-          }
-        }
-
-        setLoading(false);
-      } catch (err) {
-        console.error('Error loading data:', err);
-        setError('Error al cargar datos');
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, [loadEducation]); // Función para cambiar modo de vista
   const handleViewModeChange = useCallback((mode: 'traditional' | 'chronological') => {
     setViewMode(mode);
   }, []);
-  // Funciones de manejo para administración
-  const handleEditExperience = (experience: Experience) => {
-    setExperienceForm({
-      title: experience.position,
-      company: experience.company,
-      start_date: experience.start_date, // Mantener formato original de la API
-      end_date: experience.end_date, // Mantener formato original de la API
-      description: experience.description || '',
-      technologies: experience.technologies?.join(', ') || '',
-      order_index: experience.order_index,
-    });
-    setEditingId(experience._id);
-    setEditingType('experience');
-    setShowForm(true);
+
+  // Funciones de manejo para administración usando los hooks
+  const handleEditExperience = async (experience: Experience) => {
+    console.log('handleEditExperience llamado con:', experience);
+    try {
+      const mod = await import('./components/FormModal');
+      const FormModalComp = mod.default;
+
+      const modalContent = React.createElement(FormModalComp, {
+        isOpen: true,
+        onClose: () => {
+          closeModal('edit-experience');
+          // Refrescar datos después de la edición
+          refreshAll();
+        },
+        formType: 'experience',
+        isEditing: true,
+        initialData: experience,
+        onSubmit: async (data: any) => {
+          console.log('Actualizando experiencia:', data);
+          // Aquí iría la lógica de actualización
+          closeModal('edit-experience');
+          refreshAll();
+        },
+      });
+
+      console.log('Abriendo modal edit-experience');
+      openModal('edit-experience', modalContent, {
+        title: 'Editar Experiencia',
+        disableAutoFocus: true,
+      });
+    } catch (err) {
+      console.error('Error al abrir modal de edición de experiencia:', err);
+    }
   };
 
-  const handleEditEducation = (edu: Education) => {
-    setEducationForm({
-      title: edu.title,
-      institution: edu.institution,
-      start_date: edu.start_date, // Mantener formato original de la API
-      end_date: edu.end_date, // Mantener formato original de la API
-      description: edu.description || '',
-      grade: edu.grade || '',
-      order_index: edu.order_index || 0,
-    });
-    setEditingId(edu.id?.toString() || '');
-    setEditingType('education');
-    setShowForm(true);
+  const handleEditEducation = async (edu: Education) => {
+    console.log('handleEditEducation llamado con:', edu);
+    try {
+      const mod = await import('./components/FormModal');
+      const FormModalComp = mod.default;
+
+      const modalContent = React.createElement(FormModalComp, {
+        isOpen: true,
+        onClose: () => {
+          closeModal('edit-education');
+          // Refrescar datos después de la edición
+          refreshAll();
+        },
+        formType: 'education',
+        isEditing: true,
+        initialData: edu,
+        onSubmit: async (data: any) => {
+          console.log('Actualizando educación:', data);
+          // Aquí iría la lógica de actualización
+          closeModal('edit-education');
+          refreshAll();
+        },
+      });
+
+      console.log('Abriendo modal edit-education');
+      openModal('edit-education', modalContent, {
+        title: 'Editar Educación',
+        disableAutoFocus: true,
+      });
+    } catch (err) {
+      console.error('Error al abrir modal de edición de educación:', err);
+    }
   };
 
+  const handleAddEducation = async () => {
+    console.log('handleAddEducation llamado');
+    try {
+      const mod = await import('./components/FormModal');
+      const FormModalComp = mod.default;
+
+      const modalContent = React.createElement(FormModalComp, {
+        isOpen: true,
+        onClose: () => {
+          closeModal('add-education');
+          // Refrescar datos después de la creación
+          refreshAll();
+        },
+        formType: 'education',
+        isEditing: false,
+        onSubmit: async (data: any) => {
+          console.log('Creando nueva educación:', data);
+          // Aquí iría la lógica de creación
+          closeModal('add-education');
+          refreshAll();
+        },
+      });
+
+      console.log('Abriendo modal add-education');
+      openModal('add-education', modalContent, {
+        title: 'Nueva Educación',
+        disableAutoFocus: true,
+      });
+    } catch (err) {
+      console.error('Error al abrir modal de nueva educación:', err);
+    }
+  };
+
+  const handleAddExperience = async () => {
+    console.log('handleAddExperience llamado');
+    try {
+      const mod = await import('./components/FormModal');
+      const FormModalComp = mod.default;
+
+      const modalContent = React.createElement(FormModalComp, {
+        isOpen: true,
+        onClose: () => {
+          closeModal('add-experience');
+          // Refrescar datos después de la creación
+          refreshAll();
+        },
+        formType: 'experience',
+        isEditing: false,
+        onSubmit: async (data: any) => {
+          console.log('Creando nueva experiencia:', data);
+          // Aquí iría la lógica de creación
+          closeModal('add-experience');
+          refreshAll();
+        },
+      });
+
+      console.log('Abriendo modal add-experience');
+      openModal('add-experience', modalContent, {
+        title: 'Nueva Experiencia',
+        disableAutoFocus: true,
+      });
+    } catch (err) {
+      console.error('Error al abrir modal de nueva experiencia:', err);
+    }
+  };
+
+  // Función para manejar edición desde vista cronológica (puede ser experiencia o educación)
+  const handleEditCombined = (item: any) => {
+    console.log('handleEditCombined llamado con:', item);
+    if (!item) return;
+
+    if (item.type === 'experience') {
+      // Convertir el item a formato Experience
+      const experience: Experience = {
+        _id: item._id,
+        id: item.id,
+        position: item.title,
+        company: item.company,
+        start_date: item.start_date,
+        end_date: item.end_date,
+        description: item.description,
+        technologies: item.technologies,
+        is_current: item.is_current,
+        order_index: item.order_index,
+        user_id: item.user_id || '1',
+      };
+      handleEditExperience(experience);
+    } else if (item.type === 'education') {
+      // Convertir el item a formato Education
+      const education: Education = {
+        _id: item._id,
+        id: item.id,
+        title: item.title,
+        institution: item.institution,
+        start_date: item.start_date,
+        end_date: item.end_date,
+        description: item.description,
+        grade: item.grade,
+        order_index: item.order_index,
+      };
+      handleEditEducation(education);
+    }
+  };
+
+  // Handler combinado para eliminación desde la vista cronológica
+  const handleDeleteCombined = (item: any) => {
+    if (!item) return;
+
+    if (item.type === 'experience') {
+      const id = item._id || item.id;
+      const title = item.title || item.company || 'Experiencia';
+      if (id) handleDeleteExperience(id, title);
+    } else if (item.type === 'education') {
+      const id = item._id || item.id;
+      const title = item.title || item.institution || 'Educación';
+      if (id) handleDeleteEducation(id, title);
+    }
+  };
+
+  // Usar los hooks para eliminar
   const handleDeleteExperience = async (id: string, title: string) => {
     if (!confirm(`¿Estás seguro de eliminar la experiencia "${title}"?`)) {
       return;
     }
 
     try {
-      await deleteExperience(id);
-
-      // Actualizar el estado local eliminando el elemento
-      setExperiences(prev => (Array.isArray(prev) ? prev.filter(exp => exp._id !== id) : []));
-
-      showSuccess('Experiencia Eliminada', `Se ha eliminado "${title}" correctamente`);
+      await removeExperience(id, title);
     } catch (error) {
       console.error('Error eliminando experiencia:', error);
-      showError('Error', 'No se pudo eliminar la experiencia laboral');
     }
   };
 
@@ -225,33 +304,15 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
     }
 
     try {
-      // Convertir ID a string para la API y limpiar cualquier caracter extra
-      const cleanId = String(id).trim();
-      console.log('🗑️ Eliminando educación con ID:', cleanId);
-      console.log('🔍 Tipo de ID original:', typeof id, 'Valor:', id);
-
-      await deleteEducation(cleanId);
-
-      // Actualizar el estado local eliminando el elemento
-      setEducation(prev =>
-        Array.isArray(prev)
-          ? prev.filter(edu => {
-              const eduId = edu._id || edu.id;
-              return eduId !== id && eduId !== cleanId && String(eduId) !== cleanId;
-            })
-          : []
-      );
-
-      showSuccess('Formación Eliminada', `Se ha eliminado "${title}" correctamente`);
+      await removeEducation(id, title);
     } catch (error) {
       console.error('Error eliminando educación:', error);
-      showError('Error', 'No se pudo eliminar la formación académica');
     }
   };
   const handleNewItem = () => {
     clearForms(); // Limpiar formularios antes de crear nuevo
     setEditingId(null);
-    setEditingType(activeAdminSection);
+    setEditingType(null);
     setShowForm(true);
   };
 
@@ -285,9 +346,10 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
       <div className={styles.adminItemsList}>
         {experiences
           .sort((a, b) => {
-            const dateA = parseDate(a.end_date);
-            const dateB = parseDate(b.end_date);
-            return dateB - dateA; // Ordenamiento descendente por fecha de fin (más reciente primero)
+            // Ordenamiento simple por fecha de fin descendente
+            const dateA = new Date(a.end_date || '').getTime() || 0;
+            const dateB = new Date(b.end_date || '').getTime() || 0;
+            return dateB - dateA;
           })
           .map(experience => (
             <div key={experience._id} className={styles.adminItemCard}>
@@ -356,6 +418,10 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
           <i className="fas fa-graduation-cap"></i>
           <h3>{t.experience.admin.noEducation}</h3>
           <p>{t.experience.admin.noEducationDesc}</p>
+          <button className={styles.addButton} onClick={handleAddEducation}>
+            <i className="fas fa-plus"></i>
+            Añadir Primera Educación
+          </button>
         </div>
       );
     }
@@ -364,9 +430,10 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
       <div className={styles.adminItemsList}>
         {education
           .sort((a, b) => {
-            const dateA = parseDate(a.end_date);
-            const dateB = parseDate(b.end_date);
-            return dateB - dateA; // Ordenamiento descendente por fecha de fin (más reciente primero)
+            // Ordenamiento simple por fecha de fin descendente
+            const dateA = new Date(a.end_date || '').getTime() || 0;
+            const dateB = new Date(b.end_date || '').getTime() || 0;
+            return dateB - dateA;
           })
           .map(edu => (
             <div key={edu._id || edu.id} className={styles.adminItemCard}>
@@ -434,57 +501,17 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
               </div>
             </div>
           ))}
+        <div className={styles.addNewContainer}>
+          <button className={styles.addNewButton} onClick={handleAddEducation}>
+            <i className="fas fa-plus"></i>
+            Añadir Nueva Educación
+          </button>
+        </div>
       </div>
     );
-  }; // Función para convertir fecha "Mes Año" a número para ordenamiento
-  const parseDate = (dateString: string | null | undefined): number => {
-    // Validar que dateString no sea null, undefined o vacío
-    if (!dateString || dateString.trim() === '') {
-      return 0; // Valor por defecto para fechas inválidas
-    }
-
-    if (dateString === 'Presente') {
-      return new Date().getFullYear() * 12 + new Date().getMonth();
-    }
-
-    // Si es solo año (formato legacy)
-    if (/^\d{4}$/.test(dateString)) {
-      return parseInt(dateString) * 12;
-    }
-
-    // Si es formato "Mes Año"
-    const months = [
-      'Enero',
-      'Febrero',
-      'Marzo',
-      'Abril',
-      'Mayo',
-      'Junio',
-      'Julio',
-      'Agosto',
-      'Septiembre',
-      'Octubre',
-      'Noviembre',
-      'Diciembre',
-    ];
-
-    const parts = dateString.split(' ');
-    if (parts.length >= 2) {
-      const [monthStr, yearStr] = parts;
-      const monthIndex = months.indexOf(monthStr);
-      const year = parseInt(yearStr);
-
-      if (monthIndex !== -1 && !isNaN(year)) {
-        return year * 12 + monthIndex;
-      }
-    }
-
-    // Fallback: intentar parsear como año
-    const fallbackYear = parseInt(dateString);
-    return !isNaN(fallbackYear) ? fallbackYear * 12 : 0;
   };
 
-  // Función para manejar el envío del formulario mejorado
+  // Función para manejar el envío del formulario usando los hooks
   const handleEnhancedFormSubmit = async (formData: any) => {
     try {
       const isExperience = editingType === 'experience';
@@ -508,23 +535,18 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
         };
 
         if (editingId) {
-          // Actualizar experiencia existente usando API
-          const updatedExperience = await updateExperience(editingId, experienceData);
-          const updatedExperiences = experiences.map(exp =>
-            exp._id === editingId ? { ...exp, ...updatedExperience } : exp
-          );
-          setExperiences(updatedExperiences);
+          // Actualizar experiencia existente usando hook
+          await updateExperience(editingId, experienceData);
           showSuccess(
             'Experiencia Actualizada',
             `Se ha actualizado "${experienceData.position}" correctamente`
           );
         } else {
-          // Crear nueva experiencia usando API
-          const newExperience = await createExperience(experienceData as any);
-          setExperiences([...experiences, newExperience]);
+          // Crear nueva experiencia usando hook
+          await createExperience(experienceData as any);
           showSuccess(
             'Nueva Experiencia Creada',
-            `Se ha creado "${newExperience.position}" correctamente`
+            `Se ha creado "${experienceData.position}" correctamente`
           );
         }
       } else {
@@ -541,24 +563,18 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
         };
 
         if (editingId) {
-          // Actualizar educación existente
-          const updatedEducation = await updateEducation(parseInt(editingId), educationData);
-          const updatedEducationList = (Array.isArray(education) ? education : []).map(edu => {
-            const eduId = (edu._id || edu.id)?.toString();
-            return eduId === editingId ? { ...edu, ...updatedEducation } : edu;
-          });
-          setEducation(updatedEducationList);
+          // Actualizar educación existente usando hook
+          await updateEducation(parseInt(editingId), educationData);
           showSuccess(
             'Educación Actualizada',
             `Se ha actualizado "${educationData.title}" correctamente`
           );
         } else {
-          // Crear nueva educación
-          const newEducation = await createEducation(educationData);
-          setEducation([...(Array.isArray(education) ? education : []), newEducation]);
+          // Crear nueva educación usando hook
+          await createEducation(educationData);
           showSuccess(
             'Nueva Formación Académica Creada',
-            `Se ha creado "${newEducation.title}" correctamente`
+            `Se ha creado "${educationData.title}" correctamente`
           );
         }
       }
@@ -627,7 +643,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
     };
 
     return (
-      <ExperienceModal
+      <FormModal
         isOpen={true}
         onClose={handleCloseForm}
         formType={editingType as 'experience' | 'education'}
@@ -636,19 +652,6 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
         onSubmit={handleEnhancedFormSubmit}
       />
     );
-  };
-
-  // Función para renderizar el contenido de administración
-  const renderAdminContent = () => {
-    if (showForm) {
-      return renderForm();
-    }
-
-    if (activeAdminSection === 'experience') {
-      return renderExperienceList();
-    } else {
-      return renderEducationList();
-    }
   };
 
   // Estados de carga y error mejorados
@@ -674,7 +677,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
           <p>{error}</p>
           <button
             className={styles.retryButton}
-            onClick={retryLoadExperiences}
+            onClick={retryExperiences}
             disabled={retryCount >= 3}
           >
             <i className="fas fa-redo"></i>
@@ -731,24 +734,18 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
             <span>{t.experience.viewChronological}</span>
           </button>
         </div>
-        {/* Estadísticas rápidas */}
+        {/* Estadísticas rápidas usando stats del hook */}
         <div className={styles.experienceStats}>
           <div className={styles.statItem}>
-            <span className={styles.statNumber}>{experiences.length}</span>
+            <span className={styles.statNumber}>{stats.experienceCount}</span>
             <span className={styles.statLabel}>{t.experience.stats.experiences}</span>
           </div>
           <div className={styles.statItem}>
-            <span className={styles.statNumber}>
-              {Array.isArray(education) ? education.length : 0}
-            </span>
+            <span className={styles.statNumber}>{stats.educationCount}</span>
             <span className={styles.statLabel}>{t.experience.stats.certifications}</span>
           </div>
           <div className={styles.statItem}>
-            <span className={styles.statNumber}>
-              {Array.isArray(experiences)
-                ? experiences.reduce((acc, exp) => acc + (exp.technologies?.length || 0), 0)
-                : 0}
-            </span>
+            <span className={styles.statNumber}>{stats.technologiesCount}</span>
             <span className={styles.statLabel}>{t.experience.stats.technologies}</span>
           </div>
         </div>
@@ -770,16 +767,30 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
                 {Array.isArray(experiences) ? (
                   experiences
                     .sort((a, b) => {
-                      const dateA = a.end_date ? parseDate(a.end_date) : 0;
-                      const dateB = b.end_date ? parseDate(b.end_date) : 0;
+                      // Ordenamiento simple por fecha de fin descendente
+                      const dateA = new Date(a.end_date || '').getTime() || 0;
+                      const dateB = new Date(b.end_date || '').getTime() || 0;
                       return dateB - dateA;
                     })
                     .map((exp, index) => (
-                      <ExperienceCard key={exp._id} experience={exp} index={index} />
+                      <ExperienceCard
+                        key={exp._id}
+                        experience={exp}
+                        index={index}
+                        onEdit={() => handleEditExperience(exp)}
+                      />
                     ))
                 ) : (
                   <div>Cargando experiencias...</div>
                 )}
+
+                {/* Botón para añadir nueva experiencia */}
+                <div className={styles.addNewContainer}>
+                  <button className={styles.addNewButton} onClick={handleAddExperience}>
+                    <i className="fas fa-plus"></i>
+                    Añadir Nueva Experiencia
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -796,8 +807,9 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
               <div className={styles.timelineContainer}>
                 {(Array.isArray(education) ? education : [])
                   .sort((a, b) => {
-                    const dateA = parseDate(a.end_date);
-                    const dateB = parseDate(b.end_date);
+                    // Ordenamiento simple por fecha de fin descendente
+                    const dateA = new Date(a.end_date || '').getTime() || 0;
+                    const dateB = new Date(b.end_date || '').getTime() || 0;
                     return dateB - dateA;
                   })
                   .map((edu, index) => (
@@ -805,8 +817,17 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
                       key={edu._id || edu.id || index}
                       education={edu}
                       index={index + (Array.isArray(experiences) ? experiences.length : 0)}
+                      onEdit={() => handleEditEducation(edu)}
                     />
                   ))}
+
+                {/* Botón para añadir nueva educación */}
+                <div className={styles.addNewContainer}>
+                  <button className={styles.addNewButton} onClick={handleAddEducation}>
+                    <i className="fas fa-plus"></i>
+                    Añadir Nueva Educación
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -817,123 +838,21 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({
             <div className={styles.chronologicalTimeline}>
               <div className={styles.timelineLine}></div>
 
-              {/* Timeline unificado con todas las experiencias y educación */}
-              {(() => {
-                // Combinar experiencias y educación
-                const combinedItems: any[] = [
-                  ...(Array.isArray(experiences) ? experiences : []).map(exp => ({
-                    _id: exp._id,
-                    title: exp.position, // En experiencias, el título es 'position'
-                    start_date: exp.start_date,
-                    end_date: exp.end_date,
-                    description: exp.description,
-                    type: 'experience' as const,
-                    company: exp.company,
-                    technologies: exp.technologies,
-                  })),
-                  ...(Array.isArray(education) ? education : []).map(edu => ({
-                    _id: (edu._id || edu.id)?.toString() || '', // Convertir ID a string
-                    id: typeof edu.id === 'number' ? edu.id : undefined,
-                    title: edu.title,
-                    start_date: edu.start_date,
-                    end_date: edu.end_date,
-                    description: edu.description,
-                    type: 'education' as const,
-                    institution: edu.institution,
-                    grade: edu.grade,
-                  })),
-                ];
-
-                // Ordenar por fecha de fin (de mayor a menor - más reciente primero)
-                const sortedItems = combinedItems.sort((a, b) => {
-                  // Validar que las fechas existan antes de intentar parsearlas
-                  const dateA = a.end_date ? parseDate(a.end_date) : 0;
-                  const dateB = b.end_date ? parseDate(b.end_date) : 0;
-                  return dateB - dateA; // Ordenamiento descendente (más reciente primero)
-                });
-
-                return sortedItems.map((item, index) => (
-                  <ChronologicalItem
-                    key={`${item.type}-${item._id || String(item.id)}`}
-                    item={item}
-                    index={index}
-                    position={index % 2 === 0 ? 'left' : 'right'}
-                  />
-                ));
-              })()}
+              {/* Timeline unificado usando chronologicalData del hook */}
+              {chronologicalData.map((item, index) => (
+                <ChronologicalItem
+                  key={`${item.type}-${item._id || String(item.id)}`}
+                  item={item}
+                  index={index}
+                  position={index % 2 === 0 ? 'left' : 'right'}
+                  onEdit={handleEditCombined}
+                  onDelete={handleDeleteCombined}
+                />
+              ))}
             </div>
           </div>
         )}
       </div>
-      {/* Modal de administración */}
-      <AdminModal
-        isOpen={showAdminModal}
-        onClose={() => setShowAdminModal(false)}
-        title={t.experience.admin.title}
-        icon="fas fa-route"
-        maxWidth="1300px"
-        height="88vh"
-        tabs={[
-          {
-            id: 'experience',
-            label: t.experience.workExperience,
-            icon: 'fas fa-briefcase',
-            content: null,
-          },
-          {
-            id: 'education',
-            label: t.experience.education,
-            icon: 'fas fa-graduation-cap',
-            content: null,
-          },
-        ]}
-        activeTab={activeAdminSection}
-        onTabChange={(tabId: string) => setActiveAdminSection(tabId as 'experience' | 'education')}
-        showTabs={true}
-        floatingActions={
-          showForm
-            ? [
-                {
-                  id: 'cancel-form',
-                  label: t.experience.admin.cancel,
-                  icon: 'fas fa-times',
-                  onClick: handleCloseForm,
-                  variant: 'secondary',
-                },
-                {
-                  id: 'save-form',
-                  label: editingId
-                    ? t.experience.admin.saveChanges
-                    : `${t.experience.admin.create} ${activeAdminSection === 'experience' ? t.experience.workExperience : t.experience.education}`,
-                  icon: 'fas fa-save',
-                  onClick: () => {
-                    const form = document.querySelector('.admin-form') as HTMLFormElement;
-                    if (form) {
-                      form.requestSubmit();
-                    }
-                  },
-                  variant: 'primary',
-                },
-              ]
-            : [
-                {
-                  id: 'new-item',
-                  label: `${activeAdminSection === 'experience' ? t.experience.admin.newExperience : t.experience.admin.newEducation}`,
-                  icon: 'fas fa-plus',
-                  onClick: handleNewItem,
-                  variant: 'primary',
-                },
-              ]
-        }
-      >
-        {showAdminModal && (
-          <div className={styles.adminContentWrapper}>
-            {' '}
-            {/* Contenido principal */}
-            <div className={styles.adminMainContent}>{renderAdminContent()}</div>
-          </div>
-        )}
-      </AdminModal>
     </div>
   );
 };
