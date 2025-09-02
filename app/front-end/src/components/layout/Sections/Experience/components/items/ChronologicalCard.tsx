@@ -127,14 +127,16 @@ const ChronologicalCard: React.FC<ChronologicalCardProps> = ({
           </>
         )}
 
-        <div className={styles.chronologicalPeriod}>
-          <i className="fas fa-calendar-alt"></i>
-          <span>{formatDateRange(item.start_date, item.end_date)}</span>
-        </div>
+        <div className={styles.chronologicalMetaRow}>
+          <div className={styles.chronologicalPeriod}>
+            <i className="fas fa-calendar-alt" />
+            <span>{formatDateRange(item.start_date, item.end_date)}</span>
+          </div>
 
-        <div className={styles.chronologicalDuration}>
-          <i className="fas fa-hourglass-half"></i>
-          <span>{calculateDuration(item.start_date, item.end_date)}</span>
+          <div className={styles.chronologicalDuration}>
+            <i className="fas fa-hourglass-half" />
+            <span>{calculateDuration(item.start_date, item.end_date)}</span>
+          </div>
         </div>
 
         {item.description && <p className={styles.chronologicalDescription}>{item.description}</p>}
