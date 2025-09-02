@@ -71,7 +71,7 @@ const FormModal: React.FC<FormModalProps> = ({
           useModalShell={true}
           useExternalFooter={true}
           formRef={formRef}
-          onSave={() => {}}
+          onSave={() => onClose()}
           onCancel={onClose}
           onFormDataChange={setFormData}
           onValidationErrorsChange={setValidationErrors}
@@ -86,7 +86,7 @@ const FormModal: React.FC<FormModalProps> = ({
           useModalShell={true}
           useExternalFooter={true}
           formRef={formRef}
-          onSave={() => {}}
+          onSave={() => onClose()}
           onCancel={onClose}
           onFormDataChange={setFormData}
           onValidationErrorsChange={setValidationErrors}

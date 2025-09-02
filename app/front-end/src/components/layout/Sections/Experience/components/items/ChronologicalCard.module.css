@@ -190,6 +190,14 @@
   cursor: default;
 }
 
+/* Separación entre icono y texto en badge/tipo y en título principal */
+.chronological-type i,
+.chronological-title i {
+  margin-right: 0.6rem; /* separación consistente */
+  vertical-align: middle;
+  display: inline-block;
+}
+
 .chronological-type.experience {
   background: linear-gradient(135deg, rgb(124 141 255 / 0.25), rgb(154 124 255 / 0.2));
   color: rgb(124 141 255);
@@ -229,7 +237,7 @@
 
 /* ---------- Título ---------- */
 .chronological-title {
-  margin: 0 10px 10px 0px;
+  margin: 0 80px 10px 0px;
   transform: translate3d(0, -6px, 0) scale(1.01);
   font-size: 1.4rem;
   color: var(--md-sys-color-primary);
@@ -247,29 +255,19 @@
 /* ---------- Meta información ---------- */
 .meta-row {
   display: flex;
-  transform: translateY(-4px) scale(1.01);
   gap: 10px; /* Incrementado de 8px a 10px */
   margin-bottom: 16px; /* Incrementado de 12px a 16px */
-  color: var(--md-sys-color-on-surface-variant);
+  color: var(--md-sys-color-on-surface);
   font-weight: 600;
   font-size: 0.95rem; /* Ligeramente más grande */
 }
 
 .meta-row i {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0; /* ahora están en la misma fila, controlar separación desde el contenedor */
-  color: var(--md-sys-color-on-surface-variant);
+  color: var(--md-sys-color-primary);
+  width: 16px;
   font-size: 0.9rem;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
   gap: 10px; /* Incrementado de 8px a 10px */
-  margin-bottom: 12px; /* Incrementado de 8px a 12px */
-  color: var(--md-sys-color-on-surface-variant);
   font-size: 0.9rem; /* Incrementado de 0.875rem a 0.9rem */
-  font-weight: 500; /* Añadido weight */
 }
 
 .chronological-period i,

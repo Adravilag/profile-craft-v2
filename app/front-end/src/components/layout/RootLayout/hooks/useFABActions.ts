@@ -36,6 +36,10 @@ export const useFABActions = ({
   const { openModal, closeModal } = useModal();
   const navigate = useNavigate();
 
+  // NOTA: no ocultamos todos los FABs globalmente.
+  // Algunas acciones administrativas (como crear experiencia/empresa)
+  // solo se mostrarán si `isAuthenticated` es true (ver abajo).
+
   // Acciones del FAB para la sección de testimonios
   const testimonialsFABActions = useMemo<LocalFABAction[]>(() => {
     const actions: LocalFABAction[] = [
@@ -128,18 +132,19 @@ export const useFABActions = ({
 
   // Acciones del FAB para la sección de experiencias (con soporte JSX completo)
   const experienceFABActions = useMemo<LocalFABAction[]>(() => {
-    const base: LocalFABAction[] = [
-      {
+    const base: LocalFABAction[] = [];
+
+    // Solo agregar acciones administrativas si el usuario está autenticado
+    if (isAuthenticated) {
+      base.push({
         id: 'add-experience',
         onClick: async () => {
           try {
-            // Cargar el componente del modal de forma dinámica para mantener bundle ligero
             const mod = await import(
               '@/components/layout/Sections/Experience/components/FormModal'
             );
             const FormModalComp = mod.default;
 
-            // Crear el contenido JSX del modal
             const modalContent = React.createElement(FormModalComp, {
               isOpen: true,
               onClose: () => closeModal('experience-add'),
@@ -150,7 +155,6 @@ export const useFABActions = ({
                 try {
                   const endpoints = await import('@/services/endpoints');
                   const created = await endpoints.experiences.createExperience(data as any);
-                  // Notificar al resto de la app que hubo un cambio (opcional)
                   try {
                     window.dispatchEvent(
                       new CustomEvent('experience-changed', { detail: created })
@@ -158,7 +162,6 @@ export const useFABActions = ({
                   } catch (e) {}
                   closeModal('experience-add');
                 } catch (err) {
-                  // Dejar que el modal muestre los errores si implementa notificaciones
                   console.error('Error creando experiencia desde FAB:', err);
                   throw err;
                 }
@@ -176,35 +179,41 @@ export const useFABActions = ({
         icon: 'fas fa-briefcase',
         label: 'Añadir Experiencia',
         color: 'success',
-      },
-      {
+      });
+
+      // Acción para añadir una *compañía* — reutilizamos el modal de experiencia
+      // y dejamos el campo `company` accesible; no existe un endpoint `companies`
+      // en este repo, así que la intención es abrir el formulario de experiencia
+      // para crear una nueva entrada con la compañía.
+      base.push({
         id: 'add-company',
         onClick: async () => {
           try {
-            // Cargar el componente del modal de forma dinámica para mantener bundle ligero
             const mod = await import(
               '@/components/layout/Sections/Experience/components/FormModal'
             );
             const FormModalComp = mod.default;
 
-            // Crear el contenido JSX del modal
             const modalContent = React.createElement(FormModalComp, {
               isOpen: true,
               onClose: () => closeModal('company-add'),
-              formType: 'company',
-              initialData: {},
+              formType: 'experience',
+              // Preconfiguramos initialData para enfocar el formulario en company
+              initialData: { company: '' },
               isEditing: false,
               onSubmit: async (data: any) => {
                 try {
+                  // Reutilizamos el endpoint de experiencias si queremos persistir
+                  // la compañía como parte de una experiencia. Si se requiere
+                  // un endpoint independiente para compañías, se deberá añadir
+                  // en services/endpoints y adaptar aquí.
                   const endpoints = await import('@/services/endpoints');
-                  const created = await endpoints.companies.createCompany(data as any);
-                  // Notificar al resto de la app que hubo un cambio (opcional)
+                  const created = await endpoints.experiences.createExperience(data as any);
                   try {
                     window.dispatchEvent(new CustomEvent('company-changed', { detail: created }));
                   } catch (e) {}
                   closeModal('company-add');
                 } catch (err) {
-                  // Dejar que el modal muestre los errores si implementa notificaciones
                   console.error('Error creando empresa desde FAB:', err);
                   throw err;
                 }
@@ -222,8 +231,8 @@ export const useFABActions = ({
         icon: 'fas fa-building',
         label: 'Añadir Empresa',
         color: 'success',
-      },
-    ];
+      });
+    }
 
     // Acción de administración de experiencias eliminada intencionalmente
     // (antes añadía un FAB con label 'Gestionar Experiencias')

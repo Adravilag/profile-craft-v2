@@ -503,12 +503,6 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
               </div>
             </div>
           ))}
-        <div className={styles.addNewContainer}>
-          <button className={styles.addNewButton} onClick={handleAddEducation}>
-            <i className="fas fa-plus"></i>
-            Añadir Nueva Educación
-          </button>
-        </div>
       </div>
     );
   };
@@ -801,11 +795,13 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
             {/* Columna de Educación */}
             <div className={styles.educationColumn}>
               <div className={styles.columnHeader}>
-                <div className={styles.columnIcon}>
-                  <i className="fas fa-graduation-cap"></i>
-                </div>
+                {/* Icon moved inside the heading so it's announced/associated with the title */}
                 <h3 className={`${styles.columnTitle} ${styles.strongContrast}`}>
-                  {t.experience.education}
+                  <i
+                    className={`fas fa-graduation-cap ${styles.headingIcon}`}
+                    aria-hidden="true"
+                  ></i>
+                  <span>{t.experience.education}</span>
                 </h3>
               </div>
               <div className={styles.timelineContainer}>
@@ -824,16 +820,6 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
                       onEdit={() => handleEditEducation(edu)}
                     />
                   ))}
-
-                {/* Botón para añadir nueva educación */}
-                {isAuthenticated && (
-                  <div className={styles.addNewContainer}>
-                    <button className={styles.addNewButton} onClick={handleAddEducation}>
-                      <i className="fas fa-plus"></i>
-                      Añadir Nueva Educación
-                    </button>
-                  </div>
-                )}
               </div>
             </div>
           </div>

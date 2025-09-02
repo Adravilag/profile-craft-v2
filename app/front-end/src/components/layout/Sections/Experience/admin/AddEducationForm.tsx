@@ -68,6 +68,11 @@ const AddEducationForm: React.FC<AddEducationFormProps> = ({
     e.preventDefault();
     setIsLoading(true);
 
+    // Cerrar modal de forma optimista inmediatamente al enviar
+    try {
+      onSave();
+    } catch {}
+
     try {
       const educationData = {
         ...formData,
@@ -86,10 +91,12 @@ const AddEducationForm: React.FC<AddEducationFormProps> = ({
       }
 
       window.dispatchEvent(new CustomEvent('education-changed'));
-      onSave();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al guardar formación:', error);
-      showError('Error', 'No se pudo guardar la formación');
+      // Mostrar mensaje de error más descriptivo si viene del servidor
+      const serverMessage =
+        error?.response?.data?.error || error?.message || 'No se pudo guardar la formación';
+      showError('Error', serverMessage);
     } finally {
       setIsLoading(false);
     }

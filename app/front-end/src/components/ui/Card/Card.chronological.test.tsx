@@ -79,7 +79,7 @@ describe('Card - ChronologicalItem Example', () => {
           <div className="type-badge education">EDUCACIÓN</div>
           <h4>{mockEducationItem.title}</h4>
           <p>
-            <i className="fas fa-university" />
+            <i className="fas fa-building-columns" />
             <span>{mockEducationItem.institution}</span>
           </p>
         </Card.Header>

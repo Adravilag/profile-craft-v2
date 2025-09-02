@@ -1,3 +1,5 @@
+// Reuse shared axios instance (with auth interceptor) from services/http
+import { API } from './http';
 import axios from 'axios';
 import type {
   UserProfile,
@@ -30,11 +32,6 @@ import { getUserId } from '@/features/users/utils/userConfig';
 // If using Vite, use import.meta.env; if using Create React App, ensure @types/node is installed and add a declaration for process.env if needed.
 const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000/api';
 debugLog.api('🔧 API Base URL configurada:', API_BASE_URL);
-
-const API = axios.create({
-  baseURL: API_BASE_URL,
-  withCredentials: true, // Importante para cookies httpOnly
-});
 
 // Interceptor para log de respuestas
 API.interceptors.response.use(
@@ -312,6 +309,16 @@ export const setDevelopmentToken = async () => {
     // Buscar token de desarrollo en variable de entorno SOLO en local
     if (import.meta.env && import.meta.env.VITE_DEV_JWT_TOKEN) {
       localStorage.setItem('portfolio_auth_token', import.meta.env.VITE_DEV_JWT_TOKEN);
+      // En desarrollo también exponer la cookie no-HttpOnly para que el backend
+      // que valida req.cookies.portfolio_auth_token pueda leerla en requests.
+      try {
+        if (import.meta.env.DEV) {
+          document.cookie = `portfolio_auth_token=${import.meta.env.VITE_DEV_JWT_TOKEN}; path=/`;
+          debugLog.api('🔑 Cookie de desarrollo portfolio_auth_token seteada en document.cookie');
+        }
+      } catch (e) {
+        // silenciar en entornos donde document no exista
+      }
       debugLog.api('🔑 Token de desarrollo tomado de variable de entorno VITE_DEV_JWT_TOKEN');
       return true;
     }
@@ -326,11 +333,28 @@ export const setDevelopmentToken = async () => {
 // Función para obtener token de desarrollo (solo en desarrollo)
 export const getDevToken = async () => {
   try {
+    // Preferir endpoint devLogin que setea la cookie httpOnly en el servidor
+    // (solo disponible en desarrollo). Hacer fallback a /auth/dev-token si no
+    // está disponible.
+    try {
+      const resp = await fetch('/api/auth/devLogin', { method: 'POST', credentials: 'include' });
+      if (resp.ok) {
+        const data = await resp.json();
+        debugLog.api('🔑 devLogin exitoso, cookie seteada por backend:', data.user);
+        return { token: null, user: data.user };
+      }
+    } catch (e) {
+      // fallback
+    }
+
     const response = await API.get('/auth/dev-token');
     const { token, user } = response.data;
 
-    // Guardar token en localStorage
+    // Guardar token en localStorage y también exponer cookie no-HttpOnly en dev
     localStorage.setItem('portfolio_auth_token', token);
+    try {
+      if (import.meta.env.DEV) document.cookie = `portfolio_auth_token=${token}; path=/`;
+    } catch {}
 
     debugLog.api('🔑 Token de desarrollo obtenido y guardado:', user);
     return { token, user };

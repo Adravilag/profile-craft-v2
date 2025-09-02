@@ -355,6 +355,14 @@
   color: #fff;
 }
 
+/* Icono en los encabezados: separación y alineación fina */
+.headingIcon {
+  margin-right: 0.6rem; /* separación consistente */
+  font-size: 18px; /* ligeramente mayor que el texto para visibilidad */
+  vertical-align: middle; /* alinear con el texto */
+  color: var(--md-primary-ctr);
+}
+
 /* ---------- Timeline interior (alineado al rail) ---------- */
 .timeline-container {
   position: relative;
