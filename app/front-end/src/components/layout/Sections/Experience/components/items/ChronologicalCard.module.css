@@ -229,36 +229,16 @@
 
 /* ---------- Título ---------- */
 .chronological-title {
-  margin: 0 0 20px 0; /* Incrementado de 16px a 20px */
-  font-size: 1.2rem; /* Incrementado de 1.5rem a 1.6rem */
-  font-weight: 800;
-  box-shadow:
-    0 16px 48px rgba(45, 212, 191, 0.12),
-    0 6px 20px rgba(45, 212, 191, 0.06),
-    0 0 0 1px rgba(45, 212, 191, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  margin: 0 10px 10px 0px;
   transform: translate3d(0, -6px, 0) scale(1.01);
-  border-left-color: rgb(45 212 191);
-  border-left-width: 5px;
-  align-items: center;
-  gap: 12px;
   font-size: 1.4rem;
   color: var(--md-sys-color-primary);
-  margin-bottom: 8px;
 }
 
 .company-title i {
-  color: var(--md-sys-color-primary);
-  font-size: 1.2rem;
+  padding-right: 8px;
 }
-box-shadow:
-  0 16px 48px rgba(124, 141, 255, 0.12),
-  0 6px 20px rgba(124, 141, 255, 0.06),
-  0 0 0 1px rgba(124, 141, 255, 0.1),
-  inset 0 1px 0 rgba(255, 255, 255, 0.12);
-transform: translate3d(0, -6px, 0) scale(1.01);
-border-left-color: rgb(124 141 255);
-border-left-width: 5px;
+
 .position-subtitle i {
   color: var(--md-sys-color-tertiary);
   font-size: 0.9rem;

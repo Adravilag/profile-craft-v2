@@ -174,7 +174,7 @@ const ChronologicalCard: React.FC<ChronologicalCardProps> = ({
             onClick={() => onEdit && onEdit(item)}
             aria-label={t.experience.admin?.edit || 'Editar'}
           >
-            <i className="fas fa-edit" />
+            <i className="fas fa-pen" />
           </button>
 
           <button
@@ -183,7 +183,7 @@ const ChronologicalCard: React.FC<ChronologicalCardProps> = ({
             onClick={() => onDelete && onDelete(item)}
             aria-label={t.experience.admin?.delete || 'Eliminar'}
           >
-            <i className="fas fa-trash" />
+            <i className="fas fa-trash-alt" />
           </button>
         </div>
       </div>

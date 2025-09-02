@@ -397,14 +397,14 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
                   className={styles.adminBtnSecondary}
                   onClick={() => handleEditExperience(experience)}
                 >
-                  <i className="fas fa-edit"></i>
+                  <i className="fas fa-pen"></i>
                   {t.experience.admin.edit}
                 </button>
                 <button
                   className={styles.adminBtnDanger}
                   onClick={() => handleDeleteExperience(experience._id, experience.position)}
                 >
-                  <i className="fas fa-trash"></i>
+                  <i className="fas fa-trash-alt"></i>
                   {t.experience.admin.delete}
                 </button>
               </div>
