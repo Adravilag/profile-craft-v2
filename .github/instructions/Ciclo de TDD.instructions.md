@@ -138,3 +138,14 @@ class Calculator {
 ## 📌 Recuerda
 
 **TDD es disciplina → prueba primero, implementación mínima, luego refactor.**
+
+## Notas de retroalimentación y reglas prácticas
+
+- Orden de hooks (crítico): nunca colocar early-returns que eviten ejecutar hooks (p. ej. `if (!isOpen) return null`) antes de declarar hooks. Hacer el gating después de las llamadas a hooks o controlar visibilidad desde el componente padre para evitar violaciones de las reglas de React y renders inestables.
+- Tests asíncronos: cuando un componente hace fetch o muestra un skeleton loader, los tests deben usar helpers explícitos (`waitFor`, `findBy*`) o mocks síncronos para evitar flakes y renders parciales.
+- Checklist PR-TDD (antes de abrir PR):
+  1. Añadir test rojo que describa la expectativa.
+  2. Implementar la mínima funcionalidad para pasar el test.
+  3. Ejecutar linters, build y tests locales; arreglar warnings relevantes.
+  4. Añadir o actualizar tests que cubran regresiones y documentar cambios en el test si el contrato cambió.
+- Depuración rápida en tests: si falta un elemento, usar `screen.debug()` o `console.log(container.innerHTML)` justo antes de la aserción para inspeccionar el DOM real.

@@ -779,16 +779,6 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
                 ) : (
                   <div>Cargando experiencias...</div>
                 )}
-
-                {/* Botón para añadir nueva experiencia (visible solo para usuarios autenticados) */}
-                {isAuthenticated && (
-                  <div className={styles.addNewContainer}>
-                    <button className={styles.addNewButton} onClick={handleAddExperience}>
-                      <i className="fas fa-plus"></i>
-                      Añadir Nueva Experiencia
-                    </button>
-                  </div>
-                )}
               </div>
             </div>
 

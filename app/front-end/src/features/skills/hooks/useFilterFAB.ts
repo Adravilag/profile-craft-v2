@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-// Navigation removed: use a local stub
-const useNavigation = () => ({ currentSection: 'home' });
+import { useNavigation } from '@/hooks/useNavigation';
 import { useScrollVisibility } from '@hooks/useScrollVisibility';
 
 interface UseFilterFABProps {

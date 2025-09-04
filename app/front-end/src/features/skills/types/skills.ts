@@ -62,10 +62,11 @@ export interface SkillCardProps {
 }
 
 export interface CategoryFiltersProps {
-  categories: string[];
-  selectedCategory: string;
-  onCategoryChange: (category: string) => void;
-  skillsGrouped: Record<string, any[]>;
+  categories?: string[];
+  selectedCategory?: string;
+  onCategoryChange?: (category: string) => void;
+  skillsGrouped?: Record<string, any[]>;
+  forceVisible?: boolean; // Para testing
 }
 
 export interface SkillsGridProps {
@@ -92,7 +93,11 @@ export interface SkillModalProps {
   onClose: () => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void | Promise<void>;
   onFormChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  onFormChangeWithIcon?: (updates: Partial<SkillFormData & { icon_class?: string }>) => void;
   isAdmin?: boolean;
+  /** Opcionales: permiten ajustar el tamaño máximo del modal desde el consumidor */
+  maxWidth?: string | number;
+  maxHeight?: string | number;
 }
 
 export interface SkillPreviewModalProps {
@@ -102,4 +107,44 @@ export interface SkillPreviewModalProps {
   externalData: Record<string, ExternalSkillData>;
   loadingExternalData: Record<string, boolean>;
   onClose: () => void;
+}
+
+// Tipo para resultados de LogoHub API (basado en documentación oficial)
+export interface LogoHubResult {
+  id: string;
+  name: string;
+  description?: string;
+  website?: string;
+  category?: string;
+  tags?: string[];
+  colors?: {
+    primary: string;
+    secondary?: string;
+  };
+  files: {
+    svg: string;
+    png?: string;
+  };
+  slug?: string;
+  variants?: Record<string, string>;
+  created?: string;
+}
+
+// Respuesta completa de la API LogoHub
+export interface LogoHubApiResponse {
+  logos: LogoHubResult[];
+  total: number;
+  page: {
+    limit: number;
+    offset: number;
+  };
+}
+
+// Error response de LogoHub
+export interface LogoHubError {
+  error: {
+    code: number;
+    message: string;
+    details?: string;
+  };
 }

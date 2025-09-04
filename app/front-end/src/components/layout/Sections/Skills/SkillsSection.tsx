@@ -1,11 +1,10 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import useIsOnSkillsPage from '@/hooks/useIsOnSkillsPage';
 import {
   useSkills,
   useSkillsIcons,
   SkillsGrid,
-  CategoryFilters,
   SkillModal,
+  useSkillsFilter,
   type SortOption,
 } from '@/features/skills';
 import HeaderSection from '../../HeaderSection/HeaderSection';
@@ -15,11 +14,20 @@ import styles from './SkillsSection.module.css';
 
 interface SkillsSectionProps {
   showAdminFAB?: boolean;
+  // Props opcionales para sincronizar con filtros externos (retrocompatibilidad para tests)
+  externalSelectedCategory?: string;
+  onExternalCategoryChange?: (category: string) => void;
 }
 
-const SkillsSection: React.FC<SkillsSectionProps> = ({ showAdminFAB = false }) => {
+const SkillsSection: React.FC<SkillsSectionProps> = ({
+  showAdminFAB = false,
+  externalSelectedCategory,
+  onExternalCategoryChange,
+}) => {
   const { onOpenSkillModal } = useFab();
-  const isOnSkillsPage = useIsOnSkillsPage();
+
+  // Usar el contexto de filtros
+  const skillsFilterContext = useSkillsFilter();
 
   // Usar el hook principal de skills
   const {
@@ -29,11 +37,12 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ showAdminFAB = false }) =
     newSkill,
     editingId,
     draggedSkillId,
-    selectedCategory,
-    setSelectedCategory,
+    selectedCategory: internalSelectedCategory,
+    setSelectedCategory: internalSetSelectedCategory,
     handleOpenModal,
     handleCloseModal,
     handleFormChange,
+    handleFormChangeWithIcon,
     handleAddSkill,
     handleEditSkill,
     handleDeleteSkill,
@@ -44,6 +53,14 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ showAdminFAB = false }) =
     getGroupedSkills,
     getAllCategories,
   } = useSkills();
+
+  // Prioridad: props externos > contexto > estado interno
+  const selectedCategory =
+    externalSelectedCategory ?? skillsFilterContext.selectedCategory ?? internalSelectedCategory;
+  const setSelectedCategory =
+    onExternalCategoryChange ??
+    skillsFilterContext.setSelectedCategory ??
+    internalSetSelectedCategory;
 
   // Cargar iconos de skills
   const { skillsIcons } = useSkillsIcons();
@@ -87,8 +104,12 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ showAdminFAB = false }) =
     });
   }, []);
 
-  // Obtener datos filtrados y agrupados
-  const filteredGrouped = getFilteredGrouped();
+  // Obtener datos filtrados y agrupados - usar contexto si está disponible
+  const filteredGrouped =
+    skillsFilterContext.filteredGrouped &&
+    Object.keys(skillsFilterContext.filteredGrouped).length > 0
+      ? skillsFilterContext.filteredGrouped
+      : getFilteredGrouped();
   const allCategories = getAllCategories();
 
   // Aplicar sorting a los grupos filtrados
@@ -203,16 +224,6 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ showAdminFAB = false }) =
         className="projects"
       />
       <div className="section-container">
-        {/* Filtros de categoría como sidebar flotante lateral izquierdo */}
-        {isOnSkillsPage && (
-          <CategoryFilters
-            categories={allCategories}
-            selectedCategory={selectedCategory}
-            onCategoryChange={setSelectedCategory}
-            skillsGrouped={getGroupedSkills()}
-          />
-        )}
-
         {/* Grid de skills */}
         <div className={styles.skillsContent}>
           <SkillsGrid
@@ -241,6 +252,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ showAdminFAB = false }) =
             onClose={handleCloseModal}
             onSubmit={handleModalSubmit}
             onFormChange={handleFormChange}
+            onFormChangeWithIcon={handleFormChangeWithIcon}
             isAdmin={showAdminFAB}
           />
         )}

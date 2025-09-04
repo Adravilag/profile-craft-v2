@@ -19,9 +19,13 @@ export { useFilterFAB } from './hooks/useFilterFAB';
 export { useResponsive } from './hooks/useResponsive';
 export { useStickyFilter } from './hooks/useStickyFilter';
 
+// Contexts
+export { SkillsFilterProvider, useSkillsFilter } from './contexts/SkillsFilterContext';
+
 // Components
 export { default as SkillCard } from './components/cards/SkillCard';
 export { default as CategoryFilters } from './components/filters/CategoryFilters';
+export { default as SkillsFilterFAB } from './components/filters/SkillsFilterFAB';
 export { default as SortFilters } from './components/filters/SortFilters';
 export { default as SkillsGrid } from './components/grid/SkillsGrid';
 export { default as SkillModal } from './components/modal/SkillModal';

@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
+import { SkillsFilterProvider } from '@/features/skills';
 
 // Mock de contextos y hooks
 vi.mock('@/contexts/UnifiedThemeContext', () => ({
@@ -24,6 +25,7 @@ vi.mock('@/contexts/TranslationContext', () => ({
 
 // Mock del hook que usa useLocation
 vi.mock('@/hooks/useIsOnSkillsPage', () => ({
+  default: () => true,
   useIsOnSkillsPage: () => true,
 }));
 
@@ -66,7 +68,9 @@ describe('SkillsSection', () => {
   it('should not have undefined CSS classes', () => {
     const { container } = render(
       <BrowserRouter>
-        <SkillsSection />
+        <SkillsFilterProvider>
+          <SkillsSection />
+        </SkillsFilterProvider>
       </BrowserRouter>
     );
 
@@ -84,7 +88,9 @@ describe('SkillsSection', () => {
   it('should use correct CSS module classes', () => {
     const { container } = render(
       <BrowserRouter>
-        <SkillsSection />
+        <SkillsFilterProvider>
+          <SkillsSection />
+        </SkillsFilterProvider>
       </BrowserRouter>
     );
 

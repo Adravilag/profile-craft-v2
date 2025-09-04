@@ -8,3 +8,4 @@ export * as experiences from './experiences';
 export * as testimonials from './testimonials';
 export * as certifications from './certifications';
 export * as education from './education';
+export * as about from './about';

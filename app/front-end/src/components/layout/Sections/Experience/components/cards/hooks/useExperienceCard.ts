@@ -92,3 +92,5 @@ export const useExperienceCard = ({
     handleEdit,
   };
 };
+
+export default useExperienceCard;

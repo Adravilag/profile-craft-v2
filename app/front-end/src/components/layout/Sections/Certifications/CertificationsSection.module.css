@@ -436,16 +436,6 @@
 }
 
 /* ===== CARD ACTIONS ===== */
-.certActions {
-  margin-top: auto;
-  padding-top: 1.25rem;
-  transform: translateY(15px);
-  opacity: 0;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  transition-delay: 0.15s;
-  border-top: 1px solid var(--md-sys-color-outline-variant);
-}
-
 .certificationCard:hover .certActions {
   transform: translateY(0);
   opacity: 1;
@@ -757,39 +747,102 @@
 .adminControls {
   display: flex;
   gap: 0.5rem;
-  margin-top: 1rem;
+  margin-left: auto;
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.certificationCard:hover .adminControls {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .editBtn,
 .deleteBtn {
   padding: 0.5rem;
   border: none;
-  border-radius: var(--md-sys-shape-corner-small);
+  border-radius: var(--cert-border-radius);
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 36px;
+  height: 36px;
+  position: relative;
+  overflow: hidden;
+}
+
+.editBtn::before,
+.deleteBtn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
 
 .editBtn {
   background: var(--md-sys-color-primary-container);
   color: var(--md-sys-color-on-primary-container);
+  box-shadow: 0 2px 8px rgba(var(--md-sys-color-primary-rgb), 0.2);
 }
 
 .editBtn:hover {
   background: var(--md-sys-color-primary);
   color: var(--md-sys-color-on-primary);
+  transform: scale(1.1) translateY(-2px);
+  box-shadow: 0 4px 16px rgba(var(--md-sys-color-primary-rgb), 0.4);
+}
+
+.editBtn:hover::before {
+  opacity: 0.1;
 }
 
 .deleteBtn {
   background: var(--md-sys-color-error-container);
   color: var(--md-sys-color-on-error-container);
+  box-shadow: 0 2px 8px rgba(var(--md-sys-color-error-rgb), 0.2);
 }
 
 .deleteBtn:hover {
   background: var(--md-sys-color-error);
   color: var(--md-sys-color-on-error);
+  transform: scale(1.1) translateY(-2px);
+  box-shadow: 0 4px 16px rgba(var(--md-sys-color-error-rgb), 0.4);
+}
+
+.deleteBtn:hover::before {
+  opacity: 0.1;
+}
+
+.editBtn i,
+.deleteBtn i {
+  font-size: 0.875rem;
+  transition: transform 0.2s ease;
+}
+
+.editBtn:hover i {
+  transform: scale(1.1);
+}
+
+.deleteBtn:hover i {
+  transform: scale(1.1);
+}
+
+.certActions {
+  margin-top: auto;
+  padding-top: 1.25rem;
+  transform: translateY(15px);
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: 0.15s;
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 /* ===== ANIMATIONS ===== */

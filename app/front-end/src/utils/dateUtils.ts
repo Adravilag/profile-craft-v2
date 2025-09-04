@@ -86,6 +86,30 @@ export function formatDateFromInput(input: string) {
 }
 
 export function convertSpanishDateToISO(spanish: string) {
-  // naive passthrough
-  return spanish;
+  if (!spanish) return '';
+  const s = spanish.trim();
+
+  // Treat common tokens as-is
+  if (/^(presente|actualmente|actual|ahora|now)$/i.test(s)) return s;
+
+  // Already ISO-like (YYYY-MM-DD)
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+
+  // Match dd-mm-yyyy or dd/mm/yyyy
+  const m = s.match(/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/);
+  if (m) {
+    const [, dd, mm, yyyy] = m;
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  // Fallback: try Date parse and return ISO date if valid
+  try {
+    const d = new Date(s);
+    if (!isNaN(d.getTime())) return d.toISOString().slice(0, 10);
+  } catch (e) {
+    // noop
+  }
+
+  // Last resort: return original string
+  return s;
 }

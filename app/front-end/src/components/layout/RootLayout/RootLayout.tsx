@@ -17,6 +17,7 @@ import { useNotificationContext } from '@/hooks/useNotification';
 import { debugLog } from '@/utils/debugConfig';
 import useScrollSectionDetection from '@/hooks/useScrollSectionDetection';
 import { useRootLayout } from './hooks/useRootLayout';
+import { SkillsFilterProvider, CategoryFilters } from '@/features/skills';
 
 // Hook local para navegación automática cuando se proporciona `initialSection`.
 // Se colocó aquí para evitar dependencias adicionales y mantener la lógica cercana al componente.
@@ -80,6 +81,7 @@ const RootLayoutContent: FC<RootLayoutProps> = ({ initialSection }) => {
     skillsFABActions,
     projectsFABActions,
     experienceFABActions,
+    aboutFABActions,
   } = useRootLayout({
     isAuthenticated,
     currentSection,
@@ -95,81 +97,91 @@ const RootLayoutContent: FC<RootLayoutProps> = ({ initialSection }) => {
   // (global FAB actions removed — not used in this layout)
 
   return (
-    <div className="curriculum-container" style={{ position: 'relative' }}>
-      <div id="curriculum-container">
-        <ProfileHero darkMode={true} />
-        <SmartNavigation navItems={navItems} />
-        <main className="sections-container">
-          <Suspense fallback={<div>Cargando...</div>}>
-            <div id="about">
-              <AboutSection />
-            </div>
-            <div id="experience">
-              <ExperienceSection
-                showAdminFAB={isAuthenticated && currentSection === 'experience'}
-                onAdminClick={() => {}}
-              />
-            </div>
-            <div id="projects">
-              <ProjectsSection
-                showAdminButton={isAuthenticated && currentSection === 'projects'}
-                onAdminClick={() => {}}
-              />
-            </div>
-            <div id="skills">
-              <SkillsSection showAdminFAB={isAuthenticated && currentSection === 'skills'} />
-            </div>
-            <div id="certifications">
-              <CertificationsSection
-                isAdminMode={false}
-                showAdminFAB={isAuthenticated && currentSection === 'certifications'}
-              />
-            </div>
-            <div id="testimonials">
-              <TestimonialsSection
-                isAdminMode={false}
-                showAdminFAB={isAuthenticated && currentSection === 'testimonials'}
-              />
-            </div>
-            <div id="contact">
-              <ContactSection onSubmit={handleContactSubmit} />
-            </div>
-          </Suspense>
-        </main>
-        <Footer className="curriculum-footer" profile={profile} />
-        {/* Usar el router para vistas de superposición */}
-        <NavigationOverlay />
-        {/* Floating Action Buttons globales para secciones (p. ej. Testimonios) */}
-        {currentSection === 'testimonials' && (
-          <FloatingActionButtonGroup
-            actions={testimonialsFABActions as any}
-            position="bottom-right"
-          />
-        )}
-        {currentSection === 'skills' && (
-          <FloatingActionButtonGroup actions={skillsFABActions as any} position="bottom-right" />
-        )}
-        {currentSection === 'projects' && (
-          <FloatingActionButtonGroup actions={projectsFABActions as any} position="bottom-right" />
-        )}
-        {currentSection === 'experience' && (
-          <FloatingActionButtonGroup
-            actions={experienceFABActions as any}
-            position="bottom-right"
-          />
-        )}
+    <SkillsFilterProvider>
+      <div className="curriculum-container" style={{ position: 'relative' }}>
+        <div id="curriculum-container">
+          <ProfileHero darkMode={true} />
+          <SmartNavigation navItems={navItems} />
+          <main className="sections-container">
+            <Suspense fallback={<div>Cargando...</div>}>
+              <div id="about">
+                <AboutSection />
+              </div>
+              <div id="experience">
+                <ExperienceSection
+                  showAdminFAB={isAuthenticated && currentSection === 'experience'}
+                  onAdminClick={() => {}}
+                />
+              </div>
+              <div id="projects">
+                <ProjectsSection
+                  showAdminButton={isAuthenticated && currentSection === 'projects'}
+                  onAdminClick={() => {}}
+                />
+              </div>
+              <div id="skills">
+                <SkillsSection />
+              </div>
+              <div id="certifications">
+                <CertificationsSection
+                  isAdminMode={false}
+                  showAdminFAB={isAuthenticated && currentSection === 'certifications'}
+                />
+              </div>
+              <div id="testimonials">
+                <TestimonialsSection
+                  isAdminMode={false}
+                  showAdminFAB={isAuthenticated && currentSection === 'testimonials'}
+                />
+              </div>
+              <div id="contact">
+                <ContactSection onSubmit={handleContactSubmit} />
+              </div>
+            </Suspense>
+          </main>
+          <Footer className="curriculum-footer" profile={profile} />
+          {/* Usar el router para vistas de superposición */}
+          <NavigationOverlay />
+          {/* Floating Action Buttons globales para secciones (p. ej. Testimonios) */}
+          {currentSection === 'testimonials' && (
+            <FloatingActionButtonGroup
+              actions={testimonialsFABActions as any}
+              position="bottom-right"
+            />
+          )}
+          {/* CategoryFilters se renderiza siempre, maneja su propia visibilidad */}
+          <CategoryFilters />
+          {currentSection === 'skills' && (
+            <FloatingActionButtonGroup actions={skillsFABActions as any} position="bottom-right" />
+          )}
+          {currentSection === 'projects' && (
+            <FloatingActionButtonGroup
+              actions={projectsFABActions as any}
+              position="bottom-right"
+            />
+          )}
+          {currentSection === 'experience' && (
+            <FloatingActionButtonGroup
+              actions={experienceFABActions as any}
+              position="bottom-right"
+            />
+          )}
+          {currentSection === 'about' && (
+            <FloatingActionButtonGroup actions={aboutFABActions as any} position="bottom-right" />
+          )}
 
-        {/* El modal global ahora se abre desde el FAB usando ModalShell vía ModalContext */}
-        {/* Vista individual de artículo/proyecto (overlay) */}
-        {(location.pathname.startsWith('/project/') ||
-          location.pathname.startsWith('/project/') ||
-          location.pathname.startsWith('/profile-craft/projects/')) && (
-          <Suspense fallback={<div>Cargando proyecto...</div>}>
-            <ProjectPage />
-          </Suspense>
-        )}
+          {/* El modal global ahora se abre desde el FAB usando ModalShell vía ModalContext */}
+          {/* Vista individual de artículo/proyecto (overlay) */}
+          {(location.pathname.startsWith('/project/') ||
+            location.pathname.startsWith('/project/') ||
+            location.pathname.startsWith('/profile-craft/projects/')) && (
+            <Suspense fallback={<div>Cargando proyecto...</div>}>
+              <ProjectPage />
+            </Suspense>
+          )}
+        </div>
       </div>
-    </div>
+    </SkillsFilterProvider>
   );
 };
 

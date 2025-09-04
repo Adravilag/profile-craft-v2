@@ -204,6 +204,8 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
           return t.forms.validation.invalidDateFormat;
         break;
       case 'description':
+        if (!value.trim()) return 'La descripción es obligatoria';
+        if (value.trim().length < 20) return 'La descripción debe tener al menos 20 caracteres';
         if (value.length > 500) return t.forms.validation.descriptionMaxLength;
         break;
     }
@@ -291,6 +293,7 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
       { name: 'title', value: formData.title },
       { name: 'company', value: formData.company },
       { name: 'start_date', value: formData.start_date },
+      { name: 'description', value: formData.description },
     ];
 
     // Validar campos obligatorios
@@ -326,10 +329,6 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
       }
     }
 
-    // Validar descripción
-    const descError = validateField('description', formData.description);
-    if (descError) errors.description = descError;
-
     setValidationErrors(errors);
     return errors;
   };
@@ -358,11 +357,16 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
         await onSubmit(formData);
       } else {
         // Lógica original para experiencias
+        // Normalizar fechas a ISO (YYYY-MM-DD) antes de enviar
+        const { convertSpanishDateToISO } = await import('@/utils/dateUtils');
+        const startIso = convertSpanishDateToISO(formData.start_date);
+        const endIso = formData.end_date ? convertSpanishDateToISO(formData.end_date) : '';
+
         const experienceData = {
           position: formData.title,
           company: formData.company,
-          start_date: formData.start_date,
-          end_date: formData.end_date,
+          start_date: startIso,
+          end_date: endIso,
           description: formData.description,
           technologies: formData.technologies
             ? formData.technologies
@@ -370,8 +374,7 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
                 .map(tech => tech.trim())
                 .filter(tech => tech)
             : [],
-          is_current:
-            formData.is_current || formData.end_date === '' || formData.end_date === 'Presente',
+          is_current: formData.is_current || endIso === '' || /presente/i.test(endIso),
           order_index: formData.order_index,
           user_id: '1', // Por ahora fijo
         };
@@ -380,6 +383,17 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
           await experiencesApi.updateExperience(editingExperience._id, experienceData);
           showSuccess(t.forms.notifications.experienceUpdated, t.forms.notifications.updateSuccess);
         } else {
+          // Unconditional console log of payload so it's visible in DevTools
+          // además de usar debugLog si está activado
+          // eslint-disable-next-line no-console
+          console.log('📤 Payload createExperience:', experienceData);
+          try {
+            const { debugLog } = await import('@/utils/debugConfig');
+            debugLog.api('📤 Payload createExperience:', experienceData);
+          } catch (e) {
+            /* noop */
+          }
+
           await experiencesApi.createExperience(experienceData as any);
           showSuccess('Nueva Experiencia', t.forms.notifications.createSuccess);
         }
@@ -389,12 +403,28 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
       }
 
       onSave();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error al guardar:', error);
-      showError(
-        t.forms.notifications.saveError,
-        error instanceof Error ? error.message : t.forms.notifications.unknownError
-      );
+
+      // Log request payload present in axios error config (si existe)
+      try {
+        // eslint-disable-next-line no-console
+        console.error('Axios error.config.data:', error?.config?.data);
+      } catch (e) {
+        /* noop */
+      }
+
+      // Si el backend devuelve body con detalles, mostrarlo
+      const backendDetails = error?.response?.data;
+      if (backendDetails) {
+        console.error('Backend error details:', backendDetails);
+        showError(t.forms.notifications.saveError, JSON.stringify(backendDetails));
+      } else {
+        showError(
+          t.forms.notifications.saveError,
+          error instanceof Error ? error.message : t.forms.notifications.unknownError
+        );
+      }
     } finally {
       setIsSubmitting(false);
     }

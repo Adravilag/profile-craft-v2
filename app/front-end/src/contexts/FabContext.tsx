@@ -8,11 +8,13 @@ type FabContextValue = {
   openSkillModal: () => void;
   openExperienceModal: () => void;
   openExperienceAdmin: () => void;
+  openAboutModal: () => void;
   onOpenTestimonialModal: (h: Handler) => () => void;
   onOpenTestimonialsAdmin: (h: Handler) => () => void;
   onOpenSkillModal: (h: Handler) => () => void;
   onOpenExperienceModal: (h: Handler) => () => void;
   onOpenExperienceAdmin: (h: Handler) => () => void;
+  onOpenAboutModal: (h: Handler) => () => void;
 };
 
 const defaultValue: FabContextValue = {
@@ -21,11 +23,13 @@ const defaultValue: FabContextValue = {
   openSkillModal: () => undefined,
   openExperienceModal: () => undefined,
   openExperienceAdmin: () => undefined,
+  openAboutModal: () => undefined,
   onOpenTestimonialModal: () => () => undefined,
   onOpenTestimonialsAdmin: () => () => undefined,
   onOpenSkillModal: () => () => undefined,
   onOpenExperienceModal: () => () => undefined,
   onOpenExperienceAdmin: () => () => undefined,
+  onOpenAboutModal: () => () => undefined,
 };
 
 const FabContext = React.createContext<FabContextValue>(defaultValue);
@@ -36,6 +40,7 @@ export const FabProvider: React.FC<{ children?: React.ReactNode }> = ({ children
   const skillHandlers = React.useRef<Handler[]>([]);
   const experienceHandlers = React.useRef<Handler[]>([]);
   const experienceAdminHandlers = React.useRef<Handler[]>([]);
+  const aboutHandlers = React.useRef<Handler[]>([]);
 
   const openTestimonialModal = React.useCallback(() => {
     testimonialHandlers.current.forEach(h => h());
@@ -81,6 +86,21 @@ export const FabProvider: React.FC<{ children?: React.ReactNode }> = ({ children
       } catch (err) {
         try {
           console.error('[FabContext] experienceAdmin handler error', err);
+        } catch (e) {}
+      }
+    });
+  }, []);
+
+  const openAboutModal = React.useCallback(() => {
+    try {
+      console.debug('[FabContext] openAboutModal called, handlers=', aboutHandlers.current.length);
+    } catch (e) {}
+    aboutHandlers.current.forEach(h => {
+      try {
+        h();
+      } catch (err) {
+        try {
+          console.error('[FabContext] about handler error', err);
         } catch (e) {}
       }
     });
@@ -145,6 +165,25 @@ export const FabProvider: React.FC<{ children?: React.ReactNode }> = ({ children
     };
   }, []);
 
+  const onOpenAboutModal = React.useCallback((h: Handler) => {
+    aboutHandlers.current.push(h);
+    try {
+      console.debug(
+        '[FabContext] onOpenAboutModal registered, total=',
+        aboutHandlers.current.length
+      );
+    } catch (e) {}
+    return () => {
+      aboutHandlers.current = aboutHandlers.current.filter(fn => fn !== h);
+      try {
+        console.debug(
+          '[FabContext] onOpenAboutModal unregistered, total=',
+          aboutHandlers.current.length
+        );
+      } catch (e) {}
+    };
+  }, []);
+
   return (
     <FabContext.Provider
       value={{
@@ -153,11 +192,13 @@ export const FabProvider: React.FC<{ children?: React.ReactNode }> = ({ children
         openSkillModal,
         openExperienceModal,
         openExperienceAdmin,
+        openAboutModal,
         onOpenTestimonialModal,
         onOpenTestimonialsAdmin,
         onOpenSkillModal,
         onOpenExperienceModal,
         onOpenExperienceAdmin,
+        onOpenAboutModal,
       }}
     >
       {children}

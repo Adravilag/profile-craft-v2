@@ -22,6 +22,8 @@ interface UseFABActionsReturn {
   skillsFABActions: LocalFABAction[];
   projectsFABActions: LocalFABAction[];
   experienceFABActions: LocalFABAction[];
+  aboutFABActions: LocalFABAction[];
+  certificationsFABActions: LocalFABAction[];
 }
 
 /**
@@ -32,13 +34,15 @@ export const useFABActions = ({
   currentSection,
   isAuthenticated,
 }: UseFABActionsProps): UseFABActionsReturn => {
-  const { openTestimonialModal, openTestimonialsAdmin, openSkillModal } = useFab();
+  const {
+    openTestimonialModal,
+    openTestimonialsAdmin,
+    openSkillModal,
+    onOpenExperienceModal,
+    openAboutModal,
+  } = useFab();
   const { openModal, closeModal } = useModal();
   const navigate = useNavigate();
-
-  // NOTA: no ocultamos todos los FABs globalmente.
-  // Algunas acciones administrativas (como crear experiencia/empresa)
-  // solo se mostrarán si `isAuthenticated` es true (ver abajo).
 
   // Acciones del FAB para la sección de testimonios
   const testimonialsFABActions = useMemo<LocalFABAction[]>(() => {
@@ -153,8 +157,33 @@ export const useFABActions = ({
               isEditing: false,
               onSubmit: async (data: any) => {
                 try {
+                  const { convertSpanishDateToISO } = await import('@/utils/dateUtils');
                   const endpoints = await import('@/services/endpoints');
-                  const created = await endpoints.experiences.createExperience(data as any);
+
+                  const startIso = convertSpanishDateToISO(data.start_date || data.startDate || '');
+                  const endIso = data.end_date ? convertSpanishDateToISO(data.end_date) : '';
+
+                  const technologies = Array.isArray(data.technologies)
+                    ? data.technologies
+                    : typeof data.technologies === 'string'
+                      ? data.technologies
+                          .split(',')
+                          .map((t: string) => t.trim())
+                          .filter(Boolean)
+                      : [];
+
+                  const payload = {
+                    position: data.title || data.position || '',
+                    company: data.company || '',
+                    start_date: startIso,
+                    end_date: endIso,
+                    description: data.description || '',
+                    technologies,
+                    is_current: !!data.is_current,
+                    order_index: data.order_index || 0,
+                  };
+
+                  const created = await endpoints.experiences.createExperience(payload as any);
                   try {
                     window.dispatchEvent(
                       new CustomEvent('experience-changed', { detail: created })
@@ -203,12 +232,33 @@ export const useFABActions = ({
               isEditing: false,
               onSubmit: async (data: any) => {
                 try {
-                  // Reutilizamos el endpoint de experiencias si queremos persistir
-                  // la compañía como parte de una experiencia. Si se requiere
-                  // un endpoint independiente para compañías, se deberá añadir
-                  // en services/endpoints y adaptar aquí.
+                  const { convertSpanishDateToISO } = await import('@/utils/dateUtils');
                   const endpoints = await import('@/services/endpoints');
-                  const created = await endpoints.experiences.createExperience(data as any);
+
+                  const startIso = convertSpanishDateToISO(data.start_date || data.startDate || '');
+                  const endIso = data.end_date ? convertSpanishDateToISO(data.end_date) : '';
+
+                  const technologies = Array.isArray(data.technologies)
+                    ? data.technologies
+                    : typeof data.technologies === 'string'
+                      ? data.technologies
+                          .split(',')
+                          .map((t: string) => t.trim())
+                          .filter(Boolean)
+                      : [];
+
+                  const payload = {
+                    position: data.title || data.position || '',
+                    company: data.company || '',
+                    start_date: startIso,
+                    end_date: endIso,
+                    description: data.description || '',
+                    technologies,
+                    is_current: !!data.is_current,
+                    order_index: data.order_index || 0,
+                  };
+
+                  const created = await endpoints.experiences.createExperience(payload as any);
                   try {
                     window.dispatchEvent(new CustomEvent('company-changed', { detail: created }));
                   } catch (e) {}
@@ -234,16 +284,68 @@ export const useFABActions = ({
       });
     }
 
-    // Acción de administración de experiencias eliminada intencionalmente
-    // (antes añadía un FAB con label 'Gestionar Experiencias')
-
     return base;
   }, [isAuthenticated, openModal, closeModal]);
+
+  // Acciones del FAB para la sección About
+  const aboutFABActions = useMemo<LocalFABAction[]>(() => {
+    if (!isAuthenticated) {
+      return [];
+    }
+
+    return [
+      {
+        id: 'edit-about',
+        onClick: async () => {
+          try {
+            // Importar dinámicamente el componente AboutModal
+            const mod = await import('@/components/layout/Sections/About/modals/AboutModal');
+            const AboutModalComp = mod.AboutModal;
+
+            const modalContent = React.createElement(AboutModalComp, {
+              isOpen: true,
+              onClose: () => closeModal('about-edit'),
+            });
+
+            openModal('about-edit', modalContent, {
+              title: 'Editar Sección About',
+              disableAutoFocus: true,
+            });
+          } catch (err) {
+            console.error('No se pudo abrir modal de edición de About:', err);
+          }
+        },
+        icon: 'fas fa-user-edit',
+        label: 'Editar Acerca de',
+        color: 'primary',
+      },
+    ];
+  }, [isAuthenticated, openModal, closeModal]);
+
+  // Acciones del FAB para la sección de certificaciones
+  const certificationsFABActions = useMemo<LocalFABAction[]>(() => {
+    const actions: LocalFABAction[] = [
+      {
+        id: 'add-certification',
+        onClick: () => {
+          // Disparar evento para abrir el modal de certificación
+          window.dispatchEvent(new CustomEvent('certification-add-requested'));
+        },
+        icon: 'fas fa-certificate',
+        label: 'Añadir Certificación',
+        color: 'success',
+      },
+    ];
+
+    return actions;
+  }, []);
 
   return {
     testimonialsFABActions,
     skillsFABActions,
     projectsFABActions,
     experienceFABActions,
+    aboutFABActions,
+    certificationsFABActions,
   };
 };

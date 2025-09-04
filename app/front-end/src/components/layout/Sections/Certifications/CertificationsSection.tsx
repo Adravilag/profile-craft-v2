@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { certifications as certificationsApi } from '@/services/endpoints';
 import type { Certification as APICertification } from '@/types/api';
 import BlurImage from '@/components/utils/BlurImage';
-const { getCertifications } = certificationsApi;
+const { getCertifications, createCertification, updateCertification, deleteCertification } =
+  certificationsApi;
 import { useNotification } from '@/hooks/useNotification';
 import { debugLog } from '@/utils/debugConfig';
 import HeaderSection from '../../HeaderSection/HeaderSection';
 import FloatingActionButtonGroup from '@/components/ui/FloatingActionButtonGroup/FloatingActionButtonGroup';
 import CertificationsAdmin from './admin/CertificationsAdmin';
+import CertificationModal from './CertificationModal';
+import { useFABActions } from '@/components/layout/RootLayout/hooks/useFABActions';
 import styles from './CertificationsSection.module.css';
 
 // Interfaz local para el componente con nombres amigables
@@ -33,7 +36,13 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
   const [certifications, setCertifications] = useState<Certification[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
-  const { showError } = useNotification();
+  const [showModal, setShowModal] = useState(false);
+  const [editingCert, setEditingCert] = useState<Certification | undefined>(undefined);
+  const { showError, showSuccess } = useNotification();
+  const { certificationsFABActions } = useFABActions({
+    currentSection: 'certifications',
+    isAuthenticated: true,
+  });
 
   const loadCertifications = async () => {
     try {
@@ -65,11 +74,61 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
 
   useEffect(() => {
     loadCertifications();
+
+    // Escuchar eventos del FAB
+    const handleAddRequested = () => {
+      handleOpenModal();
+    };
+
+    window.addEventListener('certification-add-requested', handleAddRequested);
+
+    return () => {
+      window.removeEventListener('certification-add-requested', handleAddRequested);
+    };
   }, []);
 
   const handleAdminClose = () => {
     setShowAdminPanel(false);
     loadCertifications(); // Recargar las certificaciones al cerrar el panel
+  };
+
+  // Funciones para manejar el modal
+  const handleOpenModal = (cert?: Certification) => {
+    setEditingCert(cert);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setEditingCert(undefined);
+  };
+
+  const handleSaveCertification = async (certificationData: Omit<APICertification, 'id'>) => {
+    try {
+      if (editingCert && editingCert.id) {
+        // Actualizar certificación existente
+        await updateCertification(String(editingCert.id), certificationData);
+      } else {
+        // Crear nueva certificación
+        await createCertification(certificationData);
+      }
+      await loadCertifications();
+      handleCloseModal();
+    } catch (error) {
+      console.error('Error saving certification:', error);
+      showError('Error', 'No se pudo guardar la certificación');
+    }
+  };
+
+  const handleDeleteCertification = async (certId: number | string) => {
+    try {
+      await deleteCertification(String(certId));
+      showSuccess('¡Certificación eliminada!', 'La certificación se ha eliminado correctamente');
+      await loadCertifications();
+    } catch (error) {
+      console.error('Error deleting certification:', error);
+      showError('Error', 'No se pudo eliminar la certificación');
+    }
   };
 
   return (
@@ -148,6 +207,26 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                           <span>Verificar</span>
                         </button>
                       )}
+
+                      {/* Botones de administración */}
+                      {isAdminMode && (
+                        <div className={styles.adminControls}>
+                          <button
+                            className={styles.editBtn}
+                            onClick={() => handleOpenModal(cert)}
+                            title="Editar certificación"
+                          >
+                            <i className="fas fa-edit"></i>
+                          </button>
+                          <button
+                            className={styles.deleteBtn}
+                            onClick={() => handleDeleteCertification(cert.id)}
+                            title="Eliminar certificación"
+                          >
+                            <i className="fas fa-trash"></i>
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -175,17 +254,7 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
         {/* Floating Action Buttons para certificaciones */}
         {!isAdminMode && showAdminFAB && (
           <FloatingActionButtonGroup
-            actions={[
-              {
-                id: 'admin-certifications',
-                onClick: () => {
-                  setShowAdminPanel(true);
-                },
-                icon: 'fas fa-shield-alt',
-                label: 'Administrar Certificaciones',
-                color: 'primary',
-              },
-            ]}
+            actions={certificationsFABActions as any}
             position="bottom-right"
           />
         )}
@@ -193,6 +262,29 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
 
       {/* Panel de administración */}
       {showAdminPanel && <CertificationsAdmin onClose={handleAdminClose} />}
+
+      {/* Modal de certificación */}
+      <CertificationModal
+        isOpen={showModal}
+        onClose={handleCloseModal}
+        onSave={handleSaveCertification}
+        initialData={
+          editingCert
+            ? {
+                id: String(editingCert.id || ''),
+                title: editingCert.title || '',
+                issuer: editingCert.issuer || '',
+                date: editingCert.date || '',
+                credential_id: editingCert.credentialId || '',
+                image_url: editingCert.image || '',
+                verify_url: editingCert.verifyUrl || '',
+                order_index: 0,
+                user_id: 1,
+              }
+            : undefined
+        }
+        isEditing={!!editingCert}
+      />
     </div>
   );
 };

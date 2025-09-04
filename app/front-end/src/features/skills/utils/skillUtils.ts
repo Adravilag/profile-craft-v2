@@ -1,13 +1,16 @@
 // utils/skillUtils.ts
-import type { SkillIconData } from '../types/skills';
+import type { SkillIconData, LogoHubResult } from '../types/skills';
 import { debugLog } from '@/utils/debugConfig';
 // Fallback empaquetado por Vite para usar cuando no se encuentre un icono
 import genericIconUrl from '@/assets/svg/generic-code.svg?url';
+// Exponer la URL genérica para que otros módulos puedan compararla
+export const GENERIC_ICON_URL = genericIconUrl;
 
 // Mapa de todos los SVG de assets resueltos a URL por Vite
 // Usamos as:'url' para obtener directamente la URL final servida por Vite
 // Nota: el tipo lo forzamos a Record<string, string> para simplicidad
-const svgModules = import.meta.glob('@/assets/svg/*.svg', {
+// use a relative glob from project root that Vite accepts in tests
+const svgModules = import.meta.glob('/src/assets/svg/*.svg', {
   eager: true,
   as: 'url',
 }) as unknown as Record<string, string>;
@@ -298,6 +301,119 @@ export const getSkillSvg = (
   // Último recurso: icono genérico estable
   debugLog.warn(`⚠️ Fallback genérico para "${skillName}":`, genericIconUrl);
   return genericIconUrl;
+};
+
+// Intentar obtener un SVG desde LogoHub (https://api.logohub.dev)
+export const fetchLogoHubSvg = async (skillName: string): Promise<string | null> => {
+  try {
+    const base = 'https://api.logohub.dev/v1/logos';
+    const q = encodeURIComponent(String(skillName).trim());
+    const url = `${base}?search=${q}&limit=1`;
+    debugLog.dataLoading('🔗 fetchLogoHubSvg fetching', url);
+    const res = await fetch(url, { method: 'GET' });
+    if (!res.ok) {
+      debugLog.warn('fetchLogoHubSvg non-ok response', { status: res.status });
+      return null;
+    }
+    const data = await res.json();
+    const first = data?.logos?.[0];
+    if (first && first.files && first.files.svg) {
+      debugLog.dataLoading('🔗 fetchLogoHubSvg found svg', first.files.svg);
+      return first.files.svg as string;
+    }
+    return null;
+  } catch (error) {
+    debugLog.warn('fetchLogoHubSvg error', error);
+    return null;
+  }
+};
+
+/**
+ * Búsqueda avanzada en LogoHub usando la API oficial completa
+ * @param query Término de búsqueda
+ * @param limit Número máximo de resultados (default: 8)
+ * @param category Filtro por categoría (opcional)
+ * @returns Array de resultados de LogoHub con metadatos completos
+ */
+export const searchLogoHub = async (
+  query: string,
+  limit: number = 8,
+  category?: string
+): Promise<LogoHubResult[]> => {
+  try {
+    console.log(
+      `🔍 [LogoHub] Búsqueda avanzada: "${query}" (límite: ${limit}${category ? `, categoría: ${category}` : ''})`
+    );
+
+    // Construir URL con parámetros
+    const params = new URLSearchParams({
+      search: query,
+      limit: limit.toString(),
+    });
+
+    if (category) {
+      params.append('category', category);
+    }
+
+    const apiUrl = `https://api.logohub.dev/v1/logos?${params.toString()}`;
+    console.log(`📡 [LogoHub] URL: ${apiUrl}`);
+
+    const startTime = performance.now();
+
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const endTime = performance.now();
+    const duration = Math.round(endTime - startTime);
+
+    if (!response.ok) {
+      console.error(`❌ [LogoHub] Error HTTP ${response.status}: ${response.statusText}`);
+
+      // Intentar parsear el error de LogoHub
+      try {
+        const errorData = await response.json();
+        console.error(`❌ [LogoHub] Error detallado:`, errorData.error);
+        throw new Error(`LogoHub API Error: ${errorData.error?.message || response.statusText}`);
+      } catch {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+    }
+
+    const data = await response.json();
+    console.log(`✅ [LogoHub] Respuesta recibida en ${duration}ms:`, {
+      resultados: data.logos?.length || 0,
+      total: data.total || 0,
+      limite: data.page?.limit || limit,
+      offset: data.page?.offset || 0,
+    });
+
+    // Log detallado de los primeros 3 resultados
+    if (data.logos && data.logos.length > 0) {
+      console.log(
+        `📋 [LogoHub] Primeros resultados:`,
+        data.logos.slice(0, 3).map((logo: any) => ({
+          id: logo.id,
+          name: logo.name,
+          category: logo.category,
+          tags: logo.tags?.slice(0, 3),
+          colors: logo.colors,
+          svg: logo.files?.svg,
+        }))
+      );
+    }
+
+    return data.logos || [];
+  } catch (error) {
+    console.error(`❌ [LogoHub] Error en búsqueda avanzada para "${query}":`, error);
+
+    // En caso de error, retornar array vacío para no romper la funcionalidad
+    return [];
+  }
 };
 
 // Función para testear la disponibilidad de un SVG

@@ -49,6 +49,7 @@ interface UseRootLayoutReturn {
   skillsFABActions: LocalFABAction[];
   projectsFABActions: LocalFABAction[];
   experienceFABActions: LocalFABAction[];
+  aboutFABActions: LocalFABAction[];
 }
 
 /**
@@ -82,11 +83,16 @@ export const useRootLayout = ({
 
   const { navItems } = useNavItems({ isCheckingUsers });
   const { handleContactSubmit } = useContactForm();
-  const { testimonialsFABActions, skillsFABActions, projectsFABActions, experienceFABActions } =
-    useFABActions({
-      isAuthenticated,
-      currentSection: currentSection || '',
-    });
+  const {
+    testimonialsFABActions,
+    skillsFABActions,
+    projectsFABActions,
+    experienceFABActions,
+    aboutFABActions,
+  } = useFABActions({
+    isAuthenticated,
+    currentSection: currentSection || '',
+  });
 
   // Efecto para la carga inicial de datos (perfil y estado de usuarios)
   useEffect(() => {
@@ -120,5 +126,6 @@ export const useRootLayout = ({
     skillsFABActions,
     projectsFABActions,
     experienceFABActions,
+    aboutFABActions,
   };
 };
