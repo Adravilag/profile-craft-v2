@@ -339,12 +339,7 @@ const TestimonialsFormModal: React.FC<TestimonialsFormModalProps> = ({
           </div>
         )}
 
-        <form
-          id="testimonial-form"
-          ref={formRef}
-          onSubmit={handleSubmit}
-          className={styles.testimonialForm}
-        ></form>
+        <form id="testimonial-form" ref={formRef} onSubmit={handleSubmit}></form>
       </div>
     </ModalShell>
   );

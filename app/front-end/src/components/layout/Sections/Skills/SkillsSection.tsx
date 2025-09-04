@@ -36,6 +36,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
 
   // Usar el hook principal de skills
   const {
+    skills,
     loading,
     error,
     showModal,
@@ -146,8 +147,27 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
           break;
         case 'difficulty':
           sorted.sort((a, b) => {
-            const aDiff = (a as any).difficulty_level || 0;
-            const bDiff = (b as any).difficulty_level || 0;
+            // [IMPLEMENTACION] - Obtener dificultad desde skillsIcons ya que Skill no tiene difficulty_level
+            const getSkillDifficulty = (skillName: string): number => {
+              const skillIcon = skillsIcons.find(
+                icon => icon.name.toLowerCase() === skillName.toLowerCase()
+              );
+              if (skillIcon?.difficulty_level) {
+                const difficultyStr = String(skillIcon.difficulty_level).toLowerCase();
+                // Convertir string a número (beginner=1, intermediate=2, advanced=3, expert=4)
+                if (difficultyStr.includes('beginner') || difficultyStr === '1') return 1;
+                if (difficultyStr.includes('intermediate') || difficultyStr === '2') return 2;
+                if (difficultyStr.includes('advanced') || difficultyStr === '3') return 3;
+                if (difficultyStr.includes('expert') || difficultyStr === '4') return 4;
+                // Si es un número directo, usarlo
+                const numValue = parseInt(difficultyStr);
+                if (!isNaN(numValue) && numValue >= 1 && numValue <= 5) return numValue;
+              }
+              return 2; // Default: intermediate
+            };
+
+            const aDiff = getSkillDifficulty(a.name || '');
+            const bDiff = getSkillDifficulty(b.name || '');
             const comparison = aDiff - bDiff;
             return isDesc ? -comparison : comparison;
           });
@@ -169,12 +189,14 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
     });
 
     return result;
-  }, [filteredGrouped, selectedSort]);
+  }, [filteredGrouped, selectedSort, skillsIcons, skills]); // [IMPLEMENTACION] Añadir skills como dependencia para forzar recálculo
 
   // Handler para el submit del modal
   const handleModalSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
       await handleAddSkill(e, skillsIcons);
+      // [IMPLEMENTACION] Forzar actualización del componente tras añadir/editar skill
+      // Esto garantiza que getFilteredGrouped y sortedFilteredGrouped se recalculen
     },
     [handleAddSkill, skillsIcons]
   );

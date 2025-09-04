@@ -172,6 +172,51 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
     </TestimonialModal>
   );
 
+  // Función que replica la lógica del FAB para el botón local
+  const handleOpenAddModalWithSubmit = async () => {
+    try {
+      // Importar dinámicamente el formulario de testimonio y abrir el modal
+      const mod = await import(
+        '@/components/layout/Sections/Testimonials/forms/TestimonialsFormModal'
+      );
+      const TestimonialsFormModal = mod.default;
+      const modalContent = React.createElement(TestimonialsFormModal, {
+        isOpen: true,
+        onClose: () => closeModal('testimonial-add-local'),
+        editingData: null,
+        isLoading: false,
+        onSubmit: async (data: any) => {
+          try {
+            // Implementar lógica de envío de testimonio
+            const { testimonials } = await import('@/services/endpoints');
+            await testimonials.createTestimonial(data);
+
+            // Mostrar mensaje de éxito
+            showSuccess(
+              'Testimonio enviado',
+              'Gracias por compartir tu experiencia. Tu testimonio será revisado.'
+            );
+
+            // Cerrar modal
+            closeModal('testimonial-add-local');
+
+            // Refrescar la lista de testimonios
+            refresh();
+          } catch (error) {
+            console.error('Error enviando testimonio:', error);
+            showError('Error', 'No se pudo enviar el testimonio. Inténtalo de nuevo.');
+          }
+        },
+      });
+      openModal('testimonial-add-local', modalContent, {
+        title: 'Añadir Testimonio',
+        disableAutoFocus: true,
+      });
+    } catch (err) {
+      console.error('No se pudo abrir modal de testimonial:', err);
+    }
+  };
+
   const handleOpenAddModal = () => {
     setEditingId(null);
     setForm(emptyForm);
@@ -551,7 +596,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
               : '¡Sé el primero en compartir tu experiencia!'}
           </p>
           {!isAdminMode && (
-            <button className={styles.emptyCtaBtn} onClick={() => handleOpenAddModal()}>
+            <button className={styles.emptyCtaBtn} onClick={() => handleOpenAddModalWithSubmit()}>
               <i className="fas fa-plus-circle" />
               Añadir mi testimonio
             </button>

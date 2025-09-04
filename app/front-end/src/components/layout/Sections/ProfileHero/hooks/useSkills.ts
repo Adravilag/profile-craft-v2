@@ -11,6 +11,7 @@ interface UseSkillsReturn {
   refreshSkills: () => Promise<void>;
   getSkillsByCategory: (category: string) => Skill[];
   getAllCategories: () => string[];
+  getTopFeaturedSkills: (limit?: number) => Skill[];
 }
 
 /**
@@ -28,7 +29,15 @@ export function useSkills(): UseSkillsReturn {
       setLoading(true);
       setError(null);
       const data = await getSkills();
-      setSkills(data);
+
+      // Ordenar skills por nivel de mayor a menor
+      const sortedData = [...data].sort((a, b) => {
+        const aLevel = a.level || 0;
+        const bLevel = b.level || 0;
+        return bLevel - aLevel;
+      });
+
+      setSkills(sortedData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al cargar habilidades');
     } finally {
@@ -52,6 +61,13 @@ export function useSkills(): UseSkillsReturn {
     return Array.from(categories).sort();
   }, [skills]);
 
+  const getTopFeaturedSkills = useCallback(
+    (limit: number = 8): Skill[] => {
+      return skills.filter(skill => skill.featured).slice(0, limit);
+    },
+    [skills]
+  );
+
   useEffect(() => {
     loadSkills();
   }, [loadSkills]);
@@ -65,5 +81,6 @@ export function useSkills(): UseSkillsReturn {
     refreshSkills,
     getSkillsByCategory,
     getAllCategories,
+    getTopFeaturedSkills,
   };
 }

@@ -1,6 +1,6 @@
 // src/features/skills/hooks/useSkills.ts
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { skills as skillsEndpoints } from '@/services/endpoints';
 const { getSkills, createSkill, updateSkill, deleteSkill } = skillsEndpoints;
 import type { Skill } from '@/types/api';
@@ -275,17 +275,17 @@ export const useSkills = () => {
     setDraggedSkillId(null);
   };
 
-  // Funciones para agrupar y filtrar skills
-  const getGroupedSkills = () => {
+  // Funciones para agrupar y filtrar skills - MEMOIZADAS para reactividad
+  const getGroupedSkills = useCallback(() => {
     return skills.reduce<Record<string, Skill[]>>((acc, skill) => {
       const cat = skill.category || 'General';
       if (!acc[cat]) acc[cat] = [];
       acc[cat].push(skill);
       return acc;
     }, {});
-  };
+  }, [skills]); // [IMPLEMENTACION] Memoizar con dependencia de skills
 
-  const getFilteredGrouped = () => {
+  const getFilteredGrouped = useCallback(() => {
     const grouped = getGroupedSkills();
     const result: Record<string, Skill[]> = {};
 
@@ -311,15 +311,15 @@ export const useSkills = () => {
     }
 
     return result;
-  };
+  }, [skills, selectedCategory, getGroupedSkills]); // [IMPLEMENTACION] Memoizar con dependencias de skills y selectedCategory
 
-  const getAllCategories = () => {
+  const getAllCategories = useCallback(() => {
     const grouped = getGroupedSkills();
     const keys = Object.keys(grouped);
     // Insert 'Destacados' at top if any featured skills exist
     const hasFeatured = skills.some(s => s.featured);
     return hasFeatured ? ['All', 'Destacados', ...keys] : ['All', ...keys];
-  };
+  }, [skills, getGroupedSkills]); // [IMPLEMENTACION] Memoizar getAllCategories
 
   return {
     // State

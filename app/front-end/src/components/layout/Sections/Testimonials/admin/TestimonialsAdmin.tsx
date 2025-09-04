@@ -1,7 +1,7 @@
 // src/components/sections/testimonials/TestimonialsAdmin.tsx
 
 import React from 'react';
-import { ModalPortal } from '@/ui';
+import ModalShell from '@/components/ui/Modal/ModalShell';
 import TestimonialsAdminContent from './TestimonialsAdminContent';
 import styles from './TestimonialsAdmin.module.css';
 
@@ -12,12 +12,11 @@ interface TestimonialsAdminProps {
 
 const TestimonialsAdmin: React.FC<TestimonialsAdminProps> = ({ onClose, onTestimonialsChange }) => {
   return (
-    <ModalPortal>
-      <div className={styles.testimonialsAdminOverlay}>
-        {/* Use the content component but rely on CSS module for classes */}
+    <ModalShell title="Administrar testimonios" onClose={onClose} maxWidth={1000}>
+      <div className={styles.testimonialsAdminContentArea}>
         <TestimonialsAdminContent onClose={onClose} onTestimonialsChange={onTestimonialsChange} />
       </div>
-    </ModalPortal>
+    </ModalShell>
   );
 };
 

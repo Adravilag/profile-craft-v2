@@ -51,12 +51,51 @@ export const useFABActions = ({
         id: 'add-testimonial',
         onClick: () => {
           try {
-            openTestimonialModal();
+            // Importar dinámicamente el formulario de testimonio y abrir el modal
+            import('@/components/layout/Sections/Testimonials/forms/TestimonialsFormModal').then(
+              mod => {
+                const TestimonialsFormModal = mod.default;
+                const modalContent = React.createElement(TestimonialsFormModal, {
+                  isOpen: true,
+                  onClose: () => closeModal('testimonial-add'),
+                  onSubmit: async (data: any) => {
+                    try {
+                      // Implementar lógica de envío de testimonio
+                      const { testimonials } = await import('@/services/endpoints');
+                      await testimonials.createTestimonial(data);
+
+                      // Mostrar mensaje de éxito
+                      const { useNotification } = await import('@hooks/useNotification');
+                      const { showSuccess } = useNotification();
+                      showSuccess(
+                        'Testimonio enviado',
+                        'Gracias por compartir tu experiencia. Tu testimonio será revisado.'
+                      );
+
+                      // Cerrar modal
+                      closeModal('testimonial-add');
+
+                      // Disparar evento para refrescar la lista si es necesario
+                      window.dispatchEvent(new CustomEvent('testimonial-submitted'));
+                    } catch (error) {
+                      console.error('Error enviando testimonio:', error);
+                      const { useNotification } = await import('@hooks/useNotification');
+                      const { showError } = useNotification();
+                      showError('Error', 'No se pudo enviar el testimonio. Inténtalo de nuevo.');
+                    }
+                  },
+                });
+                openModal('testimonial-add', modalContent, {
+                  title: 'Añadir Testimonio',
+                  disableAutoFocus: true,
+                });
+              }
+            );
           } catch (err) {
             console.error('No se pudo abrir modal de testimonial:', err);
           }
         },
-        icon: 'fas fa-comment-plus',
+        icon: 'fas fa-comment-dots',
         label: 'Añadir Testimonio',
         color: 'success',
       },
@@ -79,7 +118,7 @@ export const useFABActions = ({
     }
 
     return actions;
-  }, [isAuthenticated, openTestimonialModal, openTestimonialsAdmin]);
+  }, [isAuthenticated, openModal, closeModal, openTestimonialsAdmin]);
 
   // Acciones del FAB para la sección de skills
   const skillsFABActions = useMemo<LocalFABAction[]>(() => {

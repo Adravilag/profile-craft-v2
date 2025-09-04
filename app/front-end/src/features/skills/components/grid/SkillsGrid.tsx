@@ -133,13 +133,10 @@ const SkillsGrid: React.FC<SkillsGridProps> = ({
         </div>
       )}
       {getCategoriesToShow.map(([category, skills]) => {
-        // Excluir skill llamada 'profilhero' y ordenar por level descendente
+        // Excluir skill llamada 'profilhero' - PERO RESPETAR el orden del parent
         const filtered = (skills || []).filter(s => (s.name || '').toLowerCase() !== 'profilhero');
-        const sorted = filtered.slice().sort((a, b) => {
-          const aLevel = typeof a.level === 'number' ? a.level : -1;
-          const bLevel = typeof b.level === 'number' ? b.level : -1;
-          return bLevel - aLevel;
-        });
+        // ✅ NO aplicar ordenación propia - usar el orden que viene del parent (sortedFilteredGrouped)
+        const sorted = filtered;
 
         return (
           <div key={category} className={styles.skillsCategory}>

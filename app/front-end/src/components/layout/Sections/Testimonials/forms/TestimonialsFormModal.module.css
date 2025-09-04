@@ -184,7 +184,7 @@
 
 /* ===== MODAL BODY (ELEMENT) ===== */
 .modalBody {
-  padding: 0;
+  padding: 45px;
   max-height: 66vh;
   overflow-y: auto;
   overflow-x: hidden;
@@ -255,6 +255,7 @@
 .formGroup {
   display: flex;
   flex-direction: column;
+  padding: 11px 0 0 0;
   gap: 12px;
   min-width: 0;
 }
@@ -299,6 +300,7 @@
 
 .inputWithIcon .formInput {
   padding-left: 44px; /* espacio para el icono */
+  width: 100%;
 }
 
 .formInput:focus,

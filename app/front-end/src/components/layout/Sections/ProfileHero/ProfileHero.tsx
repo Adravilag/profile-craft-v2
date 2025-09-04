@@ -35,6 +35,9 @@ interface ProfileHeroProps {
   isFirstTime?: boolean;
 }
 
+// Constante para controlar cuántas tecnologías mostrar
+const MAX_FEATURED_SKILLS = 6;
+
 const ProfileHero: React.FC<ProfileHeroProps> = ({
   darkMode,
   onToggleDarkMode,
@@ -47,7 +50,7 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
   const { activeWidget, setActiveWidget, widgetHints } = useWidgetManager();
   const { showPatternAuth, setShowPatternAuth, setPatternError } = useAuthState();
   const { currentLanguage, changeLanguage, t } = useLanguage();
-  const { skills } = useSkills();
+  const { skills, getTopFeaturedSkills } = useSkills();
   const { isAuthenticated, logout } = useAuth();
 
   // === 2. Estados y Referencias ===
@@ -84,8 +87,9 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
   const contactList = useMemo(() => getContactData(userProfile), [userProfile]);
 
   const featuredSkills = useMemo(() => {
-    return skills.filter(s => (s as any).featured);
-  }, [skills]);
+    // Limitar tecnologías para evitar saturación visual
+    return getTopFeaturedSkills(MAX_FEATURED_SKILLS);
+  }, [getTopFeaturedSkills]);
 
   const projects = useMemo(() => (userProfile as any)?.projects || [], [userProfile]);
 

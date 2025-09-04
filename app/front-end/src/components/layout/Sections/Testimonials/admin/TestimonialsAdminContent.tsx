@@ -136,23 +136,8 @@ const TestimonialsAdminContent: React.FC<TestimonialsAdminProps> = ({
     }
   };
 
-  const pendingCount = allTestimonials.filter(t => t.status === 'pending').length;
-
   return (
     <div className={styles.testimonialsAdminModal}>
-      <div className={styles.adminHeader}>
-        <h2>
-          <i className="fas fa-shield-alt"></i>
-          Administración de Testimonios
-          {pendingCount > 0 && (
-            <span className={styles.pendingBadge}>{pendingCount} pendientes</span>
-          )}
-        </h2>
-        <button className={styles.closeBtn} onClick={onClose}>
-          <i className="fas fa-times"></i>
-        </button>
-      </div>
-
       <div className={styles.adminFilters}>
         <button
           className={`${styles.filterBtn} ${filter === 'pending' ? styles.active : ''}`}
