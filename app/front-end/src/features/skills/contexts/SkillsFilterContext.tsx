@@ -47,6 +47,21 @@ export const SkillsFilterProvider: React.FC<SkillsFilterProviderProps> = ({ chil
 export const useSkillsFilter = (): SkillsFilterContextType => {
   const context = useContext(SkillsFilterContext);
   if (context === undefined) {
+    // En desarrollo, mostrar warning en lugar de error para mejor UX con HMR
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(
+        '[SkillsFilter] useSkillsFilter used outside provider - returning fallback data'
+      );
+      return {
+        selectedCategory: 'All',
+        setSelectedCategory: () => {},
+        skillsGrouped: {},
+        categories: ['All'],
+        filteredGrouped: {},
+        loading: false,
+        error: null,
+      };
+    }
     throw new Error('useSkillsFilter must be used within a SkillsFilterProvider');
   }
   return context;

@@ -25,6 +25,50 @@ describe('[TEST] SkillsFilterContext', () => {
     vi.clearAllMocks();
   });
 
+  it('🔴 [TEST] debe proporcionar datos fallback en desarrollo cuando se usa fuera del provider', () => {
+    // Configurar NODE_ENV para desarrollo
+    const originalEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    // Mock console.warn para verificar que se llama
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+    try {
+      // Renderizar el componente FUERA del provider
+      render(<TestComponent />);
+
+      // Debe mostrar datos fallback sin errores
+      expect(screen.getByTestId('selected-category')).toHaveTextContent('All');
+      expect(screen.getByTestId('categories-count')).toHaveTextContent('1');
+      expect(screen.getByTestId('skills-count')).toHaveTextContent('0');
+
+      // Debe mostrar warning
+      expect(warnSpy).toHaveBeenCalledWith(
+        '[SkillsFilter] useSkillsFilter used outside provider - returning fallback data'
+      );
+    } finally {
+      // Restaurar NODE_ENV
+      process.env.NODE_ENV = originalEnv;
+      warnSpy.mockRestore();
+    }
+  });
+
+  it('🔴 [TEST] debe lanzar error en producción cuando se usa fuera del provider', () => {
+    // Configurar NODE_ENV para producción
+    const originalEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+
+    try {
+      // Renderizar debería fallar
+      expect(() => {
+        render(<TestComponent />);
+      }).toThrow('useSkillsFilter must be used within a SkillsFilterProvider');
+    } finally {
+      // Restaurar NODE_ENV
+      process.env.NODE_ENV = originalEnv;
+    }
+  });
+
   it('🔴 [TEST] debe proporcionar el estado inicial del filtro', () => {
     render(
       <SkillsFilterProvider>
