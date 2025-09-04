@@ -40,6 +40,7 @@ describe('[TEST] AuthContext - Problema de auto-login', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.clear();
+    sessionStorage.clear(); // Importante para simular sesión limpia
 
     // Mock para BroadcastChannel
     global.BroadcastChannel = vi.fn(() => ({
@@ -89,6 +90,20 @@ describe('[TEST] AuthContext - Problema de auto-login', () => {
   it('[TEST] SÍ debería auto-loguear en desarrollo si NO hay logout explícito', async () => {
     // ARRANGE: Simular entorno de desarrollo sin logout explícito
     vi.stubGlobal('import.meta', { env: { DEV: true } });
+
+    // Mock del navigator.storage.estimate para simular cuota normal (NO incógnito)
+    Object.defineProperty(navigator, 'storage', {
+      value: {
+        estimate: vi.fn().mockResolvedValue({
+          quota: 2 * 1024 * 1024 * 1024, // 2GB - típico de modo normal
+          usage: 0,
+        }),
+      },
+      writable: true,
+    });
+
+    // Simular que NO estamos en incógnito agregando algo al sessionStorage
+    sessionStorage.setItem('theme', 'light'); // Datos de sesión típicos de navegador normal
 
     // Mock: El endpoint dev-token devuelve un token (comportamiento esperado)
     mockFetch

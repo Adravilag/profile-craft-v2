@@ -20,6 +20,58 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
+/**
+ * Detecta si el navegador está ejecutándose en modo incógnito/privado.
+ *
+ * En modo incógnito:
+ * - localStorage puede estar vacío o con capacidad limitada
+ * - No deberían existir cookies persistentes de sesiones anteriores
+ * - sessionStorage funciona normalmente
+ *
+ * @returns Promise<boolean> true si parece estar en modo incógnito
+ */
+const detectIncognitoMode = async (): Promise<boolean> => {
+  try {
+    // Método 1: Verificar si localStorage funciona correctamente
+    const testKey = '__incognito_test__';
+    try {
+      localStorage.setItem(testKey, 'test');
+      localStorage.removeItem(testKey);
+    } catch {
+      // En algunos navegadores, localStorage puede lanzar errores en incógnito
+      return true;
+    }
+
+    // Método 2: Verificar capacidad de almacenamiento
+    // En modo incógnito, algunos navegadores limitan la capacidad de localStorage
+    if (typeof navigator.storage?.estimate === 'function') {
+      const estimate = await navigator.storage.estimate();
+      // En incógnito, la cuota suele ser mucho menor (ejemplo: 120MB vs 2GB+)
+      if (estimate.quota && estimate.quota < 200 * 1024 * 1024) {
+        // < 200MB
+        return true;
+      }
+    }
+
+    // Método 3: Verificar si hay cookies de sesiones anteriores Y sessionStorage limpio
+    // En incógnito, no debería haber cookies persistentes de desarrollo
+    const hasDevCookie = document.cookie.includes('portfolio_auth_token=');
+    const hasExplicitLogout = localStorage.getItem('explicit_logout');
+    const sessionKeys = Object.keys(sessionStorage);
+
+    // Si NO hay cookies de desarrollo Y NO hay flag de logout explícito Y sessionStorage está completamente limpio,
+    // es muy probable que estemos en incógnito (sesión completamente nueva)
+    if (!hasDevCookie && !hasExplicitLogout && sessionKeys.length === 0) {
+      return true;
+    }
+
+    return false;
+  } catch {
+    // En caso de error, asumir modo normal para no bloquear funcionalidad
+    return false;
+  }
+};
+
 export const AuthProvider: React.FC<any> = ({ children }) => {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
@@ -32,8 +84,13 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
         // Verificar si el usuario hizo logout explícitamente
         const explicitLogout = localStorage.getItem('explicit_logout');
 
-        // En desarrollo, solo auto-loguear si NO hay logout explícito
-        if (import.meta.env.DEV && !explicitLogout) {
+        // Detectar si estamos en modo incógnito
+        const isIncognito = await detectIncognitoMode();
+
+        // En desarrollo, solo auto-loguear si:
+        // 1. NO hay logout explícito
+        // 2. NO estamos en modo incógnito
+        if (import.meta.env.DEV && !explicitLogout && !isIncognito) {
           try {
             const dev = await fetch('/api/auth/dev-token');
             if (dev.ok) {

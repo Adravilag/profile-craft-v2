@@ -389,7 +389,7 @@ export function PatternLogin({
         </div>
       </button>
       {showModal && (
-        <ModalShell title="Iniciar sesión" onClose={() => setShowModal(false)}>
+        <ModalShell title="Iniciar sesión" onClose={() => setShowModal(false)} maxWidth={400}>
           <div
             id="pattern-login-content"
             className={styles.inner}
