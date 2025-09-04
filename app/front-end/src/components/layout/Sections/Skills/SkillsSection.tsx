@@ -77,6 +77,15 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
     return cleanup;
   }, [onOpenSkillModal, handleOpenModal]);
 
+  // Handler para la expansión de categorías
+  const handleCategoryExpansion = useCallback(
+    (category: string) => {
+      debugLog.dataLoading(`🔄 Expanding to category: ${category}`);
+      setSelectedCategory(category);
+    },
+    [setSelectedCategory]
+  );
+
   // Handler para toggle de ordenamiento
   const handleSortToggle = useCallback((category: string, sortType: string = 'alphabetical') => {
     debugLog.dataLoading(`🔄 Toggling sort for category: ${category}, type: ${sortType}`);
@@ -238,6 +247,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
             selectedSort={selectedSort}
             sortingClass={sortingClass}
             onSortToggle={handleSortToggle}
+            onCategoryExpand={handleCategoryExpansion}
             isAdmin={showAdminFAB}
           />
         </div>

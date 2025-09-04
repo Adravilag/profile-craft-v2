@@ -336,3 +336,88 @@
     width: 100% !important;
   }
 }
+
+/* ============================================
+   EXPAND BUTTON - MOSTRAR MÁS/MENOS
+   ============================================ */
+.expandButtonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--md-sys-spacing-xl);
+  margin-bottom: var(--md-sys-spacing-lg);
+}
+
+.expandButton {
+  display: flex;
+  align-items: center;
+  gap: var(--md-sys-spacing-sm);
+  padding: var(--md-sys-spacing-md) var(--md-sys-spacing-xl);
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
+  border: 1px solid var(--md-sys-color-primary);
+  border-radius: var(--md-sys-shape-corner-full);
+  font-size: var(--md-sys-typescale-body-medium-size);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.expandButton:hover {
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 20px rgba(var(--md-sys-color-primary-rgb), 0.3),
+    0 4px 12px rgba(var(--md-sys-color-primary-rgb), 0.2);
+}
+
+.expandButton:active {
+  transform: translateY(0);
+  box-shadow:
+    0 4px 12px rgba(var(--md-sys-color-primary-rgb), 0.2),
+    0 2px 6px rgba(var(--md-sys-color-primary-rgb), 0.1);
+}
+
+.expandButton:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+}
+
+.expandButton i {
+  font-size: 1rem;
+  transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.expandButton:hover i {
+  transform: scale(1.1);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN PARA EXPAND BUTTON
+   ============================================ */
+@media (max-width: 768px) {
+  .expandButton {
+    padding: var(--md-sys-spacing-sm) var(--md-sys-spacing-lg);
+    font-size: var(--md-sys-typescale-body-small-size);
+    gap: var(--md-sys-spacing-xs);
+  }
+
+  .expandButtonContainer {
+    margin-top: var(--md-sys-spacing-lg);
+    margin-bottom: var(--md-sys-spacing-md);
+  }
+}
+
+/* Reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .expandButton,
+  .expandButton i {
+    transition: none;
+  }
+
+  .expandButton:hover {
+    transform: none;
+  }
+}

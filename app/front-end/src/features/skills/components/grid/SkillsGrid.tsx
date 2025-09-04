@@ -18,8 +18,12 @@ const SkillsGrid: React.FC<SkillsGridProps> = ({
   selectedSort = {},
   sortingClass = '',
   onSortToggle,
+  onCategoryExpand,
   isAdmin = false,
 }) => {
+  // Estado para controlar la expansión de categorías
+  const [isExpanded, setIsExpanded] = React.useState(false);
+
   // Verificar que tenemos iconos
   const iconsLoaded = skillsIcons && skillsIcons.length > 0;
 
@@ -70,6 +74,47 @@ const SkillsGrid: React.FC<SkillsGridProps> = ({
     return null;
   };
 
+  // Determinar qué categorías mostrar según el estado
+  const getCategoriesToShow = React.useMemo(() => {
+    const categories = Object.entries(filteredGrouped);
+
+    // Si hay categoría "Destacados" y no estamos expandidos, mostrar solo "Destacados"
+    const destacadosEntry = categories.find(([category]) => category === 'Destacados');
+
+    if (destacadosEntry && !isExpanded && categories.length > 1) {
+      return [destacadosEntry];
+    }
+
+    // Si estamos expandidos o no hay "Destacados", mostrar todas
+    return categories;
+  }, [filteredGrouped, isExpanded]);
+
+  // Función para manejar la expansión
+  const handleToggleExpansion = () => {
+    if (isExpanded) {
+      // Si estamos expandidos, contraer
+      setIsExpanded(false);
+    } else {
+      // Si estamos contraídos, expandir
+      setIsExpanded(true);
+      // Notificar al componente padre si quiere cambiar el filtro
+      onCategoryExpand?.('All');
+    }
+  };
+
+  // Verificar si necesitamos mostrar el botón "Mostrar más"
+  const shouldShowExpandButton = React.useMemo(() => {
+    const categories = Object.keys(filteredGrouped);
+    const hasDestacados = 'Destacados' in filteredGrouped;
+    const hasMultipleCategories = categories.length > 1;
+
+    // Solo mostrar el botón si:
+    // 1. Tenemos "Destacados" Y otras categorías disponibles
+    // 2. Y no estamos expandidos (para mostrar "Mostrar más")
+    // 3. O estamos expandidos (para mostrar "Mostrar menos")
+    return hasDestacados && hasMultipleCategories;
+  }, [filteredGrouped]);
+
   if (Object.entries(filteredGrouped).length === 0) {
     return (
       <div className={styles.emptyState}>
@@ -87,7 +132,7 @@ const SkillsGrid: React.FC<SkillsGridProps> = ({
           <p>Cargando iconos de habilidades...</p>
         </div>
       )}
-      {Object.entries(filteredGrouped).map(([category, skills]) => {
+      {getCategoriesToShow.map(([category, skills]) => {
         // Excluir skill llamada 'profilhero' y ordenar por level descendente
         const filtered = (skills || []).filter(s => (s.name || '').toLowerCase() !== 'profilhero');
         const sorted = filtered.slice().sort((a, b) => {
@@ -169,6 +214,20 @@ const SkillsGrid: React.FC<SkillsGridProps> = ({
           </div>
         );
       })}
+
+      {/* Botón "Mostrar más" / "Mostrar menos" */}
+      {shouldShowExpandButton && (
+        <div className={styles.expandButtonContainer}>
+          <button
+            className={styles.expandButton}
+            onClick={handleToggleExpansion}
+            aria-label={isExpanded ? 'Mostrar menos categorías' : 'Mostrar más categorías'}
+          >
+            <i className={`fas ${isExpanded ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>
+            <span>{isExpanded ? 'Mostrar menos' : 'Mostrar más'}</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

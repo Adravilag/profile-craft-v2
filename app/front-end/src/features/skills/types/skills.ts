@@ -81,6 +81,7 @@ export interface SkillsGridProps {
   selectedSort?: Record<string, SortOption>; // Ordenamiento por categoría
   sortingClass?: string;
   onSortToggle?: (category: string, sortType?: SortOption) => void;
+  onCategoryExpand?: (category: string) => void; // Nueva prop para expansión de categorías
   isAdmin?: boolean;
 }
 
