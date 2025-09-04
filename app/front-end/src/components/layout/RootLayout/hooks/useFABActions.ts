@@ -82,8 +82,13 @@ export const useFABActions = ({
   }, [isAuthenticated, openTestimonialModal, openTestimonialsAdmin]);
 
   // Acciones del FAB para la sección de skills
-  const skillsFABActions = useMemo<LocalFABAction[]>(
-    () => [
+  const skillsFABActions = useMemo<LocalFABAction[]>(() => {
+    // Solo mostrar acciones de skills para usuarios autenticados
+    if (!isAuthenticated) {
+      return [];
+    }
+
+    return [
       {
         id: 'add-skill',
         onClick: () => openSkillModal(),
@@ -91,31 +96,16 @@ export const useFABActions = ({
         label: 'Añadir Habilidad',
         color: 'success',
       },
-    ],
-    [openSkillModal]
-  );
+    ];
+  }, [isAuthenticated, openSkillModal]);
 
   // Acciones del FAB para la sección de proyectos
   const projectsFABActions = useMemo<LocalFABAction[]>(() => {
-    const base: LocalFABAction[] = [
-      {
-        id: 'add-project',
-        onClick: async () => {
-          try {
-            // Navegar a la página de creación de proyecto
-            window.location.href = '/projects/new';
-          } catch (err) {
-            console.error('No se pudo navegar a crear proyecto:', err);
-          }
-        },
-        icon: 'fas fa-folder-plus',
-        label: 'Añadir Proyecto',
-        color: 'success',
-      },
-    ];
+    const base: LocalFABAction[] = [];
 
+    // Solo mostrar acciones de proyectos para usuarios autenticados
     if (isAuthenticated) {
-      base.unshift({
+      base.push({
         id: 'admin-projects',
         onClick: async () => {
           try {
@@ -128,6 +118,21 @@ export const useFABActions = ({
         icon: 'fas fa-folder-open',
         label: 'Gestionar Proyectos',
         color: 'primary',
+      });
+
+      base.push({
+        id: 'add-project',
+        onClick: async () => {
+          try {
+            // Navegar a la página de creación de proyecto
+            window.location.href = '/projects/new';
+          } catch (err) {
+            console.error('No se pudo navegar a crear proyecto:', err);
+          }
+        },
+        icon: 'fas fa-folder-plus',
+        label: 'Añadir Proyecto',
+        color: 'success',
       });
     }
 

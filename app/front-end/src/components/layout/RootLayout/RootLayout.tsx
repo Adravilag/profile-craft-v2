@@ -114,10 +114,7 @@ const RootLayoutContent: FC<RootLayoutProps> = ({ initialSection }) => {
                 />
               </div>
               <div id="projects">
-                <ProjectsSection
-                  showAdminButton={isAuthenticated && currentSection === 'projects'}
-                  onAdminClick={() => {}}
-                />
+                <ProjectsSection />
               </div>
               <div id="skills">
                 <SkillsSection />

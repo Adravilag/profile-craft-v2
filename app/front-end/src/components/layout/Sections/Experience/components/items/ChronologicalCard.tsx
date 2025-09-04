@@ -7,6 +7,7 @@ import cardStyles from './ChronologicalCard.module.css';
 import chronologicalStyles from './ChronologicalItem.module.css';
 import BlurImage from '@/components/utils/BlurImage';
 import { useTranslation } from '@/contexts/TranslationContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface CombinedItem {
   _id: string;
@@ -36,6 +37,7 @@ const ChronologicalCard: React.FC<ChronologicalCardProps> = ({
   onDelete,
 }) => {
   const { t } = useTranslation();
+  const { isAuthenticated } = useAuth();
   const imgCandidate = findImageForName(item.company ?? item.institution);
 
   const styles = context === 'chronological' ? chronologicalStyles : cardStyles;
@@ -152,23 +154,27 @@ const ChronologicalCard: React.FC<ChronologicalCardProps> = ({
         )}
 
         <div className={cardStyles.cardActions}>
-          <button
-            className={cardStyles.editBtn}
-            type="button"
-            onClick={() => onEdit && onEdit(item)}
-            aria-label={t.experience.admin?.edit || 'Editar'}
-          >
-            <i className="fas fa-pen" />
-          </button>
+          {isAuthenticated && (
+            <>
+              <button
+                className={cardStyles.editBtn}
+                type="button"
+                onClick={() => onEdit && onEdit(item)}
+                aria-label={t.experience.admin?.edit || 'Editar'}
+              >
+                <i className="fas fa-pen" />
+              </button>
 
-          <button
-            className={cardStyles.deleteBtn}
-            type="button"
-            onClick={() => onDelete && onDelete(item)}
-            aria-label={t.experience.admin?.delete || 'Eliminar'}
-          >
-            <i className="fas fa-trash-alt" />
-          </button>
+              <button
+                className={cardStyles.deleteBtn}
+                type="button"
+                onClick={() => onDelete && onDelete(item)}
+                aria-label={t.experience.admin?.delete || 'Eliminar'}
+              >
+                <i className="fas fa-trash-alt" />
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

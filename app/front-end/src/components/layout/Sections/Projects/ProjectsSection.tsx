@@ -9,6 +9,7 @@ import type { Project as UiProject } from '@/components/layout/Sections/Projects
 import ProjectModal from '@/features/projects/components/ProjectModal/ProjectModal';
 const { getProjects } = projects;
 import { useData } from '@/contexts';
+import { useAuth } from '@/contexts/AuthContext';
 import { debugLog } from '@/utils/debugConfig';
 import HeaderSection from '../../HeaderSection/HeaderSection';
 import styles from './ProjectsSection.module.css';
@@ -18,8 +19,7 @@ import { useTranslation } from '@/contexts/TranslationContext';
 // Definición de tipos y estados
 interface ProjectsSectionProps {
   onProjectClick?: (projectId: string) => void;
-  showAdminButton?: boolean;
-  onAdminClick?: () => void;
+  // showAdminButton y onAdminClick removidos - administración vía FAB
 }
 
 // Función de mapeo para normalizar un ApiProject al shape que espera la UI (UiProject)
@@ -79,15 +79,15 @@ const mapItemToProject = (item: ApiProject): UiProject => {
   } as UiProject;
 };
 
-const ProjectsSection: React.FC<ProjectsSectionProps> = ({
-  onProjectClick,
-  showAdminButton = false,
-  onAdminClick,
-}) => {
+const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { projects: contextProjects, projectsLoading, projectsError } = useData();
+  const { isAuthenticated } = useAuth();
   const [localProjects, setLocalProjects] = useState<ApiProject[]>([]);
+  const [hasLoadedLocal, setHasLoadedLocal] = useState(false);
+
+  // Administración de proyectos ahora manejada por el FAB
 
   const [currentPage, setCurrentPage] = useState(1);
   const articlesPerPage = 3;
@@ -97,11 +97,13 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
 
   // Usar useMemo para evitar recálculos innecesarios
   const currentProjects = useMemo(() => {
-    return contextProjects.length > 0 ? contextProjects : localProjects;
+    const contextArray = contextProjects || [];
+    const localArray = localProjects || [];
+    return contextArray.length > 0 ? contextArray : localArray;
   }, [contextProjects, localProjects]) as ApiProject[];
 
   const currentLoading =
-    projectsLoading || (currentProjects.length === 0 && localProjects.length === 0);
+    projectsLoading || (currentProjects.length === 0 && (localProjects || []).length === 0);
   const currentError = projectsError;
 
   const getFilteredProjects = useMemo(() => {
@@ -145,16 +147,21 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
       const data = await getProjects();
       debugLog.dataLoading(`${t.projects.title} loaded:`, data?.length || 0);
       setLocalProjects(data);
+      setHasLoadedLocal(true);
     } catch (err) {
       console.error(t.projectsCarousel.loadingProblem, err);
+      setHasLoadedLocal(true); // Marcar como intentado incluso si falló
     }
   };
 
   useEffect(() => {
-    if (contextProjects.length === 0 && localProjects.length === 0) {
+    // Solo cargar proyectos locales si:
+    // 1. No hay proyectos del contexto disponibles
+    // 2. No hemos intentado cargar proyectos locales aún
+    if (!contextProjects?.length && !hasLoadedLocal) {
       loadProjects();
     }
-  }, [contextProjects.length, localProjects.length]);
+  }, [contextProjects?.length, hasLoadedLocal]);
 
   // If the available pages change (filtering / data load), clamp the current page
   useEffect(() => {
@@ -165,10 +172,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
     }
   }, [filteredTotalPages]);
 
-  const handleAdminClick = () => {
-    navigate('/projects/admin');
-    onAdminClick?.();
-  };
+  // Administración movida al FAB - handleAdminClick eliminado
 
   const hasProjects = currentProjects.some(p => !p.project_content);
   const showFilters = hasProjects && currentProjects.length > 1;
@@ -250,11 +254,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({
             <div className={styles.projectsEmpty}>
               <i className="fas fa-project-diagram"></i>
               <p>{t.projectsCarousel.noProjects}</p>
-              {showAdminButton && (
-                <button onClick={handleAdminClick} className={styles.adminButton}>
-                  <i className="fas fa-plus"></i> {t.projectsCarousel.createProject}
-                </button>
-              )}
+              {/* Botón de administración movido al FAB para centralizar control */}
             </div>
           </div>
         </div>

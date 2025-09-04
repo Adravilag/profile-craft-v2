@@ -10,6 +10,7 @@ import {
 import HeaderSection from '../../HeaderSection/HeaderSection';
 import { debugLog } from '@/utils/debugConfig';
 import { useFab } from '@/contexts/FabContext';
+import { useAuth } from '@/contexts/AuthContext';
 import styles from './SkillsSection.module.css';
 
 interface SkillsSectionProps {
@@ -25,6 +26,10 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
   onExternalCategoryChange,
 }) => {
   const { onOpenSkillModal } = useFab();
+  const { isAuthenticated } = useAuth();
+
+  // Determinar si mostrar funciones de admin basado en autenticación
+  const isAdmin = isAuthenticated && showAdminFAB;
 
   // Usar el contexto de filtros
   const skillsFilterContext = useSkillsFilter();
@@ -248,7 +253,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
             sortingClass={sortingClass}
             onSortToggle={handleSortToggle}
             onCategoryExpand={handleCategoryExpansion}
-            isAdmin={showAdminFAB}
+            isAdmin={isAdmin}
           />
         </div>
 
@@ -263,7 +268,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
             onSubmit={handleModalSubmit}
             onFormChange={handleFormChange}
             onFormChangeWithIcon={handleFormChangeWithIcon}
-            isAdmin={showAdminFAB}
+            isAdmin={isAdmin}
           />
         )}
       </div>
