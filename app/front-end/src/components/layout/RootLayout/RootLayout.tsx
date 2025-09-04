@@ -124,7 +124,7 @@ const RootLayoutContent: FC<RootLayoutProps> = ({ initialSection }) => {
               </div>
               <div id="certifications">
                 <CertificationsSection
-                  isAdminMode={false}
+                  isAdminMode={isAuthenticated}
                   showAdminFAB={isAuthenticated && currentSection === 'certifications'}
                 />
               </div>

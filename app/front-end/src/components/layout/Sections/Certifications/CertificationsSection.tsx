@@ -121,6 +121,10 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
   };
 
   const handleDeleteCertification = async (certId: number | string) => {
+    if (!window.confirm('¿Estás seguro de que quieres eliminar esta certificación?')) {
+      return;
+    }
+
     try {
       await deleteCertification(String(certId));
       showSuccess('¡Certificación eliminada!', 'La certificación se ha eliminado correctamente');
