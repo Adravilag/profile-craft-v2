@@ -3,6 +3,7 @@ import { useAboutNavigation } from './useAboutNavigation';
 import { useAboutData } from './useAboutData';
 import { useAboutApiData } from './useAboutApiData';
 import { useHighlightCards } from './useHighlightCards';
+import { useSectionsLoadingContext } from '@/contexts/SectionsLoadingContext';
 import type { UnifiedHighlightCard } from '../types';
 
 /**
@@ -11,6 +12,9 @@ import type { UnifiedHighlightCard } from '../types';
  * Combina datos del perfil con datos dinámicos de About desde MongoDB.
  */
 export function useAboutSection() {
+  // Sistema centralizado de loading
+  const { isLoading: centralLoading } = useSectionsLoadingContext();
+
   // Datos del perfil (contexto existente)
   const { profile, profileLoading, profileError, hasProfile } = useAboutData();
 
@@ -56,8 +60,8 @@ export function useAboutSection() {
   const collaborationNote =
     hasAboutData && aboutData?.collaborationNote ? aboutData.collaborationNote : null;
 
-  // Estados de carga combinados
-  const isLoading = profileLoading || aboutLoading;
+  // Estados de carga y error
+  const isLoading = centralLoading('about');
   const hasError = Boolean(profileError || aboutError);
   const errorMessage = profileError || aboutError;
 

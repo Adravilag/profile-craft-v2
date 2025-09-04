@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getAboutSection } from '@/services/endpoints/about';
+import { useSectionsLoadingContext } from '@/contexts/SectionsLoadingContext';
 import type { AboutSectionData } from '@/services/endpoints/about';
 
 interface UseAboutApiDataReturn {
@@ -16,12 +17,15 @@ interface UseAboutApiDataReturn {
  */
 export function useAboutApiData(): UseAboutApiDataReturn {
   const [aboutData, setAboutData] = useState<AboutSectionData | null>(null);
-  const [aboutLoading, setAboutLoading] = useState<boolean>(true);
   const [aboutError, setAboutError] = useState<string | null>(null);
+
+  // Sistema centralizado de loading
+  const { isLoading: centralLoading, setLoading } = useSectionsLoadingContext();
+  const aboutLoading = centralLoading('about');
 
   const fetchAboutData = async () => {
     try {
-      setAboutLoading(true);
+      setLoading('about', true);
       setAboutError(null);
 
       const response = await getAboutSection();
@@ -37,7 +41,7 @@ export function useAboutApiData(): UseAboutApiDataReturn {
         error instanceof Error ? error.message : 'Error desconocido al cargar los datos de About'
       );
     } finally {
-      setAboutLoading(false);
+      setLoading('about', false);
     }
   };
 

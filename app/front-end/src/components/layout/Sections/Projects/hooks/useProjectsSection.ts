@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import type { Project } from '@/types/api';
 import { projects as projectsApi } from '@/services/endpoints';
 import { useNotificationContext } from '@/hooks/useNotification';
+import { useSectionsLoadingContext } from '@/contexts/SectionsLoadingContext';
 
 interface UseProjectsSectionProps {
   isAdminMode?: boolean;
@@ -30,14 +31,17 @@ export const useProjectsSection = ({
   featuredOnly = false,
 }: UseProjectsSectionProps = {}): UseProjectsSectionReturn => {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const { showSuccess, showError } = useNotificationContext();
 
+  // ✅ SISTEMA CENTRALIZADO DE LOADING
+  const { isLoading: centralLoading, setLoading } = useSectionsLoadingContext();
+  const loading = centralLoading('projects');
+
   const loadProjects = useCallback(async () => {
     try {
-      setLoading(true);
+      setLoading('projects', true);
       setError(null);
       const data = isAdminMode
         ? await projectsApi.getAdminProjects()
@@ -50,9 +54,9 @@ export const useProjectsSection = ({
         showError('Error', message);
       }
     } finally {
-      setLoading(false);
+      setLoading('projects', false);
     }
-  }, [isAdminMode, showError]);
+  }, [isAdminMode, showError, setLoading]);
 
   const refreshProjects = useCallback(async () => {
     await loadProjects();

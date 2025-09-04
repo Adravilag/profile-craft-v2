@@ -8,6 +8,7 @@ export { default as useEducation } from './useEducation';
 export { default as useExperienceSection } from './useExperienceSection';
 export * from './useIntersectionObserver';
 export * from './usePerformanceMonitoring';
+export * from './useSectionsLoading';
 
 // useResponsive may not exist in this project root; if needed, add it later.
 

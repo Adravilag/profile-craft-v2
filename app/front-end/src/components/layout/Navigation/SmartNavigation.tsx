@@ -6,6 +6,7 @@ import { useInitialScrollToSection } from '@/hooks/useInitialScrollToSection';
 import styles from './SmartNavigation.module.css';
 import { scrollToElement } from '@/utils/scrollToElement';
 import LoadingSpinner from '@/components/ui/LoadingSpinner/LoadingSpinner';
+import { useSectionsLoadingContext } from '@/contexts/SectionsLoadingContext';
 
 interface SmartNavigationProps {
   navItems: Array<{
@@ -36,6 +37,9 @@ const SmartNavigation: React.FC<SmartNavigationProps> = ({ navItems }) => {
   });
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(false);
+
+  // **INTEGRACIÓN CON SISTEMA CENTRALIZADO**
+  const { isAnyLoading } = useSectionsLoadingContext();
 
   // **USO DEL NUEVO HOOK**
   useInitialScrollToSection({
@@ -439,7 +443,15 @@ const SmartNavigation: React.FC<SmartNavigationProps> = ({ navItems }) => {
 
   return (
     <>
-      {isInitialLoading && <LoadingSpinner fullScreen size={48} label="Cargando sección…" />}
+      {/* LOADING: Combinar navegación inicial + loading de datos centralizadas */}
+      {(isInitialLoading || isAnyLoading()) && (
+        <LoadingSpinner
+          fullScreen
+          size={48}
+          label={isInitialLoading ? 'Cargando sección…' : 'Cargando datos...'}
+        />
+      )}
+
       {/* Barra de progreso de scroll */}
       <div className={styles.scrollProgressContainer}>
         <div className={styles.scrollProgressBar} style={{ width: `${scrollProgress * 100}%` }} />

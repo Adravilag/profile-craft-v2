@@ -6,6 +6,7 @@ const { getSkills, createSkill, updateSkill, deleteSkill } = skillsEndpoints;
 import type { Skill } from '@/types/api';
 import type { SkillFormData } from '../types/skills';
 import { getSkillSvg, fetchLogoHubSvg, GENERIC_ICON_URL } from '../utils/skillUtils';
+import { useSectionsLoadingContext } from '@/contexts/SectionsLoadingContext';
 
 const defaultNewSkill: SkillFormData = {
   name: '',
@@ -17,13 +18,16 @@ const defaultNewSkill: SkillFormData = {
 
 export const useSkills = () => {
   const [skills, setSkills] = useState<Skill[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [newSkill, setNewSkill] = useState<SkillFormData>(defaultNewSkill);
   const [editingId, setEditingId] = useState<number | string | null>(null);
   const [draggedSkillId, setDraggedSkillId] = useState<number | string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
+
+  // ✅ SISTEMA CENTRALIZADO DE LOADING
+  const { isLoading: centralLoading, setLoading } = useSectionsLoadingContext();
+  const loading = centralLoading('skills');
 
   // Cargar skills iniciales
   useEffect(() => {
@@ -56,11 +60,11 @@ export const useSkills = () => {
         }));
 
         setSkills(normalized);
-        setLoading(false);
+        setLoading('skills', false);
       })
       .catch(() => {
         setError('No se pudieron cargar las habilidades.');
-        setLoading(false);
+        setLoading('skills', false);
       });
   }, []);
 

@@ -18,6 +18,7 @@ import { debugLog } from '@/utils/debugConfig';
 import useScrollSectionDetection from '@/hooks/useScrollSectionDetection';
 import { useRootLayout } from './hooks/useRootLayout';
 import { SkillsFilterProvider, CategoryFilters } from '@/features/skills';
+import { SectionsLoadingProvider } from '@/contexts/SectionsLoadingContext';
 
 // Hook local para navegación automática cuando se proporciona `initialSection`.
 // Se colocó aquí para evitar dependencias adicionales y mantener la lógica cercana al componente.
@@ -187,7 +188,9 @@ const RootLayout: FC<RootLayoutProps> = ({ initialSection }) => {
     <NavigationProvider>
       <FabProvider>
         <ModalProvider>
-          <RootLayoutContent initialSection={initialSection} />
+          <SectionsLoadingProvider>
+            <RootLayoutContent initialSection={initialSection} />
+          </SectionsLoadingProvider>
         </ModalProvider>
       </FabProvider>
     </NavigationProvider>

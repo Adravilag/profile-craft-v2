@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { profile as endpointsProfile } from '@/services/endpoints';
 import { getProfilePattern } from '@/services/api';
 import type { UserProfile } from '@/types/api';
 import { debugLog } from '@/utils/debugConfig';
+import { useSectionsLoadingContext } from '@/contexts/SectionsLoadingContext';
 
 const { getUserProfile } = endpointsProfile;
 
@@ -19,17 +20,20 @@ interface UseProfileDataReturn {
  */
 export function useProfileData(isFirstTime: boolean = false): UseProfileDataReturn {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchProfile = async () => {
+  // Sistema centralizado de loading
+  const { isLoading: centralLoading, setLoading } = useSectionsLoadingContext();
+  const loading = centralLoading('profile');
+
+  const fetchProfile = useCallback(async () => {
     if (isFirstTime) {
-      setLoading(false);
+      setLoading('profile', false);
       return;
     }
 
     try {
-      setLoading(true);
+      setLoading('profile', true);
       setError(null);
       const data = await getUserProfile();
       setUserProfile(data);
@@ -37,14 +41,14 @@ export function useProfileData(isFirstTime: boolean = false): UseProfileDataRetu
       debugLog.error('Failed to fetch user profile:', err);
       setError('Could not load the profile.');
     } finally {
-      setLoading(false);
+      setLoading('profile', false);
     }
-  };
+  }, [isFirstTime, setLoading]);
 
   // Fetch inicial del perfil
   useEffect(() => {
     fetchProfile();
-  }, [isFirstTime]);
+  }, [fetchProfile]);
 
   // Fetch del patrón de autenticación si no está disponible
   useEffect(() => {
@@ -86,9 +90,9 @@ export function useProfileData(isFirstTime: boolean = false): UseProfileDataRetu
     };
   }, [userProfile]);
 
-  const refetchProfile = async () => {
+  const refetchProfile = useCallback(async () => {
     await fetchProfile();
-  };
+  }, [fetchProfile]);
 
   return {
     userProfile,

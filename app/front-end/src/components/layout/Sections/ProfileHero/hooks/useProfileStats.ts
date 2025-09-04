@@ -4,6 +4,7 @@ import type { UserProfile } from '@/types/api';
 import { debugLog } from '@/utils/debugConfig';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { normalizeState, PROJECT_STATES } from '@/features/projects/constants/projectStates';
+import { useSectionsLoadingContext } from '@/contexts/SectionsLoadingContext';
 
 interface UseProfileStatsReturn {
   statsArray: Array<{ key: string; label: string }>;
@@ -28,22 +29,25 @@ export function useProfileStats(
     certifications_count?: number;
     years_experience?: number;
   } | null>(null);
-  const [remoteLoading, setRemoteLoading] = useState<boolean>(true);
 
   // Hook de traducciones (debe invocarse en el tope del hook)
   const { t } = useTranslation();
 
+  // Sistema centralizado de loading
+  const { isLoading: centralLoading, setLoading } = useSectionsLoadingContext();
+  const remoteLoading = centralLoading('profile');
+
   // Fetch de estadísticas remotas
   useEffect(() => {
     if (isFirstTime) {
-      setRemoteLoading(false);
+      setLoading('profile', false);
       return;
     }
 
     let mounted = true;
 
     (async () => {
-      setRemoteLoading(true);
+      setLoading('profile', true);
       try {
         const [projectsList, certsList, experiencesList] = await Promise.all([
           getProjects(),
@@ -107,14 +111,14 @@ export function useProfileStats(
       } catch (err) {
         debugLog.warn('Failed to fetch remote stats', err);
       } finally {
-        if (mounted) setRemoteLoading(false);
+        if (mounted) setLoading('profile', false);
       }
     })();
 
     return () => {
       mounted = false;
     };
-  }, [isFirstTime]);
+  }, [isFirstTime, setLoading]);
 
   // Cálculo de array de estadísticas
   const statsArray = useMemo(() => {

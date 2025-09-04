@@ -1,11 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import {
-  useSkills,
   useSkillsIcons,
   SkillsGrid,
   SkillModal,
   useSkillsFilter,
   type SortOption,
+  useSkills,
 } from '@/features/skills';
 import HeaderSection from '../../HeaderSection/HeaderSection';
 import { debugLog } from '@/utils/debugConfig';
@@ -34,7 +34,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
   // Usar el contexto de filtros
   const skillsFilterContext = useSkillsFilter();
 
-  // Usar el hook principal de skills
+  // Usar el hook migrado de skills
   const {
     skills,
     loading,

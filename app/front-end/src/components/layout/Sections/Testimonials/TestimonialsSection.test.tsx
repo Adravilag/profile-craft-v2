@@ -2,9 +2,17 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import TestimonialsSection from './TestimonialsSection';
+import { SectionsLoadingProvider } from '@/contexts/SectionsLoadingContext';
+import { ModalProvider } from '@/contexts/ModalContext';
 
 // Mock de módulos externos
 vi.mock('@/hooks/useTestimonials', () => ({
+  useTestimonials: () => ({
+    testimonials: [],
+    add: vi.fn(),
+    refresh: vi.fn(),
+    loading: false,
+  }),
   default: () => ({
     testimonials: [],
     add: vi.fn(),
@@ -13,7 +21,11 @@ vi.mock('@/hooks/useTestimonials', () => ({
   }),
 }));
 
-vi.mock('@/hooks/useNotification', () => ({
+vi.mock('@hooks/useNotification', () => ({
+  useNotification: () => ({
+    showSuccess: vi.fn(),
+    showError: vi.fn(),
+  }),
   useNotificationContext: () => ({
     showSuccess: vi.fn(),
     showError: vi.fn(),
@@ -34,13 +46,22 @@ vi.mock('react-dom', async () => {
   };
 });
 
+// Helper para wrappear el componente con providers necesarios
+const renderWithProviders = (component: React.ReactElement) => {
+  return render(
+    <SectionsLoadingProvider>
+      <ModalProvider>{component}</ModalProvider>
+    </SectionsLoadingProvider>
+  );
+};
+
 describe('TestimonialsSection', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('should render testimonials section', () => {
-    render(<TestimonialsSection />);
+    renderWithProviders(<TestimonialsSection />);
 
     expect(screen.getByText('Testimonios')).toBeInTheDocument();
     expect(screen.getByText('Lo que dicen quienes han trabajado conmigo')).toBeInTheDocument();
@@ -49,7 +70,7 @@ describe('TestimonialsSection', () => {
   it('should open modal when clicking add testimonial button', async () => {
     const user = userEvent.setup();
 
-    render(<TestimonialsSection />);
+    renderWithProviders(<TestimonialsSection />);
 
     // Buscar el botón de añadir testimonio (puede estar en el estado vacío)
     const addButton =
@@ -62,14 +83,14 @@ describe('TestimonialsSection', () => {
 
     // Verificar que el modal se abre
     await waitFor(() => {
-      expect(screen.getByText('Añadir Nuevo Testimonio')).toBeInTheDocument();
+      expect(screen.getByText('Nuevo Testimonio')).toBeInTheDocument();
     });
   });
 
   it('should handle form input changes correctly', async () => {
     const user = userEvent.setup();
 
-    render(<TestimonialsSection />);
+    renderWithProviders(<TestimonialsSection />);
 
     // Abrir modal
     const addButton = screen.getByText('Añadir mi testimonio');
@@ -118,7 +139,7 @@ describe('TestimonialsSection', () => {
   it('should not lose focus when typing in any field', async () => {
     const user = userEvent.setup();
 
-    render(<TestimonialsSection />);
+    renderWithProviders(<TestimonialsSection />);
 
     // Abrir modal
     const addButton = screen.getByText('Añadir mi testimonio');
@@ -150,7 +171,7 @@ describe('TestimonialsSection', () => {
   it('should allow navigation with arrow keys in textarea', async () => {
     const user = userEvent.setup();
 
-    render(<TestimonialsSection />);
+    renderWithProviders(<TestimonialsSection />);
 
     // Abrir modal
     const addButton = screen.getByText('Añadir mi testimonio');
@@ -181,7 +202,7 @@ describe('TestimonialsSection', () => {
   it('should close modal when pressing Escape', async () => {
     const user = userEvent.setup();
 
-    render(<TestimonialsSection />);
+    renderWithProviders(<TestimonialsSection />);
 
     // Abrir modal
     const addButton = screen.getByText('Añadir mi testimonio');
@@ -203,7 +224,7 @@ describe('TestimonialsSection', () => {
   it('should handle rating selection', async () => {
     const user = userEvent.setup();
 
-    render(<TestimonialsSection />);
+    renderWithProviders(<TestimonialsSection />);
 
     // Abrir modal
     const addButton = screen.getByText('Añadir mi testimonio');
@@ -227,7 +248,7 @@ describe('TestimonialsSection', () => {
   it('should validate required fields', async () => {
     const user = userEvent.setup();
 
-    render(<TestimonialsSection />);
+    renderWithProviders(<TestimonialsSection />);
 
     // Abrir modal
     const addButton = screen.getByText('Añadir mi testimonio');

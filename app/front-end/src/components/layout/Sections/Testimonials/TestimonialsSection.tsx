@@ -7,7 +7,7 @@ import HeaderSection from '../../HeaderSection/HeaderSection';
 import TestimonialsAdmin from './admin/TestimonialsAdmin';
 import { generateAvatarUrl, handleAvatarError } from '@/utils/avatarUtils';
 import { useNotificationContext } from '@/hooks/useNotification';
-import useTestimonialsHook from '@/hooks/useTestimonials';
+import { useTestimonials } from '@/hooks/useTestimonials';
 import styles from './TestimonialsSection.module.css';
 import BlurImage from '@/components/utils/BlurImage';
 
@@ -59,7 +59,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   onTestimonialsChange,
   isAdminMode = false,
 }) => {
-  const { testimonials: testimonialsData = [], add, refresh, loading } = useTestimonialsHook();
+  const { testimonials: testimonialsData = [], add, refresh, loading } = useTestimonials();
   const { showSuccess, showError } = useNotificationContext();
 
   const [form, setForm] = React.useState<typeof emptyForm>(emptyForm);

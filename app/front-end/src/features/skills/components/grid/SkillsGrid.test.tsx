@@ -7,9 +7,9 @@ import type { SkillsGridProps } from '../../types/skills';
 
 describe('[TEST] SkillsGrid - Funcionalidad "Mostrar más"', () => {
   const mockSkillsIcons = [
-    { name: 'react', svg: '<svg>React</svg>' },
-    { name: 'vue', svg: '<svg>Vue</svg>' },
-    { name: 'angular', svg: '<svg>Angular</svg>' },
+    { name: 'react', svg: '<svg>React</svg>', svg_path: '/react.svg' },
+    { name: 'vue', svg: '<svg>Vue</svg>', svg_path: '/vue.svg' },
+    { name: 'angular', svg: '<svg>Angular</svg>', svg_path: '/angular.svg' },
   ];
 
   const mockFilteredGrouped = {

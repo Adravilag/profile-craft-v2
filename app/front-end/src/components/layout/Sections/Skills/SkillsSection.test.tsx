@@ -3,6 +3,7 @@ import { render } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { BrowserRouter } from 'react-router-dom';
 import { SkillsFilterProvider } from '@/features/skills';
+import { SectionsLoadingProvider } from '@/contexts/SectionsLoadingContext';
 
 // Mock de contextos y hooks
 vi.mock('@/contexts/UnifiedThemeContext', () => ({
@@ -68,9 +69,11 @@ describe('SkillsSection', () => {
   it('should not have undefined CSS classes', () => {
     const { container } = render(
       <BrowserRouter>
-        <SkillsFilterProvider>
-          <SkillsSection />
-        </SkillsFilterProvider>
+        <SectionsLoadingProvider>
+          <SkillsFilterProvider>
+            <SkillsSection />
+          </SkillsFilterProvider>
+        </SectionsLoadingProvider>
       </BrowserRouter>
     );
 
@@ -88,9 +91,11 @@ describe('SkillsSection', () => {
   it('should use correct CSS module classes', () => {
     const { container } = render(
       <BrowserRouter>
-        <SkillsFilterProvider>
-          <SkillsSection />
-        </SkillsFilterProvider>
+        <SectionsLoadingProvider>
+          <SkillsFilterProvider>
+            <SkillsSection />
+          </SkillsFilterProvider>
+        </SectionsLoadingProvider>
       </BrowserRouter>
     );
 

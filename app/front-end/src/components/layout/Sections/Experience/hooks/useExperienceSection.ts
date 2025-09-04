@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import type { Experience } from '@/types/api';
 import { experiences as experiencesApi } from '@/services/endpoints';
 import { useNotificationContext } from '@/hooks/useNotification';
+import { useSectionsLoadingContext } from '@/contexts/SectionsLoadingContext';
 
 interface UseExperienceSectionProps {
   isAdminMode?: boolean;
@@ -24,13 +25,16 @@ export const useExperienceSection = ({
   isAdminMode = false,
 }: UseExperienceSectionProps = {}): UseExperienceSectionReturn => {
   const [experiences, setExperiences] = useState<Experience[]>([]);
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { showSuccess, showError } = useNotificationContext();
 
+  // Sistema centralizado de loading
+  const { isLoading: centralLoading, setLoading } = useSectionsLoadingContext();
+  const loading = centralLoading('experience');
+
   const loadExperiences = useCallback(async () => {
     try {
-      setLoading(true);
+      setLoading('experience', true);
       setError(null);
       const data = await experiencesApi.getExperiences();
       setExperiences(data || []);
@@ -41,9 +45,9 @@ export const useExperienceSection = ({
         showError('Error', message);
       }
     } finally {
-      setLoading(false);
+      setLoading('experience', false);
     }
-  }, [isAdminMode, showError]);
+  }, [isAdminMode, showError, setLoading]);
 
   const refreshExperiences = useCallback(async () => {
     await loadExperiences();

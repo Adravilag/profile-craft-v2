@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { testimonials as testimonialsApi } from '@/services/endpoints';
 import type { Testimonial } from '@/types/api';
 import { useNotificationContext } from '@/hooks/useNotification';
+import { useSectionsLoadingContext } from '@/contexts/SectionsLoadingContext';
 
 type CreatePayload = Omit<
   Testimonial,
@@ -10,13 +11,16 @@ type CreatePayload = Omit<
 
 export const useTestimonials = () => {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { showError, showSuccess } = useNotificationContext();
 
+  // Sistema centralizado de loading
+  const { isLoading: centralLoading, setLoading } = useSectionsLoadingContext();
+  const loading = centralLoading('testimonials');
+
   const load = useCallback(async () => {
     try {
-      setLoading(true);
+      setLoading('testimonials', true);
       setError(null);
       const data = await testimonialsApi.getTestimonials();
       setTestimonials(Array.isArray(data) ? data : []);
@@ -24,9 +28,9 @@ export const useTestimonials = () => {
       console.error('Error cargando testimonios:', e);
       setError('No se pudieron cargar los testimonios');
     } finally {
-      setLoading(false);
+      setLoading('testimonials', false);
     }
-  }, []);
+  }, [setLoading]);
 
   useEffect(() => {
     load();
