@@ -14,6 +14,7 @@ import {
   ImageCarousel,
   RelatedProjects,
 } from '@/ui';
+import { SectionsLoadingProvider } from '@/contexts/SectionsLoadingContext';
 import ReactMarkdown from 'react-markdown';
 import styles from './ProjectPage.module.css';
 
@@ -272,351 +273,356 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
     : !project.project_content || project.project_content.length < 500;
 
   return (
-    <div className={styles.projectPage}>
-      {/* WordPress Header */}
-      <header className={styles.wordpressHeader}>
-        <nav className={styles.projectNavigation}>
-          <Link to="/projects" className={styles.backButton}>
-            <i className="fas fa-arrow-left"></i> Volver a artículos
-          </Link>
-          <div className={styles.progressIndicator}></div>
-        </nav>
-      </header>
-      {/* SmartNavigation para cambiar de sección */}
-      <SmartNavigation navItems={navItems} />
-      {/* Contenido principal */}
-      <main className={styles.mainContent}>
-        {/* WordPress Project Header */}
-        <header className={styles.wordpressProjectHeader}>
-          <a href="#" className={styles.wordpressCategory}>
-            <span>{isProject ? 'Proyecto' : 'Artículo'}</span>
-          </a>
-
-          <h1 className={styles.wordpressTitle}>{project.title}</h1>
-          <div className={styles.wordpressExcerpt}>{project.description}</div>
-
-          {/* WordPress Post Meta */}
-          <div className={styles.wordpressPostMeta}>
-            <div className={styles.wordpressMetaItem}>
-              <i className={`fas fa-flag ${styles.wordpressMetaIcon}`}></i>
-              <span className={styles.wordpressMetaText}>{project.status}</span>
-            </div>
-
-            {project.created_at && (
-              <>
-                <div className={styles.wordpressDivider}></div>
-                <div className={styles.wordpressMetaItem}>
-                  <i className={`fas fa-calendar ${styles.wordpressMetaIcon}`}></i>
-                  <span className={styles.wordpressMetaText}>
-                    {new Date(project.created_at).toLocaleDateString('es-ES')}
-                  </span>
-                </div>
-              </>
-            )}
-
-            {project.updated_at && (
-              <>
-                <div className={styles.wordpressDivider}></div>
-                <div className={styles.wordpressMetaItem}>
-                  <i className={`fas fa-edit ${styles.wordpressMetaIcon}`}></i>
-                  <span className={styles.wordpressMetaText}>
-                    Actualizado el {new Date(project.updated_at).toLocaleDateString('es-ES')}
-                  </span>
-                </div>
-              </>
-            )}
-
-            {!isProject && readingTime > 0 && (
-              <>
-                <div className={styles.wordpressDivider}></div>
-                <div className={styles.wordpressMetaItem}>
-                  <i className={`fas fa-clock ${styles.wordpressMetaIcon}`}></i>
-                  <span className={styles.wordpressMetaText}>{readingTime} min de lectura</span>
-                </div>
-              </>
-            )}
-          </div>
+    <SectionsLoadingProvider>
+      <div className={styles.projectPage}>
+        {/* WordPress Header */}
+        <header className={styles.wordpressHeader}>
+          <nav className={styles.projectNavigation}>
+            <Link to="/projects" className={styles.backButton}>
+              <i className="fas fa-arrow-left"></i> Volver a artículos
+            </Link>
+            <div className={styles.progressIndicator}></div>
+          </nav>
         </header>
-        {/* WordPress Technologies Section */}
-        {project.technologies && project.technologies.length > 0 && (
-          <div className={styles.wordpressTechnologies}>
-            <div className={styles.wordpressTechHeader}>
-              <i className={`fas fa-tools ${styles.wordpressTechIcon}`}></i>
-              <h2 className={styles.wordpressTechTitle}>Tecnologías Utilizadas</h2>
-            </div>
-            <div className={styles.wordpressTechList}>
-              {project.technologies.map((tech, idx) => (
-                <span key={idx} className={styles.wordpressTechChip}>
-                  {tech}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-        {/* WordPress Action Buttons */}
-        <div className={styles.wordpressActions}>
-          {project.live_url && project.live_url !== '#' && (
-            <a
-              href={project.live_url}
-              className={`${styles.wordpressActionButton} ${styles.wordpressActionPrimary}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className={`fas fa-external-link-alt ${styles.wordpressActionIcon}`}></i>
-              Ver Demo
+        {/* SmartNavigation para cambiar de sección */}
+        <SmartNavigation navItems={navItems} />
+        {/* Contenido principal */}
+        <main className={styles.mainContent}>
+          {/* WordPress Project Header */}
+          <header className={styles.wordpressProjectHeader}>
+            <a href="#" className={styles.wordpressCategory}>
+              <span>{isProject ? 'Proyecto' : 'Artículo'}</span>
             </a>
-          )}
 
-          {project.github_url && (
-            <a
-              href={project.github_url}
-              className={`${styles.wordpressActionButton} ${styles.wordpressActionSecondary}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className={`fab fa-github ${styles.wordpressActionIcon}`}></i>
-              Ver Código
-            </a>
-          )}
+            <h1 className={styles.wordpressTitle}>{project.title}</h1>
+            <div className={styles.wordpressExcerpt}>{project.description}</div>
 
-          {project.video_demo_url && (
-            <a
-              href={project.video_demo_url}
-              className={`${styles.wordpressActionButton} ${styles.wordpressActionYoutube}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className={`fab fa-youtube ${styles.wordpressActionIcon}`}></i>
-              Ver Video
-            </a>
-          )}
-
-          {project.project_url && (
-            <a
-              href={project.project_url}
-              className={`${styles.wordpressActionButton} ${styles.wordpressActionSecondary}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className={`fas fa-newspaper ${styles.wordpressActionIcon}`}></i>
-              Leer Artículo
-            </a>
-          )}
-        </div>{' '}
-        {/* WordPress Media Section with Image Carousel */}
-        {(project.image_url || project.video_demo_url) && (
-          <div className={styles.wordpressMediaSection}>
-            <div className={styles.wordpressMediaGrid}>
-              {' '}
-              {/* Image Carousel */}
-              {project.image_url && (
-                <div className={styles.wordpressMediaItem}>
-                  <h3 className={styles.wordpressMediaTitle}>Galería del Proyecto</h3>
-                  <p className={styles.wordpressMediaDescription}>
-                    Explora las imágenes del proyecto en detalle
-                  </p>
-                  <ImageCarousel
-                    images={[project.image_url]} // Solo mostrar la imagen principal
-                    title={project.title}
-                    className={styles.wordpressCarousel}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </main>
-      {/* Video demo - Sección independiente fuera del mainContent */}
-      {project.video_demo_url && (
-        <div className={styles.wordpressFullWidthVideoSection}>
-          <div className={styles.wordpressVideoWrapper}>
-            <div className={styles.wordpressVideoHeader}>
-              <h3 className={styles.wordpressVideoTitle}>
-                <i className="fab fa-youtube" style={{ color: '#ff0000', marginRight: '8px' }}></i>
-                Demo en Video
-              </h3>
-              <p className={styles.wordpressVideoDescription}>
-                Demostración completa del funcionamiento del proyecto
-              </p>
-            </div>
-            <div className={styles.wordpressVideoContainer}>
-              {isYouTubeUrl(project.video_demo_url) ? (
-                // Renderizar iframe embed directo como fallback robusto
-                (() => {
-                  try {
-                    const url = project.video_demo_url || '';
-                    // Extraer el ID de YouTube y construir URL embed
-                    const m = url.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/);
-                    const videoId = m ? m[1] : null;
-                    const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : url;
-                    // Debug: si no encontramos id, aún intentamos usar la URL original
-                    // eslint-disable-next-line no-console
-                    console.debug('ProjectPage: rendering youtube iframe', {
-                      url,
-                      videoId,
-                      embedUrl,
-                    });
-                    return (
-                      <iframe
-                        title={`Demo de ${project.title}`}
-                        src={embedUrl}
-                        className={styles.wordpressVideoPlayer}
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowFullScreen
-                      />
-                    );
-                  } catch (err) {
-                    // eslint-disable-next-line no-console
-                    console.error('Error rendering youtube iframe', err);
-                    return (
-                      <div className={styles.wordpressVideoPlaceholder}>
-                        <p>Video no disponible</p>
-                      </div>
-                    );
-                  }
-                })()
-              ) : (
-                <div className={styles.wordpressVideoPlaceholder}>
-                  <div>
-                    <i className="fas fa-play-circle"></i>
-                    <p>Video disponible en enlace externo</p>
-                    <a
-                      href={project.video_demo_url}
-                      className={styles.wordpressMediaLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{
-                        marginTop: '12px',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        padding: '8px 16px',
-                        borderRadius: '6px',
-                        background: '#0969da',
-                        color: '#ffffff',
-                        textDecoration: 'none',
-                        fontSize: '14px',
-                        fontWeight: '500',
-                      }}
-                    >
-                      <i className="fas fa-external-link-alt"></i>
-                      Ver Video Demo
-                    </a>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}{' '}
-      {/* Continuar con el resto del contenido en mainContent */}
-      <main className={styles.mainContent}>
-        {/* WordPress Project Content */}
-        {/* Debug indicator: show content length to help troubleshooting */}
-        <div style={{ fontSize: 12, color: 'var(--muted-color, #8b949e)', marginBottom: 8 }}>
-          Contenido:{' '}
-          {project.project_content
-            ? `${project.project_content.length} caracteres`
-            : 'sin contenido'}
-        </div>
-
-        {project.project_content && project.project_content.trim() && (
-          <article className={styles.wordpressProjectContent}>
-            <ContentRenderer
-              content={project.project_content}
-              className={`${styles.wordpressProse}`}
-            />
-          </article>
-        )}
-
-        {/* Project Summary para proyectos */}
-        {isProject && (
-          <div className={styles.wordpressProjectSummary}>
-            <div className={styles.wordpressSummaryGrid}>
-              <div className={styles.wordpressSummaryCard}>
-                <h3>
-                  <i className="fas fa-info-circle"></i>
-                  Acerca del proyecto
-                </h3>
-                <p>{project.description}</p>
+            {/* WordPress Post Meta */}
+            <div className={styles.wordpressPostMeta}>
+              <div className={styles.wordpressMetaItem}>
+                <i className={`fas fa-flag ${styles.wordpressMetaIcon}`}></i>
+                <span className={styles.wordpressMetaText}>{project.status}</span>
               </div>
 
-              {project.technologies && project.technologies.length > 0 && (
+              {project.created_at && (
+                <>
+                  <div className={styles.wordpressDivider}></div>
+                  <div className={styles.wordpressMetaItem}>
+                    <i className={`fas fa-calendar ${styles.wordpressMetaIcon}`}></i>
+                    <span className={styles.wordpressMetaText}>
+                      {new Date(project.created_at).toLocaleDateString('es-ES')}
+                    </span>
+                  </div>
+                </>
+              )}
+
+              {project.updated_at && (
+                <>
+                  <div className={styles.wordpressDivider}></div>
+                  <div className={styles.wordpressMetaItem}>
+                    <i className={`fas fa-edit ${styles.wordpressMetaIcon}`}></i>
+                    <span className={styles.wordpressMetaText}>
+                      Actualizado el {new Date(project.updated_at).toLocaleDateString('es-ES')}
+                    </span>
+                  </div>
+                </>
+              )}
+
+              {!isProject && readingTime > 0 && (
+                <>
+                  <div className={styles.wordpressDivider}></div>
+                  <div className={styles.wordpressMetaItem}>
+                    <i className={`fas fa-clock ${styles.wordpressMetaIcon}`}></i>
+                    <span className={styles.wordpressMetaText}>{readingTime} min de lectura</span>
+                  </div>
+                </>
+              )}
+            </div>
+          </header>
+          {/* WordPress Technologies Section */}
+          {project.technologies && project.technologies.length > 0 && (
+            <div className={styles.wordpressTechnologies}>
+              <div className={styles.wordpressTechHeader}>
+                <i className={`fas fa-tools ${styles.wordpressTechIcon}`}></i>
+                <h2 className={styles.wordpressTechTitle}>Tecnologías Utilizadas</h2>
+              </div>
+              <div className={styles.wordpressTechList}>
+                {project.technologies.map((tech, idx) => (
+                  <span key={idx} className={styles.wordpressTechChip}>
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          {/* WordPress Action Buttons */}
+          <div className={styles.wordpressActions}>
+            {project.live_url && project.live_url !== '#' && (
+              <a
+                href={project.live_url}
+                className={`${styles.wordpressActionButton} ${styles.wordpressActionPrimary}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className={`fas fa-external-link-alt ${styles.wordpressActionIcon}`}></i>
+                Ver Demo
+              </a>
+            )}
+
+            {project.github_url && (
+              <a
+                href={project.github_url}
+                className={`${styles.wordpressActionButton} ${styles.wordpressActionSecondary}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className={`fab fa-github ${styles.wordpressActionIcon}`}></i>
+                Ver Código
+              </a>
+            )}
+
+            {project.video_demo_url && (
+              <a
+                href={project.video_demo_url}
+                className={`${styles.wordpressActionButton} ${styles.wordpressActionYoutube}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className={`fab fa-youtube ${styles.wordpressActionIcon}`}></i>
+                Ver Video
+              </a>
+            )}
+
+            {project.project_url && (
+              <a
+                href={project.project_url}
+                className={`${styles.wordpressActionButton} ${styles.wordpressActionSecondary}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i className={`fas fa-newspaper ${styles.wordpressActionIcon}`}></i>
+                Leer Artículo
+              </a>
+            )}
+          </div>{' '}
+          {/* WordPress Media Section with Image Carousel */}
+          {(project.image_url || project.video_demo_url) && (
+            <div className={styles.wordpressMediaSection}>
+              <div className={styles.wordpressMediaGrid}>
+                {' '}
+                {/* Image Carousel */}
+                {project.image_url && (
+                  <div className={styles.wordpressMediaItem}>
+                    <h3 className={styles.wordpressMediaTitle}>Galería del Proyecto</h3>
+                    <p className={styles.wordpressMediaDescription}>
+                      Explora las imágenes del proyecto en detalle
+                    </p>
+                    <ImageCarousel
+                      images={[project.image_url]} // Solo mostrar la imagen principal
+                      title={project.title}
+                      className={styles.wordpressCarousel}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </main>
+        {/* Video demo - Sección independiente fuera del mainContent */}
+        {project.video_demo_url && (
+          <div className={styles.wordpressFullWidthVideoSection}>
+            <div className={styles.wordpressVideoWrapper}>
+              <div className={styles.wordpressVideoHeader}>
+                <h3 className={styles.wordpressVideoTitle}>
+                  <i
+                    className="fab fa-youtube"
+                    style={{ color: '#ff0000', marginRight: '8px' }}
+                  ></i>
+                  Demo en Video
+                </h3>
+                <p className={styles.wordpressVideoDescription}>
+                  Demostración completa del funcionamiento del proyecto
+                </p>
+              </div>
+              <div className={styles.wordpressVideoContainer}>
+                {isYouTubeUrl(project.video_demo_url) ? (
+                  // Renderizar iframe embed directo como fallback robusto
+                  (() => {
+                    try {
+                      const url = project.video_demo_url || '';
+                      // Extraer el ID de YouTube y construir URL embed
+                      const m = url.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/);
+                      const videoId = m ? m[1] : null;
+                      const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : url;
+                      // Debug: si no encontramos id, aún intentamos usar la URL original
+                      // eslint-disable-next-line no-console
+                      console.debug('ProjectPage: rendering youtube iframe', {
+                        url,
+                        videoId,
+                        embedUrl,
+                      });
+                      return (
+                        <iframe
+                          title={`Demo de ${project.title}`}
+                          src={embedUrl}
+                          className={styles.wordpressVideoPlayer}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                        />
+                      );
+                    } catch (err) {
+                      // eslint-disable-next-line no-console
+                      console.error('Error rendering youtube iframe', err);
+                      return (
+                        <div className={styles.wordpressVideoPlaceholder}>
+                          <p>Video no disponible</p>
+                        </div>
+                      );
+                    }
+                  })()
+                ) : (
+                  <div className={styles.wordpressVideoPlaceholder}>
+                    <div>
+                      <i className="fas fa-play-circle"></i>
+                      <p>Video disponible en enlace externo</p>
+                      <a
+                        href={project.video_demo_url}
+                        className={styles.wordpressMediaLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          marginTop: '12px',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          padding: '8px 16px',
+                          borderRadius: '6px',
+                          background: '#0969da',
+                          color: '#ffffff',
+                          textDecoration: 'none',
+                          fontSize: '14px',
+                          fontWeight: '500',
+                        }}
+                      >
+                        <i className="fas fa-external-link-alt"></i>
+                        Ver Video Demo
+                      </a>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}{' '}
+        {/* Continuar con el resto del contenido en mainContent */}
+        <main className={styles.mainContent}>
+          {/* WordPress Project Content */}
+          {/* Debug indicator: show content length to help troubleshooting */}
+          <div style={{ fontSize: 12, color: 'var(--muted-color, #8b949e)', marginBottom: 8 }}>
+            Contenido:{' '}
+            {project.project_content
+              ? `${project.project_content.length} caracteres`
+              : 'sin contenido'}
+          </div>
+
+          {project.project_content && project.project_content.trim() && (
+            <article className={styles.wordpressProjectContent}>
+              <ContentRenderer
+                content={project.project_content}
+                className={`${styles.wordpressProse}`}
+              />
+            </article>
+          )}
+
+          {/* Project Summary para proyectos */}
+          {isProject && (
+            <div className={styles.wordpressProjectSummary}>
+              <div className={styles.wordpressSummaryGrid}>
                 <div className={styles.wordpressSummaryCard}>
                   <h3>
-                    <i className="fas fa-cogs"></i>
-                    Tecnologías utilizadas
+                    <i className="fas fa-info-circle"></i>
+                    Acerca del proyecto
                   </h3>
-                  <div className={styles.wordpressTechList}>
-                    {project.technologies.map((tech, idx) => (
-                      <span key={idx} className={styles.wordpressTechChip}>
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
+                  <p>{project.description}</p>
                 </div>
-              )}
 
-              <div className={styles.wordpressSummaryCard}>
-                <h3>
-                  <i className="fas fa-flag-checkered"></i>
-                  Estado del proyecto
-                </h3>
-                <p className={styles.wordpressStatusText}>{project.status}</p>
+                {project.technologies && project.technologies.length > 0 && (
+                  <div className={styles.wordpressSummaryCard}>
+                    <h3>
+                      <i className="fas fa-cogs"></i>
+                      Tecnologías utilizadas
+                    </h3>
+                    <div className={styles.wordpressTechList}>
+                      {project.technologies.map((tech, idx) => (
+                        <span key={idx} className={styles.wordpressTechChip}>
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className={styles.wordpressSummaryCard}>
+                  <h3>
+                    <i className="fas fa-flag-checkered"></i>
+                    Estado del proyecto
+                  </h3>
+                  <p className={styles.wordpressStatusText}>{project.status}</p>
+                </div>
               </div>
             </div>
+          )}
+          {/* WordPress Share Section */}
+          <div
+            style={{
+              textAlign: 'center',
+              padding: '48px 0 24px',
+              borderTop: '1px solid #e1e4e8',
+              marginTop: '48px',
+            }}
+          >
+            <button
+              onClick={handleShare}
+              className={`${styles.wordpressActionButton} ${styles.wordpressActionSecondary}`}
+              title="Compartir artículo"
+            >
+              <i className="fas fa-share-alt"></i> Compartir este{' '}
+              {isProject ? 'proyecto' : 'artículo'}
+            </button>
+          </div>
+        </main>
+        {/* Related Projects Section */}
+        <RelatedProjects
+          currentProjectId={project.id}
+          maxProjects={3}
+          className={styles.wordpressRelatedProjects}
+        />
+        {/* Footer */}
+        <Footer className="curriculum-footer" profile={profile} />
+        {/* Floating Action Buttons para administración */}
+        {isAuthenticated && project && (
+          <div className={styles.fabContainer}>
+            <FloatingActionButton
+              onClick={handleEditProject}
+              icon="fas fa-edit"
+              label="Editar artículo"
+              position="bottom-right"
+              color="primary"
+              usePortal={false}
+            />
+            <FloatingActionButton
+              onClick={handleAdminPanel}
+              icon="fas fa-cog"
+              label="Panel de administración"
+              position="bottom-right"
+              color="secondary"
+              usePortal={false}
+            />
           </div>
         )}
-        {/* WordPress Share Section */}
-        <div
-          style={{
-            textAlign: 'center',
-            padding: '48px 0 24px',
-            borderTop: '1px solid #e1e4e8',
-            marginTop: '48px',
-          }}
-        >
-          <button
-            onClick={handleShare}
-            className={`${styles.wordpressActionButton} ${styles.wordpressActionSecondary}`}
-            title="Compartir artículo"
-          >
-            <i className="fas fa-share-alt"></i> Compartir este{' '}
-            {isProject ? 'proyecto' : 'artículo'}
-          </button>
-        </div>
-      </main>
-      {/* Related Projects Section */}
-      <RelatedProjects
-        currentProjectId={project.id}
-        maxProjects={3}
-        className={styles.wordpressRelatedProjects}
-      />
-      {/* Footer */}
-      <Footer className="curriculum-footer" profile={profile} />
-      {/* Floating Action Buttons para administración */}
-      {isAuthenticated && project && (
-        <div className={styles.fabContainer}>
-          <FloatingActionButton
-            onClick={handleEditProject}
-            icon="fas fa-edit"
-            label="Editar artículo"
-            position="bottom-right"
-            color="primary"
-            usePortal={false}
-          />
-          <FloatingActionButton
-            onClick={handleAdminPanel}
-            icon="fas fa-cog"
-            label="Panel de administración"
-            position="bottom-right"
-            color="secondary"
-            usePortal={false}
-          />
-        </div>
-      )}
-    </div>
+      </div>
+    </SectionsLoadingProvider>
   );
 };
 

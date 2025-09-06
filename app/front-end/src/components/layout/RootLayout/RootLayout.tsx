@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, lazy, Suspense, type FC } from 'react';
 // ModalShell removed from top-level imports (not used directly in this file)
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import ProfileHero from '@/components/layout/Sections/ProfileHero/ProfileHero';
 import { SmartNavigation, Footer, NavigationOverlay, FloatingActionButtonGroup } from '@/ui';
 // NOTE: avoid importing a duplicate FABAction type from the UI helper module
@@ -8,7 +8,6 @@ import { SmartNavigation, Footer, NavigationOverlay, FloatingActionButtonGroup }
 // implementation (it declares its own local FABAction shape). We'll rely on
 // type inference on action arrays instead.
 import { FabProvider, useFab } from '@/contexts/FabContext';
-import { useModal } from '@/contexts/ModalContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigation } from '@/hooks/useNavigation'; // Usar el hook real
 import { NavigationProvider } from '@/contexts/NavigationContext';
@@ -66,10 +65,7 @@ interface RootLayoutProps {
 // `useNavigation` obtengan el contexto correcto.
 const RootLayoutContent: FC<RootLayoutProps> = ({ initialSection }) => {
   const { currentSection, navigateToSection } = useNavigation();
-  const { openTestimonialModal, openTestimonialsAdmin, openSkillModal } = useFab();
-  const { openModal, closeModal } = useModal();
   const location = useLocation();
-  const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { showSuccess: notifySuccess, showError: notifyError } = useNotificationContext();
 

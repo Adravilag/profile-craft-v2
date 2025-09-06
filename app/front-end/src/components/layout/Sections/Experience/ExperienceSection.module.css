@@ -36,74 +36,51 @@
   font-size: clamp(28px, 3vw, 40px);
   font-weight: 800;
   margin: 0;
-  letter-spacing: 0.2px;
 }
 .section-subtitle {
   max-width: 900px;
   margin: 6px auto 10px;
-  color: var(--md-on-variant);
   line-height: 1.65;
 }
 
 /* ---------- Toggle vistas ---------- */
 .view-toggle-container {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin: 12px auto 18px;
-}
-
-/* Global fallback button utility (disponible si CSS Modules no resuelve la clase) */
-:global(.btn) {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  background: var(--md-surface-2);
-  border: 1px solid var(--md-outline-weak);
-  color: var(--md-on-surface);
-  border-radius: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  transition:
-    transform 0.16s var(--curve),
-    background 0.16s var(--curve),
-    border-color 0.16s var(--curve),
-    box-shadow 0.18s;
+  display: none; /* ocultada porque la vista por categorías está forzada */
 }
 
 .view-toggle-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
+  background: var(--card-bg);
+  border-radius: 8px;
+  padding: 1rem; /* padding más compacto */
+  box-shadow: var(--soft-shadow);
   background: var(--md-surface-2);
   border: 1px solid var(--md-outline-weak);
   color: var(--md-on-surface);
-  border-radius: 12px;
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
   transition:
-    transform 0.16s var(--curve),
     background 0.16s var(--curve),
     border-color 0.16s var(--curve),
     box-shadow 0.18s;
-  position: relative; /* crear stacking context para controlar solapamientos */
+  font-size: 1rem;
   z-index: 1;
 }
 .view-toggle-btn:hover {
   transform: translateY(-2px) scale(1.04);
-  background: linear-gradient(135deg, #232b3a 80%, #7c8dff 100%);
-  border-color: var(--md-outline);
+  margin-bottom: 0.8rem;
+  padding: 0.8rem; /* tarjetas más compactas */
   box-shadow: 0 4px 18px rgb(124 141 255 / 0.18);
   z-index: 3; /* traer al frente mientras se interactúa */
 }
-
-.view-toggle-btn.active {
-  background: linear-gradient(135deg, var(--md-primary), #a794ff 80%);
-  color: #161522;
-  border-color: transparent;
-  box-shadow: 0 12px 32px rgb(192 184 255 / 0.3);
-  filter: brightness(1.08);
+.view-toggle-btn:focus-visible {
+  outline: 2px solid rgba(155, 130, 255, 0.18);
+  outline-offset: 3px;
+  z-index: 5;
+}
+.view-toggle-btn i {
+  font-size: 14px;
 }
 .view-toggle-btn-active {
   background: linear-gradient(135deg, var(--md-primary), #a794ff 80%);
@@ -114,11 +91,10 @@
   z-index: 4; /* activo siempre arriba */
 }
 .view-toggle-btn-inactive {
-  /* Estilo explícito para botones no activos: menos apagado, más legible */
   background: linear-gradient(180deg, rgba(124, 141, 255, 0.04), var(--md-surface-2));
-  color: rgba(255, 255, 255, 0.92); /* ligeramente más legible */
-  border: 1px solid rgba(255, 255, 255, 0.04); /* borde más visible */
-  box-shadow: 0 6px 18px rgba(124, 141, 255, 0.06); /* sombra tenue para separarlo del fondo */
+  color: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 6px 18px rgba(124, 141, 255, 0.06);
   filter: brightness(0.98);
   transition:
     box-shadow 0.14s,
@@ -126,37 +102,70 @@
     filter 0.14s,
     background 0.14s;
 }
-.view-toggle-btn-inactive:hover {
-  /* Hover más perceptible pero sin superar al botón activo */
-  box-shadow: 0 10px 30px rgba(124, 141, 255, 0.12);
-  transform: translateY(-2px);
-  background: linear-gradient(180deg, rgba(124, 141, 255, 0.06), rgba(124, 141, 255, 0.02));
-  z-index: 2;
-}
-
-.view-toggle-btn:focus-visible {
-  outline: 2px solid rgba(155, 130, 255, 0.18);
-  outline-offset: 3px;
-  z-index: 5;
-}
-.view-toggle-btn i {
-  font-size: 14px;
-}
 
 /* ---------- Stats banner estilo "pill" ---------- */
 .experience-stats {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 240px));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
   justify-content: center;
-  margin: 8px auto 26px;
+  margin: 8px auto 18px;
   max-width: 980px;
+  width: calc(100% - 2rem);
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 720px) {
+  .experience-stats {
+    grid-template-columns: repeat(3, minmax(96px, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
   .experience-stats {
     grid-template-columns: 1fr;
-    max-width: 300px;
+    max-width: 420px;
+    margin: 8px auto 12px;
+    padding: 0 12px;
+  }
+}
+
+/* Mobile tweaks for .stat-item to avoid overlaps/overflow */
+@media (max-width: 420px) {
+  .experience-stats {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 0 12px;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 12px;
+    border-radius: 12px;
+    min-height: 64px;
+    box-shadow: 0 6px 18px 0 rgba(124, 141, 255, 0.06);
+  }
+
+  /* Remove heavy decorative glow that caused visual overflow */
+  .stat-item::before {
+    display: none;
+  }
+
+  .stat-number {
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    margin-top: 6px;
   }
 }
 
@@ -164,24 +173,27 @@
   position: relative;
   background: linear-gradient(180deg, rgb(16 22 34 / 0.9), rgb(12 18 28 / 0.9));
   border: 1px solid var(--md-outline-weak);
-  border-radius: 18px;
-  padding: 18px 22px;
+  border-radius: 14px;
+  padding: 14px 16px;
   box-shadow:
     var(--elev-1),
-    0 0 18px 2px rgb(124 141 255 / 0.1),
+    0 0 12px 2px rgb(124 141 255 / 0.08),
     inset 0 0 0 1px rgb(255 255 255 / 0.02);
   display: grid;
   place-items: center;
   overflow: hidden;
   transition:
-    transform 0.18s,
-    box-shadow 0.18s;
+    transform 0.16s,
+    box-shadow 0.16s;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0; /* important to prevent overflow in flex/grid */
 }
 
 .stat-item:hover {
   transform: translateY(-3px) scale(1.05);
   box-shadow:
-    0 8px 28px 4px rgb(124 141 255 / 0.2),
+    0 8px 28px 4px rgb(124 141 255 / 0.18),
     inset 0 0 0 1px rgb(255 255 255 / 0.04);
 }
 
@@ -455,9 +467,10 @@
 /* ---------- Grid 2 columnas ---------- */
 .experience-grid.traditional-view {
   display: grid;
-  gap: 24px;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 20px; /* reducir un poco el gap para compactar */
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
   max-width: 1400px;
+  padding: 0 1rem; /* padding lateral para pantallas pequeñas */
   margin: 0 auto;
   align-items: start;
 }
@@ -475,14 +488,14 @@
   overflow: hidden;
   background: linear-gradient(180deg, var(--md-sys-color-surface-2), var(--md-sys-color-surface-1));
   border: 1px solid var(--md-sys-color-outline-variant);
-  border-radius: 24px;
-  padding: 20px;
+  border-radius: 16px; /* menos redondeo para compactar */
+  padding: 16px; /* padding más compacto */
   box-shadow:
     0 12px 48px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   transition:
-    transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
-    box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .experience-column:hover,

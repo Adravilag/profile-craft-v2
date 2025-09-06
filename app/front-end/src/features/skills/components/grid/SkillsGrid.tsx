@@ -160,7 +160,7 @@ const SkillsGrid: React.FC<SkillsGridProps> = ({
                     title="Ordenar alfabéticamente"
                   >
                     <i className="fas fa-sort-alpha-down"></i>
-                    Alfabético
+                    <span>Alfabético</span>
                     {getDirectionIcon(category, 'alphabetical') && (
                       <i className={getDirectionIcon(category, 'alphabetical')!}></i>
                     )}
@@ -171,7 +171,7 @@ const SkillsGrid: React.FC<SkillsGridProps> = ({
                     title="Ordenar por dificultad"
                   >
                     <i className="fas fa-star"></i>
-                    Dificultad
+                    <span>Dificultad</span>
                     {getDirectionIcon(category, 'difficulty') && (
                       <i className={getDirectionIcon(category, 'difficulty')!}></i>
                     )}
@@ -182,7 +182,7 @@ const SkillsGrid: React.FC<SkillsGridProps> = ({
                     title="Ordenar por nivel"
                   >
                     <i className="fas fa-percentage"></i>
-                    Nivel
+                    <span>Nivel</span>
                     {getDirectionIcon(category, 'level') && (
                       <i className={getDirectionIcon(category, 'level')!}></i>
                     )}

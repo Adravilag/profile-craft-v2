@@ -185,7 +185,7 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
       aria-labelledby="profile-name"
     >
       {/* Fixed controls: theme and language */}
-      <div className={`${styles.fixedTopRight} animate-slide-in-right`} aria-hidden={false}>
+      {/* <div className={`${styles.fixedTopRight} animate-slide-in-right`} aria-hidden={false}>
         <button
           type="button"
           className={`${styles.topRightButton} transition-all hover:scale-105 active:scale-95`}
@@ -211,7 +211,7 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
         >
           {currentLanguage === 'es' ? 'ES' : 'EN'}
         </button>
-      </div>
+      </div> */}
       {/* Vignette overlay */}
       <div className={styles.vignette} aria-hidden="true" />
 

@@ -6,6 +6,7 @@ import { SmartNavigation, Footer } from '@/ui';
 import ProjectsAdmin from '../admin/ProjectsAdmin';
 import CreateProject from '../components/forms/CreateProject';
 import EditProject from '../components/forms/EditProject';
+import { SectionsLoadingProvider } from '@/contexts/SectionsLoadingContext';
 import styles from './ProjectsAdminPage.module.css';
 
 const ProjectsAdminPage: React.FC = () => {
@@ -69,43 +70,45 @@ const ProjectsAdminPage: React.FC = () => {
     );
   }
   return (
-    <div className={styles.adminPage}>
-      <SmartNavigation navItems={navItems} />
-      {!isNewMode && !isEditMode && (
-        <header className={styles.adminHeader}>
-          <div className={styles.headerContent}>
-            <div className={styles.headerLeft}>
-              <Link to="/" className={styles.backButton}>
-                ← Volver
-              </Link>
-              <h1 className={styles.title}>Administración de Proyectos</h1>
+    <SectionsLoadingProvider>
+      <div className={styles.adminPage}>
+        <SmartNavigation navItems={navItems} />
+        {!isNewMode && !isEditMode && (
+          <header className={styles.adminHeader}>
+            <div className={styles.headerContent}>
+              <div className={styles.headerLeft}>
+                <Link to="/" className={styles.backButton}>
+                  ← Volver
+                </Link>
+                <h1 className={styles.title}>Administración de Proyectos</h1>
+              </div>
+              <div className={styles.headerRight}>
+                <button
+                  className={styles.themeToggle}
+                  onClick={toggleGlobalTheme}
+                  title={
+                    currentGlobalTheme === 'dark' ? 'Cambiar a modo día' : 'Cambiar a modo noche'
+                  }
+                  aria-label={
+                    currentGlobalTheme === 'dark' ? 'Cambiar a modo día' : 'Cambiar a modo noche'
+                  }
+                >
+                  <i className={`fas fa-sun ${styles.sunIcon}`}></i>
+                  <i className={`fas fa-moon ${styles.moonIcon}`}></i>
+                  <span>{currentGlobalTheme === 'dark' ? 'Modo Día' : 'Modo Noche'}</span>
+                </button>
+              </div>
             </div>
-            <div className={styles.headerRight}>
-              <button
-                className={styles.themeToggle}
-                onClick={toggleGlobalTheme}
-                title={
-                  currentGlobalTheme === 'dark' ? 'Cambiar a modo día' : 'Cambiar a modo noche'
-                }
-                aria-label={
-                  currentGlobalTheme === 'dark' ? 'Cambiar a modo día' : 'Cambiar a modo noche'
-                }
-              >
-                <i className={`fas fa-sun ${styles.sunIcon}`}></i>
-                <i className={`fas fa-moon ${styles.moonIcon}`}></i>
-                <span>{currentGlobalTheme === 'dark' ? 'Modo Día' : 'Modo Noche'}</span>
-              </button>
-            </div>
-          </div>
-        </header>
-      )}
+          </header>
+        )}
 
-      <main className={styles.adminMain}>
-        {' '}
-        {isNewMode ? <CreateProject /> : isEditMode ? <EditProject /> : <ProjectsAdmin />}
-      </main>
-      <Footer />
-    </div>
+        <main className={styles.adminMain}>
+          {' '}
+          {isNewMode ? <CreateProject /> : isEditMode ? <EditProject /> : <ProjectsAdmin />}
+        </main>
+        <Footer />
+      </div>
+    </SectionsLoadingProvider>
   );
 };
 

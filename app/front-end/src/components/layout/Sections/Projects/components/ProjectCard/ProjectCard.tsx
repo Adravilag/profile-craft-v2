@@ -87,22 +87,22 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
       aria-label={`${getText('projects.viewDetails', 'Ver detalles')} ${project.title}`}
     >
       <div className={styles.content}>
-        {/* meta badges (type / status) */}
-        {(project.type || project.status) && (
-          <div className={styles.metaBadges} aria-hidden>
-            {project.type && (
-              <span className={styles.metaBadge} data-type={project.type}>
-                {project.type}
-              </span>
-            )}
-            {project.status && (
-              <span className={styles.metaBadge} data-status={project.status}>
-                {project.status}
-              </span>
-            )}
-          </div>
-        )}
-        <div className={styles.headerRow}>
+        <div className={styles.header}>
+          {/* meta badges (type / status) */}
+          {(project.type || project.status) && (
+            <div className={styles.metaBadges} aria-hidden>
+              {project.type && (
+                <span className={styles.metaBadge} data-type={project.type}>
+                  {project.type}
+                </span>
+              )}
+              {project.status && (
+                <span className={styles.metaBadge} data-status={project.status}>
+                  {project.status}
+                </span>
+              )}
+            </div>
+          )}
           <h3 className={styles.title}>{project.title}</h3>
         </div>
 
@@ -120,7 +120,9 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
         </div>
 
         <div className={styles.ctaRow}>
-          <span className={styles.readMore}>{t.projects.readMore}</span>
+          <a className={styles.readMore} role="button" tabIndex={0}>
+            {t.projects.readMore}
+          </a>
 
           <div className={styles.iconCtas}>
             {/* Botón de demo si existe */}
@@ -187,7 +189,7 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
         </div>
       </div>
       {/* corner play button for video demos */}
-      {(project.video_demo_url || (project as any).video_demo_url) && (
+      {/* {(project.video_demo_url || (project as any).video_demo_url) && (
         <button
           onClick={e =>
             handleSecondaryAction(e, project.video_demo_url ?? (project as any).video_demo_url)
@@ -201,7 +203,7 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
         >
           <i className="fas fa-play" aria-hidden></i>
         </button>
-      )}
+      )} */}
     </article>
   );
 };

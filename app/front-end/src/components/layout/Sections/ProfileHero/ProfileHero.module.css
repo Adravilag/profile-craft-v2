@@ -1554,3 +1554,290 @@ code {
   background: transparent !important;
   backdrop-filter: none !important;
 }
+
+/* ===========================================
+   RESPONSIVE DESIGN COMPLETO
+   =========================================== */
+
+/* Tablets (1024px y menos) */
+@media (max-width: 1024px) {
+  .headerContent {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+  }
+
+  .headerCurriculum {
+    min-height: auto;
+  }
+}
+
+/* Móviles grandes (768px y menos) */
+@media (max-width: 768px) {
+  .headerCurriculum {
+    padding: var(--spacing-lg) var(--spacing-md);
+  }
+
+  .headerTop {
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-md);
+  }
+
+  .headerTerminalContainer {
+    min-height: 300px;
+  }
+}
+
+/* Móviles pequeños (480px y menos) - DISEÑO RESPONSIVE PRINCIPAL */
+@media (max-width: 480px) {
+  .headerCurriculum {
+    min-height: 50vh;
+    margin: 0;
+  }
+
+  .headerContent {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--spacing-lg);
+    align-items: center;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+
+  .headerTop {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    padding: var(--spacing-lg);
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Avatar más compacto en móvil */
+  .headerAvatarContainer {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto var(--spacing-md);
+  }
+
+  /* Textos más legibles en móvil */
+  .headerNameTitle {
+    font-size: clamp(22px, 8vw, 28px);
+    line-height: 1.2;
+    margin-bottom: var(--spacing-sm);
+  }
+
+  .headerRoleTitle {
+    font-size: clamp(16px, 5vw, 18px);
+    line-height: 1.3;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .headerTagline {
+    font-size: clamp(15px, 4.5vw, 17px);
+    line-height: 1.4;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  /* **[MEJORA MÓVIL]** Stack vertical para ubicación y disponibilidad en 3 filas */
+  .headerLocationAvailability {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    align-items: center;
+    width: 100%;
+  }
+
+  /* **[MEJORA MÓVIL]** Cada elemento de ubicación en su propia fila */
+  .availabilityPill {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    align-items: center;
+    text-align: center;
+    padding: var(--spacing-md) var(--spacing-lg);
+    width: auto;
+    min-width: 200px;
+  }
+
+  /* **[MEJORA MÓVIL]** Ocultar separadores en vista móvil cuando están en filas separadas */
+  .availabilitySeparator {
+    display: none;
+  }
+
+  /* **[MEJORA MÓVIL]** Cada elemento en su propia línea con mejor espaciado */
+  .availabilityPill .location,
+  .availabilityPill .availabilityText,
+  .availabilityPill .modalities {
+    display: block;
+    width: 100%;
+    padding: var(--spacing-xs) 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .availabilityPill .modalities {
+    border-bottom: none; /* Última fila sin borde inferior */
+  }
+
+  /* Destacados centrados */
+  .headerHighlights {
+    gap: var(--spacing-sm);
+    justify-content: center;
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .stackRow {
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .stackIcon {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* Botones más grandes y táctiles */
+  .headerActionButtons {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    width: 100%;
+  }
+
+  .headerActionButton,
+  .topRightButton {
+    min-height: 48px !important;
+    font-size: 16px !important;
+    padding: 14px 20px !important;
+    width: 100%;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+  }
+
+  /* **[MEJORA MÓVIL]** Botones superiores más pequeños en móvil */
+  .topRightButton {
+    min-width: 36px !important;
+    min-height: 36px !important;
+    width: 36px !important;
+    height: 36px !important;
+    padding: 6px !important;
+    font-size: 14px !important;
+    border-radius: 8px !important;
+  }
+
+  /* Terminal responsive - OCULTO EN MÓVIL */
+  .headerTerminalSection {
+    display: none !important; /* Ya oculto arriba, reforzamos aquí */
+  }
+
+  .headerTerminalIntroRow {
+    display: none !important; /* Ya oculto arriba, reforzamos aquí */
+  }
+
+  .headerTerminalContainer {
+    display: none !important; /* Ocultar completamente */
+  }
+
+  /* Widgets responsive - OCULTOS EN MÓVIL */
+  .widgetButtons {
+    display: none !important; /* Ocultar widgets en móvil */
+  }
+
+  .headerTerminalIntroRow {
+    display: none !important; /* Ocultar la fila de introducción del terminal */
+  }
+
+  .headerTerminalSection {
+    display: none !important; /* Ocultar toda la sección del terminal en móvil */
+  }
+
+  /* Alternativa: Si quieres mostrar solo algunos widgets específicos, usa esto en su lugar:
+  .widgetButtons button:not(.widget-essential) {
+    display: none;
+  }
+  */
+
+  /* Stats badges más grandes */
+  .statBadge {
+    font-size: 14px;
+    padding: 6px 12px;
+    margin: 2px;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Contacto responsive */
+  .headerContactSection {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .headerContactSection button,
+  .headerContactSection a {
+    min-height: 44px;
+    font-size: 15px;
+    padding: 12px 16px;
+  }
+
+  /* **[MEJORA MÓVIL]** Botón fijo superior derecho más accesible y más pequeño */
+  .fixedTopRight {
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    gap: 6px; /* Reducir espacio entre botones */
+  }
+
+  .fixedTopRight .topRightButton {
+    min-height: 36px !important;
+    min-width: 36px !important;
+    width: 36px !important;
+    height: 36px !important;
+    padding: 6px !important;
+    font-size: 14px !important;
+    border-radius: 8px !important;
+  }
+}
+
+/* Móviles muy pequeños (360px y menos) */
+@media (max-width: 360px) {
+  .headerCurriculum {
+    padding: var(--spacing-sm) var(--spacing-xs);
+  }
+
+  .headerTop {
+    padding: var(--spacing-md);
+  }
+
+  .headerAvatarContainer {
+    width: 100px;
+    height: 100px;
+  }
+
+  .headerNameTitle {
+    font-size: 20px;
+  }
+
+  .headerRoleTitle {
+    font-size: 16px;
+  }
+
+  .headerTagline {
+    font-size: 14px;
+  }
+
+  .headerTerminalContainer {
+    min-height: 220px;
+    padding: var(--spacing-sm);
+    font-size: 12px;
+  }
+
+  .stackIcon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .statBadge {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+}

@@ -178,7 +178,7 @@
    ============================================ */
 .skillsGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: var(--md-sys-spacing-md);
   padding: var(--md-sys-spacing-sm) 0 32px;
   justify-content: center;
@@ -407,6 +407,29 @@
   .expandButtonContainer {
     margin-top: var(--md-sys-spacing-lg);
     margin-bottom: var(--md-sys-spacing-md);
+  }
+}
+
+/* Ocultar texto en botones de ordenación en móvil, excepto si está activo */
+@media (max-width: 768px) {
+  .sortButton span {
+    display: none;
+  }
+
+  .sortButton.active span {
+    display: inline;
+  }
+
+  .sortButton.active {
+    flex: none;
+    padding: var(--md-sys-spacing-xs) var(--md-sys-spacing-sm);
+  }
+
+  .sortButton {
+    flex: 1;
+    justify-content: center;
+    min-width: 0;
+    font-size: var(--md-sys-typescale-label-small-size);
   }
 }
 

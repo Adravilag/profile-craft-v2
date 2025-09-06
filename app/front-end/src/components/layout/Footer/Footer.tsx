@@ -163,7 +163,7 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
                     <a
                       key={social.name}
                       href={social.url}
-                      className={styles.socialLink}
+                      className={`${styles.socialLink} ${styles.enhancedHover}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={social.ariaLabel}
@@ -181,6 +181,8 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
 
           {/* Enlaces rápidos */}
           <div className={styles.footerSection}>
+            {/* Separador visual */}
+            <div className={styles.sectionSeparator}></div>
             <h4 className={styles.sectionTitle}>Navegación</h4>
             <nav className={styles.quickLinksNav} aria-label="Enlaces rápidos">
               <ul className={styles.quickLinks} role="list">
@@ -216,7 +218,9 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
           </div>
 
           {/* Información de contacto */}
-          <div className={styles.footerSection}>
+          <div className={`${styles.footerSection} ${styles.gradientBackground}`}>
+            {/* Separador visual */}
+            <div className={styles.sectionSeparator}></div>
             <h4 className={styles.sectionTitle}>Contacto</h4>
             <div className={styles.contactInfo}>
               {profile?.location && (
@@ -260,7 +264,9 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
           </div>
 
           {/* Newsletter */}
-          <div className={styles.footerSection}>
+          <div className={`${styles.footerSection} ${styles.gradientBackground}`}>
+            {/* Separador visual */}
+            <div className={styles.sectionSeparator}></div>
             <h4 className={styles.sectionTitle}>Mantente al día</h4>
             <p className={styles.newsletterDescription}>
               Recibe actualizaciones sobre nuevos proyectos y tecnologías.

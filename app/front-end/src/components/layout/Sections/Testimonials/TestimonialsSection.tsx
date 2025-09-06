@@ -333,7 +333,11 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
           {'★'}
         </span>
       );
-    return <div className={styles.ratingStars}>{stars}</div>;
+    return (
+      <div className={styles.ratingStars} data-testid="rating-stars">
+        {stars}
+      </div>
+    );
   };
 
   // InteractiveStars moved to TestimonialForm

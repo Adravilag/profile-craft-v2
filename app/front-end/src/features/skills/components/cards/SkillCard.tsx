@@ -209,6 +209,26 @@ const SkillCard: React.FC<SkillCardProps> = ({
   // Obtener clase CSS específica para esta tecnología
   const skillCssClass = useMemo(() => getSkillCssClass(skill.name), [skill.name]);
 
+  // Convertir número de estrellas a texto de dificultad
+  const getDifficultyText = (stars: number): string => {
+    // Debug temporal
+    console.log(`Skill: ${skill.name}, Stars: ${stars}`);
+    switch (stars) {
+      case 1:
+        return 'básico';
+      case 2:
+        return 'fácil';
+      case 3:
+        return 'medio';
+      case 4:
+        return 'difícil';
+      case 5:
+        return 'experto';
+      default:
+        return 'medio';
+    }
+  };
+
   return (
     <article
       className={`${styles.skillCard} ${skillCssClass}${
@@ -322,7 +342,14 @@ const SkillCard: React.FC<SkillCardProps> = ({
 
         {/* Sección de dificultad */}
         {difficultyStars > 0 && (
-          <div className={`${styles.skillDifficulty} ${styles.difficultySection}`}>
+          <div
+            className={`${styles.skillDifficulty} ${styles.difficultySection}`}
+            style={
+              {
+                '--difficulty-text': `"${getDifficultyText(difficultyStars)}"`,
+              } as React.CSSProperties
+            }
+          >
             <span className={styles.difficultyLabel}>
               Dificultad
               <span className={styles.tooltipHint}>Percepción de complejidad</span>

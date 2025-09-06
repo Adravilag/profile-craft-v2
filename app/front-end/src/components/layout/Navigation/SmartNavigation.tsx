@@ -28,13 +28,6 @@ const SmartNavigation: React.FC<SmartNavigationProps> = ({ navItems }) => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [currentTheme, setCurrentTheme] = useState<'light' | 'dark'>(() => {
-    const savedTheme = localStorage.getItem('cv-theme');
-    if (savedTheme === 'light' || savedTheme === 'dark') {
-      return savedTheme;
-    }
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  });
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const [isInitialLoading, setIsInitialLoading] = useState(false);
 
@@ -49,12 +42,7 @@ const SmartNavigation: React.FC<SmartNavigationProps> = ({ navItems }) => {
   });
 
   // Log para debuggear estado
-  debugLog.navigation('🔄 SmartNavigation render:', { isMobile, isNavSticky, currentTheme });
-
-  // Aplicar tema inicial al documento
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', currentTheme);
-  }, [currentTheme]);
+  debugLog.navigation('🔄 SmartNavigation render:', { isMobile, isNavSticky });
 
   // Detectar tamaño de pantalla
   useEffect(() => {
@@ -139,6 +127,12 @@ const SmartNavigation: React.FC<SmartNavigationProps> = ({ navItems }) => {
     return currentSection || '';
   };
   const activeSection = getActiveSection();
+  // Mostrar/ocultar nav en móvil según la sección (solo afecta a mobile)
+  const navVisibilityClass = isMobile
+    ? activeSection !== 'home'
+      ? styles.navigationVisible
+      : styles.navigationHidden
+    : '';
 
   // Establecer altura del nav como variable CSS al montar
   useEffect(() => {
@@ -381,66 +375,6 @@ const SmartNavigation: React.FC<SmartNavigationProps> = ({ navItems }) => {
     setIsMobileMenuOpen(prev => !prev);
   }, []);
 
-  // Manejar cambio de tema día/noche
-  const handleToggleTheme = useCallback(() => {
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    setCurrentTheme(newTheme);
-    localStorage.setItem('cv-theme', newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
-    showSuccess(
-      `Modo ${newTheme === 'light' ? 'Claro' : 'Oscuro'} activado`,
-      `El tema se ha cambiado exitosamente`
-    );
-  }, [currentTheme, showSuccess]);
-
-  // Manejar descarga del CV
-  const handleDownloadCV = useCallback(async () => {
-    try {
-      const googleDriveFileId = '1vNkB5NRzjiKyrs3ug3y8tkUtyB6IT0sb';
-      const downloadUrl = `https://drive.google.com/uc?export=download&id=${googleDriveFileId}`;
-      const link = document.createElement('a');
-      link.href = downloadUrl;
-      link.download = 'adrián-portillo-cv-portfolio.pdf';
-      link.target = '_blank';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      showSuccess('CV Descargado', 'Tu curriculum se ha descargado desde Google Drive');
-    } catch (error) {
-      debugLog.error('Error downloading CV from Google Drive:', error);
-      showError('Error de descarga', 'Hubo un problema al descargar el CV. Inténtalo de nuevo.');
-    }
-  }, [showSuccess, showError]);
-
-  // Manejar compartir enlace
-  const handleShareLink = useCallback(async () => {
-    const currentUrl = window.location.href;
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: 'CV - Adrián Portillo',
-          text: 'Mira el portafolio profesional de Adrián Portillo',
-          url: currentUrl,
-        });
-        showSuccess('Enlace compartido', 'El enlace se ha compartido exitosamente');
-      } else {
-        await navigator.clipboard.writeText(currentUrl);
-        showSuccess('Enlace copiado', 'El enlace se ha copiado al portapapeles');
-      }
-    } catch (error) {
-      if ((error as Error).name !== 'AbortError') {
-        debugLog.error('Error al compartir:', error);
-        try {
-          await navigator.clipboard.writeText(currentUrl);
-          showSuccess('Enlace copiado', 'El enlace se ha copiado al portapapeles');
-        } catch (clipboardError) {
-          debugLog.error('Error al copiar al portapapeles:', clipboardError);
-          showError('Error al compartir', 'No se pudo compartir o copiar el enlace');
-        }
-      }
-    }
-  }, [showSuccess, showError]);
-
   return (
     <>
       {/* LOADING: Combinar navegación inicial + loading de datos centralizadas */}
@@ -458,9 +392,11 @@ const SmartNavigation: React.FC<SmartNavigationProps> = ({ navItems }) => {
       </div>
 
       {/* Navegación principal */}
-      <nav className={`${styles.headerPortfolioNav} ${isNavSticky ? styles.navSticky : ''}`}>
+      <nav
+        className={`${styles.headerPortfolioNav} ${isNavSticky ? styles.navSticky : ''} ${navVisibilityClass}`}
+      >
         {/* Botón de menú hamburguesa - solo visible en móvil cuando está sticky */}
-        {isMobile && isNavSticky && (
+        {isMobile && activeSection !== 'home' && (
           <button
             className={`${styles.mobileMenuToggle} ${isMobileMenuOpen ? styles.active : ''}`}
             onClick={toggleMobileMenu}
@@ -494,43 +430,10 @@ const SmartNavigation: React.FC<SmartNavigationProps> = ({ navItems }) => {
             </button>
           ))}
         </div>
-
-        {/* Botones de acción - solo visible en móvil cuando está sticky */}
-        {isMobile && isNavSticky && (
-          <div className={styles.adminButtons}>
-            <button
-              className={styles.adminActionBtn}
-              onClick={handleToggleTheme}
-              aria-label={`Cambiar a modo ${currentTheme === 'light' ? 'oscuro' : 'claro'}`}
-              title={`Modo ${currentTheme === 'light' ? 'Oscuro' : 'Claro'}`}
-            >
-              <i
-                className={`fas ${currentTheme === 'light' ? 'fa-moon' : 'fa-sun'}`}
-                aria-hidden="true"
-              ></i>
-            </button>
-            <button
-              className={styles.adminActionBtn}
-              onClick={handleDownloadCV}
-              aria-label="Descargar CV"
-              title="Descargar CV"
-            >
-              <i className="fas fa-download" aria-hidden="true"></i>
-            </button>
-            <button
-              className={styles.adminActionBtn}
-              onClick={handleShareLink}
-              aria-label="Compartir enlace"
-              title="Compartir"
-            >
-              <i className="fas fa-share-alt" aria-hidden="true"></i>
-            </button>
-          </div>
-        )}
       </nav>
 
       {/* Menú móvil desplegable */}
-      {isMobile && isNavSticky && (
+      {isMobile && activeSection !== 'home' && (
         <div
           ref={mobileMenuRef}
           className={`${styles.mobileMenu} ${isMobileMenuOpen ? styles.open : ''}`}
@@ -558,7 +461,7 @@ const SmartNavigation: React.FC<SmartNavigationProps> = ({ navItems }) => {
       )}
 
       {/* Overlay para cerrar el menú móvil */}
-      {isMobile && isMobileMenuOpen && (
+      {isMobile && isMobileMenuOpen && activeSection !== 'home' && (
         <div
           className={styles.mobileMenuOverlay}
           onClick={() => setIsMobileMenuOpen(false)}

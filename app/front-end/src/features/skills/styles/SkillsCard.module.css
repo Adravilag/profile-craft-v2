@@ -1446,6 +1446,11 @@
     gap: 8px;
   }
 
+  /* Ocultar icono de destacado en móviles */
+  .featuredIcon {
+    display: none;
+  }
+
   .skillIconWrapper {
     width: 52px;
     height: 52px;
@@ -1676,23 +1681,32 @@
     align-items: center !important;
     gap: 4px !important;
     flex-shrink: 0 !important;
+    padding: 4px 8px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-radius: 6px !important;
   }
 
   .difficultyLabel {
-    font-size: 10px !important;
+    font-size: 8px !important;
     margin-bottom: 0 !important;
     color: #888 !important;
     white-space: nowrap !important;
     text-align: center !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
   }
 
   .difficultyStars {
-    display: flex !important;
-    gap: 2px !important;
+    display: none !important;
   }
 
-  .star {
-    font-size: 12px !important;
+  /* Mostrar texto de dificultad en lugar de estrellas */
+  .skillDifficulty::after {
+    content: var(--difficulty-text) !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: #fbbf24 !important;
+    text-transform: capitalize !important;
   }
 
   .skillCardFooter {

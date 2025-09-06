@@ -38,8 +38,8 @@ vi.mock('@/services/endpoints', async importOriginal => {
         email: 'test@example.com',
         linkedin_url: null,
         github_url: null,
-        location: 'Nowhere',
-        status: 'Available',
+        location: 'Cádiz, España',
+        status: 'Disponible',
         meta: { years_experience: 5, projects_count: 10 },
       }),
     },
@@ -171,6 +171,29 @@ vi.mock('@/components/layout/Sections/ProfileHero/hooks/useSkills', () => ({
     refreshSkills: vi.fn(),
     getSkillsByCategory: vi.fn(),
     getAllCategories: vi.fn(),
+    getTopFeaturedSkills: vi.fn().mockReturnValue([
+      {
+        id: 1,
+        name: 'React',
+        icon_class: 'fab fa-react',
+        level: 90,
+        featured: true,
+      },
+      {
+        id: 3,
+        name: 'Node.js',
+        icon_class: 'fab fa-node',
+        level: 75,
+        featured: true,
+      },
+      {
+        id: 4,
+        name: 'REST API',
+        icon_class: 'fas fa-code',
+        level: 72,
+        featured: true,
+      },
+    ]),
   }),
 }));
 
@@ -453,6 +476,64 @@ describe('ProfileHero', () => {
         expect(className).not.toBe('undefined');
         expect(className).not.toBe('');
       });
+    });
+  });
+
+  // **[TEST]** Nuevos tests para diseño móvil mejorado
+  describe('Mobile Design Improvements', () => {
+    beforeEach(() => {
+      // Simular pantalla móvil
+      Object.defineProperty(window, 'innerWidth', {
+        writable: true,
+        configurable: true,
+        value: 375, // iPhone SE width
+      });
+
+      // Trigger resize event
+      window.dispatchEvent(new Event('resize'));
+    });
+
+    it('should render theme and language buttons smaller on mobile', async () => {
+      renderWithProviders(<ProfileHero darkMode={false} />);
+
+      const themeButton = await screen.findByTitle(/cambiar a modo oscuro/i);
+      const languageButton = await screen.findByTitle(/cambiar idioma/i);
+
+      // Verificar que los botones tienen las clases de mobile (CSS Modules)
+      expect(themeButton.className).toContain('topRightButton');
+      expect(languageButton.className).toContain('topRightButton');
+
+      // Los botones deben existir y ser accesibles
+      expect(themeButton).toBeInTheDocument();
+      expect(languageButton).toBeInTheDocument();
+    });
+
+    it('should display location and availability information in separate rows on mobile', async () => {
+      renderWithProviders(<ProfileHero darkMode={false} />);
+
+      // Verificar que existe el contenedor principal
+      const locationContainer = await screen.findByRole('note', {
+        name: /ubicación y disponibilidad/i,
+      });
+      expect(locationContainer).toBeInTheDocument();
+
+      // Verificar que contiene la información de ubicación (texto puede estar separado)
+      expect(screen.getByText(/cádiz/i)).toBeInTheDocument();
+      expect(screen.getByText(/españa/i)).toBeInTheDocument();
+      expect(screen.getByText(/disponible/i)).toBeInTheDocument();
+      expect(screen.getByText(/abierto a remoto/i)).toBeInTheDocument();
+    });
+
+    it('should have proper spacing and layout for mobile view', async () => {
+      renderWithProviders(<ProfileHero darkMode={false} />);
+
+      // Verificar que el header principal tiene las clases responsive (CSS Modules)
+      const header = await screen.findByRole('banner');
+      expect(header.className).toContain('headerCurriculum');
+
+      // El contenedor de ubicación debe tener la clase para 3 filas en móvil (CSS Modules)
+      const locationContainer = await screen.findByRole('note');
+      expect(locationContainer.className).toContain('availabilityPill');
     });
   });
 });

@@ -62,7 +62,7 @@ export const useScrollSectionDetection = (config: SectionDetectionConfig = {}) =
 
     // Si estamos en la parte superior (header/profile hero visible), mostrar "home".
     // Esto evita que la ruta cambie a `/about` cuando el usuario está en el header.
-    if (scrollY < headerHeight * 0.25) {
+    if (scrollY < headerHeight * 2.1) {
       return 'home';
     }
 

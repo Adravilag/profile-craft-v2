@@ -101,7 +101,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 26%; /* reduced to 26% so the thumbnail and content stand out more */
+  width: 30%; /* reduced to 26% so the thumbnail and content stand out more */
   height: 100%;
   background-image: var(--project-bg-image);
   background-position: left center;
@@ -146,11 +146,288 @@
   z-index: 1;
 }
 
-/* On small screens hide the decorative background to avoid clutter */
+/* On small screens, adapt the ::before pseudo-element to be a top banner */
 @media (max-width: 720px) {
-  .card::before,
+  .card {
+    flex-direction: column;
+    padding: 130px 0 10px;
+    gap: 0;
+  }
+
+  .card::before {
+    width: 100%;
+    height: 150px; /* Adjust height for mobile banner */
+    background-size: cover;
+    background-position: center;
+    top: 0;
+    -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 95%);
+    mask-image: linear-gradient(to bottom, black 50%, transparent 95%);
+  }
+
   .card::after {
-    display: none;
+    height: 100%; /* Match the ::before height */
+    background: linear-gradient(
+      to bottom,
+      rgba(7, 18, 39, 0.1) 0%,
+      rgba(7, 18, 39, 0.4) 50%,
+      rgba(var(--card-bg-rgb, 13, 17, 23), 1) 95%
+    );
+  }
+
+  .content {
+    padding: 1rem;
+    padding-top: 0; /* Content starts right below the banner area */
+    gap: 1rem;
+    width: 100%;
+    background: transparent; /* Content area should not have its own background */
+  }
+
+  .header {
+    padding-top: 1rem; /* Add padding to push content below the faded banner */
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .mediaWrap {
+    width: 100%;
+    height: 180px;
+    min-width: unset;
+    border-radius: 0;
+    flex: none;
+    background-image: var(--project-bg-image);
+    background-size: cover;
+    background-position: center;
+  }
+
+  .metaBadges {
+    position: static; /* Eliminar posicionamiento absoluto */
+    order: 1; /* Mostrar badges primero */
+    justify-content: flex-start;
+    gap: 0.4rem;
+  }
+
+  .title {
+    order: 2; /* Mostrar título después */
+    font-size: 1.1rem;
+    font-weight: bold;
+    line-height: 1.3;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .desc {
+    font-size: 0.95rem;
+    line-height: 1.45; /* Mejorar legibilidad */
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+
+  .techRow {
+    gap: 0.5rem; /* Aumentar espaciado entre tecnologías */
+    flex-wrap: wrap; /* Asegurar que los badges se envuelvan */
+  }
+
+  .ctaRow {
+    margin-top: 12px; /* Aumentar margen superior */
+    flex-direction: column; /* Apilar CTAs verticalmente */
+    align-items: stretch; /* Estirar para ocupar ancho */
+    gap: 0.75rem;
+  }
+
+  .readMore {
+    display: inline-block;
+    padding: 0.8rem 1rem; /* Hacer el botón más grande */
+    border-radius: 8px;
+    color: #fff;
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 600;
+    width: 100%;
+    transition: background-color 0.2s ease;
+  }
+
+  .readMore:hover {
+    color: #fff;
+    transform: none;
+  }
+
+  .readMore::after {
+    display: none; /* Ocultar línea animada */
+  }
+
+  .iconCtas {
+    justify-content: center; /* Centrar botones de iconos */
+    gap: 0.75rem; /* Aumentar espaciado */
+  }
+}
+
+/* Móviles medianos */
+@media (max-width: 640px) {
+  .card {
+    border-radius: 12px;
+  }
+
+  .mediaWrap {
+    height: 160px;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .content {
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .title {
+    font-size: 1.12rem;
+  }
+
+  .desc {
+    font-size: 0.93rem;
+    line-height: 1.38;
+  }
+
+  .metaBadges {
+    gap: 4px;
+  }
+
+  .metaBadge {
+    padding: 4px 8px;
+    font-size: 0.68rem;
+  }
+
+  .techRow {
+    gap: 0.35rem;
+  }
+
+  .readMore {
+    font-size: 0.85rem;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .card {
+    border-radius: 10px;
+  }
+
+  .mediaWrap {
+    height: 140px;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .content {
+    padding: 14px;
+    gap: 9px;
+  }
+
+  .title {
+    font-size: 1.08rem;
+    line-height: 1.25;
+  }
+
+  .desc {
+    font-size: 0.9rem;
+    line-height: 1.35;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .metaBadges {
+    top: 8px;
+    right: 8px;
+    gap: 3px;
+  }
+
+  .metaBadge {
+    padding: 3px 7px;
+    font-size: 0.65rem;
+  }
+
+  .techRow {
+    gap: 0.3rem;
+  }
+
+  .ctaRow {
+    margin-top: 6px;
+    gap: 6px;
+  }
+
+  .iconBtn {
+    width: 30px;
+    height: 30px;
+  }
+
+  .iconBtn i {
+    font-size: 13px;
+  }
+
+  .readMore {
+    font-size: 0.82rem;
+  }
+
+  .videoPlayCorner {
+    right: 8px;
+    bottom: 8px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .videoPlayCorner i {
+    font-size: 16px;
+  }
+}
+
+/* Móviles muy pequeños */
+@media (max-width: 360px) {
+  .mediaWrap {
+    height: 120px;
+  }
+
+  .content {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .title {
+    font-size: 1.05rem;
+    line-height: 1.22;
+  }
+
+  .desc {
+    font-size: 0.88rem;
+    line-height: 1.32;
+  }
+
+  .metaBadge {
+    padding: 2px 6px;
+    font-size: 0.62rem;
+  }
+
+  .ctaRow {
+    margin-top: 5px;
+    gap: 5px;
+  }
+
+  .iconBtn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .iconBtn i {
+    font-size: 12px;
+  }
+
+  .readMore {
+    font-size: 0.8rem;
+  }
+
+  .videoPlayCorner {
+    width: 36px;
+    height: 36px;
+  }
+
+  .videoPlayCorner i {
+    font-size: 14px;
   }
 }
 
@@ -191,13 +468,28 @@
   filter: brightness(1.02) saturate(1.06) contrast(1.04);
 }
 
-.content {
-  padding: 6px 8px 6px 200px;
+.header {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  width: 100%;
+}
+
+.content {
+  padding: 16px; /* Base padding */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   flex: 1;
   min-width: 0;
+  width: 100%;
+}
+
+/* Desktop-specific padding */
+@media (min-width: 721px) {
+  .content {
+    padding: 24px 24px 24px 240px; /* Increased left padding to move text right */
+  }
 }
 .headerRow {
   display: flex;
@@ -207,8 +499,9 @@
 }
 .title {
   margin: 0;
-  font-size: 1.12rem;
+  font-size: 1.18rem;
   font-weight: 700;
+  line-height: 1.3;
   /* use a brighter default to ensure contrast on dark backgrounds; prefer a CSS var when available */
   color: var(--card-title, var(--main-text, #e6eef8));
   overflow: hidden;
@@ -223,11 +516,11 @@
 .desc {
   margin: 0;
   color: var(--muted-text, #9aa6b2);
-  font-size: 0.95rem;
-  line-height: 1.3;
+  font-size: 0.98rem;
+  line-height: 1.45;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -276,7 +569,6 @@
   left: 0;
   width: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--accent-color, #58a6ff), var(--accent-hover, #67b0ff));
   transition: width 0.3s ease;
 }
 
@@ -390,25 +682,27 @@
   border-radius: 10px;
 }
 
-@media (max-width: 720px) {
-  .card {
-    flex-direction: column;
-    padding: 0;
+/* Respeta la preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  .projectCard,
+  .filterButton,
+  .projectCardSkeleton,
+  .skeletonImage,
+  .skeletonBadge,
+  .skeletonTitle,
+  .skeletonLine,
+  .skeletonTech {
+    animation: none !important;
+    transition:
+      opacity 200ms ease,
+      color 200ms ease !important;
   }
-  .mediaWrap {
-    width: 100%;
-    height: 180px;
-    min-width: unset;
-    border-radius: 0;
+
+  .projectCard:hover {
+    transform: none;
   }
-  .content {
-    padding: 14px;
-  }
-  .title {
-    white-space: normal;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
+
+  .filterButton:hover {
+    transform: none;
   }
 }

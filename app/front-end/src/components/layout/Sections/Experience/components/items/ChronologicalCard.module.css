@@ -478,3 +478,11 @@
 .chronological-card:hover {
   transform: translate3d(0, -4px, 0) scale(1.01);
 }
+
+/* Ocultar duración en móvil para consistencia con ChronologicalItem */
+@media (max-width: 480px) {
+  .chronological-duration,
+  .chronologicalMetaRow .chronological-duration {
+    display: none !important;
+  }
+}
