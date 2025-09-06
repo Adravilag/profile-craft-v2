@@ -21,7 +21,7 @@
     "format:check": "prettier --check .",
     "test": "npm run test --workspaces",
     "clean": "npm run clean --workspaces && rm -rf node_modules",
-    "prepare": "node -e \"if (process.env.NODE_ENV !== 'production') require('husky').install()\""
+    "prepare": "node -e \"try { if (process.env.NODE_ENV !== 'production' && process.env.CI !== 'true') require('husky').install() } catch (e) { console.log('Husky setup skipped') }\""
   },
   "devDependencies": {
     "@eslint/js": "^9.34.0",
