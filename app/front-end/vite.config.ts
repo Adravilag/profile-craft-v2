@@ -31,6 +31,7 @@ const plugins = [
 ];
 
 const config: any = {
+  base: '/', // Vercel maneja esto automáticamente
   plugins,
   resolve: {
     alias: {
