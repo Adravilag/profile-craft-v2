@@ -19,7 +19,8 @@
     "test:sb": "vitest --project storybook",
     "test:ui": "vitest --ui",
     "test:cov": "vitest run --project unit --coverage",
-    "clean": "rm -rf dist node_modules .vite"
+    "clean": "rm -rf dist node_modules .vite",
+    "postinstall": "npm list @rollup/rollup-linux-x64-gnu || npm install --no-save @rollup/rollup-linux-x64-gnu@latest || true"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.7",
@@ -27,6 +28,7 @@
     "@hookform/devtools": "^4.4.0",
     "@hookform/resolvers": "^5.2.1",
     "@mlc-ai/web-llm": "^0.2.79",
+    "@rollup/rollup-linux-x64-gnu": "^4.0.0",
     "@tanstack/react-query": "^5.85.5",
     "@tanstack/react-query-devtools": "^5.85.5",
     "@tanstack/react-virtual": "^3.13.12",
