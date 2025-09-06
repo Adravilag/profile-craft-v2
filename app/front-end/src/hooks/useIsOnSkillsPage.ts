@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { getSectionFromPath } from '@/config/app';
 
 /**
  * Hook reutilizable para detectar si la ruta actual corresponde a la sección "skills".
@@ -9,16 +10,14 @@ export const useIsOnSkillsPage = () => {
   const location = useLocation();
   const [isOnSkillsPage, setIsOnSkillsPage] = useState<boolean>(() => {
     const path = typeof window !== 'undefined' ? window.location.pathname : location.pathname || '';
-    console.log(path);
-
-    return path.includes('/skills') || path.endsWith('/skills') || path === '/profile-craft/skills';
+    const section = getSectionFromPath(path);
+    return section === 'skills';
   });
 
   useEffect(() => {
     const path = location.pathname || '';
-    const resolved =
-      path.includes('/skills') || path.endsWith('/skills') || path === '/profile-craft/skills';
-    setIsOnSkillsPage(resolved);
+    const section = getSectionFromPath(path);
+    setIsOnSkillsPage(section === 'skills');
   }, [location.pathname]);
 
   return isOnSkillsPage;
