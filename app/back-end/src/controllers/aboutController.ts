@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import AboutSectionModel, { IAboutSection, IAboutHighlight } from '../models/AboutSection';
+import AboutSectionModel, { IAboutSection, IAboutHighlight } from '../models/AboutSection.js';
 import { validationResult } from 'express-validator';
 
 /**
@@ -72,7 +72,7 @@ export const getAboutSection = async (req: Request, res: Response): Promise<void
     }
 
     // Ordenar highlights por el campo order
-    aboutSection.highlights.sort((a, b) => a.order - b.order);
+    aboutSection.highlights.sort((a: IAboutHighlight, b: IAboutHighlight) => a.order - b.order);
 
     res.status(200).json({
       success: true,
@@ -264,7 +264,7 @@ export const deleteHighlight = async (req: Request, res: Response): Promise<void
     }
 
     const highlightIndex = aboutSection.highlights.findIndex(
-      h => h._id?.toString() === highlightId
+      (h: IAboutHighlight) => h._id?.toString() === highlightId
     );
 
     if (highlightIndex === -1) {
