@@ -7,8 +7,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import { createRequire } from 'module';
 import { analyzer } from 'vite-bundle-analyzer';
 
-const dirname =
-  typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+const currentDir = path.dirname(fileURLToPath(import.meta.url));
 
 // Detectar si estamos ejecutando tests (para cargar el plugin de Storybook)
 const isRunningTests =
@@ -49,19 +48,19 @@ const config: any = {
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
-      '@app': path.resolve(__dirname, 'src/app'),
-      '@components': path.resolve(__dirname, 'src/components'),
-      '@features': path.resolve(__dirname, 'src/features'),
-      '@hooks': path.resolve(__dirname, 'src/hooks'),
-      '@pages': path.resolve(__dirname, 'src/pages'),
-      '@services': path.resolve(__dirname, 'src/services'),
-      '@store': path.resolve(__dirname, 'src/store'),
-      '@styles': path.resolve(__dirname, 'src/styles'),
-      '@utils': path.resolve(__dirname, 'src/utils'),
-      '@types': path.resolve(__dirname, 'src/types'),
-      '@assets': path.resolve(__dirname, 'src/assets'),
-      '@locales': path.resolve(__dirname, 'src/locales'),
+      '@': path.resolve(currentDir, 'src'),
+      '@app': path.resolve(currentDir, 'src/app'),
+      '@components': path.resolve(currentDir, 'src/components'),
+      '@features': path.resolve(currentDir, 'src/features'),
+      '@hooks': path.resolve(currentDir, 'src/hooks'),
+      '@pages': path.resolve(currentDir, 'src/pages'),
+      '@services': path.resolve(currentDir, 'src/services'),
+      '@store': path.resolve(currentDir, 'src/store'),
+      '@styles': path.resolve(currentDir, 'src/styles'),
+      '@utils': path.resolve(currentDir, 'src/utils'),
+      '@types': path.resolve(currentDir, 'src/types'),
+      '@assets': path.resolve(currentDir, 'src/assets'),
+      '@locales': path.resolve(currentDir, 'src/locales'),
     },
     // Evitar que Vite resuelva varias copias de React (causa frecuente de "Invalid hook call")
     dedupe: ['react', 'react-dom'],
@@ -90,7 +89,7 @@ const config: any = {
       {
         extends: true,
         plugins: storybookPlugin
-          ? [storybookPlugin({ configDir: path.join(dirname, '.storybook') })]
+          ? [storybookPlugin({ configDir: path.join(currentDir, '.storybook') })]
           : [],
         test: {
           name: 'storybook',
