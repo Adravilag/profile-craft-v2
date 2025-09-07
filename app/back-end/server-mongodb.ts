@@ -81,6 +81,7 @@ const allowedOrigins = [
   'https://adravilag.github.io/ProfileCraft',
   'https://adravilag.github.io/cv-maker',
   'https://profilecraft.onrender.com',
+  'https://adavilag-portfolio.vercel.app',
 ];
 
 const corsOptions = {
