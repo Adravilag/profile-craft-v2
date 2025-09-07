@@ -36,6 +36,17 @@ const plugins = [
 const config: any = {
   base: '/', // Vercel maneja esto automáticamente
   plugins,
+  define: {
+    // Forzar la inyección de variables de entorno en tiempo de build
+    'import.meta.env.VITE_API_URL': JSON.stringify(
+      process.env.VITE_API_URL || 'https://profile-craft-v2-backend.onrender.com/api'
+    ),
+    'import.meta.env.VITE_BASE_PATH': JSON.stringify(process.env.VITE_BASE_PATH || ''),
+    'import.meta.env.VITE_CLOUDINARY_CLOUD_NAME': JSON.stringify(
+      process.env.VITE_CLOUDINARY_CLOUD_NAME || 'demo'
+    ),
+    'import.meta.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'production'),
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
