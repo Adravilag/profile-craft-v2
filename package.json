@@ -12,7 +12,7 @@
     "dev:frontend": "npm run dev --workspace=app/front-end",
     "dev:backend": "npm run dev --workspace=app/back-end",
     "build": "npm run build --workspaces",
-    "build:frontend": "npm run build --workspace=app/front-end",
+    "build:frontend": "pnpm run build --filter=./app/front-end",
     "build:backend": "npm run build --workspace=app/back-end",
     "type-check": "npm run type-check --workspaces",
     "lint": "npm run lint --workspaces",
