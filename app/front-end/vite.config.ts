@@ -107,14 +107,17 @@ const config: any = {
     },
   },
   server: {
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path: string) => path.replace(/^\/api/, '/api'),
-      },
-    },
+    proxy:
+      process.env.NODE_ENV === 'development'
+        ? {
+            '/api': {
+              target: 'http://localhost:3000',
+              changeOrigin: true,
+              secure: false,
+              rewrite: (path: string) => path.replace(/^\/api/, '/api'),
+            },
+          }
+        : {},
   },
   build: {
     sourcemap: true,

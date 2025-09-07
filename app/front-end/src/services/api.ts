@@ -30,7 +30,7 @@ import { getDynamicUserId } from '@/features/users/services/userId';
 import { getUserId } from '@/features/users/utils/userConfig';
 
 // If using Vite, use import.meta.env; if using Create React App, ensure @types/node is installed and add a declaration for process.env if needed.
-const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env?.VITE_API_URL || 'http://localhost:3000/api';
 debugLog.api('🔧 API Base URL configurada:', API_BASE_URL);
 
 // Interceptor para log de respuestas

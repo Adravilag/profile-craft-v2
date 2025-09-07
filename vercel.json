@@ -3,6 +3,12 @@
   "outputDirectory": "app/front-end/dist",
   "installCommand": "pnpm install --no-frozen-lockfile",
   "framework": "vite",
+  "env": {
+    "VITE_API_URL": "https://profile-craft-v2-backend.onrender.com/api",
+    "VITE_BASE_PATH": "",
+    "VITE_CLOUDINARY_CLOUD_NAME": "demo",
+    "NODE_ENV": "production"
+  },
   "rewrites": [
     {
       "source": "/(.*)",
