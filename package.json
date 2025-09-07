@@ -11,7 +11,7 @@
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "dev:frontend": "npm run dev --workspace=app/front-end",
     "dev:backend": "npm run dev --workspace=app/back-end",
-    "build": "npm run build --workspaces",
+    "build": "pnpm --dir app/front-end run build",
     "build:frontend": "pnpm run build --filter=./app/front-end",
     "build:backend": "npm run build --workspace=app/back-end",
     "type-check": "npm run type-check --workspaces",

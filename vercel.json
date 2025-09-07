@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm --dir app/front-end run build",
+  "buildCommand": "npm run build",
   "outputDirectory": "app/front-end/dist",
   "framework": "vite",
   "env": {
