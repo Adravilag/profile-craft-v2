@@ -13,9 +13,9 @@ if (!root) throw new Error('Root element not found');
 if (typeof window !== 'undefined') {
   try {
     // Si la aplicación está configurada para montarse bajo un basename
-    // (p.ej. '/profile-craft') y la URL actual no lo contiene, hacer
+    // (p.ej. '/') y la URL actual no lo contiene, hacer
     // un replaceState para anteponer el basename. Esto evita que
-    // <Router basename="/profile-craft"> no pueda emparejar la ruta
+    // <Router basename="/"> no pueda emparejar la ruta
     // cuando el dev server se abre en '/'.
     const base = NORMALIZED_BASE || '/';
     const pathname = window.location.pathname || '/';

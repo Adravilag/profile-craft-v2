@@ -57,7 +57,7 @@ export const useInitialScrollToSection = ({
       !sectionFromPath ||
       location.pathname.startsWith('/project/') ||
       location.pathname.startsWith('/project/') ||
-      location.pathname.startsWith('/profile-craft/projects/')
+      location.pathname.startsWith('/projects/')
     ) {
       isInitialLoadingRef.current = false;
       setIsInitialLoading(false);

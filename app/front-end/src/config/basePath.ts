@@ -1,10 +1,10 @@
 // Base path configuration used across the app for routing when deployed under a subpath.
 // Can be configured using Vite env variable VITE_BASE_PATH.
-// Por defecto usamos '/profile-craft' como base de rutas para que la
+// Por defecto usamos raíz '/' para servir desde el dominio principal
 // aplicación esté montada en ese subpath tanto en desarrollo como en
 // producción, salvo que se especifique VITE_BASE_PATH.
 const envBase = (import.meta.env.VITE_BASE_PATH as string) || '';
-export const BASE_PATH = envBase || '/profile-craft';
+export const BASE_PATH = envBase || '/';
 
 export function normalizeBase(base: string) {
   if (!base) return '/';

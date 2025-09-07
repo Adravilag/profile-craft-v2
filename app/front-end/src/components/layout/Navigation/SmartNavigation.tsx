@@ -80,7 +80,7 @@ const SmartNavigation: React.FC<SmartNavigationProps> = ({ navItems }) => {
   const isInProjectPage =
     location.pathname.startsWith('/project/') ||
     location.pathname.startsWith('/project/') ||
-    location.pathname.startsWith('/profile-craft/projects/') ||
+    location.pathname.startsWith('/projects/') ||
     location.pathname.startsWith('/projects/admin') ||
     location.pathname.startsWith('/projects/new') ||
     location.pathname.startsWith('/projects/edit/');
@@ -103,13 +103,6 @@ const SmartNavigation: React.FC<SmartNavigationProps> = ({ navItems }) => {
       const validSections = new Set(navItems.map(n => n.id));
 
       if (parts.length === 0) return 'home';
-
-      // Caso con prefijo /profile-craft/section
-      if (parts[0] === 'profile-craft') {
-        if (parts.length === 1) return 'home';
-        const maybe = decodeURIComponent(parts[1]);
-        if (validSections.has(maybe)) return maybe;
-      }
 
       // Ruta simple como /about o /projects
       if (validSections.has(parts[0])) return decodeURIComponent(parts[0]);

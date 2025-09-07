@@ -74,7 +74,7 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
     },
   ].filter(link => link.show); // Filter out links without real data
 
-  const basePath = '/profile-craft';
+  const basePath = '/';
 
   const quickLinks = [
     { name: 'Inicio', id: 'home', href: `${basePath}/` },
