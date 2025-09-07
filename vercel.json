@@ -1,6 +1,8 @@
 {
+  "buildCommand": "cd app/front-end && npm install && npm run build",
+  "outputDirectory": "app/front-end/dist",
+  "installCommand": "npm install",
   "framework": "vite",
-  "rootDirectory": "app/front-end",
   "env": {
     "VITE_API_URL": "https://profile-craft-v2-backend.onrender.com/api",
     "VITE_BASE_PATH": "",
