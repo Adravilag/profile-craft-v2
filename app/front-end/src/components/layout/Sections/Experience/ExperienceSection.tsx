@@ -47,8 +47,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
   } = useExperienceSection();
 
   // Estados para UI y administración
-  // Forzar vista por categorías (traditional) — eliminamos la opción de cambio
-  const viewMode: 'traditional' | 'chronological' = 'traditional';
+  const [viewMode, setViewMode] = useState<'traditional' | 'chronological'>('traditional');
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingType, setEditingType] = useState<'experience' | 'education' | null>(null);
@@ -90,7 +89,11 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
       .map(k => (typeof k === 'string' ? resolveStyle(k) : ''))
       .filter(Boolean)
       .join(' ');
-  // viewMode está forzado; handler eliminado
+
+  // Handler para cambiar modo de vista
+  const handleViewModeChange = (mode: 'traditional' | 'chronological') => {
+    setViewMode(mode);
+  };
 
   // Funciones de manejo para administración usando los hooks
   const handleEditExperience = async (experience: Experience) => {
@@ -694,7 +697,41 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
         notificationIcon="fas fa-info-circle"
       />
       <div className={styles.sectionContainer} ref={timelineRef}>
-        {/* Vista por categorías forzada — toggle eliminado */}
+        {/* Botones de Vista mejorados */}
+        <div className={styles.viewToggleContainer}>
+          <button
+            className={[
+              'btn',
+              cx('view-toggle-btn'),
+              viewMode === 'traditional'
+                ? cx('view-toggle-btn-active')
+                : cx('view-toggle-btn-inactive'),
+            ]
+              .filter(Boolean)
+              .join(' ')}
+            onClick={() => handleViewModeChange('traditional')}
+            aria-label="Vista por categorías"
+          >
+            <i className="fas fa-columns"></i>
+            <span>{t.experience.viewCategories}</span>
+          </button>
+          <button
+            className={[
+              'btn',
+              cx('view-toggle-btn'),
+              viewMode === 'chronological'
+                ? cx('view-toggle-btn-active')
+                : cx('view-toggle-btn-inactive'),
+            ]
+              .filter(Boolean)
+              .join(' ')}
+            onClick={() => handleViewModeChange('chronological')}
+            aria-label="Vista cronológica"
+          >
+            <i className="fas fa-clock"></i>
+            <span>{t.experience.viewChronological}</span>
+          </button>
+        </div>
         {/* Estadísticas rápidas usando stats del hook */}
         <div className={styles.experienceStats}>
           <div className={styles.statItem}>
@@ -711,70 +748,95 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
           </div>
         </div>
         {/* Vista Tradicional - 2 Columnas con Componentes Modulares */}
-        <div className={`${styles.experienceGrid} ${styles.traditionalView}`}>
-          {/* Columna de Experiencia Laboral */}
-          <div className={styles.experienceColumn}>
-            <div className={styles.columnHeader}>
-              <div className={styles.columnIcon}>
-                <i className="fas fa-briefcase"></i>
+        {viewMode === 'traditional' && (
+          <div className={`${styles.experienceGrid} ${styles.traditionalView}`}>
+            {/* Columna de Experiencia Laboral */}
+            <div className={styles.experienceColumn}>
+              <div className={styles.columnHeader}>
+                <div className={styles.columnIcon}>
+                  <i className="fas fa-briefcase"></i>
+                </div>
+                <h3 className={`${styles.columnTitle} ${styles.strongContrast}`}>
+                  {t.experience.workExperience}
+                </h3>
               </div>
-              <h3 className={`${styles.columnTitle} ${styles.strongContrast}`}>
-                {t.experience.workExperience}
-              </h3>
+
+              <div className={styles.timelineContainer}>
+                {Array.isArray(experiences) ? (
+                  experiences
+                    .sort((a, b) => {
+                      // Ordenamiento simple por fecha de fin descendente
+                      const dateA = new Date(a.end_date || '').getTime() || 0;
+                      const dateB = new Date(b.end_date || '').getTime() || 0;
+                      return dateB - dateA;
+                    })
+                    .map((exp, index) => (
+                      <ExperienceCard
+                        key={exp._id}
+                        experience={exp}
+                        index={index}
+                        onEdit={() => handleEditExperience(exp)}
+                      />
+                    ))
+                ) : (
+                  <div>Cargando experiencias...</div>
+                )}
+              </div>
             </div>
 
-            <div className={styles.timelineContainer}>
-              {Array.isArray(experiences) ? (
-                experiences
+            {/* Columna de Educación */}
+            <div className={styles.educationColumn}>
+              <div className={styles.columnHeader}>
+                {/* Icon moved inside the heading so it's announced/associated with the title */}
+                <h3 className={`${styles.columnTitle} ${styles.strongContrast}`}>
+                  <i
+                    className={`fas fa-graduation-cap ${styles.headingIcon}`}
+                    aria-hidden="true"
+                  ></i>
+                  <span>{t.experience.education}</span>
+                </h3>
+              </div>
+              <div className={styles.timelineContainer}>
+                {(Array.isArray(education) ? education : [])
                   .sort((a, b) => {
                     // Ordenamiento simple por fecha de fin descendente
                     const dateA = new Date(a.end_date || '').getTime() || 0;
                     const dateB = new Date(b.end_date || '').getTime() || 0;
                     return dateB - dateA;
                   })
-                  .map((exp, index) => (
-                    <ExperienceCard
-                      key={exp._id}
-                      experience={exp}
-                      index={index}
-                      onEdit={() => handleEditExperience(exp)}
+                  .map((edu, index) => (
+                    <EducationCard
+                      key={edu._id || edu.id || index}
+                      education={edu}
+                      index={index + (Array.isArray(experiences) ? experiences.length : 0)}
+                      onEdit={() => handleEditEducation(edu)}
                     />
-                  ))
-              ) : (
-                <div>Cargando experiencias...</div>
-              )}
+                  ))}
+              </div>
             </div>
           </div>
+        )}
 
-          {/* Columna de Educación */}
-          <div className={styles.educationColumn}>
-            <div className={styles.columnHeader}>
-              {/* Icon moved inside the heading so it's announced/associated with the title */}
-              <h3 className={`${styles.columnTitle} ${styles.strongContrast}`}>
-                <i className={`fas fa-graduation-cap ${styles.headingIcon}`} aria-hidden="true"></i>
-                <span>{t.experience.education}</span>
-              </h3>
-            </div>
-            <div className={styles.timelineContainer}>
-              {(Array.isArray(education) ? education : [])
-                .sort((a, b) => {
-                  // Ordenamiento simple por fecha de fin descendente
-                  const dateA = new Date(a.end_date || '').getTime() || 0;
-                  const dateB = new Date(b.end_date || '').getTime() || 0;
-                  return dateB - dateA;
-                })
-                .map((edu, index) => (
-                  <EducationCard
-                    key={edu._id || edu.id || index}
-                    education={edu}
-                    index={index + (Array.isArray(experiences) ? experiences.length : 0)}
-                    onEdit={() => handleEditEducation(edu)}
-                  />
-                ))}
+        {/* Vista Cronológica - Timeline Unificado */}
+        {viewMode === 'chronological' && (
+          <div className={styles.chronologicalView}>
+            <div className={styles.chronologicalTimeline}>
+              <div className={styles.timelineLine}></div>
+
+              {/* Timeline unificado usando chronologicalData del hook */}
+              {chronologicalData.map((item, index) => (
+                <ChronologicalItem
+                  key={`${item.type}-${item._id || String(item.id)}`}
+                  item={item}
+                  index={index}
+                  position={index % 2 === 0 ? 'left' : 'right'}
+                  onEdit={handleEditCombined}
+                  onDelete={handleDeleteCombined}
+                />
+              ))}
             </div>
           </div>
-        </div>
-        {/* Vista cronológica eliminada — solo se muestra la vista por categorías */}
+        )}
       </div>
     </div>
   );

@@ -27,7 +27,10 @@ if (isRunningTests) {
 const plugins = [
   react(),
   tsconfigPaths(),
-  analyzer({ analyzerMode: 'server', openAnalyzer: true }),
+  // Solo activar el analyzer en desarrollo local, no en builds de producción
+  ...(process.env.NODE_ENV !== 'production' && !process.env.CI
+    ? [analyzer({ analyzerMode: 'server', openAnalyzer: true })]
+    : []),
 ];
 
 const config: any = {
