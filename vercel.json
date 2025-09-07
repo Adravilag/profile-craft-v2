@@ -1,8 +1,9 @@
 {
-  "buildCommand": "pnpm install --no-frozen-lockfile --dir app/front-end && pnpm run build --dir app/front-end",
-  "outputDirectory": "app/front-end/dist",
-  "installCommand": null,
+  "buildCommand": "pnpm run build",
+  "outputDirectory": "dist",
+  "installCommand": "pnpm install --no-frozen-lockfile",
   "framework": "vite",
+  "rootDirectory": "./app/front-end",
   "env": {
     "VITE_API_URL": "https://profile-craft-v2-backend.onrender.com/api",
     "VITE_BASE_PATH": "",
