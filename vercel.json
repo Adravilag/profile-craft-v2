@@ -1,6 +1,6 @@
 {
-  "buildCommand": "pnpm run build",
-  "outputDirectory": "dist",
+  "buildCommand": "cd app/front-end && pnpm install && pnpm run build",
+  "outputDirectory": "app/front-end/dist",
   "installCommand": "pnpm install --no-frozen-lockfile",
   "framework": "vite",
   "rewrites": [
