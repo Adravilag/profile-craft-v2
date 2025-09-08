@@ -15,7 +15,7 @@ export const logger = {
    */
   debug: (...args: unknown[]) => {
     if (isDevelopment) {
-      logger.debug('[DEBUG]', ...args);
+      console.log('[DEBUG]', ...args);
     }
   },
 
@@ -24,7 +24,7 @@ export const logger = {
    */
   info: (...args: unknown[]) => {
     if (isDevelopment) {
-      logger.debug('[INFO]', ...args);
+      console.info('[INFO]', ...args);
     }
   },
 
@@ -33,7 +33,7 @@ export const logger = {
    */
   warn: (...args: unknown[]) => {
     if (!isProduction) {
-      logger.warn('[WARN]', ...args);
+      console.warn('[WARN]', ...args);
     }
     // En producción, los warnings podrían enviarse a un servicio de monitoreo
   },
@@ -42,7 +42,7 @@ export const logger = {
    * Errores - siempre se muestran
    */
   error: (...args: unknown[]) => {
-    logger.error('[ERROR]', ...args);
+    console.error('[ERROR]', ...args);
     // En producción, los errores podrían enviarse a un servicio de monitoreo
   },
 
@@ -51,7 +51,7 @@ export const logger = {
    */
   success: (...args: unknown[]) => {
     if (isDevelopment) {
-      logger.debug('[SUCCESS]', ...args);
+      console.log('[SUCCESS]', ...args);
     }
   },
 
@@ -60,9 +60,9 @@ export const logger = {
    */
   security: (...args: unknown[]) => {
     if (isProduction) {
-      logger.warn('[SECURITY]', ...args);
+      console.warn('[SECURITY]', ...args);
     } else {
-      logger.debug('[SECURITY]', ...args);
+      console.log('[SECURITY]', ...args);
     }
   },
 };
