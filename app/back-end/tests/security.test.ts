@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi, beforeAll, afterAll } from 'vites
 import request from 'supertest';
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import { config } from '../config/index.js';
+import { config } from '../src/config/index.js';
 
 // Tests para verificar y mejorar la seguridad del backend
 describe('Backend Security Tests', () => {
@@ -203,8 +203,8 @@ describe('Backend Security Tests', () => {
 
       // Verificar que se logueó el evento pero sin la contraseña
       expect(consoleSpy).toHaveBeenCalled();
-      const logCall = consoleSpy.mock.calls.find(call =>
-        call.some(arg => typeof arg === 'string' && arg.includes('login'))
+      const logCall = consoleSpy.mock.calls.find((call: any[]) =>
+        call.some((arg: any) => typeof arg === 'string' && arg.includes('login'))
       );
 
       if (logCall) {
