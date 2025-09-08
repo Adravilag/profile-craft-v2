@@ -36,12 +36,15 @@ export const config = {
   // Orígenes permitidos (deben ser los ORIGINES del FRONTEND que hacen requests al backend)
   // Nota: NO incluir aquí la URL del backend (ej. http://localhost:3000). Incluir solo los origins
   // desde los que el navegador hará peticiones (ej. Vite dev: http://localhost:5173).
-  ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS?.split(',') || [
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'https://adavilag-portfolio.vercel.app',
-    'https://my-profile-gold-one.vercel.app',
-  ],
+  // Normaliza: quita espacios y barras finales de cada origin
+  ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim().replace(/\/$/, ''))
+    : [
+        'http://localhost:5173',
+        'http://localhost:5174',
+        'https://adavilag-portfolio.vercel.app',
+        'https://my-profile-gold-one.vercel.app',
+      ],
 
   // Configuración de desarrollo
   isDevelopment: process.env.NODE_ENV !== 'production',
