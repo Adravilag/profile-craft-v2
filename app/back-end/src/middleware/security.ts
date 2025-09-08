@@ -150,8 +150,19 @@ export const securityMiddleware = {
    * @param allowedOrigins Array de strings con los orígenes permitidos (usualmente de config/env)
    * @returns Middleware Express que bloquea si el origin no está permitido
    */
+  // Map para evitar spam de logs de orígenes bloqueados
+  // Se puede configurar con la variable de entorno BLOCKED_ORIGIN_LOG_COOLDOWN_MS (ms)
+  _blockedOriginLastLogged: new Map<string, number>(),
+
   strictOriginValidation: (allowedOrigins: string[]) => {
     return (req: Request, res: Response, next: NextFunction): void => {
+      // Bypass de validación de CORS si se activa la flag temporal (para debugging)
+      if (process.env.TEMP_OPEN_CORS === 'true' || process.env.DISABLE_CORS === 'true') {
+        logger.warn(
+          '⚠️ CORS validation bypass activo (TEMP_OPEN_CORS/DISABLE_CORS) - permitiendo request'
+        );
+        return next();
+      }
       const origin = req.get('Origin') || req.get('Referer');
 
       logger.debug('🔍 Manual CORS check - Origin:', origin, 'Method:', req.method);
@@ -212,7 +223,25 @@ export const securityMiddleware = {
         });
 
       if (!isAllowed) {
-        logger.security(`🚨 Blocked request from unauthorized origin: ${normalizedOrigin}`);
+        try {
+          const cooldownMs = parseInt(process.env.BLOCKED_ORIGIN_LOG_COOLDOWN_MS || '300000', 10); // 5min
+          const now = Date.now();
+          const last =
+            (securityMiddleware as any)._blockedOriginLastLogged.get(normalizedOrigin) || 0;
+          if (now - last > cooldownMs) {
+            logger.security(`🚨 Blocked request from unauthorized origin: ${normalizedOrigin}`);
+            (securityMiddleware as any)._blockedOriginLastLogged.set(normalizedOrigin, now);
+          } else {
+            logger.debug(`🔇 Re-suppressed blocked-origin log for ${normalizedOrigin}`);
+          }
+        } catch (err) {
+          // En caso de fallo inesperado, no romper la validación - loguear en debug
+          logger.debug(
+            'Error evaluating blocked-origin log suppression',
+            (err as any).message || err
+          );
+        }
+
         res.status(403).json({ error: 'Origin no autorizado' });
         return;
       }
