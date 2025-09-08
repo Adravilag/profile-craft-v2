@@ -34,8 +34,10 @@ import { getUserId } from '@/features/users/utils/userConfig';
 const secureApiLogger = createSecureLogger('API');
 
 // If using Vite, use import.meta.env; if using Create React App, ensure @types/node is installed and add a declaration for process.env if needed.
+// Usar solo el dominio/base, sin /api al final
 const API_BASE_URL =
-  import.meta.env?.VITE_API_URL || (import.meta.env.DEV ? '/api' : 'http://localhost:3000/api');
+  import.meta.env?.VITE_API_URL?.replace(/\/?api\/?$/, '') ||
+  (import.meta.env.DEV ? '' : 'http://localhost:3000');
 debugLog.api('🔧 API Base URL configurada:', API_BASE_URL);
 
 // Validación de seguridad de dominio antes de configurar interceptors
