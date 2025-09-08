@@ -74,6 +74,10 @@ const app = express();
 // Configurar CORS de forma robusta
 const allowedOrigins = appConfig.ALLOWED_ORIGINS;
 logger.info('ALLOWED_ORIGINS en config:', allowedOrigins);
+// Flag temporal para abrir CORS en caso de debugging (activar poniendo TEMP_OPEN_CORS=true en env)
+const TEMP_OPEN_CORS = process.env.TEMP_OPEN_CORS === 'true';
+if (TEMP_OPEN_CORS)
+  logger.warn('⚠️ TEMP_OPEN_CORS activado: se permitirán todos los orígenes (modo DEBUG)');
 
 const corsOptions = {
   origin: function (
@@ -92,6 +96,12 @@ const corsOptions = {
     // Permitir requests sin origin (mobile apps, Postman, etc.)
     if (!origin) {
       logger.debug('✅ Permitiendo request sin origin');
+      return callback(null, true);
+    }
+
+    // Si TEMP_OPEN_CORS está activo, permitir todos los orígenes (modo debug)
+    if (TEMP_OPEN_CORS) {
+      logger.debug('⚠️ TEMP_OPEN_CORS activo - permitiendo origin:', origin);
       return callback(null, true);
     }
 
@@ -142,7 +152,24 @@ app.use((req, res, next) => {
     ? incoming.trim().replace(/\/$/, '').toLowerCase()
     : undefined;
 
-  if (
+  // Si TEMP_OPEN_CORS está activo, permitir todos los orígenes desde el middleware manual
+  if (TEMP_OPEN_CORS) {
+    res.header('Access-Control-Allow-Origin', incoming || '*');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,PATCH');
+    res.header(
+      'Access-Control-Allow-Headers',
+      'Content-Type, Authorization, X-Requested-With, Accept, Origin, Access-Control-Request-Method, Access-Control-Request-Headers'
+    );
+    res.header('Access-Control-Expose-Headers', 'Content-Length, X-Foo, X-Bar');
+    res.header('Access-Control-Max-Age', '86400');
+
+    if (req.method === 'OPTIONS') {
+      logger.debug('✅ TEMP_OPEN_CORS - respondiendo preflight');
+      res.sendStatus(200);
+      return;
+    }
+  } else if (
     (Array.isArray(allowedOrigins) &&
       normalizedIncoming &&
       allowedOrigins.includes(normalizedIncoming)) ||
