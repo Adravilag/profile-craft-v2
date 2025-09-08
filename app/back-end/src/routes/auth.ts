@@ -7,16 +7,8 @@ import { securityMiddleware, authSecurityMiddleware } from '../middleware/securi
 const router = express.Router();
 
 // Middleware de seguridad para todas las rutas de auth
-const allowedOrigins = [
-  'https://adravilag-portfolio.vercel.app',
-  'https://profile-craft-v2.vercel.app',
-  'https://profile-craft-v2-adravilag.vercel.app',
-  'http://localhost:5173', // Para desarrollo
-  'http://localhost:5174', // Para desarrollo
-  'http://localhost:3000', // Para desarrollo
-];
-
-const originValidation = securityMiddleware.strictOriginValidation(allowedOrigins);
+import { config as appConfig } from '../config/index.js';
+const originValidation = securityMiddleware.strictOriginValidation(appConfig.ALLOWED_ORIGINS);
 
 // Rutas públicas (sin autenticación)
 router.get('/has-user', originValidation, authController.hasUser);

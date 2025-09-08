@@ -72,11 +72,7 @@ process.on('unhandledRejection', reason => {
 const app = express();
 
 // Configurar CORS de forma robusta
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:5174',
-  'https://adavilag-portfolio.vercel.app',
-];
+const allowedOrigins = appConfig.ALLOWED_ORIGINS;
 
 const corsOptions = {
   origin: function (
@@ -93,7 +89,7 @@ const corsOptions = {
     }
 
     // Verificar si el origin está en la lista de permitidos
-    if (allowedOrigins.includes(origin)) {
+    if (Array.isArray(allowedOrigins) && allowedOrigins.includes(origin)) {
       logger.debug(`✅ Origin ${origin} permitido`);
       callback(null, true);
     } else {
@@ -130,7 +126,7 @@ app.use((req, res, next) => {
   const origin = req.headers.origin;
   logger.debug(`🔍 Manual CORS check - Origin: ${origin}, Method: ${req.method}`);
 
-  if (allowedOrigins.includes(origin as string) || !origin) {
+  if ((Array.isArray(allowedOrigins) && allowedOrigins.includes(origin as string)) || !origin) {
     res.header('Access-Control-Allow-Origin', origin || '*');
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,PATCH');

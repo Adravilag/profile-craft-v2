@@ -40,6 +40,7 @@ export const config = {
     'http://localhost:5173',
     'http://localhost:5174',
     'https://adavilag-portfolio.vercel.app',
+    'https://my-profile-gold-one.vercel.app',
   ],
 
   // Configuración de desarrollo

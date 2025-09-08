@@ -48,38 +48,43 @@ const BackendLoadingScreen: React.FC = () => {
   const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
-    // Barra avanza hasta 98% en 60 segundos (0.0167% por frame a 60fps aprox)
-    const DURATION = 60000; // 60 segundos
-    const MAX_PROGRESS = 98;
-    const start = Date.now();
-    const tick = () => {
-      setProgress(prev => {
-        if (isOnline) return 100;
-        const elapsed = Date.now() - start;
-        const next = Math.min((elapsed / DURATION) * MAX_PROGRESS, MAX_PROGRESS);
-        // Si el usuario recarga, prev puede ser mayor por isOnline, así que protegemos:
-        return Math.max(prev, next);
-      });
-      rafRef.current = window.requestAnimationFrame(tick);
-    };
-    rafRef.current = window.requestAnimationFrame(tick);
-    return () => {
-      if (rafRef.current) window.cancelAnimationFrame(rafRef.current);
-    };
-  }, [isOnline]);
+    // Si el estado es online, actualiza el progreso al 100% inmediatamente y termina.
+    if (isOnline) {
+      setProgress(100);
+      return;
+    }
 
-  useEffect(() => {
-    if (!isOnline) return;
-    let id: number | null = null;
-    const step = () => {
-      setProgress(prev => Math.min(100, prev + Math.max(2, (100 - prev) * 0.25)));
-      id = window.setTimeout(() => {
-        // noop; the next step will be scheduled until progress reaches 100
-      }, 80);
+    // Si no está online, inicia la animación de progreso.
+    const DURATION = 60000; // 60 segundos
+    const MAX_PROGRESS = 98; // El progreso avanza hasta el 98%
+    const startTime = Date.now();
+
+    const tick = () => {
+      // Calcula el tiempo transcurrido desde que se inició la animación.
+      const elapsed = Date.now() - startTime;
+
+      // Calcula el progreso basado en el tiempo, asegurándose de que no supere MAX_PROGRESS.
+      const nextProgress = Math.min((elapsed / DURATION) * MAX_PROGRESS, MAX_PROGRESS);
+
+      // Actualiza el estado con el nuevo progreso.
+      setProgress(nextProgress);
+
+      // Si aún no hemos llegado al 98%, sigue animando.
+      if (nextProgress < MAX_PROGRESS) {
+        rafRef.current = window.requestAnimationFrame(tick);
+      }
     };
-    step();
+
+    // Inicia el primer "tick" para la animación.
+    rafRef.current = window.requestAnimationFrame(tick);
+
+    // Función de limpieza que se ejecuta cuando el componente se desmonta
+    // o el `isOnline` cambia. Esto evita que la animación continúe
+    // innecesariamente.
     return () => {
-      if (id) clearTimeout(id);
+      if (rafRef.current) {
+        window.cancelAnimationFrame(rafRef.current);
+      }
     };
   }, [isOnline]);
 

@@ -145,7 +145,11 @@ export const securityMiddleware = {
     };
   },
 
-  // Middleware para validar origin específicamente
+  /**
+   * Middleware para validar origin específicamente.
+   * @param allowedOrigins Array de strings con los orígenes permitidos (usualmente de config/env)
+   * @returns Middleware Express que bloquea si el origin no está permitido
+   */
   strictOriginValidation: (allowedOrigins: string[]) => {
     return (req: Request, res: Response, next: NextFunction): void => {
       const origin = req.get('Origin') || req.get('Referer');
@@ -181,28 +185,31 @@ export const securityMiddleware = {
       logger.debug('🔍 Method:', req.method);
       logger.debug('📍 Path:', req.path);
 
-      const isAllowed = allowedOrigins.some(allowed => {
-        try {
-          // Comparación exacta primero
-          if (normalizedOrigin === allowed) {
-            return true;
+      // Robustez: asegurar que allowedOrigins es array
+      const isAllowed =
+        Array.isArray(allowedOrigins) &&
+        allowedOrigins.some(allowed => {
+          try {
+            // Comparación exacta primero
+            if (normalizedOrigin === allowed) {
+              return true;
+            }
+
+            // Comparación por URL si ambos son URLs válidas
+            const originUrl = new URL(normalizedOrigin);
+            const allowedUrl = new URL(allowed);
+
+            return (
+              originUrl.hostname === allowedUrl.hostname &&
+              originUrl.protocol === allowedUrl.protocol &&
+              originUrl.port === allowedUrl.port
+            );
+          } catch (error) {
+            logger.warn('⚠️ Error parsing URLs:', (error as any).message);
+            // Fallback a comparación de string
+            return normalizedOrigin === allowed;
           }
-
-          // Comparación por URL si ambos son URLs válidas
-          const originUrl = new URL(normalizedOrigin);
-          const allowedUrl = new URL(allowed);
-
-          return (
-            originUrl.hostname === allowedUrl.hostname &&
-            originUrl.protocol === allowedUrl.protocol &&
-            originUrl.port === allowedUrl.port
-          );
-        } catch (error) {
-          logger.warn('⚠️ Error parsing URLs:', (error as any).message);
-          // Fallback a comparación de string
-          return normalizedOrigin === allowed;
-        }
-      });
+        });
 
       if (!isAllowed) {
         logger.security(`🚨 Blocked request from unauthorized origin: ${normalizedOrigin}`);
