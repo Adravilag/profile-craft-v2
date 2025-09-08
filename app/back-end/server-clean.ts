@@ -144,4 +144,12 @@ async function startServer() {
 // Iniciar servidor
 startServer();
 
+// Middleware para rutas no encontradas (404) que responde en JSON
+app.use((req, res, next) => {
+  res.status(404).json({
+    error: 'Ruta no encontrada',
+    path: req.originalUrl,
+  });
+});
+
 export default app;
