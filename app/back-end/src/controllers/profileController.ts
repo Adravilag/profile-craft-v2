@@ -126,11 +126,21 @@ export function sanitizeArray<T extends CleanseableObject[]>(arr?: T): T {
  * @param additionalModels Modelos adicionales a cargar.
  * @returns Un objeto con todas las colecciones.
  */
+type UserCollections = {
+  projects: any;
+  experiences: any;
+  education: any;
+  skills: any;
+  certifications: any;
+  testimonials: any;
+  contacts?: any;
+};
+
 async function loadUserCollections(
   userId: string,
   filter: Record<string, any> = {},
   additionalModels: { model: any; sort: Record<string, any> }[] = []
-): Promise<Record<string, any>> {
+): Promise<UserCollections> {
   const collectionLoaders = [
     {
       model: Project,
@@ -175,7 +185,7 @@ async function loadUserCollections(
 
   const results: any[] = await Promise.all(queries);
 
-  const collections = {
+  const collections: UserCollections = {
     projects: results[0],
     experiences: results[1],
     education: results[2],
@@ -186,7 +196,7 @@ async function loadUserCollections(
 
   if (additionalModels.length > 0) {
     // Asumimos que el último modelo añadido es el de contactos
-    collections['contacts'] = results[results.length - 1];
+    collections.contacts = results[results.length - 1];
   }
 
   return collections;
