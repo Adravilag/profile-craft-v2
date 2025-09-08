@@ -7,9 +7,17 @@ export async function getProjects(userId: string | number = 'dynamic-admin-id', 
   if (userId !== undefined && userId !== null) params.set('userId', String(userId));
   if (status) params.set('status', status);
   const res = await apiFetch(`/api/projects?${params.toString()}`);
+  const contentType = res.headers.get('content-type');
   if (!res.ok) {
+    // Lee el body solo una vez
     const text = await res.text().catch(() => '');
     throw new Error(`Failed to fetch projects: ${res.status} ${text}`);
+  }
+  if (!contentType || !contentType.includes('application/json')) {
+    const text = await res.text().catch(() => '');
+    throw new Error(
+      `Respuesta no es JSON. Content-Type: ${contentType}. Respuesta: ${text.slice(0, 200)}`
+    );
   }
   return res.json();
 }

@@ -24,7 +24,16 @@ export const projectsController = {
       // Validar que el userId resuelto sea un ObjectId válido
       if (!mongoose.Types.ObjectId.isValid(userId)) {
         logger.error('❌ ID de usuario inválido despues de resolver:', userId);
-        res.status(400).json({ error: 'ID de usuario inválido' });
+        // Proveer información adicional sólo en entornos no productivos para depuración
+        if (process.env.NODE_ENV !== 'production') {
+          res.status(400).json({
+            error: 'ID de usuario inválido',
+            inputUserId: inputUserId,
+            resolvedUserId: userId,
+          });
+        } else {
+          res.status(400).json({ error: 'ID de usuario inválido' });
+        }
         return;
       }
 

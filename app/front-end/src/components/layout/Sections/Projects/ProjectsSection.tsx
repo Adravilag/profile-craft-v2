@@ -145,6 +145,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
   const loadProjects = async () => {
     try {
       const data = await getProjects();
+
       debugLog.dataLoading(`${t.projects.title} loaded:`, data?.length || 0);
       setLocalProjects(data);
       setHasLoadedLocal(true);
