@@ -73,6 +73,7 @@ const app = express();
 
 // Configurar CORS de forma robusta
 const allowedOrigins = appConfig.ALLOWED_ORIGINS;
+logger.info('ALLOWED_ORIGINS en config:', allowedOrigins);
 
 const corsOptions = {
   origin: function (
