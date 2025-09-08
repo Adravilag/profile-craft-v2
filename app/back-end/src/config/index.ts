@@ -41,7 +41,11 @@ export const config = {
     'https://adravilag.github.io',
     'https://adravilag.github.io/profile-craft',
     'https://adravilag.github.io/ProfileCraft',
+    'https://adravilag.github.io/cv-maker',
+    'https://profilecraft.onrender.com',
     'https://adavilag-portfolio.vercel.app',
+    'https://profile-craft-v2.vercel.app',
+    'https://profile-craft-v2-adravilag.vercel.app',
   ],
 
   // Configuración de desarrollo

@@ -8,7 +8,9 @@ const router = express.Router();
 
 // Middleware de seguridad para todas las rutas de auth
 const allowedOrigins = [
-  'https://adavilag-portfolio.vercel.app',
+  'https://adravilag-portfolio.vercel.app',
+  'https://profile-craft-v2.vercel.app',
+  'https://profile-craft-v2-adravilag.vercel.app',
   'http://localhost:5173', // Para desarrollo
   'http://localhost:3000', // Para desarrollo
 ];

@@ -107,10 +107,20 @@ export const securityMiddleware = {
       req.body = sanitizeValue(req.body);
     }
     if (req.query) {
-      req.query = sanitizeValue(req.query);
+      // Sanitizar query params sin reasignar la propiedad readonly
+      const sanitizedQuery = sanitizeValue(req.query);
+      Object.keys(req.query).forEach(key => {
+        delete req.query[key];
+      });
+      Object.assign(req.query, sanitizedQuery);
     }
     if (req.params) {
-      req.params = sanitizeValue(req.params);
+      // Sanitizar params sin reasignar la propiedad readonly
+      const sanitizedParams = sanitizeValue(req.params);
+      Object.keys(req.params).forEach(key => {
+        delete req.params[key];
+      });
+      Object.assign(req.params, sanitizedParams);
     }
 
     next();
