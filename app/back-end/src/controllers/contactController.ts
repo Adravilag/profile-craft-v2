@@ -1,6 +1,6 @@
 import { Contact } from '../models/index.js';
 import { emailService } from '../services/emailService.js';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 export const contactController = {
   // Enviar mensaje de contacto

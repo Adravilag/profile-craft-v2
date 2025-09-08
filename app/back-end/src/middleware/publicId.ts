@@ -1,5 +1,5 @@
 import { User } from '../models/index.js';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 /**
  * Middleware para resolver identificadores públicos a IDs de base de datos

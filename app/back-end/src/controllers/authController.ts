@@ -4,7 +4,7 @@ import { User } from '../models/index.js';
 import { config } from '../config/index.js';
 import { securityMiddleware } from '../middleware/security.js';
 import { cleanseObject } from './profileController.js';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 // Helper específico para sanitizar respuestas de usuario en endpoints de auth
 /**

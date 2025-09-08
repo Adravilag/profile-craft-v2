@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 // import { config } from '../config/index.js';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 // Rate limiting storage (en producción usar Redis)
 const rateLimitStore = new Map<string, { count: number; resetTime: number; lastAttempt: number }>();

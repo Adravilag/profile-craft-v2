@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import cloudinaryService from '../services/cloudinaryService.js';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 export const mediaController = {
   // Subir archivo de imagen

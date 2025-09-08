@@ -2,12 +2,11 @@
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "installCommand": "npm install",
+  "installCommand": "npm install --include=dev",
   "env": {
     "VITE_API_URL": "https://profile-craft-v2-backend.onrender.com/api",
     "VITE_BASE_PATH": "",
     "VITE_CLOUDINARY_CLOUD_NAME": "demo",
-    "NODE_ENV": "production",
     "SKIP_ENV_VALIDATION": "true"
   },
   "rewrites": [

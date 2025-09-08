@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 // Configuración de cifrado
 const ALGORITHM = 'aes-256-gcm';

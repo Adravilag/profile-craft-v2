@@ -9,7 +9,7 @@ config({ path: path.join(__dirname, '../../.env') });
 
 import * as nodemailer from 'nodemailer';
 import type { ContactFormData } from '../types/contact.js';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 interface EmailConfig {
   host: string;

@@ -3,7 +3,7 @@
 import ProjectView from '../models/ProjectView.js';
 import Project from '../models/Project.js';
 import { Request } from 'express';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 /**
  * Servicio para manejar las visualizaciones de proyectos

@@ -2,7 +2,7 @@ import { Project } from '../models/index.js';
 import ProjectViewService from '../services/projectViewService.js';
 import { resolveUserId } from '../services/userService.js';
 import mongoose from 'mongoose';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 // Usar userService para resolver user ids dinámicos
 

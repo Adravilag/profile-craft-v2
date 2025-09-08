@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import AboutSectionModel, { IAboutHighlight } from '../models/AboutSection.js';
 import { validationResult } from 'express-validator';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 /**
  * Obtener la información completa de la sección About

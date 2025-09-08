@@ -11,7 +11,7 @@ import {
 import mongoose from 'mongoose';
 import { DataEncryption } from '../utils/encryption.js';
 import { Request, Response } from 'express';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 // Extender el tipo Request para incluir la propiedad user del middleware de autenticación
 interface AuthenticatedRequest extends Request {
@@ -23,7 +23,7 @@ interface AuthenticatedRequest extends Request {
 
 // Definir una interfaz para el tipo de objeto que se limpiará
 interface CleanseableObject extends Record<string, any> {
-  _id?: mongoose.Types.ObjectId;
+  _id?: mongoose.Types.ObjectId | string;
   __v?: number;
   user_id?: mongoose.Types.ObjectId;
   password?: string;
@@ -128,8 +128,8 @@ export function sanitizeArray<T extends CleanseableObject[]>(arr?: T): T {
  */
 async function loadUserCollections(
   userId: string,
-  filter: object = {},
-  additionalModels: { model: any; sort: object }[] = []
+  filter: Record<string, any> = {},
+  additionalModels: { model: any; sort: Record<string, any> }[] = []
 ): Promise<Record<string, any>> {
   const collectionLoaders = [
     {
@@ -161,9 +161,9 @@ async function loadUserCollections(
     },
   ];
 
-  const queries = collectionLoaders.map(item =>
-    item.model
-      .find({ user_id: userId, ...filter })
+  const queries: Promise<any>[] = collectionLoaders.map(item =>
+    (item.model as any)
+      .find({ user_id: userId, ...(filter as any) })
       .select(item.select)
       .sort(item.sort)
       .lean()
@@ -173,7 +173,7 @@ async function loadUserCollections(
     queries.push(addModel.model.find({ user_id: userId }).sort(addModel.sort).lean());
   }
 
-  const results = await Promise.all(queries);
+  const results: any[] = await Promise.all(queries);
 
   const collections = {
     projects: results[0],
@@ -487,7 +487,9 @@ export const profileController = {
         return;
       }
 
-      const user = await User.findById(userId).select('pattern').lean();
+      const user = (await User.findById(userId).select('pattern').lean()) as
+        | (CleanseableObject & { pattern?: string })
+        | null;
 
       if (!user) {
         res.status(404).json({ error: 'Usuario no encontrado' });

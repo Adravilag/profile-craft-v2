@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 // Configuración de MongoDB
 export const connectMongoDB = async (): Promise<void> => {

@@ -1,6 +1,6 @@
 import { User } from '../models/index.js';
 import { logSentinelUsage } from './auditService.js';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 // Obtiene el ID del primer usuario con role 'admin'
 export const getFirstAdminUserId = async (): Promise<string> => {

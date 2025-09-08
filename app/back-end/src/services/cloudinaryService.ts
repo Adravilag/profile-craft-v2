@@ -1,7 +1,7 @@
 // src/services/cloudinaryService.ts
 import { v2 as cloudinary } from 'cloudinary';
 import { Readable } from 'stream';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 // Verificar configuración de Cloudinary
 const isCloudinaryConfigured = () => {

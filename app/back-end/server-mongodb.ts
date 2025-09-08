@@ -28,7 +28,7 @@ import aboutRoutes from './src/routes/aboutRoutes.js';
 // Servicios
 import { readinessCheck } from './src/controllers/healthController.js';
 import { securityMiddleware } from './src/middleware/security.js';
-import { logger } from './src/utils/logger';
+import { logger } from './src/utils/logger.js';
 
 // Obtener el directorio actual
 const __filename = fileURLToPath(import.meta.url);

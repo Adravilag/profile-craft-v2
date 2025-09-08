@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 import { Experience } from '../models/index.js';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 export const experiencesController = {
   // Obtener experiencias

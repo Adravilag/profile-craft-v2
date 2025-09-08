@@ -1,5 +1,5 @@
 import { User, Project, Skill } from '../models/index.js';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 export const initializeMongoDB = async (): Promise<void> => {
   try {

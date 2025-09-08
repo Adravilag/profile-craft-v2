@@ -2,7 +2,7 @@
 import jwt from 'jsonwebtoken';
 import { config } from '../config/index.js';
 import { securityMiddleware } from './security.js';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 // Middleware de autenticación básica (cualquier usuario autenticado)
 export const authenticate = (req: any, res: any, next: any): void => {

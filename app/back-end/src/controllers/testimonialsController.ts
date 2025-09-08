@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Testimonial } from '../models/index.js';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 export const testimonialsController = {
   // Obtener testimonios de un usuario (solo aprobados para vista pública)

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 // Construir ruta de logs relativa al archivo actual para evitar problemas de cwd
 const __filename = fileURLToPath(import.meta.url);

@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { Certification } from '../models/index.js';
 import mongoose from 'mongoose';
 import { getFirstAdminUserId, resolveUserId } from '../services/userService.js';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 // Usar userService para resolver user ids dinámicos
 
