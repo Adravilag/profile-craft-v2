@@ -184,6 +184,15 @@ app.use('/api/admin/certifications', certificationsRoutes);
 app.use('/api/testimonials', testimonialsRoutes);
 app.use('/api/about', aboutRoutes);
 
+// Health check endpoint para el frontend
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: Date.now(),
+    version: '2.0.2',
+    database: process.env.MONGODB_URI ? 'MongoDB' : 'SQLite',
+  });
+});
 // Health check endpoints
 app.get('/ready', readinessCheck);
 app.get('/', (req: any, res: any) => {
@@ -191,7 +200,7 @@ app.get('/', (req: any, res: any) => {
     message: 'ProfileCraft Backend API',
     version: '2.0.2',
     status: 'running',
-    database: process.env.MONGODB_URI ? 'MongoDB' : 'SQLite',
+    database: process.env.MONGODB_URI || process.env.DATABASE_URL ? 'MongoDB' : 'No database',
     corsUpdate: 'GitHub Pages CORS configuration deployed',
     corsStatus: {
       allowedOrigins: allowedOrigins,

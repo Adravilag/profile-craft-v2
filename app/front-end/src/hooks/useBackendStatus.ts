@@ -12,7 +12,7 @@ export interface BackendStatus {
 }
 
 const API_BASE_URL = import.meta.env?.VITE_API_URL || 'http://localhost:3000/api';
-const HEALTH_CHECK_URL = API_BASE_URL.replace('/api', '/health');
+const HEALTH_CHECK_URL = `${API_BASE_URL}/health`;
 const CHECK_INTERVAL = 30000; // 30 segundos
 const MAX_RETRIES = 5; // Aumentar a 5 para Render
 const INITIAL_RETRY_DELAY = 5000; // 5 segundos inicial
