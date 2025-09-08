@@ -38,7 +38,9 @@ export const config = {
   // desde los que el navegador hará peticiones (ej. Vite dev: http://localhost:5173).
   // Normaliza: quita espacios y barras finales de cada origin
   ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim().replace(/\/$/, ''))
+    ? process.env.ALLOWED_ORIGINS.split(',').map(origin =>
+        origin.trim().replace(/\/$/, '').toLowerCase()
+      )
     : [
         'http://localhost:5173',
         'http://localhost:5174',

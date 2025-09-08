@@ -83,6 +83,12 @@ const corsOptions = {
     logger.debug(`🌐 CORS check - Origin: ${origin || 'No origin'}`);
     logger.debug(`🔍 Allowed origins:`, allowedOrigins);
 
+    // Normalizar origin entrante (quitar espacios, barra final y lowercase)
+    const normalizedIncomingOrigin = origin
+      ? String(origin).trim().replace(/\/$/, '').toLowerCase()
+      : undefined;
+    logger.debug(`🔍 Normalized incoming origin: ${normalizedIncomingOrigin || 'No origin'}`);
+
     // Permitir requests sin origin (mobile apps, Postman, etc.)
     if (!origin) {
       logger.debug('✅ Permitiendo request sin origin');
@@ -90,11 +96,15 @@ const corsOptions = {
     }
 
     // Verificar si el origin está en la lista de permitidos
-    if (Array.isArray(allowedOrigins) && allowedOrigins.includes(origin)) {
-      logger.debug(`✅ Origin ${origin} permitido`);
+    if (
+      Array.isArray(allowedOrigins) &&
+      normalizedIncomingOrigin &&
+      allowedOrigins.includes(normalizedIncomingOrigin)
+    ) {
+      logger.debug(`✅ Origin ${origin} (normalized: ${normalizedIncomingOrigin}) permitido`);
       callback(null, true);
     } else {
-      logger.debug(`❌ Origin ${origin} bloqueado`);
+      logger.debug(`❌ Origin ${origin} (normalized: ${normalizedIncomingOrigin}) bloqueado`);
       // En desarrollo, ser más permisivo
       if (process.env.NODE_ENV !== 'production') {
         logger.debug('🔧 Modo desarrollo - permitiendo todos los orígenes');
@@ -127,8 +137,18 @@ app.use((req, res, next) => {
   const origin = req.headers.origin;
   logger.debug(`🔍 Manual CORS check - Origin: ${origin}, Method: ${req.method}`);
 
-  if ((Array.isArray(allowedOrigins) && allowedOrigins.includes(origin as string)) || !origin) {
-    res.header('Access-Control-Allow-Origin', origin || '*');
+  const incoming = req.headers.origin as string | undefined;
+  const normalizedIncoming = incoming
+    ? incoming.trim().replace(/\/$/, '').toLowerCase()
+    : undefined;
+
+  if (
+    (Array.isArray(allowedOrigins) &&
+      normalizedIncoming &&
+      allowedOrigins.includes(normalizedIncoming)) ||
+    !incoming
+  ) {
+    res.header('Access-Control-Allow-Origin', incoming || '*');
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,PATCH');
     res.header(
