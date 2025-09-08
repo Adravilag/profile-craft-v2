@@ -11,7 +11,6 @@ import { AccessibleToast as Toast } from '@/components/ui/Toast/Toast';
 import LoadingSpinner from '@/components/ui/LoadingSpinner/LoadingSpinner';
 import ModalShell from '@/components/ui/Modal/ModalShell';
 import TestimonialModal from '@/components/layout/Sections/Testimonials/modal/TestimonialModal';
-import ModalPortalImpl from '@/components/layout/Modal/ModalPortal';
 
 // Keep lightweight stubs for pieces not yet implemented as shared exports
 const Void: React.FC<any> = ({ children }) => <>{children ?? null}</>;
@@ -31,9 +30,6 @@ export { Toast };
 export { LoadingSpinner };
 export { ModalShell };
 export { TestimonialModal };
-// Example projects widget for local development / testing
-// Note: ProjectsExample used only for local dev during prototypes; not exported in main UI.
-export const ModalPortal: React.FC<any> = ModalPortalImpl as any;
 
 // Keep a few domain stubs so imports across the app don't break during refactor
 export const AdminModal: React.FC<any> = Void;
