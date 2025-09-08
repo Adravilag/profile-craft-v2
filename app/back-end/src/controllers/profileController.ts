@@ -1,9 +1,10 @@
 import { User } from '../models/index.js';
 import mongoose from 'mongoose';
+import { DataEncryption } from '../utils/encryption.js';
 
 export const profileController = {
-  // Obtener perfil completo por ID (usuario + colecciones relacionadas)
-  getFullProfile: async (req: any, res: any): Promise<void> => {
+  // Obtener perfil PÚBLICO (información limitada para portafolio)
+  getPublicProfile: async (req: any, res: any): Promise<void> => {
     try {
       const userId = req.params.id;
 
@@ -12,7 +13,87 @@ export const profileController = {
         return;
       }
 
-      // Cargar usuario y colecciones relacionadas
+      // Solo información pública para el portafolio
+      const user = await User.findById(userId)
+        .select('name about_me role_title role_subtitle linkedin_url github_url profile_image')
+        .lean();
+
+      if (!user) {
+        res.status(404).json({ error: 'Usuario no encontrado' });
+        return;
+      }
+
+      // Cargar solo información pública de colecciones
+      const { default: Project } = await import('../models/Project.js');
+      const { default: Experience } = await import('../models/Experience.js');
+      const { default: Education } = await import('../models/Education.js');
+      const { default: Skill } = await import('../models/Skill.js');
+      const { default: Certification } = await import('../models/Certification.js');
+      const { default: Testimonial } = await import('../models/Testimonial.js');
+
+      const [projects, experiences, education, skills, certifications, testimonials] =
+        await Promise.all([
+          Project.find({ user_id: userId, is_public: { $ne: false } })
+            .select(
+              'title description technologies start_date end_date project_url github_url image_url order_index'
+            )
+            .sort({ order_index: -1 })
+            .lean(),
+          Experience.find({ user_id: userId, is_public: { $ne: false } })
+            .select('company position description technologies start_date end_date order_index')
+            .sort({ start_date: -1 })
+            .lean(),
+          Education.find({ user_id: userId, is_public: { $ne: false } })
+            .select('institution degree field_of_study start_date end_date order_index')
+            .sort({ order_index: -1 })
+            .lean(),
+          Skill.find({ user_id: userId, is_public: { $ne: false } })
+            .select('name category level order_index')
+            .sort({ order_index: -1 })
+            .lean(),
+          Certification.find({ user_id: userId, is_public: { $ne: false } })
+            .select('title issuer issue_date expiry_date credential_url order_index')
+            .sort({ order_index: -1 })
+            .lean(),
+          Testimonial.find({ user_id: userId, is_public: { $ne: false } })
+            .select('name position company content order_index')
+            .sort({ order_index: -1 })
+            .lean(),
+        ]);
+
+      res.json({
+        id: user._id,
+        name: user.name,
+        about_me: user.about_me,
+        role_title: user.role_title,
+        role_subtitle: user.role_subtitle,
+        linkedin_url: user.linkedin_url,
+        github_url: user.github_url,
+        profile_image: user.profile_image,
+        projects,
+        experiences,
+        education,
+        skills,
+        certifications,
+        testimonials,
+      });
+    } catch (error: any) {
+      console.error('Error al obtener perfil público:', error);
+      res.status(500).json({ error: 'Error al obtener perfil público' });
+    }
+  },
+
+  // Obtener perfil PÚBLICO CIFRADO (datos sensibles cifrados)
+  getEncryptedProfile: async (req: any, res: any): Promise<void> => {
+    try {
+      const userId = req.params.id;
+
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        res.status(400).json({ error: 'ID de usuario inválido' });
+        return;
+      }
+
+      // Obtener toda la información del usuario
       const user = await User.findById(userId)
         .select(
           'name email about_me status role_title role_subtitle phone location linkedin_url github_url profile_image'
@@ -24,8 +105,106 @@ export const profileController = {
         return;
       }
 
-      // Cargar colecciones relacionadas si existen los modelos
-      // Import dinámico para evitar ciclos de dependencias en la carga
+      // Cargar colecciones relacionadas
+      const { default: Project } = await import('../models/Project.js');
+      const { default: Experience } = await import('../models/Experience.js');
+      const { default: Education } = await import('../models/Education.js');
+      const { default: Skill } = await import('../models/Skill.js');
+      const { default: Certification } = await import('../models/Certification.js');
+      const { default: Testimonial } = await import('../models/Testimonial.js');
+
+      const [projects, experiences, education, skills, certifications, testimonials] =
+        await Promise.all([
+          Project.find({ user_id: userId, is_public: { $ne: false } })
+            .select(
+              'title description technologies start_date end_date project_url github_url image_url order_index'
+            )
+            .sort({ order_index: -1 })
+            .lean(),
+          Experience.find({ user_id: userId, is_public: { $ne: false } })
+            .select('company position description technologies start_date end_date order_index')
+            .sort({ start_date: -1 })
+            .lean(),
+          Education.find({ user_id: userId, is_public: { $ne: false } })
+            .select('institution degree field_of_study start_date end_date order_index')
+            .sort({ order_index: -1 })
+            .lean(),
+          Skill.find({ user_id: userId, is_public: { $ne: false } })
+            .select('name category level order_index')
+            .sort({ order_index: -1 })
+            .lean(),
+          Certification.find({ user_id: userId, is_public: { $ne: false } })
+            .select('title issuer issue_date expiry_date credential_url order_index')
+            .sort({ order_index: -1 })
+            .lean(),
+          Testimonial.find({ user_id: userId, is_public: { $ne: false } })
+            .select('name position company content order_index')
+            .sort({ order_index: -1 })
+            .lean(),
+        ]);
+
+      const fullProfile = {
+        ...user,
+        id: user._id,
+        projects,
+        experiences,
+        education,
+        skills,
+        certifications,
+        testimonials,
+      };
+
+      // Separar datos públicos y sensibles
+      const { public: publicData, sensitive: sensitiveData } =
+        DataEncryption.separateData(fullProfile);
+
+      // Cifrar solo los datos sensibles
+      const encryptedSensitiveData = DataEncryption.encryptSensitiveData(
+        sensitiveData,
+        userId,
+        user.email
+      );
+
+      res.json({
+        ...publicData,
+        _encrypted: encryptedSensitiveData,
+        _hasEncryptedData: true,
+      });
+    } catch (error: any) {
+      console.error('Error al obtener perfil cifrado:', error);
+      res.status(500).json({ error: 'Error al obtener perfil cifrado' });
+    }
+  },
+
+  // Obtener perfil completo por ID (usuario + colecciones relacionadas) - REQUIERE AUTENTICACIÓN
+  getFullProfile: async (req: any, res: any): Promise<void> => {
+    try {
+      const userId = req.params.id;
+
+      if (!mongoose.Types.ObjectId.isValid(userId)) {
+        res.status(400).json({ error: 'ID de usuario inválido' });
+        return;
+      }
+
+      // Verificar que el usuario autenticado es el mismo que está consultando
+      if (req.user?.userId !== userId) {
+        res.status(403).json({ error: 'No tienes permisos para ver este perfil completo' });
+        return;
+      }
+
+      // Cargar usuario y colecciones relacionadas (información completa)
+      const user = await User.findById(userId)
+        .select(
+          'name email about_me status role_title role_subtitle phone location linkedin_url github_url profile_image'
+        )
+        .lean();
+
+      if (!user) {
+        res.status(404).json({ error: 'Usuario no encontrado' });
+        return;
+      }
+
+      // Cargar todas las colecciones relacionadas (sin filtros de privacidad)
       const { default: Project } = await import('../models/Project.js');
       const { default: Experience } = await import('../models/Experience.js');
       const { default: Education } = await import('../models/Education.js');
