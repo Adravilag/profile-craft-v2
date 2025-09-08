@@ -26,21 +26,50 @@ export type {
   UploadResponse,
 };
 import { debugLog } from '../utils/debugConfig';
+import { createSecureLogger } from '../utils/secureLogging';
+import { validateRequest, isProductionDomain } from '../utils/domainSecurity';
 import { getDynamicUserId } from '@/features/users/services/userId';
 import { getUserId } from '@/features/users/utils/userConfig';
+
+// Logger seguro para evitar exposición de datos sensibles
+const secureApiLogger = createSecureLogger('API');
 
 // If using Vite, use import.meta.env; if using Create React App, ensure @types/node is installed and add a declaration for process.env if needed.
 const API_BASE_URL = import.meta.env?.VITE_API_URL || 'http://localhost:3000/api';
 debugLog.api('🔧 API Base URL configurada:', API_BASE_URL);
 
-// Interceptor para log de respuestas
+// Validación de seguridad de dominio antes de configurar interceptors
+if (typeof window !== 'undefined' && isProductionDomain()) {
+  if (!validateRequest()) {
+    throw new Error(
+      '🚫 Acceso no autorizado: Esta aplicación solo funciona desde el dominio oficial'
+    );
+  }
+  secureApiLogger.info('🔒 Dominio autorizado verificado para producción');
+}
+
+// Interceptor para log de respuestas SEGURO
 API.interceptors.response.use(
   response => {
-    debugLog.api('✅ Respuesta exitosa de:', response.config.url || 'unknown', response.data);
+    secureApiLogger.info('✅ Respuesta exitosa de:', response.config.url || 'unknown');
+    // Solo loggear estructura de datos, no contenido sensible
+    if (response.data && typeof response.data === 'object') {
+      const dataKeys = Object.keys(response.data);
+      secureApiLogger.info('📊 Estructura de respuesta:', {
+        keys: dataKeys,
+        type: typeof response.data,
+      });
+    }
     return response;
   },
   error => {
-    debugLog.error('❌ Error en respuesta de:', error.config?.url || 'unknown', error);
+    secureApiLogger.error('❌ Error en respuesta de:', error.config?.url || 'unknown');
+    // Solo loggear información del error, no datos sensibles
+    secureApiLogger.error('📊 Error info:', {
+      status: error.response?.status,
+      statusText: error.response?.statusText,
+      message: error.message,
+    });
     return Promise.reject(error);
   }
 );
@@ -51,41 +80,37 @@ API.interceptors.response.use(
 
 export const getUserProfile = async () => {
   const userId = await getDynamicUserId();
-  debugLog.api('🔄 Obteniendo perfil para usuario:', userId);
+  secureApiLogger.info('🔄 Obteniendo perfil para usuario:', { userId });
   return API.get<UserProfile>(`/profile/${userId}`).then(r => r.data);
 };
 
 // Obtener perfil completo (CV) por id o por el usuario dinámico si no se pasa id
 export const getFullUserProfile = async (userId?: string) => {
   const id = userId ?? (await getDynamicUserId());
-  debugLog.api('🔄 Obteniendo perfil FULL para usuario:', id);
+  secureApiLogger.info('🔄 Obteniendo perfil FULL para usuario:', { userId: id });
   return API.get<UserProfile>(`/profile/${id}/full`).then(r => r.data);
-};
-
-// Obtener sólo el patrón (pattern) del perfil público por id
-export const getProfilePattern = async (userId?: string): Promise<{ pattern: string | null }> => {
-  const id = userId ?? (await getDynamicUserId());
-  debugLog.api('🔄 Obteniendo pattern para usuario:', id);
-  return API.get<{ pattern: string | null }>(`/profile/pattern/${id}`).then(r => r.data);
 };
 
 // Nueva función para obtener el perfil del usuario autenticado
 export const getAuthenticatedUserProfile = async () => {
-  debugLog.api('📡 getAuthenticatedUserProfile: Iniciando petición...');
+  // Validación de dominio en producción
+  if (isProductionDomain() && !validateRequest()) {
+    throw new Error('🚫 Acceso no autorizado desde este dominio');
+  }
+
+  secureApiLogger.info('📡 getAuthenticatedUserProfile: Iniciando petición...');
   const token = localStorage.getItem('portfolio_auth_token');
-  debugLog.api('🔑 Token disponible:', token ? 'Sí' : 'No');
-  debugLog.api('🔗 URL de petición:', `${API_BASE_URL}/profile/auth/profile`);
+  secureApiLogger.info('🔑 Token disponible:', { hasToken: !!token });
+  secureApiLogger.info('🔗 URL de petición:', `${API_BASE_URL}/profile/auth/profile`);
 
   try {
     const response = await API.get<UserProfile>(`/profile/auth/profile`);
-    debugLog.api('✅ getAuthenticatedUserProfile: Respuesta exitosa:', response.data);
+    secureApiLogger.info('✅ getAuthenticatedUserProfile: Respuesta exitosa');
     return response.data;
   } catch (error) {
-    debugLog.error('❌ getAuthenticatedUserProfile: Error en petición:', error);
-    debugLog.error('❌ Error details:', {
+    secureApiLogger.error('❌ getAuthenticatedUserProfile: Error en petición:', {
       status: (error as any)?.response?.status,
       statusText: (error as any)?.response?.statusText,
-      data: (error as any)?.response?.data,
       message: (error as any)?.message,
     });
     throw error;
@@ -93,12 +118,19 @@ export const getAuthenticatedUserProfile = async () => {
 };
 
 export const updateProfile = (profileData: Partial<UserProfile>) => {
-  debugLog.api('🔄 Actualizando perfil con datos:', profileData);
-  debugLog.api('🔍 Datos enviados:', JSON.stringify(profileData, null, 2));
+  // Validación de dominio en producción para operaciones de escritura
+  if (isProductionDomain() && !validateRequest()) {
+    throw new Error('🚫 Acceso no autorizado desde este dominio');
+  }
+
+  secureApiLogger.info('🔄 Actualizando perfil...');
+  // Log seguro de campos pero no valores sensibles
+  const fieldsToUpdate = Object.keys(profileData);
+  secureApiLogger.info('🔍 Campos a actualizar:', { fields: fieldsToUpdate });
 
   // Validar que tengamos los campos mínimos
   if (!profileData.name || !profileData.email || !profileData.role_title || !profileData.about_me) {
-    debugLog.warn('⚠️ Faltan campos obligatorios:', {
+    secureApiLogger.warn('⚠️ Faltan campos obligatorios:', {
       name: !!profileData.name,
       email: !!profileData.email,
       role_title: !!profileData.role_title,
@@ -108,28 +140,29 @@ export const updateProfile = (profileData: Partial<UserProfile>) => {
 
   return API.put<UserProfile>(`/profile/auth/profile`, profileData)
     .then(response => {
-      debugLog.api('✅ Perfil actualizado exitosamente:', response.data);
+      secureApiLogger.info('✅ Perfil actualizado exitosamente');
       return response.data;
     })
     .catch(error => {
-      debugLog.error('❌ Error actualizando perfil:', error);
-      debugLog.error('📊 Status:', error.response?.status);
-      debugLog.error('📋 Data:', error.response?.data);
-      debugLog.error('🔍 Headers:', error.response?.headers);
+      secureApiLogger.error('❌ Error actualizando perfil:', {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        message: error.message,
+      });
       throw error;
     });
 };
 
 export const getExperiences = async () => {
   const userId = await getDynamicUserId();
-  debugLog.api('🔄 Obteniendo experiencias para usuario:', userId);
+  secureApiLogger.info('🔄 Obteniendo experiencias');
   return API.get<Experience[]>(`/experiences?userId=${userId}`).then(r => r.data);
 };
 
 export const createExperience = async (experience: Omit<Experience, 'id'>) => {
   const userId = await getDynamicUserId();
   const experienceWithUserId = { ...experience, user_id: userId };
-  debugLog.api('🔄 Creando experiencia para usuario:', userId);
+  secureApiLogger.info('🔄 Creando experiencia');
   return API.post<Experience>(`/admin/experiences`, experienceWithUserId).then(r => r.data);
 };
 
@@ -141,7 +174,7 @@ export const deleteExperience = (id: string) => API.delete(`/admin/experiences/$
 // Projects list (public)
 export const getProjects = async () => {
   const userId = await getDynamicUserId();
-  debugLog.api('🔄 Obteniendo proyectos para usuario:', userId);
+  secureApiLogger.info('🔄 Obteniendo proyectos');
   return API.get<Project[]>(`/projects?userId=${userId}`).then(r => r.data);
 };
 
@@ -314,18 +347,20 @@ export const setDevelopmentToken = async () => {
       try {
         if (import.meta.env.DEV) {
           document.cookie = `portfolio_auth_token=${import.meta.env.VITE_DEV_JWT_TOKEN}; path=/`;
-          debugLog.api('🔑 Cookie de desarrollo portfolio_auth_token seteada en document.cookie');
+          secureApiLogger.info('🔑 Cookie de desarrollo seteada');
         }
       } catch (e) {
         // silenciar en entornos donde document no exista
       }
-      debugLog.api('🔑 Token de desarrollo tomado de variable de entorno VITE_DEV_JWT_TOKEN');
+      secureApiLogger.info('🔑 Token de desarrollo establecido desde variable de entorno');
       return true;
     }
-    debugLog.warn('⚠️ No se pudo establecer un token de desarrollo. Configura VITE_DEV_JWT_TOKEN.');
+    secureApiLogger.warn(
+      '⚠️ No se pudo establecer un token de desarrollo. Configura VITE_DEV_JWT_TOKEN.'
+    );
     return false;
   } catch (error) {
-    debugLog.error('❌ Error obteniendo token:', error);
+    secureApiLogger.error('❌ Error obteniendo token:', { message: (error as Error).message });
     return false;
   }
 };
@@ -340,7 +375,7 @@ export const getDevToken = async () => {
       const resp = await fetch('/api/auth/devLogin', { method: 'POST', credentials: 'include' });
       if (resp.ok) {
         const data = await resp.json();
-        debugLog.api('🔑 devLogin exitoso, cookie seteada por backend:', data.user);
+        secureApiLogger.info('🔑 devLogin exitoso, cookie seteada por backend');
         return { token: null, user: data.user };
       }
     } catch (e) {
@@ -356,10 +391,12 @@ export const getDevToken = async () => {
       if (import.meta.env.DEV) document.cookie = `portfolio_auth_token=${token}; path=/`;
     } catch {}
 
-    debugLog.api('🔑 Token de desarrollo obtenido y guardado:', user);
+    secureApiLogger.info('🔑 Token de desarrollo obtenido y guardado');
     return { token, user };
   } catch (error) {
-    debugLog.error('❌ Error obteniendo token de desarrollo:', error);
+    secureApiLogger.error('❌ Error obteniendo token de desarrollo:', {
+      message: (error as Error).message,
+    });
     throw error;
   }
 };
@@ -367,7 +404,7 @@ export const getDevToken = async () => {
 // Función para limpiar token de localStorage
 export const clearAuthToken = () => {
   localStorage.removeItem('portfolio_auth_token');
-  debugLog.api('🧹 Token de autenticación eliminado');
+  secureApiLogger.info('🧹 Token de autenticación eliminado');
 };
 
 // ===== FUNCIONES DE MEDIA LIBRARY =====
@@ -416,19 +453,31 @@ export const getMediaById = (id: string): Promise<MediaItem> =>
 
 // ===== AUTH =====
 export const authLogin = async (credentials: { email: string; password: string }) => {
-  debugLog.api('\ud83d\udd04 authLogin: intentando iniciar sesión para', credentials.email);
+  // Validación de dominio crítica para autenticación
+  if (isProductionDomain() && !validateRequest()) {
+    throw new Error(
+      '🚫 Acceso no autorizado: Autenticación solo permitida desde el dominio oficial'
+    );
+  }
+
+  secureApiLogger.info('🔄 authLogin: intentando iniciar sesión');
   const resp = await API.post('/auth/login', credentials);
   return resp.data;
 };
 
 export const authRegister = async (data: { name: string; email: string; password: string }) => {
-  debugLog.api('\ud83d\udd04 authRegister: registrando usuario', data.email);
+  // Validación de dominio crítica para registro
+  if (isProductionDomain() && !validateRequest()) {
+    throw new Error('🚫 Acceso no autorizado: Registro solo permitido desde el dominio oficial');
+  }
+
+  secureApiLogger.info('🔄 authRegister: registrando usuario');
   const resp = await API.post('/auth/register', data);
   return resp.data;
 };
 
 export const authLogout = async () => {
-  debugLog.api('\ud83d\udd0e authLogout: cerrando sesión');
+  secureApiLogger.info('� authLogout: cerrando sesión');
   const resp = await API.post('/auth/logout');
   // limpiar token local si el backend maneja cookies
   clearAuthToken();
@@ -454,12 +503,12 @@ export const deleteProject = async (id: string) => API.delete(`/projects/${id}`)
 
 export const hasRegisteredUser = async (): Promise<boolean> => {
   try {
-    debugLog.api('🔍 Verificando si existe usuario registrado...');
-    debugLog.api('🌐 API_BASE_URL:', API_BASE_URL);
+    secureApiLogger.info('🔍 Verificando si existe usuario registrado...');
+    secureApiLogger.info('🌐 API_BASE_URL configurada');
 
     // Hacer la petición directamente con fetch para mayor control
     const url = `${API_BASE_URL}/auth/has-user`;
-    debugLog.api('📡 URL completa:', url);
+    secureApiLogger.info('📡 Realizando petición has-user');
 
     const response = await fetch(url, {
       method: 'GET',
@@ -468,24 +517,22 @@ export const hasRegisteredUser = async (): Promise<boolean> => {
       },
     });
 
-    debugLog.api('📊 Response status:', response.status);
-    debugLog.api('📊 Response ok:', response.ok);
+    secureApiLogger.info('📊 Response status:', { status: response.status, ok: response.ok });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.json();
-    debugLog.api('✅ Respuesta completa has-user:', data);
-    debugLog.api('📋 data.exists:', data.exists);
-    debugLog.api('🔍 Tipo de data.exists:', typeof data.exists);
+    secureApiLogger.info('✅ Respuesta has-user recibida:', { exists: data.exists });
 
     const result = data.exists;
-    debugLog.api('🎯 Resultado final:', result);
+    secureApiLogger.info('🎯 Resultado final:', { result });
     return result;
   } catch (error) {
-    debugLog.error('❌ Error verificando usuario registrado:', error);
-    debugLog.error('📋 Error completo:', error);
+    secureApiLogger.error('❌ Error verificando usuario registrado:', {
+      message: (error as Error).message,
+    });
     return false; // En caso de error, asumir que no hay usuario para permitir registro
   }
 };
