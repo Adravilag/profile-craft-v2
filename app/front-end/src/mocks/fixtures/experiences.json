@@ -1,0 +1,20 @@
+[
+  {
+    "company": "ISOTROL",
+    "role": "Engineer",
+    "start": "2018-01-01",
+    "end": "2020-12-31",
+    "description": "Worked on projects",
+    "_id": "684f5163fea7831beb6acaad",
+    "user_id": "684965a62ebed45b3dea..."
+  },
+  {
+    "company": "UNIVERSIDAD DE CÁDIZ",
+    "role": "Researcher",
+    "start": "2021-01-01",
+    "end": "2022-12-31",
+    "description": "Research work",
+    "_id": "684f594f1acd0958664f1819",
+    "user_id": "684965a62ebed45b3dea..."
+  }
+]

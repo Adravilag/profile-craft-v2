@@ -162,27 +162,16 @@ const EditProject: React.FC = () => {
     return Object.keys(errors).length === 0;
   };
   const handleSave = async () => {
-    console.log('🔍 Iniciando handleSave...');
-    console.log('📝 Form data:', form);
-
     if (!validateForm()) {
-      console.log('❌ Validación fallida');
       showError('Error de validación', 'Por favor corrige los errores antes de continuar');
       return;
     }
-    console.log('✅ Validación exitosa');
-
     if (!id) {
-      console.log('❌ ID no válido:', id);
       showError('Error', 'ID de proyecto no válido');
       return;
     }
-    console.log('✅ ID válido:', id);
-
     setSaving(true);
     try {
-      console.log('📤 Preparando datos para enviar...');
-
       // Preparar datos para enviar
       const projectData = {
         ...form,
@@ -191,11 +180,7 @@ const EditProject: React.FC = () => {
 
       // Eliminar seo_metadata del objeto principal
       const { seo_metadata, ...dataToSend } = projectData;
-
-      console.log('📊 Datos a enviar:', dataToSend);
-
       await updateProject(id, dataToSend);
-      console.log('✅ Proyecto actualizado exitosamente');
       showSuccess('Éxito', 'Proyecto actualizado exitosamente');
       navigate('/projects/admin');
     } catch (error) {

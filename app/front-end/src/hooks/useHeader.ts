@@ -114,7 +114,7 @@ export const useHeader = (options: HeaderOptions) => {
       } catch (error) {
         if ((error as Error).name !== 'AbortError') {
           // Si el usuario cancela, no mostramos error
-          console.log('Compartir cancelado por el usuario');
+          showError('Error', 'No se pudo compartir el enlace');
         }
       }
     } else {

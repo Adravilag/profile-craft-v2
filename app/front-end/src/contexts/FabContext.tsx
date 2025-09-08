@@ -57,10 +57,6 @@ export const FabProvider: React.FC<{ children?: React.ReactNode }> = ({ children
   const openExperienceModal = React.useCallback(() => {
     // debug: indicate handlers count and call each
     try {
-      console.debug(
-        '[FabContext] openExperienceModal called, handlers=',
-        experienceHandlers.current.length
-      );
     } catch (e) {}
     experienceHandlers.current.forEach(h => {
       try {
@@ -75,10 +71,6 @@ export const FabProvider: React.FC<{ children?: React.ReactNode }> = ({ children
 
   const openExperienceAdmin = React.useCallback(() => {
     try {
-      console.debug(
-        '[FabContext] openExperienceAdmin called, handlers=',
-        experienceAdminHandlers.current.length
-      );
     } catch (e) {}
     experienceAdminHandlers.current.forEach(h => {
       try {
@@ -93,7 +85,6 @@ export const FabProvider: React.FC<{ children?: React.ReactNode }> = ({ children
 
   const openAboutModal = React.useCallback(() => {
     try {
-      console.debug('[FabContext] openAboutModal called, handlers=', aboutHandlers.current.length);
     } catch (e) {}
     aboutHandlers.current.forEach(h => {
       try {
@@ -130,18 +121,10 @@ export const FabProvider: React.FC<{ children?: React.ReactNode }> = ({ children
   const onOpenExperienceModal = React.useCallback((h: Handler) => {
     experienceHandlers.current.push(h);
     try {
-      console.debug(
-        '[FabContext] onOpenExperienceModal registered, total=',
-        experienceHandlers.current.length
-      );
     } catch (e) {}
     return () => {
       experienceHandlers.current = experienceHandlers.current.filter(fn => fn !== h);
       try {
-        console.debug(
-          '[FabContext] onOpenExperienceModal unregistered, total=',
-          experienceHandlers.current.length
-        );
       } catch (e) {}
     };
   }, []);
@@ -149,18 +132,10 @@ export const FabProvider: React.FC<{ children?: React.ReactNode }> = ({ children
   const onOpenExperienceAdmin = React.useCallback((h: Handler) => {
     experienceAdminHandlers.current.push(h);
     try {
-      console.debug(
-        '[FabContext] onOpenExperienceAdmin registered, total=',
-        experienceAdminHandlers.current.length
-      );
     } catch (e) {}
     return () => {
       experienceAdminHandlers.current = experienceAdminHandlers.current.filter(fn => fn !== h);
       try {
-        console.debug(
-          '[FabContext] onOpenExperienceAdmin unregistered, total=',
-          experienceAdminHandlers.current.length
-        );
       } catch (e) {}
     };
   }, []);
@@ -168,18 +143,10 @@ export const FabProvider: React.FC<{ children?: React.ReactNode }> = ({ children
   const onOpenAboutModal = React.useCallback((h: Handler) => {
     aboutHandlers.current.push(h);
     try {
-      console.debug(
-        '[FabContext] onOpenAboutModal registered, total=',
-        aboutHandlers.current.length
-      );
     } catch (e) {}
     return () => {
       aboutHandlers.current = aboutHandlers.current.filter(fn => fn !== h);
       try {
-        console.debug(
-          '[FabContext] onOpenAboutModal unregistered, total=',
-          aboutHandlers.current.length
-        );
       } catch (e) {}
     };
   }, []);

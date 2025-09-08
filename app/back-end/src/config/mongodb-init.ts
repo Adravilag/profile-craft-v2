@@ -1,19 +1,20 @@
-import { User, Project, Skill, Experience } from '../models/index.js';
-import bcrypt from 'bcryptjs';
+import { User, Project, Skill } from '../models/index.js';
+import { logger } from '../utils/logger';
 
 export const initializeMongoDB = async (): Promise<void> => {
   try {
-    console.log('🌱 Inicializando datos por defecto en MongoDB...');
+    logger.debug('🌱 Inicializando datos por defecto en MongoDB...');
 
     // Verificar si ya existe un usuario admin
     const existingAdmin = await User.findOne({ role: 'admin' });
 
     if (!existingAdmin) {
-      console.log('👤 Creando usuario admin por defecto...');
+      logger.debug('👤 Creando usuario admin por defecto...');
 
       const defaultAdmin = new User({
         name: 'Administrador',
         email: 'admin@profilecraft.com',
+        email_contact: 'contacto@profilecraft.com', // Email público para mostrar
         password: 'admin123', // Se hashea automáticamente por el middleware
         role: 'admin',
         about_me: 'Desarrollador Full Stack especializado en tecnologías modernas.',
@@ -27,10 +28,10 @@ export const initializeMongoDB = async (): Promise<void> => {
       });
 
       await defaultAdmin.save();
-      console.log('✅ Usuario admin creado exitosamente');
+      logger.debug('✅ Usuario admin creado exitosamente');
 
       // Crear algunas habilidades por defecto
-      console.log('🎯 Creando habilidades por defecto...');
+      logger.debug('🎯 Creando habilidades por defecto...');
 
       const defaultSkills = [
         {
@@ -79,10 +80,10 @@ export const initializeMongoDB = async (): Promise<void> => {
       ];
 
       await Skill.insertMany(defaultSkills);
-      console.log('✅ Habilidades por defecto creadas');
+      logger.debug('✅ Habilidades por defecto creadas');
 
       // Crear un proyecto de ejemplo
-      console.log('📁 Creando proyecto de ejemplo...');
+      logger.debug('📁 Creando proyecto de ejemplo...');
 
       const defaultProject = new Project({
         user_id: defaultAdmin._id,
@@ -103,14 +104,14 @@ export const initializeMongoDB = async (): Promise<void> => {
       });
 
       await defaultProject.save();
-      console.log('✅ Proyecto de ejemplo creado');
+      logger.debug('✅ Proyecto de ejemplo creado');
     } else {
-      console.log('ℹ️ Usuario admin ya existe, saltando inicialización');
+      logger.debug('ℹ️ Usuario admin ya existe, saltando inicialización');
     }
 
-    console.log('🎉 Inicialización de MongoDB completada');
+    logger.debug('🎉 Inicialización de MongoDB completada');
   } catch (error) {
-    console.error('❌ Error inicializando MongoDB:', error);
+    logger.error('❌ Error inicializando MongoDB:', error);
     throw error;
   }
 };

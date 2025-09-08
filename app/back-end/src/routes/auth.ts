@@ -1,7 +1,7 @@
 import express from 'express';
 import { authController } from '../controllers/authController.js';
 import { profileController } from '../controllers/profileController.js';
-import { authenticate, authenticateAdmin } from '../middleware/auth.js';
+import { authenticate, optionalAuth } from '../middleware/auth.js';
 import { securityMiddleware, authSecurityMiddleware } from '../middleware/security.js';
 
 const router = express.Router();
@@ -12,6 +12,7 @@ const allowedOrigins = [
   'https://profile-craft-v2.vercel.app',
   'https://profile-craft-v2-adravilag.vercel.app',
   'http://localhost:5173', // Para desarrollo
+  'http://localhost:5174', // Para desarrollo
   'http://localhost:3000', // Para desarrollo
 ];
 
@@ -43,7 +44,7 @@ router.post(
 );
 
 // Rutas autenticadas
-router.get('/verify', originValidation, authenticate, authController.verify);
+router.get('/verify', originValidation, optionalAuth, authController.verify);
 router.post('/logout', originValidation, authenticate, authController.logout);
 router.get('/profile', originValidation, authenticate, profileController.getAuthProfile);
 router.put(
@@ -61,21 +62,6 @@ router.post(
   securityMiddleware.limitPayloadSize(10 * 1024),
   authenticate,
   authController.changePassword
-);
-
-// Rutas de desarrollo (bloqueadas en producción)
-router.get(
-  '/dev-token',
-  securityMiddleware.blockInProduction,
-  originValidation,
-  authController.devToken
-);
-
-router.post(
-  '/dev-login',
-  securityMiddleware.blockInProduction,
-  originValidation,
-  authController.devLogin
 );
 
 export default router;

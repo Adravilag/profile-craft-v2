@@ -135,12 +135,7 @@ export const useScrollSectionDetection = (config: SectionDetectionConfig = {}) =
 
         // Trace to help debugging unexpected reloads
         if ((import.meta as any).env?.MODE === 'development') {
-          // eslint-disable-next-line no-console
-          console.debug(
-            '[useScrollSectionDetection] handleSectionChange invoked, newSection=',
-            newSection
-          );
-          // eslint-disable-next-line no-console
+          // eslint-disable-next-line no-console// eslint-disable-next-line no-console
           console.trace('[useScrollSectionDetection] trace');
         }
 

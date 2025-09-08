@@ -1,12 +1,14 @@
 import { Request, Response } from 'express';
 import { Testimonial } from '../models/index.js';
+import { logger } from '../utils/logger';
 
 export const testimonialsController = {
   // Obtener testimonios de un usuario (solo aprobados para vista pública)
   getTestimonials: async (req: Request, res: Response): Promise<void> => {
     try {
-      const { userId } = req.query;
-      console.log('💬 Obteniendo testimonios aprobados para usuario:', userId);
+      // Usar el userId resuelto por el middleware, fallback a query original
+      const userId = (req as any).resolvedUserId || req.query.userId;
+      logger.debug('💬 Obteniendo testimonios aprobados para usuario:', userId);
 
       const testimonials = await Testimonial.find({
         user_id: userId,
@@ -14,10 +16,10 @@ export const testimonialsController = {
       })
         .sort({ order_index: 1 })
         .lean();
-      console.log('✅ Testimonios aprobados encontrados:', testimonials.length, 'registros');
+      logger.debug('✅ Testimonios aprobados encontrados:', testimonials.length, 'registros');
       res.json(testimonials);
     } catch (error: any) {
-      console.error('❌ Error obteniendo testimonios:', error);
+      logger.error('❌ Error obteniendo testimonios:', error);
       res.status(500).json({ error: 'Error obteniendo testimonios' });
     }
   },
@@ -38,7 +40,7 @@ export const testimonialsController = {
         order_index = 0,
       } = req.body;
 
-      console.log('💬 Creando nuevo testimonio:', { name, position, user_id });
+      logger.debug('💬 Creando nuevo testimonio:', { name, position, user_id });
 
       if (!name || !position || !text) {
         res.status(400).json({ error: 'Nombre, posición y texto son requeridos' });
@@ -58,10 +60,10 @@ export const testimonialsController = {
       });
 
       await newTestimonial.save();
-      console.log('✅ Testimonio creado exitosamente:', newTestimonial._id);
+      logger.debug('✅ Testimonio creado exitosamente:', newTestimonial._id);
       res.status(201).json(newTestimonial);
     } catch (error: any) {
-      console.error('❌ Error creando testimonio:', error);
+      logger.error('❌ Error creando testimonio:', error);
       res.status(500).json({ error: 'Error creando testimonio' });
     }
   },
@@ -72,7 +74,7 @@ export const testimonialsController = {
       const { id } = req.params;
       const { name, position, text, email, company, website, avatar, rating, order_index } =
         req.body;
-      console.log('💬 Actualizando testimonio:', id);
+      logger.debug('💬 Actualizando testimonio:', id);
 
       const updatedTestimonial = await Testimonial.findByIdAndUpdate(
         id,
@@ -95,10 +97,10 @@ export const testimonialsController = {
         return;
       }
 
-      console.log('✅ Testimonio actualizado exitosamente');
+      logger.debug('✅ Testimonio actualizado exitosamente');
       res.json(updatedTestimonial);
     } catch (error: any) {
-      console.error('❌ Error actualizando testimonio:', error);
+      logger.error('❌ Error actualizando testimonio:', error);
       res.status(500).json({ error: 'Error actualizando testimonio' });
     }
   },
@@ -106,7 +108,7 @@ export const testimonialsController = {
   deleteTestimonial: async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
-      console.log('💬 Eliminando testimonio:', id);
+      logger.debug('💬 Eliminando testimonio:', id);
 
       const result = await Testimonial.findByIdAndDelete(id);
 
@@ -115,10 +117,10 @@ export const testimonialsController = {
         return;
       }
 
-      console.log('✅ Testimonio eliminado exitosamente');
+      logger.debug('✅ Testimonio eliminado exitosamente');
       res.status(204).send();
     } catch (error: any) {
-      console.error('❌ Error eliminando testimonio:', error);
+      logger.error('❌ Error eliminando testimonio:', error);
       res.status(500).json({ error: 'Error eliminando testimonio' });
     }
   },
@@ -127,9 +129,9 @@ export const testimonialsController = {
   getAdminTestimonials: async (req: Request, res: Response): Promise<void> => {
     try {
       const { userId, status } = req.query;
-      console.log('💬 Obteniendo testimonios admin para usuario:', userId, 'status:', status);
+      logger.debug('💬 Obteniendo testimonios admin para usuario:', userId, 'status:', status);
 
-      let query: any = { user_id: userId };
+      const query: any = { user_id: userId };
 
       // Filtrar por estado si se proporciona
       if (status && status !== 'all') {
@@ -138,10 +140,10 @@ export const testimonialsController = {
 
       const testimonials = await Testimonial.find(query).sort({ created_at: -1 }).lean();
 
-      console.log('✅ Testimonios admin encontrados:', testimonials.length, 'registros');
+      logger.debug('✅ Testimonios admin encontrados:', testimonials.length, 'registros');
       res.json(testimonials);
     } catch (error: any) {
-      console.error('❌ Error obteniendo testimonios admin:', error);
+      logger.error('❌ Error obteniendo testimonios admin:', error);
       res.status(500).json({ error: 'Error obteniendo testimonios admin' });
     }
   },
@@ -152,7 +154,7 @@ export const testimonialsController = {
       const { id } = req.params;
       const { order_index = 0 } = req.body;
 
-      console.log('💬 Aprobando testimonio:', id);
+      logger.debug('💬 Aprobando testimonio:', id);
 
       const testimonial = await Testimonial.findByIdAndUpdate(
         id,
@@ -169,10 +171,10 @@ export const testimonialsController = {
         return;
       }
 
-      console.log('✅ Testimonio aprobado exitosamente');
+      logger.debug('✅ Testimonio aprobado exitosamente');
       res.json(testimonial);
     } catch (error: any) {
-      console.error('❌ Error aprobando testimonio:', error);
+      logger.error('❌ Error aprobando testimonio:', error);
       res.status(500).json({ error: 'Error aprobando testimonio' });
     }
   },
@@ -182,7 +184,7 @@ export const testimonialsController = {
     try {
       const { id } = req.params;
 
-      console.log('💬 Rechazando testimonio:', id);
+      logger.debug('💬 Rechazando testimonio:', id);
 
       const testimonial = await Testimonial.findByIdAndUpdate(
         id,
@@ -198,10 +200,10 @@ export const testimonialsController = {
         return;
       }
 
-      console.log('✅ Testimonio rechazado exitosamente');
+      logger.debug('✅ Testimonio rechazado exitosamente');
       res.json(testimonial);
     } catch (error: any) {
-      console.error('❌ Error rechazando testimonio:', error);
+      logger.error('❌ Error rechazando testimonio:', error);
       res.status(500).json({ error: 'Error rechazando testimonio' });
     }
   },

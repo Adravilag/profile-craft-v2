@@ -9,7 +9,8 @@ const App = React.lazy(() => import('./App').then(m => ({ default: m.App })));
 
 const root = document.getElementById('root');
 if (!root) throw new Error('Root element not found');
-// Small reveal helper (client-only)
+
+// Debug: verificar variables de entorno// Small reveal helper (client-only)
 if (typeof window !== 'undefined') {
   try {
     // Si la aplicación está configurada para montarse bajo un basename
@@ -65,13 +66,39 @@ if (typeof window !== 'undefined') {
     // silent
   }
 }
-ReactDOM.createRoot(root).render(
-  <React.StrictMode>
-    <Suspense fallback={<div aria-hidden="true" id="app-loading" />}>
-      <App />
-    </Suspense>
-  </React.StrictMode>
-);
+// Si estamos en modo preview (definido por VITE_PREVIEW), arrancar MSW antes de montar la app
+if (typeof window !== 'undefined' && import.meta.env.VITE_PREVIEW === 'true') {
+  // arrancar worker en modo cliente
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  import('../mocks/browser')
+    .then(({ worker }) => {
+      return worker.start({
+        onUnhandledRequest: 'warn',
+      });
+    })
+    .then(() => {})
+    .catch(error => {
+      console.error('❌ [MSW] Error iniciando worker:', error);
+      // si falla, seguimos montando la app sin mocks
+    })
+    .finally(() => {
+      ReactDOM.createRoot(root).render(
+        <React.StrictMode>
+          <Suspense fallback={<div aria-hidden="true" id="app-loading" />}>
+            <App />
+          </Suspense>
+        </React.StrictMode>
+      );
+    });
+} else {
+  ReactDOM.createRoot(root).render(
+    <React.StrictMode>
+      <Suspense fallback={<div aria-hidden="true" id="app-loading" />}>
+        <App />
+      </Suspense>
+    </React.StrictMode>
+  );
+}
 
 // Web Vitals: sólo en navegador y en producción
 if (typeof window !== 'undefined' && import.meta.env.PROD) {

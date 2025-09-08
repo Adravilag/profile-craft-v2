@@ -98,15 +98,11 @@ const SkillModal: React.FC<SkillModalProps> = ({
 
     setLogoHubLoading(true);
     try {
-      console.log(`🔍 [SkillModal] Iniciando búsqueda LogoHub: "${query}"`);
-
       // Usar la nueva función de búsqueda avanzada
       const results = await searchLogoHub(query, 8);
 
       setLogoHubResults(results);
       setShowLogoHubSuggestions(results.length > 0);
-
-      console.log(`✅ [SkillModal] Búsqueda completada: ${results.length} resultados`);
     } catch (error) {
       console.error('❌ [SkillModal] Error en búsqueda LogoHub:', error);
       setLogoHubResults([]);
@@ -138,18 +134,7 @@ const SkillModal: React.FC<SkillModalProps> = ({
   const handleLogoHubSelect = async (result: LogoHubResult) => {
     const svgUrl = result.files.svg;
     if (svgUrl) {
-      setPreviewIcon(svgUrl);
-
-      console.log(`🎯 [SkillModal] Seleccionado LogoHub:`, {
-        id: result.id,
-        name: result.name,
-        category: result.category,
-        tags: result.tags,
-        colors: result.colors,
-        website: result.website,
-      });
-
-      // Auto-detect category - first try LogoHub category, then fallback to manual detection
+      setPreviewIcon(svgUrl); // Auto-detect category - first try LogoHub category, then fallback to manual detection
       let suggestedCategory = formData.category;
 
       // Use LogoHub's category if available and map to our categories

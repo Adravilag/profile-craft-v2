@@ -8,7 +8,7 @@ import cookieParser from 'cookie-parser';
 
 // Configuración
 import { config as appConfig } from './src/config/index.js';
-import { upload } from './src/config/multer.js';
+// import { upload } from './src/config/multer.js';
 import { initializeDatabase } from './src/config/database.js';
 
 // Rutas
@@ -24,8 +24,8 @@ import certificationsRoutes from './src/routes/certifications.js';
 import testimonialsRoutes from './src/routes/testimonials.js';
 
 // Servicios
-import { emailService } from './src/services/emailService.js';
-import { healthCheck, readinessCheck } from './src/controllers/healthController.js';
+// import { emailService } from './src/services/emailService.js';
+import { readinessCheck } from './src/controllers/healthController.js';
 
 // Obtener el directorio actual
 const __filename = fileURLToPath(import.meta.url);
@@ -72,7 +72,6 @@ app.use('/api/testimonials', testimonialsRoutes);
 app.use('/api/admin/testimonials', testimonialsRoutes);
 
 // Health check endpoints
-app.get('/health', healthCheck);
 app.get('/ready', readinessCheck);
 app.get('/', (req: any, res: any) => {
   res.json({

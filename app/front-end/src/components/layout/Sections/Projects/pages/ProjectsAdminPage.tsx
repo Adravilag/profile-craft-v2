@@ -18,13 +18,6 @@ const ProjectsAdminPage: React.FC = () => {
     redirectDelay: 150,
     requireAuth: true,
   });
-  console.log('🔍 ProjectsAdminPage: Auth guard state -', {
-    isLoading,
-    isAuthenticated,
-    shouldRender,
-    error,
-  });
-
   const isNewMode = location.pathname === '/projects/new';
   const isEditMode = location.pathname.startsWith('/projects/edit/');
   const navItems = [

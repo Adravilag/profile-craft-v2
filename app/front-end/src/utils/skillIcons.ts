@@ -14,18 +14,16 @@ const normalize = (name: string) =>
     .trim()
     .toLowerCase()
     .replace(/\s|\+/g, '-')
-    .replace(/[^a-z0-9\-.]/g, '');
+    .replace(/[^a-z0-9.-]/g, '');
 
 // canonical para data-tech (coincide con selectores de skills-colors.css)
 export const toDataTech = (name: string) =>
-  normalize(name)
-    .replace(/js$/, 'dotjs')
-    .replace(/[.\-_]/g, '');
+  normalize(name).replace(/js$/, 'dotjs').replace(/[._-]/g, '');
 
 // Construir mapa key -> url con variantes para facilitar el lookup
 const svgMap: Record<string, string> = Object.entries(svgModules).reduce(
   (acc, [path, url]) => {
-    const m = path.match(/([^\/]+)\.svg$/i);
+    const m = path.match(/([^/]+)\.svg$/i);
     if (!m) return acc;
     const base = m[1].toLowerCase();
     const variants = new Set<string>([

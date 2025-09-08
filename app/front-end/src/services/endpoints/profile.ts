@@ -4,6 +4,7 @@ import {
   getAuthenticatedUserProfile as getAuthenticatedUserProfileImpl,
   updateProfile as updateProfileImpl,
   getFullUserProfile as getFullUserProfileImpl,
+  getUserPattern as getUserPatternImpl,
 } from '../api';
 
 /**
@@ -25,5 +26,10 @@ export const updateProfile = (profileData: Partial<UserProfile>) => updateProfil
  * Obtiene el perfil completo (CV) para un usuario específico o el usuario dinámico si no se pasa id.
  */
 export const getFullProfile = (id?: string) => getFullUserProfileImpl(id);
+
+/**
+ * Obtiene el patrón de autenticación de un usuario específico.
+ */
+export const getUserPattern = (userId: string) => getUserPatternImpl(userId);
 
 export type { UserProfile };

@@ -13,18 +13,12 @@
     "start:local": "node dist-server/server-clean.js",
     "clean": "Remove-Item -Recurse -Force dist-server -ErrorAction SilentlyContinue",
     "rebuild": "npm run clean && npm run build",
-    "test": "echo \"Security tests available in tests/ directory\"",
-    "test:security": "node test-security.js",
     "type-check": "tsc --noEmit",
     "lint": "eslint ../../eslint.config.js . --ext .ts --max-warnings 0",
     "lint:fix": "npm run lint -- --fix",
     "dev:watch": "ts-node --watch server-clean.ts",
     "dev:mongodb:watch": "ts-node --watch server-mongodb.ts",
     "script:populate-about": "tsx scripts/populate-about-data.ts",
-    "test:health": "curl http://localhost:3000/health || echo 'Server not running'",
-    "test:mongodb": "node test-mongodb.js",
-    "test:api": "node test-api.js",
-    "test:full": "npm run dev:mongodb & sleep 3 && npm run test:api",
     "render:build": "cd ../.. && npm install && npm run setup:packages && cd apps/backend && npm run build",
     "render:start": "node dist-server/server-mongodb.js",
     "render:start:sqlite": "node dist-server/server-clean.js",
@@ -40,7 +34,6 @@
     "@types/cors": "^2.8.18",
     "@types/express": "^5.0.2",
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/mongoose": "^5.11.96",
     "@types/multer": "^1.4.13",
     "@types/nodemailer": "^6.4.17",
     "axios": "^1.9.0",
@@ -59,5 +52,9 @@
     "ts-node": "^10.9.2",
     "tsx": "^4.20.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/mongoose": "^5.11.97",
+    "@types/node": "^22.9.3"
+  }
 }

@@ -1,5 +1,6 @@
 import { User } from '../models/index.js';
 import { logSentinelUsage } from './auditService.js';
+import { logger } from '../utils/logger';
 
 // Obtiene el ID del primer usuario con role 'admin'
 export const getFirstAdminUserId = async (): Promise<string> => {
@@ -10,7 +11,7 @@ export const getFirstAdminUserId = async (): Promise<string> => {
     }
     throw new Error('No admin user found');
   } catch (error) {
-    console.error('❌ Error obteniendo usuario admin (userService):', error);
+    logger.error('❌ Error obteniendo usuario admin (userService):', error);
     throw error;
   }
 };
@@ -21,37 +22,37 @@ export const resolveUserId = async (inputUserId: string | number): Promise<strin
   // Si existe ADMIN_USER_ID en env, úsala como única forma de resolver sentinels
   const adminFromEnv = process.env.ADMIN_USER_ID;
   if (adminFromEnv && adminFromEnv.trim() !== '') {
-    // si el cliente pide dynamic-admin-id, devolvemos el ADMIN_USER_ID
-    if (asString === 'dynamic-admin-id') {
-      console.log(
-        '🔒 Resolviendo sentinel dynamic-admin-id al ADMIN_USER_ID guardado en ENV (userService)'
+    // si el cliente pide dynamic-admin-id o admin, devolvemos el ADMIN_USER_ID
+    if (asString === 'dynamic-admin-id' || asString === 'admin') {
+      logger.debug(
+        `🔒 Resolviendo sentinel ${asString} al ADMIN_USER_ID guardado en ENV (userService)`
       );
       try {
         await logSentinelUsage(null, { inputUserId: asString, resolvedUserId: adminFromEnv });
-      } catch (e) {}
+      } catch {
+        // noop
+      }
       return adminFromEnv;
     }
     return asString;
   }
 
-  // Fallback: en ausencia de ADMIN_USER_ID, resolver solo 'dynamic-admin-id' en dev/allow-case
+  // Fallback: en ausencia de ADMIN_USER_ID, resolver 'dynamic-admin-id' y 'admin' en dev/allow-case
   const allowSentinel =
     process.env.NODE_ENV === 'development' || process.env.ALLOW_SENTINEL_ADMIN === 'true';
 
-  if (asString === 'dynamic-admin-id') {
+  if (asString === 'dynamic-admin-id' || asString === 'admin') {
     if (allowSentinel) {
-      console.log(
-        '🔄 Resolviendo sentinel dynamic-admin-id al primer admin (userService) (fallback)'
-      );
+      logger.debug(`🔄 Resolviendo sentinel ${asString} al primer admin (userService) (fallback)`);
       const resolved = await getFirstAdminUserId();
       try {
         await logSentinelUsage(null, { inputUserId: asString, resolvedUserId: resolved });
-      } catch (e) {}
+      } catch {
+        // noop
+      }
       return resolved;
     }
-    console.warn(
-      '⚠️ dynamic-admin-id no está permitido por la configuración de entorno (userService)'
-    );
+    logger.warn(`⚠️ ${asString} no está permitido por la configuración de entorno (userService)`);
     return asString;
   }
 

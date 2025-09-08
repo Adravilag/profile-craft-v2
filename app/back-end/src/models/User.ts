@@ -5,6 +5,7 @@ export interface IUser extends Document {
   _id: string;
   name: string;
   email: string;
+  email_contact?: string; // Email público para mostrar en el portafolio
   password: string;
   role: 'user' | 'admin';
   about_me?: string;
@@ -33,6 +34,12 @@ const UserSchema: Schema = new Schema(
       type: String,
       required: true,
       unique: true,
+      lowercase: true,
+      trim: true,
+    },
+    email_contact: {
+      type: String,
+      default: null,
       lowercase: true,
       trim: true,
     },

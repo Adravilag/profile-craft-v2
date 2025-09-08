@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import cloudinaryService from '../services/cloudinaryService.js';
+import { logger } from '../utils/logger';
 
 export const mediaController = {
   // Subir archivo de imagen
@@ -10,7 +11,7 @@ export const mediaController = {
         res.status(400).json({ error: 'No se ha subido ningún archivo' });
         return;
       }
-      console.log('📁 Archivo recibido:', {
+      logger.debug('📁 Archivo recibido:', {
         originalName: req.file.originalname,
         filename: req.file.filename,
         size: req.file.size,
@@ -19,28 +20,28 @@ export const mediaController = {
 
       // Determinar el tipo de imagen basado en el contexto
       const imageType = req.body.imageType || req.query.type || 'project';
-      console.log('🎯 Tipo de imagen detectado:', imageType);
+      logger.debug('🎯 Tipo de imagen detectado:', imageType);
 
       // Verificar configuración de Cloudinary antes de intentar subir
-      console.log('🔧 Verificando configuración de Cloudinary...');
+      logger.debug('🔧 Verificando configuración de Cloudinary...');
       const cloudinaryConfig = {
         cloudName: process.env.CLOUDINARY_CLOUD_NAME,
         apiKey: process.env.CLOUDINARY_API_KEY,
         apiSecret: process.env.CLOUDINARY_API_SECRET ? '***CONFIGURED***' : undefined,
       };
-      console.log('🔧 Config Cloudinary en servidor:', cloudinaryConfig);
+      logger.debug('🔧 Config Cloudinary en servidor:', cloudinaryConfig);
 
       try {
         // Seleccionar el método de subida apropiado según el tipo
         let cloudinaryResult;
         if (imageType === 'profile' || imageType === 'avatar') {
-          console.log('📸 Subiendo imagen de perfil a Cloudinary...');
+          logger.debug('📸 Subiendo imagen de perfil a Cloudinary...');
           cloudinaryResult = await cloudinaryService.uploadProfileImage(
             req.file.buffer || fs.readFileSync(req.file.path),
             req.file.originalname
           );
         } else {
-          console.log('🖼️ Subiendo imagen de proyecto a Cloudinary...');
+          logger.debug('🖼️ Subiendo imagen de proyecto a Cloudinary...');
           // Por defecto usar uploadProjectImage para proyectos
           cloudinaryResult = await cloudinaryService.uploadProjectImage(
             req.file.buffer || fs.readFileSync(req.file.path),
@@ -51,10 +52,10 @@ export const mediaController = {
         // Eliminar archivo temporal si existe
         if (req.file.path && fs.existsSync(req.file.path)) {
           fs.unlinkSync(req.file.path);
-          console.log('🗑️ Archivo temporal eliminado:', req.file.path);
+          logger.debug('🗑️ Archivo temporal eliminado:', req.file.path);
         }
 
-        console.log('✅ Imagen subida exitosamente a Cloudinary:', cloudinaryResult.secure_url);
+        logger.debug('✅ Imagen subida exitosamente a Cloudinary:', cloudinaryResult.secure_url);
 
         res.json({
           success: true,
@@ -72,7 +73,7 @@ export const mediaController = {
         });
         return;
       } catch (cloudinaryError) {
-        console.error('❌ Error detallado con Cloudinary:', {
+        logger.error('❌ Error detallado con Cloudinary:', {
           message: cloudinaryError instanceof Error ? cloudinaryError.message : cloudinaryError,
           stack: cloudinaryError instanceof Error ? cloudinaryError.stack : undefined,
         });
@@ -83,9 +84,9 @@ export const mediaController = {
           apiKey: process.env.CLOUDINARY_API_KEY,
           apiSecret: process.env.CLOUDINARY_API_SECRET ? '***CONFIGURED***' : undefined,
         };
-        console.log('🔧 Configuración de Cloudinary:', cloudinaryConfig);
+        logger.debug('🔧 Configuración de Cloudinary:', cloudinaryConfig);
 
-        console.warn('⚠️ Fallback: usando almacenamiento local debido a error de Cloudinary');
+        logger.warn('⚠️ Fallback: usando almacenamiento local debido a error de Cloudinary');
 
         // Fallback: usar almacenamiento local
         let localFilePath: string;
@@ -108,7 +109,7 @@ export const mediaController = {
         const filename = path.basename(localFilePath);
         const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${filename}`;
 
-        console.log('✅ Archivo guardado localmente como fallback:', fileUrl);
+        logger.debug('✅ Archivo guardado localmente como fallback:', fileUrl);
         res.json({
           success: true,
           message: 'Archivo subido exitosamente (almacenamiento local - Cloudinary no disponible)',
@@ -125,7 +126,7 @@ export const mediaController = {
         });
       }
     } catch (error) {
-      console.error('❌ Error al subir archivo:', error);
+      logger.error('❌ Error al subir archivo:', error);
       res.status(500).json({
         success: false,
         error: 'Error al subir el archivo',
@@ -177,7 +178,7 @@ export const mediaController = {
             },
           });
         } catch (err) {
-          console.error('❌ Error subiendo archivo múltiple:', err);
+          logger.error('❌ Error subiendo archivo múltiple:', err);
           results.push({
             success: false,
             error: err instanceof Error ? err.message : err,
@@ -188,7 +189,7 @@ export const mediaController = {
 
       res.json({ success: true, files: results });
     } catch (error) {
-      console.error('❌ Error en uploadMultiple:', error);
+      logger.error('❌ Error en uploadMultiple:', error);
       res.status(500).json({ error: 'Error al subir archivos' });
     }
   },
@@ -230,7 +231,7 @@ export const mediaController = {
 
       res.json(mediaItems);
     } catch (error) {
-      console.error('❌ Error al obtener archivos de media:', error);
+      logger.error('❌ Error al obtener archivos de media:', error);
       res.status(500).json({ error: 'Error al obtener archivos de media' });
     }
   },
@@ -247,11 +248,11 @@ export const mediaController = {
       }
 
       fs.unlinkSync(filePath);
-      console.log('🗑️ Archivo eliminado:', filename);
+      logger.debug('🗑️ Archivo eliminado:', filename);
 
       res.json({ success: true, message: 'Archivo eliminado exitosamente' });
     } catch (error) {
-      console.error('❌ Error al eliminar archivo:', error);
+      logger.error('❌ Error al eliminar archivo:', error);
       res.status(500).json({ error: 'Error al eliminar el archivo' });
     }
   },
@@ -269,7 +270,7 @@ export const mediaController = {
         return;
       }
 
-      console.log('🗑️ Solicitando eliminación de imagen de Cloudinary:', publicId);
+      logger.debug('🗑️ Solicitando eliminación de imagen de Cloudinary:', publicId);
 
       const success = await cloudinaryService.deleteImage(publicId);
 
@@ -285,7 +286,7 @@ export const mediaController = {
         });
       }
     } catch (error) {
-      console.error('❌ Error eliminando imagen de Cloudinary:', error);
+      logger.error('❌ Error eliminando imagen de Cloudinary:', error);
       res.status(500).json({
         success: false,
         error: 'Error interno al eliminar la imagen',

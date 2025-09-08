@@ -29,54 +29,45 @@ export const DEBUG_CONFIG = {
 export const debugLog = {
   api: (...args: any[]) => {
     if (DEBUG_CONFIG.ENABLED && DEBUG_CONFIG.API) {
-      console.log(...args);
     }
   },
 
   auth: (...args: any[]) => {
     if (DEBUG_CONFIG.ENABLED && DEBUG_CONFIG.AUTH) {
-      console.log(...args);
     }
   },
 
   navigation: (...args: any[]) => {
     if (DEBUG_CONFIG.ENABLED && DEBUG_CONFIG.NAVIGATION) {
-      console.log(...args);
     }
   },
 
   performance: (...args: any[]) => {
     if (DEBUG_CONFIG.ENABLED && DEBUG_CONFIG.PERFORMANCE) {
-      console.log(...args);
     }
   },
 
   images: (...args: any[]) => {
     if (DEBUG_CONFIG.ENABLED && DEBUG_CONFIG.IMAGES) {
-      console.log(...args);
     }
   },
 
   scroll: (...args: any[]) => {
     if (DEBUG_CONFIG.ENABLED && DEBUG_CONFIG.SCROLL) {
-      console.log(...args);
     }
   },
 
   backendStatus: (...args: any[]) => {
     if (DEBUG_CONFIG.ENABLED && DEBUG_CONFIG.BACKEND_STATUS) {
-      console.log(...args);
     }
   },
   dataLoading: (...args: any[]) => {
     if (DEBUG_CONFIG.ENABLED && DEBUG_CONFIG.DATA_LOADING) {
-      console.log(...args);
     }
   },
 
   admin: (...args: any[]) => {
     if (DEBUG_CONFIG.ENABLED && DEBUG_CONFIG.ADMIN) {
-      console.log(...args);
     }
   },
 
@@ -103,7 +94,6 @@ if (typeof window !== 'undefined') {
       } else {
         (DEBUG_CONFIG as any)[category] = true;
       }
-      console.log(`✅ Debug ${category} activado`);
     },
     disable: (category: keyof typeof DEBUG_CONFIG) => {
       if (category === 'ENABLED') {
@@ -113,10 +103,7 @@ if (typeof window !== 'undefined') {
       } else {
         (DEBUG_CONFIG as any)[category] = false;
       }
-      console.log(`🚫 Debug ${category} desactivado`);
     },
-    status: () => {
-      console.log('📊 Estado actual del debug:', DEBUG_CONFIG);
-    },
+    status: () => {},
   };
 }

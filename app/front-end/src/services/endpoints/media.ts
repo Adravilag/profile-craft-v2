@@ -23,8 +23,7 @@ import {
  *
  * @example
  * const resp = await media.uploadImage(file, 'profile');
- * console.log(resp.file.url);
- */
+ **/
 export const uploadImage = (
   file: File,
   imageType: 'profile' | 'project' | 'avatar' = 'project'

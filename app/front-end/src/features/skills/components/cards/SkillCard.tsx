@@ -212,7 +212,6 @@ const SkillCard: React.FC<SkillCardProps> = ({
   // Convertir número de estrellas a texto de dificultad
   const getDifficultyText = (stars: number): string => {
     // Debug temporal
-    console.log(`Skill: ${skill.name}, Stars: ${stars}`);
     switch (stars) {
       case 1:
         return 'básico';

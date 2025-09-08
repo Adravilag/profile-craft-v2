@@ -1,5 +1,6 @@
 import { Contact } from '../models/index.js';
 import { emailService } from '../services/emailService.js';
+import { logger } from '../utils/logger';
 
 export const contactController = {
   // Enviar mensaje de contacto
@@ -42,14 +43,14 @@ export const contactController = {
           id: contact._id,
         });
       } catch (emailError) {
-        console.error('Error enviando email:', emailError);
+        logger.error('Error enviando email:', emailError);
         res.status(201).json({
           message: 'Mensaje guardado, pero hubo un problema enviando el email',
           id: contact._id,
         });
       }
     } catch (error: any) {
-      console.error('Error enviando mensaje:', error);
+      logger.error('Error enviando mensaje:', error);
       res.status(500).json({ error: 'Error al enviar mensaje' });
     }
   },
@@ -85,7 +86,7 @@ export const contactController = {
         },
       });
     } catch (error: any) {
-      console.error('Error obteniendo mensajes:', error);
+      logger.error('Error obteniendo mensajes:', error);
       res.status(500).json({ error: 'Error al obtener mensajes' });
     }
   },
@@ -114,7 +115,7 @@ export const contactController = {
         id: message._id,
       });
     } catch (error: any) {
-      console.error('Error marcando mensaje como leído:', error);
+      logger.error('Error marcando mensaje como leído:', error);
       res.status(500).json({ error: 'Error al marcar mensaje como leído' });
     }
   },
@@ -133,7 +134,7 @@ export const contactController = {
 
       res.status(204).send();
     } catch (error: any) {
-      console.error('Error eliminando mensaje:', error);
+      logger.error('Error eliminando mensaje:', error);
       res.status(500).json({ error: 'Error al eliminar mensaje' });
     }
   },
@@ -170,7 +171,7 @@ export const contactController = {
         ),
       });
     } catch (error: any) {
-      console.error('Error obteniendo estadísticas:', error);
+      logger.error('Error obteniendo estadísticas:', error);
       res.status(500).json({ error: 'Error al obtener estadísticas' });
     }
   },

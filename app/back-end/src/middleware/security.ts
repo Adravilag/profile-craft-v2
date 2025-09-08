@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { config } from '../config/index.js';
+// import { config } from '../config/index.js';
+import { logger } from '../utils/logger';
 
 // Rate limiting storage (en producción usar Redis)
 const rateLimitStore = new Map<string, { count: number; resetTime: number; lastAttempt: number }>();
@@ -63,7 +64,7 @@ export const securityMiddleware = {
         const delayMultiplier = Math.min(clientData.count - maxAttempts, 8);
         const delay = Math.pow(2, delayMultiplier) * 1000;
 
-        console.warn(
+        logger.security(
           `🚨 Rate limit exceeded for ${clientId}. Attempt ${clientData.count}. Applying ${delay}ms delay.`
         );
 
@@ -144,47 +145,72 @@ export const securityMiddleware = {
     };
   },
 
-  // Middleware para bloquear endpoints en producción
-  blockInProduction: (req: Request, res: Response, next: NextFunction): void => {
-    if (process.env.NODE_ENV === 'production') {
-      res.status(404).json({ error: 'Endpoint no disponible' });
-      return;
-    }
-    next();
-  },
-
   // Middleware para validar origin específicamente
   strictOriginValidation: (allowedOrigins: string[]) => {
     return (req: Request, res: Response, next: NextFunction): void => {
       const origin = req.get('Origin') || req.get('Referer');
 
+      logger.debug('🔍 Manual CORS check - Origin:', origin, 'Method:', req.method);
+      logger.debug('🌐 CORS check - Origin:', origin || 'No origin');
+      logger.debug('🔍 Allowed origins:', allowedOrigins);
+
       if (!origin) {
         // Requests sin origin (ej: Postman, curl) solo en desarrollo
         if (process.env.NODE_ENV !== 'production') {
+          logger.debug('✅ Permitiendo request sin origin');
           return next();
         }
+        logger.security('❌ Origin requerido en producción');
         res.status(403).json({ error: 'Origin requerido' });
         return;
       }
 
+      // Extraer origen del referer si es necesario
+      let normalizedOrigin = origin;
+      if (origin.includes('/') && !origin.startsWith('http')) {
+        // Si referer, extraer solo el origen
+        try {
+          const url = new URL(origin);
+          normalizedOrigin = `${url.protocol}//${url.host}`;
+        } catch {
+          normalizedOrigin = origin;
+        }
+      }
+
+      logger.debug('🌐 Request from origin:', normalizedOrigin);
+      logger.debug('🔍 Method:', req.method);
+      logger.debug('📍 Path:', req.path);
+
       const isAllowed = allowedOrigins.some(allowed => {
         try {
-          const originUrl = new URL(origin);
+          // Comparación exacta primero
+          if (normalizedOrigin === allowed) {
+            return true;
+          }
+
+          // Comparación por URL si ambos son URLs válidas
+          const originUrl = new URL(normalizedOrigin);
           const allowedUrl = new URL(allowed);
+
           return (
-            originUrl.hostname === allowedUrl.hostname && originUrl.protocol === allowedUrl.protocol
+            originUrl.hostname === allowedUrl.hostname &&
+            originUrl.protocol === allowedUrl.protocol &&
+            originUrl.port === allowedUrl.port
           );
-        } catch {
-          return false;
+        } catch (error) {
+          logger.warn('⚠️ Error parsing URLs:', (error as any).message);
+          // Fallback a comparación de string
+          return normalizedOrigin === allowed;
         }
       });
 
       if (!isAllowed) {
-        console.warn(`🚨 Blocked request from unauthorized origin: ${origin}`);
+        logger.security(`🚨 Blocked request from unauthorized origin: ${normalizedOrigin}`);
         res.status(403).json({ error: 'Origin no autorizado' });
         return;
       }
 
+      logger.debug('✅ Origin autorizado:', normalizedOrigin);
       next();
     };
   },
@@ -217,7 +243,7 @@ export const securityMiddleware = {
       secret: details.secret ? '[REDACTED]' : undefined,
     };
 
-    console.warn(`🔒 Security Event: ${event}`, {
+    logger.security(`🔒 Security Event: ${event}`, {
       timestamp: new Date().toISOString(),
       ip: req.ip,
       userAgent: req.get('User-Agent'),

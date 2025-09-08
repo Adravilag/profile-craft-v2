@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { config } from './index.js';
+import { logger } from '../utils/logger';
 
 // Configuración de MongoDB
 export const connectMongoDB = async (): Promise<void> => {
@@ -10,31 +10,31 @@ export const connectMongoDB = async (): Promise<void> => {
       throw new Error('❌ MONGODB_URI o DATABASE_URL no está configurado');
     }
 
-    console.log('🍃 Conectando a MongoDB...');
+    logger.debug('🍃 Conectando a MongoDB...');
 
     await mongoose.connect(mongoURI, {
       // Opciones de conexión
     });
 
-    console.log('✅ MongoDB conectado exitosamente');
+    logger.debug('✅ MongoDB conectado exitosamente');
 
     // Event listeners para conexión
     mongoose.connection.on('error', error => {
-      console.error('❌ Error de conexión MongoDB:', error);
+      logger.error('❌ Error de conexión MongoDB:', error);
     });
 
     mongoose.connection.on('disconnected', () => {
-      console.log('⚠️ MongoDB desconectado');
+      logger.debug('⚠️ MongoDB desconectado');
     });
 
     // Graceful shutdown
     process.on('SIGINT', async () => {
       await mongoose.connection.close();
-      console.log('🔒 Conexión MongoDB cerrada por terminación de aplicación');
+      logger.debug('🔒 Conexión MongoDB cerrada por terminación de aplicación');
       process.exit(0);
     });
   } catch (error) {
-    console.error('❌ Error conectando a MongoDB:', error);
+    logger.error('❌ Error conectando a MongoDB:', error);
     throw error;
   }
 };
@@ -47,7 +47,7 @@ export const initializeDatabase = async (): Promise<string> => {
     throw new Error('❌ MongoDB URI requerido: Configure MONGODB_URI o DATABASE_URL');
   }
 
-  console.log('🍃 Configurando MongoDB exclusivamente');
+  logger.debug('🍃 Configurando MongoDB exclusivamente');
   await connectMongoDB();
   return 'mongodb';
 };

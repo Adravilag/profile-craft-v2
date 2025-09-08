@@ -1,6 +1,5 @@
 // Reuse shared axios instance (with auth interceptor) from services/http
 import { API } from './http';
-import axios from 'axios';
 import type {
   UserProfile,
   Experience,
@@ -35,7 +34,8 @@ import { getUserId } from '@/features/users/utils/userConfig';
 const secureApiLogger = createSecureLogger('API');
 
 // If using Vite, use import.meta.env; if using Create React App, ensure @types/node is installed and add a declaration for process.env if needed.
-const API_BASE_URL = import.meta.env?.VITE_API_URL || 'http://localhost:3000/api';
+const API_BASE_URL =
+  import.meta.env?.VITE_API_URL || (import.meta.env.DEV ? '/api' : 'http://localhost:3000/api');
 debugLog.api('🔧 API Base URL configurada:', API_BASE_URL);
 
 // Validación de seguridad de dominio antes de configurar interceptors
@@ -79,9 +79,17 @@ API.interceptors.response.use(
 // getDynamicUserId y getUserId son provistos por los módulos de features/users
 
 export const getUserProfile = async () => {
-  const userId = await getDynamicUserId();
-  secureApiLogger.info('🔄 Obteniendo perfil para usuario:', { userId });
-  return API.get<UserProfile>(`/profile/${userId}`).then(r => r.data);
+  // Importar la nueva función de username
+  const { getFirstAdminUsername } = await import('@/features/users/services/userApi');
+  const username = await getFirstAdminUsername();
+  secureApiLogger.info('🔄 Obteniendo perfil por username:', { username });
+  return API.get<UserProfile>(`/profile/public/username/${username}`).then(r => r.data);
+};
+
+// Nueva función para obtener el patrón de un usuario
+export const getUserPattern = async (userId: string): Promise<string> => {
+  secureApiLogger.info('🔄 Obteniendo patrón para usuario:', { userId });
+  return API.get<{ pattern: string }>(`/profile/${userId}/pattern`).then(r => r.data.pattern);
 };
 
 // Obtener perfil completo (CV) por id o por el usuario dinámico si no se pasa id
@@ -331,8 +339,6 @@ export const updateEducation = (id: number, education: Partial<Education>) =>
   API.put<Education>(`/admin/education/${id}`, education).then(r => r.data);
 
 export const deleteEducation = (id: string) => {
-  console.log('🔄 API: Eliminando educación con ID:', id);
-  console.log('🔍 API: Tipo de ID:', typeof id, 'Longitud:', id.length);
   return API.delete(`/admin/education/${id}`);
 };
 

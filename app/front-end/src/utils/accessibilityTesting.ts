@@ -653,11 +653,6 @@ export function auditAccessibility(container?: HTMLElement): AccessibilityReport
  */
 export function logAccessibilityReport(report: AccessibilityReport): void {
   console.group('🔍 Accessibility Audit Report');
-  console.log(`Total Tests: ${report.totalTests}`);
-  console.log(`✅ Passed: ${report.passed}`);
-  console.log(`❌ Failed: ${report.failed}`);
-  console.log(`⚠️ Warnings: ${report.warnings}`);
-
   if (report.results.length > 0) {
     console.group('📋 Detailed Results');
 
@@ -665,9 +660,7 @@ export function logAccessibilityReport(report: AccessibilityReport): void {
       const icon = result.passed ? '✅' : result.severity === 'error' ? '❌' : '⚠️';
 
       if (result.element) {
-        console.log(`${icon} ${result.message}`, result.element);
       } else {
-        console.log(`${icon} ${result.message}`);
       }
     });
 

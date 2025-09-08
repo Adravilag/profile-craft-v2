@@ -1,11 +1,12 @@
 import express from 'express';
 import { testimonialsController } from '../controllers/testimonialsController.js';
 import { authenticateAdmin } from '../middleware/auth.js';
+import { publicIdMiddleware } from '../middleware/publicId.js';
 
 const router = express.Router();
 
 // Rutas públicas (montadas en /api/testimonials)
-router.get('/', testimonialsController.getTestimonials);
+router.get('/', publicIdMiddleware.resolveUserIdQuery, testimonialsController.getTestimonials);
 router.post('/', testimonialsController.createTestimonial); // Crear testimonio público
 
 // Rutas de administración (montadas en /api/testimonials/admin cuando se acceda con autenticación)

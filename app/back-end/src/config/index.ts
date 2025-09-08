@@ -31,21 +31,15 @@ export const config = {
   },
 
   // URLs
-  FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:3000',
+  FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:5173',
   BACKEND_URL: process.env.BACKEND_URL || 'http://localhost:3000', // CORS
+  // Orígenes permitidos (deben ser los ORIGINES del FRONTEND que hacen requests al backend)
+  // Nota: NO incluir aquí la URL del backend (ej. http://localhost:3000). Incluir solo los origins
+  // desde los que el navegador hará peticiones (ej. Vite dev: http://localhost:5173).
   ALLOWED_ORIGINS: process.env.ALLOWED_ORIGINS?.split(',') || [
-    'http://localhost:3000',
     'http://localhost:5173',
     'http://localhost:5174',
-    'http://localhost:4173',
-    'https://adravilag.github.io',
-    'https://adravilag.github.io/profile-craft',
-    'https://adravilag.github.io/ProfileCraft',
-    'https://adravilag.github.io/cv-maker',
-    'https://profilecraft.onrender.com',
     'https://adavilag-portfolio.vercel.app',
-    'https://profile-craft-v2.vercel.app',
-    'https://profile-craft-v2-adravilag.vercel.app',
   ],
 
   // Configuración de desarrollo

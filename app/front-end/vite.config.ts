@@ -36,10 +36,8 @@ const config: any = {
   base: '/', // Vercel maneja esto automáticamente
   plugins,
   define: {
-    // Forzar la inyección de variables de entorno en tiempo de build
-    'import.meta.env.VITE_API_URL': JSON.stringify(
-      process.env.VITE_API_URL || 'https://profile-craft-v2-backend.onrender.com/api'
-    ),
+    // Notas: dejamos que Vite inyecte las variables `VITE_...` desde los archivos .env
+    // en lugar de forzarlas aquí desde process.env. Mantener otras claves aquí si es necesario.
     'import.meta.env.VITE_BASE_PATH': JSON.stringify(process.env.VITE_BASE_PATH || ''),
     'import.meta.env.VITE_CLOUDINARY_CLOUD_NAME': JSON.stringify(
       process.env.VITE_CLOUDINARY_CLOUD_NAME || 'demo'
@@ -117,17 +115,14 @@ const config: any = {
     },
   },
   server: {
-    proxy:
-      process.env.NODE_ENV === 'development'
-        ? {
-            '/api': {
-              target: 'http://localhost:3000',
-              changeOrigin: true,
-              secure: false,
-              rewrite: (path: string) => path.replace(/^\/api/, '/api'),
-            },
-          }
-        : {},
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path: string) => path.replace(/^\/api/, '/api'),
+      },
+    },
   },
   build: {
     sourcemap: true,

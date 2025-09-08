@@ -28,13 +28,6 @@ const useAuthGuard = (options: UseAuthGuardOptions = {}): AuthGuardState => {
     error: null,
   });
   useEffect(() => {
-    console.log('🛡️ useAuthGuard: Auth state changed -', {
-      loading,
-      isAuthenticated,
-      user: user ? user.name : null,
-      requireAuth,
-    });
-
     // Si aún está cargando, mantener estado de loading
     if (loading) {
       setAuthState(prev => ({
@@ -47,8 +40,6 @@ const useAuthGuard = (options: UseAuthGuardOptions = {}): AuthGuardState => {
 
     // Una vez terminado el loading, evaluar la autenticación
     if (requireAuth && !isAuthenticated) {
-      console.log('🚫 useAuthGuard: Auth required but user not authenticated, redirecting...');
-
       setAuthState({
         isLoading: false,
         isAuthenticated: false,
@@ -65,7 +56,6 @@ const useAuthGuard = (options: UseAuthGuardOptions = {}): AuthGuardState => {
     }
 
     // Usuario autenticado o no se requiere autenticación
-    console.log('✅ useAuthGuard: Auth check passed, allowing render');
     setAuthState({
       isLoading: false,
       isAuthenticated,

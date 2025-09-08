@@ -15,6 +15,7 @@ import {
   useLanguage,
   useTypingRotator,
   useSkills,
+  useUserPattern,
 } from './hooks';
 import { useHeader } from '@/hooks/useHeader';
 import InteractiveTerminal from './components/Widgets/Terminal/InteractiveTerminal';
@@ -52,6 +53,10 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
   const { currentLanguage, changeLanguage, t } = useLanguage();
   const { skills, getTopFeaturedSkills } = useSkills();
   const { isAuthenticated, logout } = useAuth();
+
+  // Hook para cargar el patrón por separado
+  const userId = userProfile?.id ? String(userProfile.id) : null;
+  const { pattern: userPattern } = useUserPattern(userId);
 
   // === 2. Estados y Referencias ===
   const [showLogoutMenu, setShowLogoutMenu] = useState(false);
@@ -248,7 +253,7 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
                 if (!isAuthenticated) return;
                 setShowLogoutMenu(v => !v);
               }}
-              requiredCode={(userProfile as any).pattern}
+              requiredCode={userPattern || undefined}
             />
 
             {isAuthenticated && showLogoutMenu && (

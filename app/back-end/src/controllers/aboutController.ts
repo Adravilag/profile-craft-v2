@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import AboutSectionModel, { IAboutSection, IAboutHighlight } from '../models/AboutSection.js';
+import AboutSectionModel, { IAboutHighlight } from '../models/AboutSection.js';
 import { validationResult } from 'express-validator';
+import { logger } from '../utils/logger';
 
 /**
  * Obtener la información completa de la sección About
@@ -8,9 +9,11 @@ import { validationResult } from 'express-validator';
 export const getAboutSection = async (req: Request, res: Response): Promise<void> => {
   try {
     // Buscar la sección About activa
-    const aboutSection = await AboutSectionModel.findOne({ isActive: true }).sort({
-      createdAt: -1,
-    });
+    const aboutSection = await ((AboutSectionModel as any).findOne({ isActive: true }) as any)
+      .sort({
+        createdAt: -1,
+      })
+      .exec();
 
     if (!aboutSection) {
       // Si no existe, crear una sección por defecto con los datos actuales
@@ -79,7 +82,7 @@ export const getAboutSection = async (req: Request, res: Response): Promise<void
       data: aboutSection,
     });
   } catch (error: any) {
-    console.error('Error al obtener la sección About:', error);
+    logger.error('Error al obtener la sección About:', error);
     res.status(500).json({
       success: false,
       message: 'Error interno del servidor',
@@ -107,7 +110,7 @@ export const updateAboutSection = async (req: Request, res: Response): Promise<v
     const { aboutText, highlights, collaborationNote } = req.body;
 
     // Buscar la sección About activa
-    let aboutSection = await AboutSectionModel.findOne({ isActive: true });
+    let aboutSection = await ((AboutSectionModel as any).findOne({ isActive: true }) as any).exec();
 
     if (!aboutSection) {
       // Crear nueva sección si no existe
@@ -132,7 +135,7 @@ export const updateAboutSection = async (req: Request, res: Response): Promise<v
       data: savedAboutSection,
     });
   } catch (error: any) {
-    console.error('Error al actualizar la sección About:', error);
+    logger.error('Error al actualizar la sección About:', error);
     res.status(500).json({
       success: false,
       message: 'Error interno del servidor',
@@ -159,7 +162,9 @@ export const addHighlight = async (req: Request, res: Response): Promise<void> =
     const { icon, title, descriptionHtml, tech, imageSrc, imageCloudinaryId, order } = req.body;
 
     // Buscar la sección About activa
-    const aboutSection = await AboutSectionModel.findOne({ isActive: true });
+    const aboutSection = await (
+      (AboutSectionModel as any).findOne({ isActive: true }) as any
+    ).exec();
 
     if (!aboutSection) {
       res.status(404).json({
@@ -190,7 +195,7 @@ export const addHighlight = async (req: Request, res: Response): Promise<void> =
       data: savedAboutSection,
     });
   } catch (error: any) {
-    console.error('Error al agregar highlight:', error);
+    logger.error('Error al agregar highlight:', error);
     res.status(500).json({
       success: false,
       message: 'Error interno del servidor',
@@ -207,7 +212,9 @@ export const updateHighlight = async (req: Request, res: Response): Promise<void
     const { highlightId } = req.params;
     const updateData = req.body;
 
-    const aboutSection = await AboutSectionModel.findOne({ isActive: true });
+    const aboutSection = await (
+      (AboutSectionModel as any).findOne({ isActive: true }) as any
+    ).exec();
 
     if (!aboutSection) {
       res.status(404).json({
@@ -237,7 +244,7 @@ export const updateHighlight = async (req: Request, res: Response): Promise<void
       data: savedAboutSection,
     });
   } catch (error: any) {
-    console.error('Error al actualizar highlight:', error);
+    logger.error('Error al actualizar highlight:', error);
     res.status(500).json({
       success: false,
       message: 'Error interno del servidor',
@@ -253,7 +260,9 @@ export const deleteHighlight = async (req: Request, res: Response): Promise<void
   try {
     const { highlightId } = req.params;
 
-    const aboutSection = await AboutSectionModel.findOne({ isActive: true });
+    const aboutSection = await (
+      (AboutSectionModel as any).findOne({ isActive: true }) as any
+    ).exec();
 
     if (!aboutSection) {
       res.status(404).json({
@@ -284,7 +293,7 @@ export const deleteHighlight = async (req: Request, res: Response): Promise<void
       data: savedAboutSection,
     });
   } catch (error: any) {
-    console.error('Error al eliminar highlight:', error);
+    logger.error('Error al eliminar highlight:', error);
     res.status(500).json({
       success: false,
       message: 'Error interno del servidor',

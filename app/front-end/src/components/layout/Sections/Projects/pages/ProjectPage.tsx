@@ -95,7 +95,6 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
     try {
       setLoading(true);
       setError(null);
-      console.log('🔍 Intentando cargar proyecto con ID:', projectId);
 
       // Validación básica del ID
       if (!projectId || projectId === 'undefined' || projectId === 'null') {
@@ -103,20 +102,8 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
       }
 
       const data = await getProjectById(projectId);
-      console.log('✅ Proyecto cargado exitosamente:', data);
       setProject(data);
-      // Debug: log project content length to help diagnose missing content in UI
-      try {
-        // eslint-disable-next-line no-console
-        console.debug(
-          'ProjectPage: loaded project',
-          data?.id ?? '',
-          'project_content length:',
-          data?.project_content?.length ?? 0
-        );
-      } catch (e) {
-        // ignore
-      }
+      // Debug: log project content length: console.log('Project content length:', data.project_content?.length || 0);
 
       // Calcular tiempo de lectura estimado
       if (data.project_content) {
@@ -455,12 +442,6 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
                       const videoId = m ? m[1] : null;
                       const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : url;
                       // Debug: si no encontramos id, aún intentamos usar la URL original
-                      // eslint-disable-next-line no-console
-                      console.debug('ProjectPage: rendering youtube iframe', {
-                        url,
-                        videoId,
-                        embedUrl,
-                      });
                       return (
                         <iframe
                           title={`Demo de ${project.title}`}

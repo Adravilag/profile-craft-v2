@@ -78,7 +78,7 @@ export function useNavigation(): NavigationState {
   const navigateToSection = useCallback((section: string, opts?: { replace?: boolean }) => {
     if (import.meta.env.DEV) {
       // eslint-disable-next-line no-console
-      console.debug('[useNavigation fallback] navigateToSection called with', section);
+      console.log('[useNavigation] fallback mode - navigating to:', section);
     }
     setLocalSection(section);
 

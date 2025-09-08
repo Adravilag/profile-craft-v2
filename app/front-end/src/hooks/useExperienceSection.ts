@@ -24,9 +24,6 @@ interface ExperienceSectionStats {
   technologiesCount: number;
 }
 
-type CreateExperiencePayload = Omit<Experience, '_id' | 'id' | 'created_at' | 'updated_at'>;
-type CreateEducationPayload = Omit<Education, '_id' | 'id' | 'created_at' | 'updated_at'>;
-
 export const useExperienceSection = () => {
   const {
     experiences,

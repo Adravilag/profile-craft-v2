@@ -1,8 +1,6 @@
 import { renderHook } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
 import { useInitialScrollToSection } from './useInitialScrollToSection';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
-import React from 'react';
 
 // Mock para scrollToElement
 vi.mock('@/utils/scrollToElement', () => ({

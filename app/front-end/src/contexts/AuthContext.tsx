@@ -92,12 +92,32 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
         // 2. NO estamos en modo incógnito
         if (import.meta.env.DEV && !explicitLogout && !isIncognito) {
           try {
-            const dev = await fetch('/api/auth/dev-token');
-            if (dev.ok) {
-              const b = await dev.json();
-              // cookie no-httpOnly para desarrollo local
+            // Preferir endpoint dev-login que setea la cookie httpOnly desde el servidor
+            try {
+              const devLogin = await fetch('/api/auth/dev-login', {
+                method: 'POST',
+                credentials: 'include',
+              });
+              if (!devLogin.ok) {
+                // fallback: solicitar token y setear cookie no-HttpOnly (legacy)
+                const dev = await fetch('/api/auth/dev-token');
+                if (dev.ok) {
+                  const b = await dev.json();
+                  try {
+                    document.cookie = `portfolio_auth_token=${b.token}; path=/`;
+                  } catch {}
+                }
+              }
+            } catch (e) {
+              // Si dev-login falla por cualquier motivo, intentar dev-token
               try {
-                document.cookie = `portfolio_auth_token=${b.token}; path=/`;
+                const dev = await fetch('/api/auth/dev-token');
+                if (dev.ok) {
+                  const b = await dev.json();
+                  try {
+                    document.cookie = `portfolio_auth_token=${b.token}; path=/`;
+                  } catch {}
+                }
               } catch {}
             }
           } catch {}
@@ -113,6 +133,16 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
             localStorage.removeItem('explicit_logout');
           }
         } else {
+          // En desarrollo, intentar leer y loggear el cuerpo para ayudar a depurar 500/403
+          try {
+            if (import.meta.env.DEV) {
+              const text = await res.text();
+              // eslint-disable-next-line no-console
+              console.warn('[AuthContext] verify failed', { status: res.status, body: text });
+            }
+          } catch (e) {
+            // ignore
+          }
           setUser(null);
         }
       } catch (err) {

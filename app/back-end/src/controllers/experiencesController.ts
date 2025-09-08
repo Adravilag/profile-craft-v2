@@ -1,11 +1,15 @@
-import mongoose from 'mongoose';
+import * as mongoose from 'mongoose';
 import { Experience } from '../models/index.js';
+import { logger } from '../utils/logger';
 
 export const experiencesController = {
   // Obtener experiencias
   getExperiences: async (req: any, res: any): Promise<void> => {
     try {
-      const userId = req.query.userId || '507f1f77bcf86cd799439011';
+      // Usar el userId resuelto por el middleware, fallback a query original
+      const userId = req.resolvedUserId || req.query.userId || '507f1f77bcf86cd799439011';
+
+      logger.debug('🛠️ Experiences Controller - userId final:', userId);
 
       // MongoDB-only implementation
       // Manejar tanto ObjectId como números para compatibilidad
@@ -27,7 +31,7 @@ export const experiencesController = {
         }))
       );
     } catch (error: any) {
-      console.error('Error al obtener experiencias:', error);
+      logger.error('Error al obtener experiencias:', error);
       res.status(500).json({ error: 'Error al obtener experiencias' });
     }
   },
@@ -72,14 +76,14 @@ export const experiencesController = {
       });
 
       await experience.save();
-      console.log('✅ Experiencia creada exitosamente:', experience._id);
+      logger.debug('✅ Experiencia creada exitosamente:', experience._id);
 
       res.status(201).json({
         ...experience.toObject(),
         id: experience._id,
       });
     } catch (error: any) {
-      console.error('Error al crear experiencia:', error);
+      logger.error('Error al crear experiencia:', error);
       res.status(500).json({ error: 'Error al crear experiencia' });
     }
   },
@@ -131,13 +135,13 @@ export const experiencesController = {
         return;
       }
 
-      console.log('✅ Experiencia actualizada exitosamente:', experience._id);
+      logger.debug('✅ Experiencia actualizada exitosamente:', experience._id);
       res.json({
         ...experience,
         id: experience._id,
       });
     } catch (error: any) {
-      console.error('Error al actualizar experiencia:', error);
+      logger.error('Error al actualizar experiencia:', error);
       res.status(500).json({ error: 'Error al actualizar experiencia' });
     }
   },
@@ -147,11 +151,11 @@ export const experiencesController = {
     try {
       const { id } = req.params;
 
-      console.log('🗑️ Intentando eliminar experiencia con ID:', id);
+      logger.debug('🗑️ Intentando eliminar experiencia con ID:', id);
 
       // Validar que el ID no sea undefined o inválido
       if (!id || id === 'undefined' || !mongoose.Types.ObjectId.isValid(id)) {
-        console.error('❌ ID de experiencia inválido:', id);
+        logger.error('❌ ID de experiencia inválido:', id);
         res.status(400).json({ error: 'ID de experiencia inválido' });
         return;
       }
@@ -160,15 +164,15 @@ export const experiencesController = {
       const result = await Experience.findByIdAndDelete(id);
 
       if (!result) {
-        console.log('❌ Experiencia no encontrada con ID:', id);
+        logger.debug('❌ Experiencia no encontrada con ID:', id);
         res.status(404).json({ error: 'Experiencia no encontrada' });
         return;
       }
 
-      console.log('✅ Experiencia eliminada exitosamente:', id);
+      logger.debug('✅ Experiencia eliminada exitosamente:', id);
       res.status(204).send();
     } catch (error: any) {
-      console.error('❌ Error al eliminar experiencia:', error);
+      logger.error('❌ Error al eliminar experiencia:', error);
       res.status(500).json({ error: 'Error al eliminar experiencia' });
     }
   },

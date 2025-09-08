@@ -1,0 +1,4 @@
+[
+  { "title": "Cert A", "issuer": "Issuer A", "year": 2020 },
+  { "title": "Cert B", "issuer": "Issuer B", "year": 2021 }
+]

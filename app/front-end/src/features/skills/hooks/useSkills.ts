@@ -1,6 +1,6 @@
 // src/features/skills/hooks/useSkills.ts
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { skills as skillsEndpoints } from '@/services/endpoints';
 const { getSkills, createSkill, updateSkill, deleteSkill } = skillsEndpoints;
 import type { Skill } from '@/types/api';
@@ -82,12 +82,7 @@ export const useSkills = () => {
 
   // Handlers para formulario
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-
-    console.log('🎯 useSkills handleFormChange llamado con:', { name, value });
-    console.log('🎯 Estado actual de newSkill antes del cambio:', newSkill);
-
-    // Si cambia la categoría, resetear campos relacionados
+    const { name, value } = e.target; // Si cambia la categoría, resetear campos relacionados
     if (name === 'category') {
       const updatedSkill = {
         ...newSkill,
@@ -95,7 +90,6 @@ export const useSkills = () => {
         name: '', // Limpiar nombre
         level: 50, // Resetear nivel
       };
-      console.log('🎯 Actualizando categoría, nuevo estado:', updatedSkill);
       setNewSkill(updatedSkill);
     } else if ((e.target as HTMLInputElement).type === 'checkbox' || name === 'featured') {
       const checked = (e.target as HTMLInputElement).checked;
@@ -103,38 +97,28 @@ export const useSkills = () => {
         ...newSkill,
         [name]: checked,
       } as SkillFormData;
-      console.log('🎯 Actualizando checkbox', name, 'nuevo estado:', updatedSkill);
       setNewSkill(updatedSkill);
     } else {
       const updatedSkill = {
         ...newSkill,
         [name]: name === 'level' ? Number(value) : value,
       };
-      console.log('🎯 Actualizando campo', name, 'nuevo estado:', updatedSkill);
       setNewSkill(updatedSkill);
     }
   };
 
   // Handler específico para manejar selecciones de LogoHub con icon_class
   const handleFormChangeWithIcon = (updates: Partial<SkillFormData & { icon_class?: string }>) => {
-    console.log('🎯 useSkills handleFormChangeWithIcon llamado con:', updates);
-
     const updatedSkill = {
       ...newSkill,
       ...updates,
     } as SkillFormData & { icon_class?: string };
-
-    console.log('🎯 Nuevo estado después de LogoHub:', updatedSkill);
     setNewSkill(updatedSkill as SkillFormData);
   };
 
   // Handler para añadir/editar skill
   const handleAddSkill = async (e: React.FormEvent, skillsIcons: any[]) => {
     e.preventDefault();
-
-    console.log('🚀 handleAddSkill ejecutándose');
-    console.log('🚀 Estado actual de newSkill:', newSkill);
-    console.log('🚀 newSkill.name:', `"${newSkill.name}"`);
     console.log('🚀 newSkill.name.trim():', `"${newSkill.name?.trim()}"`);
 
     // Validación para asegurar que los campos requeridos estén presentes
@@ -149,11 +133,7 @@ export const useSkills = () => {
       console.error('❌ Error: No se puede guardar una habilidad sin categoría');
       alert('Error: Debe seleccionar una categoría para la habilidad');
       return;
-    }
-
-    console.log('✅ Guardando habilidad con datos validados:', newSkill);
-
-    // Determinar SVG: priorizar icon_class si existe (posiblemente de LogoHub), luego usar utils
+    } // Determinar SVG: priorizar icon_class si existe (posiblemente de LogoHub), luego usar utils
     let svg_path = (newSkill as any).icon_class || '';
 
     // Si no hay icon_class o es vacío, usar la función utilitaria
@@ -164,21 +144,15 @@ export const useSkills = () => {
     // Si aún no se encontró nada local y el resultado es el icono genérico, intentar LogoHub como último recurso
     if (!svg_path || svg_path === GENERIC_ICON_URL) {
       try {
-        console.log('🔗 Buscando en LogoHub como fallback para:', newSkill.name);
         const lh = await fetchLogoHubSvg(newSkill.name);
         if (lh) {
           svg_path = lh;
-          console.log('🔁 LogoHub fallback usado para', newSkill.name, svg_path);
-        } else {
-          console.log('⚠️ LogoHub no encontró resultados para:', newSkill.name);
         }
       } catch (e) {
         console.warn('❌ Error en LogoHub fallback:', e);
         // mantener svg_path como está (posiblemente genérico)
       }
     }
-
-    console.log('🎨 SVG final determinado:', svg_path);
 
     try {
       if (editingId != null) {
@@ -193,7 +167,6 @@ export const useSkills = () => {
               : s
           )
         );
-        console.log('✅ Skill actualizada exitosamente');
       } else {
         const created = await createSkill({
           ...newSkill,
@@ -209,7 +182,6 @@ export const useSkills = () => {
             featured: (created as any).featured ?? (newSkill as any).featured ?? false,
           } as any,
         ]);
-        console.log('✅ Nueva skill creada exitosamente');
       }
       setShowModal(false);
       setEditingId(null);

@@ -1,10 +1,10 @@
 import crypto from 'crypto';
+import { logger } from '../utils/logger';
 
 // Configuración de cifrado
 const ALGORITHM = 'aes-256-gcm';
 const IV_LENGTH = 16; // Para GCM, este es el estándar
 const SALT_LENGTH = 64;
-const TAG_LENGTH = 16;
 const KEY_LENGTH = 32;
 
 export interface EncryptedData {
@@ -32,10 +32,26 @@ export class DataEncryption {
   }
 
   /**
+   * Genera una clave basada en userId + passphrase del cliente (opcional)
+   * Si passphrase es provista, se prioriza para permitir que el cliente descifre.
+   */
+  private static generateUserKeyFromPassphrase(userId: string, passphrase: string): string {
+    const userInfo = `${userId}-${passphrase}`;
+    return crypto.createHash('sha256').update(userInfo).digest('hex');
+  }
+
+  /**
    * Cifra datos sensibles
    */
-  static encryptSensitiveData(data: any, userId: string, userEmail: string): EncryptedData {
-    const password = this.generateUserKey(userId, userEmail);
+  static encryptSensitiveData(
+    data: any,
+    userId: string,
+    userEmail: string,
+    passphrase?: string
+  ): EncryptedData {
+    const password = passphrase
+      ? this.generateUserKeyFromPassphrase(userId, passphrase)
+      : this.generateUserKey(userId, userEmail);
     const salt = crypto.randomBytes(SALT_LENGTH);
     const iv = crypto.randomBytes(IV_LENGTH);
     const key = this.deriveKey(password, salt);
@@ -62,10 +78,13 @@ export class DataEncryption {
   static decryptSensitiveData(
     encryptedPayload: EncryptedData,
     userId: string,
-    userEmail: string
+    userEmail: string,
+    passphrase?: string
   ): any {
     try {
-      const password = this.generateUserKey(userId, userEmail);
+      const password = passphrase
+        ? this.generateUserKeyFromPassphrase(userId, passphrase)
+        : this.generateUserKey(userId, userEmail);
       const salt = Buffer.from(encryptedPayload.salt, 'hex');
       const iv = Buffer.from(encryptedPayload.iv, 'hex');
       const tag = Buffer.from(encryptedPayload.tag, 'hex');
@@ -79,7 +98,7 @@ export class DataEncryption {
 
       return JSON.parse(decrypted);
     } catch (error) {
-      console.error('Error al descifrar datos:', error);
+      logger.error('Error al descifrar datos:', error);
       return null;
     }
   }

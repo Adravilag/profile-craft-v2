@@ -5,18 +5,9 @@
  * de todas las secciones de la aplicación.
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useSectionsLoading } from './useSectionsLoading';
-
-type SectionName =
-  | 'about'
-  | 'skills'
-  | 'experience'
-  | 'projects'
-  | 'certifications'
-  | 'testimonials'
-  | 'contact';
 
 describe('[TEST] useSectionsLoading - Centralized Loading State', () => {
   it('🔴 should initialize with all sections loading as false', () => {

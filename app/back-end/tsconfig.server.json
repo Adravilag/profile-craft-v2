@@ -17,12 +17,5 @@
     "types": ["node"]
   },
   "include": ["server-clean.ts", "server-mongodb.ts", "src/**/*.ts", "express.d.ts"],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "dist-server",
-    "src/**/*.test.ts",
-    "src/**/test/**",
-    "test-*.js"
-  ]
+  "exclude": ["node_modules", "dist", "dist-server"]
 }

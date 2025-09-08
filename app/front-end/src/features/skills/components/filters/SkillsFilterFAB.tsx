@@ -138,7 +138,9 @@ const SkillsFilterFAB: React.FC<SkillsFilterFABProps> = ({
   useEffect(() => {
     if (!isOnSkillsPage && !debug) {
       document.body.classList.remove('in-skills-section');
-      if (debug) console.log('[SKILLS_FILTER] No estamos en /skills — ocultando panel');
+      if (debug) {
+        console.log('Removing skills section class');
+      }
     }
   }, [isOnSkillsPage, debug]);
 
@@ -155,14 +157,18 @@ const SkillsFilterFAB: React.FC<SkillsFilterFABProps> = ({
       ) {
         // Remover la clase de inmediato para garantizar que se oculte
         document.body.classList.remove('in-skills-section');
-        if (debug) console.log('[SKILLS_FILTER] Forzando ocultamiento por cambio de sección');
+        if (debug) {
+          console.log('Removing in-skills-section class');
+        }
       }
     };
 
     // Evento personalizado para cuando se sale de la sección skills
     const handleSkillsExit = () => {
       document.body.classList.remove('in-skills-section');
-      if (debug) console.log('[SKILLS_FILTER] Recibido evento de salida de sección skills');
+      if (debug) {
+        console.log('Skills exit event triggered');
+      }
     };
 
     // Observar atributos del body para cambios en la sección activa
@@ -172,7 +178,9 @@ const SkillsFilterFAB: React.FC<SkillsFilterFABProps> = ({
           const activeSection = document.body.getAttribute('data-active-section');
           if (activeSection !== 'skills' && document.body.classList.contains('in-skills-section')) {
             document.body.classList.remove('in-skills-section');
-            if (debug) console.log('[SKILLS_FILTER] Sección activa cambió a:', activeSection);
+            if (debug) {
+              console.log('Removing in-skills-section class due to section change');
+            }
           }
         }
       });

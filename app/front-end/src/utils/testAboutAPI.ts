@@ -6,8 +6,6 @@
 // Función para probar la API de About
 async function testAboutAPI() {
   try {
-    console.log('🔍 Probando conexión a la API de About...');
-
     const response = await fetch('http://localhost:3000/api/about', {
       method: 'GET',
       headers: {
@@ -20,11 +18,6 @@ async function testAboutAPI() {
     }
 
     const data = await response.json();
-
-    console.log('✅ Conexión exitosa!');
-    console.log('📄 Datos recibidos:', data);
-    console.log('📝 Highlights:', data.data?.highlights?.length || 0);
-
     if (data.data?.highlights) {
       data.data.highlights.forEach((highlight, index) => {
         console.log(`  ${index + 1}. ${highlight.title} (${highlight.imageCloudinaryId})`);

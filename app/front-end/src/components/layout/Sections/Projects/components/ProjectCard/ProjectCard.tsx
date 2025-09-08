@@ -45,7 +45,6 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
 
     // Construir la URL del artículo usando el ID del proyecto
     const articleUrl = `/project/${project.id}`;
-    console.log('🔗 Navegando a:', articleUrl, 'para proyecto:', project.title);
     navigate(articleUrl);
   };
 

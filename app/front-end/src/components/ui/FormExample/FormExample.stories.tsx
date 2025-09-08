@@ -50,7 +50,6 @@ const FormExample = () => {
 
     if (Object.keys(newErrors).length === 0) {
       alert('Formulario enviado correctamente!');
-      console.log('Form data:', formData);
     }
   };
 

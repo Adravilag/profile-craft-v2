@@ -39,11 +39,7 @@ export const useFilterFAB = ({ debug = false }: UseFilterFABProps = {}): FilterF
   useEffect(() => {
     const newShouldShow = isOnSkillsURL || isInSkillsSection;
     if (newShouldShow !== shouldShowByNavigation) {
-      if (debug)
-        console.log(
-          `[SKILLS_FILTER] Cambio de sección detectado: ${newShouldShow ? 'entrando a skills' : 'saliendo de skills'}`
-        );
-      setShouldShowByNavigation(newShouldShow);
+      if (debug) setShouldShowByNavigation(newShouldShow);
 
       // Forzar ocultamiento inmediato del panel si salimos de la sección de skills
       if (!newShouldShow) {
@@ -63,8 +59,7 @@ export const useFilterFAB = ({ debug = false }: UseFilterFABProps = {}): FilterF
   useEffect(() => {
     // Si debug está activado, forzar shouldShow a true para pruebas
     if (debug) {
-      if (debug) console.log('[SKILLS_FILTER_DEBUG] Modo debug activado, forzando visibilidad');
-      setShouldShow(true);
+      if (debug) setShouldShow(true);
       return () => {
         document.body.classList.remove('in-skills-section');
       };
@@ -102,14 +97,12 @@ export const useFilterFAB = ({ debug = false }: UseFilterFABProps = {}): FilterF
 
           // Log para desarrollo
           if (debug) {
-            console.log(`[SKILLS_FILTER_DEBUG] Sección visible: ${isVisible}`);
             console.log(
               `[SKILLS_FILTER_DEBUG] Intersection ratio: ${entry.intersectionRatio.toFixed(3)}`
             );
             console.log(
               `[SKILLS_FILTER_DEBUG] Sección activa: ${document.body.getAttribute('data-active-section')}`
             );
-            console.log(`[SKILLS_FILTER_DEBUG] Navegación en skills: ${shouldShowByNavigation}`);
           }
         },
         {
@@ -136,7 +129,9 @@ export const useFilterFAB = ({ debug = false }: UseFilterFABProps = {}): FilterF
 
       if (skillsSectionBySelector) {
         setupObserver(skillsSectionBySelector);
-        if (debug) console.log('[SKILLS_FILTER_DEBUG] Sección encontrada por selector alternativo');
+        if (debug) {
+          console.log('Skills section found and observer setup');
+        }
       } else {
         console.warn('[SKILLS_FILTER] No se pudo encontrar la sección de skills');
         setShouldShow(false);
@@ -160,9 +155,9 @@ export const useFilterFAB = ({ debug = false }: UseFilterFABProps = {}): FilterF
 
   // Usar un efecto para reportar cambios de visibilidad si es necesario
   useEffect(() => {
-    if (debug) {
-      console.log(`[SKILLS_FILTER] Visibilidad actualizada: ${isVisible ? 'visible' : 'oculto'}`);
-    }
+    // if (debug) {
+    //   // Aquí se puede agregar logging si se desea
+    // }
 
     // Si no deberíamos mostrar por navegación/URL, limpiamos clase
     if (!shouldShowByNavigation) {

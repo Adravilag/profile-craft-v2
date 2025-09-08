@@ -1,7 +1,8 @@
-import { Project, User } from '../models/index.js';
+import { Project } from '../models/index.js';
 import ProjectViewService from '../services/projectViewService.js';
-import { getFirstAdminUserId, resolveUserId } from '../services/userService.js';
+import { resolveUserId } from '../services/userService.js';
 import mongoose from 'mongoose';
+import { logger } from '../utils/logger';
 
 // Usar userService para resolver user ids dinámicos
 
@@ -13,16 +14,16 @@ export const projectsController = {
       const inputUserId = req.query.userId || 1;
       const status = req.query.status;
 
-      console.log('📰 Obteniendo proyectos para usuario:', inputUserId);
+      logger.debug('📰 Obteniendo proyectos para usuario:', inputUserId);
 
       // Resolver el userId dinámico
       const userId = await resolveUserId(inputUserId);
-      console.log('📰 Usuario resuelto:', userId);
+      logger.debug('📰 Usuario resuelto:', userId);
 
       // MongoDB-only implementation
       // Validar que el userId resuelto sea un ObjectId válido
       if (!mongoose.Types.ObjectId.isValid(userId)) {
-        console.error('❌ ID de usuario inválido despues de resolver:', userId);
+        logger.error('❌ ID de usuario inválido despues de resolver:', userId);
         res.status(400).json({ error: 'ID de usuario inválido' });
         return;
       }
@@ -52,10 +53,10 @@ export const projectsController = {
         technologies: project.technologies || [],
       }));
 
-      console.log('✅ Proyectos encontrados:', projectsWithSummary.length, 'registros');
+      logger.debug('✅ Proyectos encontrados:', projectsWithSummary.length, 'registros');
       res.json(projectsWithSummary);
     } catch (error: any) {
-      console.error('❌ Error obteniendo proyectos:', {
+      logger.error('❌ Error obteniendo proyectos:', {
         message: error?.message,
         stack: error?.stack,
         query: req?.query,
@@ -68,11 +69,11 @@ export const projectsController = {
   getProjectById: async (req: any, res: any): Promise<void> => {
     try {
       const projectId = req.params.id;
-      console.log('🔍 Buscando proyecto con ID:', projectId);
+      logger.debug('🔍 Buscando proyecto con ID:', projectId);
 
       // Validar que el ID sea un ObjectId válido de MongoDB
       if (!mongoose.Types.ObjectId.isValid(projectId)) {
-        console.log('❌ ID de proyecto inválido:', projectId);
+        logger.debug('❌ ID de proyecto inválido:', projectId);
         res.status(400).json({ error: 'ID de proyecto inválido' });
         return;
       }
@@ -84,29 +85,29 @@ export const projectsController = {
       }).lean();
 
       if (!project) {
-        console.log('❌ Proyecto no encontrado con ID:', projectId);
+        logger.debug('❌ Proyecto no encontrado con ID:', projectId);
         // Buscar si existe el proyecto sin filtro de content para diagnóstico
         const projectWithoutContent = await Project.findOne({ _id: projectId }).lean();
         if (projectWithoutContent) {
-          console.log('ℹ️ Proyecto existe pero sin contenido válido:', projectWithoutContent);
+          logger.debug('ℹ️ Proyecto existe pero sin contenido válido:', projectWithoutContent);
         } else {
-          console.log('ℹ️ Proyecto no existe en la base de datos');
+          logger.debug('ℹ️ Proyecto no existe en la base de datos');
         }
         res.status(404).json({ error: 'Proyecto no encontrado' });
         return;
       }
 
-      console.log('✅ Proyecto encontrado:', project.title);
+      logger.debug('✅ Proyecto encontrado:', project.title);
 
       // Registrar vista de forma asíncrona (no bloquear la respuesta)
       ProjectViewService.recordView(project._id.toString(), req)
         .then(recorded => {
           if (recorded) {
-            console.log(`📊 Vista registrada para proyecto ${project._id}`);
+            logger.debug(`📊 Vista registrada para proyecto ${project._id}`);
           }
         })
         .catch(error => {
-          console.error('Error registrando vista:', error);
+          logger.error('Error registrando vista:', error);
         });
 
       res.json({
@@ -115,7 +116,7 @@ export const projectsController = {
         technologies: project.technologies || [],
       });
     } catch (error: any) {
-      console.error('Error obteniendo artículo:', {
+      logger.error('Error obteniendo artículo:', {
         message: error?.message,
         stack: error?.stack,
         params: req?.params,
@@ -130,7 +131,7 @@ export const projectsController = {
 
       // Resolver el userId dinámico
       const userId = await resolveUserId(inputUserId);
-      console.log('📰 Usuario resuelto para admin projects:', userId);
+      logger.debug('📰 Usuario resuelto para admin projects:', userId);
 
       // MongoDB-only implementation
       const projects = await Project.find({ user_id: userId }).sort({ order_index: -1 }).lean();
@@ -143,7 +144,7 @@ export const projectsController = {
         }))
       );
     } catch (error: any) {
-      console.error('Error obteniendo proyectos admin:', {
+      logger.error('Error obteniendo proyectos admin:', {
         message: error?.message,
         stack: error?.stack,
         query: req?.query,
@@ -172,7 +173,7 @@ export const projectsController = {
 
       // Resolver el user_id dinámico
       const resolvedUserId = await resolveUserId(user_id);
-      console.log('🔄 User ID resuelto para proyecto:', resolvedUserId);
+      logger.debug('🔄 User ID resuelto para proyecto:', resolvedUserId);
 
       // Validar que el ID sea un ObjectId válido
       if (!mongoose.Types.ObjectId.isValid(resolvedUserId)) {
@@ -198,14 +199,14 @@ export const projectsController = {
       });
 
       await project.save();
-      console.log('✅ Proyecto creado exitosamente:', project._id);
+      logger.debug('✅ Proyecto creado exitosamente:', project._id);
 
       res.status(201).json({
         ...project.toObject(),
         id: project._id,
       });
     } catch (error: any) {
-      console.error('Error creando proyecto:', {
+      logger.error('Error creando proyecto:', {
         message: error?.message,
         stack: error?.stack,
         body: req?.body,
@@ -258,13 +259,13 @@ export const projectsController = {
         return;
       }
 
-      console.log('✅ Proyecto actualizado exitosamente:', project._id);
+      logger.debug('✅ Proyecto actualizado exitosamente:', project._id);
       res.json({
         ...project,
         id: project._id,
       });
     } catch (error: any) {
-      console.error('Error actualizando proyecto:', {
+      logger.error('Error actualizando proyecto:', {
         message: error?.message,
         stack: error?.stack,
         params: req?.params,
@@ -279,11 +280,11 @@ export const projectsController = {
     try {
       const { id } = req.params;
 
-      console.log('🗑️ Intentando eliminar proyecto con ID:', id);
+      logger.debug('🗑️ Intentando eliminar proyecto con ID:', id);
 
       // Validar que el ID no sea undefined o inválido
       if (!id || id === 'undefined' || !mongoose.Types.ObjectId.isValid(id)) {
-        console.error('❌ ID de proyecto inválido:', id);
+        logger.error('❌ ID de proyecto inválido:', id);
         res.status(400).json({ error: 'ID de proyecto inválido' });
         return;
       }
@@ -292,15 +293,15 @@ export const projectsController = {
       const result = await Project.findByIdAndDelete(id);
 
       if (!result) {
-        console.log('❌ Proyecto no encontrado con ID:', id);
+        logger.debug('❌ Proyecto no encontrado con ID:', id);
         res.status(404).json({ error: 'Proyecto no encontrado' });
         return;
       }
 
-      console.log('✅ Proyecto eliminado exitosamente:', id);
+      logger.debug('✅ Proyecto eliminado exitosamente:', id);
       res.status(204).send();
     } catch (error: any) {
-      console.error('❌ Error eliminando proyecto:', {
+      logger.error('❌ Error eliminando proyecto:', {
         message: error?.message,
         stack: error?.stack,
         params: req?.params,
@@ -330,7 +331,7 @@ export const projectsController = {
         ...stats,
       });
     } catch (error: any) {
-      console.error('Error obteniendo estadísticas:', {
+      logger.error('Error obteniendo estadísticas:', {
         message: error?.message,
         stack: error?.stack,
         params: req?.params,

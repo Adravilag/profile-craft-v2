@@ -3,6 +3,7 @@
 import ProjectView from '../models/ProjectView.js';
 import Project from '../models/Project.js';
 import { Request } from 'express';
+import { logger } from '../utils/logger';
 
 /**
  * Servicio para manejar las visualizaciones de proyectos
@@ -70,7 +71,7 @@ export class ProjectViewService {
 
       return true;
     } catch (error) {
-      console.error('Error registrando vista de artículo:', error);
+      logger.error('Error registrando vista de artículo:', error);
       return false;
     }
   }
@@ -86,7 +87,7 @@ export class ProjectViewService {
 
       return uniqueIPs.length;
     } catch (error) {
-      console.error('Error obteniendo vistas únicas:', error);
+      logger.error('Error obteniendo vistas únicas:', error);
       return 0;
     }
   }
@@ -137,7 +138,7 @@ export class ProjectViewService {
         dailyViews,
       };
     } catch (error) {
-      console.error('Error obteniendo estadísticas de vistas:', error);
+      logger.error('Error obteniendo estadísticas de vistas:', error);
       return {
         totalViews: 0,
         uniqueViews: 0,
@@ -160,7 +161,7 @@ export class ProjectViewService {
 
       return result.deletedCount || 0;
     } catch (error) {
-      console.error('Error limpiando vistas antiguas:', error);
+      logger.error('Error limpiando vistas antiguas:', error);
       return 0;
     }
   }

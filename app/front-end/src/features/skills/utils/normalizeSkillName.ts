@@ -21,10 +21,10 @@ export const normalizeSkillName = (raw: string): NormalizedSkill => {
   const name = (raw || '').toString().trim().toLowerCase();
 
   // Normalizar: espacios y + a guiones, quitar caracteres no válidos
-  const normalized = name.replace(/\s|\+/g, '-').replace(/[^a-z0-9\-\.]/g, '');
+  const normalized = name.replace(/\s|\+/g, '-').replace(/[^a-z0-9.-]/g, '');
 
   // Canónico: sin separadores, manejo especial para .js
-  const canonical = normalized.replace(/js$/, 'dotjs').replace(/[.\-_]/g, '');
+  const canonical = normalized.replace(/js$/, 'dotjs').replace(/[._-]/g, '');
 
   return {
     normalized,

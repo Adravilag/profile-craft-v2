@@ -17,15 +17,7 @@ const ProjectsAdminPage: React.FC = () => {
     redirectTo: '/',
     redirectDelay: 150,
     requireAuth: true,
-  });
-  console.log('🔍 ProjectsAdminPage: Auth guard state -', {
-    isLoading,
-    isAuthenticated,
-    shouldRender,
-    error,
-  });
-
-  // Detectar el modo según la URL
+  }); // Detectar el modo según la URL
   const isNewMode = location.pathname === '/projects/new';
   const isEditMode = location.pathname.startsWith('/projects/edit/');
   // Items de navegación para SmartNavigation

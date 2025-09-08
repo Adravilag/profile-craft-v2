@@ -17,12 +17,12 @@ export const getContactData = (userProfile?: UserProfile): ContactInfo[] => {
 
   const contacts: ContactInfo[] = [];
 
-  // Email
-  if (userProfile.email) {
+  // Email (using public contact email instead of private auth email)
+  if (userProfile.email_contact) {
     contacts.push({
       type: 'email',
       icon: 'fas fa-envelope',
-      value: userProfile.email,
+      value: userProfile.email_contact,
       color: '#ea4335',
     });
   }

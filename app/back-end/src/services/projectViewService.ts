@@ -3,6 +3,7 @@
 import ProjectView from '../models/ProjectView.js';
 import Project from '../models/Project.js';
 import { Request } from 'express';
+import { logger } from '../utils/logger';
 
 export class ProjectViewService {
   private static getClientIP(req: Request): string {
@@ -41,7 +42,7 @@ export class ProjectViewService {
       await Project.findByIdAndUpdate(projectId, { $inc: { views: 1 } }, { new: true });
       return true;
     } catch (error) {
-      console.error('Error registrando vista de proyecto:', error);
+      logger.error('Error registrando vista de proyecto:', error);
       return false;
     }
   }
@@ -51,7 +52,7 @@ export class ProjectViewService {
       const uniqueIPs = await ProjectView.distinct('ip_address', { project_id: projectId });
       return uniqueIPs.length;
     } catch (error) {
-      console.error('Error obteniendo vistas únicas:', error);
+      logger.error('Error obteniendo vistas únicas:', error);
       return 0;
     }
   }
@@ -77,7 +78,7 @@ export class ProjectViewService {
       ]);
       return { totalViews, uniqueViews, recentViews, dailyViews };
     } catch (error) {
-      console.error('Error obteniendo estadísticas de vistas:', error);
+      logger.error('Error obteniendo estadísticas de vistas:', error);
       return { totalViews: 0, uniqueViews: 0, recentViews: 0, dailyViews: [] };
     }
   }
@@ -88,7 +89,7 @@ export class ProjectViewService {
       const result = await ProjectView.deleteMany({ viewed_at: { $lt: oneYearAgo } });
       return result.deletedCount || 0;
     } catch (error) {
-      console.error('Error limpiando vistas antiguas:', error);
+      logger.error('Error limpiando vistas antiguas:', error);
       return 0;
     }
   }

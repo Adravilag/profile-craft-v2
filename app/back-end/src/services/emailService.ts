@@ -1,5 +1,5 @@
 import { config } from 'dotenv';
-import path from 'path';
+import * as path from 'path';
 import { fileURLToPath } from 'url';
 
 // Cargar variables de entorno desde el directorio backend
@@ -7,8 +7,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 config({ path: path.join(__dirname, '../../.env') });
 
-import nodemailer from 'nodemailer';
+import * as nodemailer from 'nodemailer';
 import type { ContactFormData } from '../types/contact.js';
+import { logger } from '../utils/logger';
 
 interface EmailConfig {
   host: string;
@@ -25,12 +26,8 @@ export class EmailService {
   private isEmailConfigured: boolean = false;
 
   constructor() {
-    // DEBUG: Mostrar credenciales antes de crear el transporter
-    console.log('DEBUG SMTP_USER:', process.env.SMTP_USER);
-    console.log('DEBUG SMTP_PASS:', process.env.SMTP_PASS);
-
     if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-      console.warn(
+      logger.warn(
         '⚠️  Advertencia: SMTP_USER o SMTP_PASS no están definidas. El servicio de email estará deshabilitado.'
       );
       this.isEmailConfigured = false;
@@ -52,7 +49,7 @@ export class EmailService {
       // Verificar la configuración del transporter
       this.verifyConnection();
     } catch (error) {
-      console.error('Error al configurar el servicio de email:', error);
+      logger.error('Error al configurar el servicio de email:', error);
       this.isEmailConfigured = false;
     }
   }
@@ -62,15 +59,15 @@ export class EmailService {
 
     try {
       await this.transporter.verify();
-      console.log('✅ Conexión SMTP verificada correctamente');
+      logger.debug('✅ Conexión SMTP verificada correctamente');
     } catch (error) {
-      console.error('❌ Error al verificar la conexión SMTP:', error);
+      logger.error('❌ Error al verificar la conexión SMTP:', error);
     }
   }
 
   async sendContactEmail(data: ContactFormData): Promise<void> {
     if (!this.isEmailConfigured || !this.transporter) {
-      console.warn('⚠️  Servicio de email no configurado. No se puede enviar el mensaje.');
+      logger.warn('⚠️  Servicio de email no configurado. No se puede enviar el mensaje.');
       throw new Error('Servicio de email no disponible temporalmente');
     }
 
@@ -138,29 +135,29 @@ export class EmailService {
 
     try {
       const info = await this.transporter.sendMail(mailOptions);
-      console.log('📧 Email enviado correctamente:', info.messageId);
+      logger.debug('📧 Email enviado correctamente:', info.messageId);
     } catch (error) {
-      console.error('❌ Error al enviar email:', error);
+      logger.error('❌ Error al enviar email:', error);
       throw new Error('Error al enviar el mensaje. Por favor, inténtalo de nuevo más tarde.');
     }
   }
 
   async sendAutoReply(email: string, name: string): Promise<void> {
     if (!this.isEmailConfigured || !this.transporter) {
-      console.warn('⚠️  Servicio de email no configurado. No se puede enviar auto-respuesta.');
+      logger.warn('⚠️  Servicio de email no configurado. No se puede enviar auto-respuesta.');
       return;
     }
 
     // Validar entrada
     if (!email || !name) {
-      console.warn('Email o nombre no proporcionados para auto-respuesta');
+      logger.warn('Email o nombre no proporcionados para auto-respuesta');
       return;
     }
 
     // Validar formato de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      console.warn('Formato de email inválido para auto-respuesta:', email);
+      logger.warn('Formato de email inválido para auto-respuesta:', email);
       return;
     }
 
@@ -200,9 +197,9 @@ export class EmailService {
 
     try {
       const info = await this.transporter.sendMail(mailOptions);
-      console.log('📧 Auto-respuesta enviada correctamente:', info.messageId);
+      logger.debug('📧 Auto-respuesta enviada correctamente:', info.messageId);
     } catch (error) {
-      console.error('❌ Error al enviar auto-respuesta:', error);
+      logger.error('❌ Error al enviar auto-respuesta:', error);
       // No lanzamos error aquí para no afectar el flujo principal
     }
   }

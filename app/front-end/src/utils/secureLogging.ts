@@ -114,7 +114,6 @@ export function createSecureLogger(namespace: string) {
       if (isProduction) return;
 
       const sanitizedArgs = args.map(arg => sanitizeLogData(arg));
-      console.log(`[${namespace}]`, ...sanitizedArgs);
     },
 
     warn: (...args: any[]) => {

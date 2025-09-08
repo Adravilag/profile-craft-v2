@@ -174,10 +174,7 @@ const ModalShell: FC<ModalShellProps> = ({
   }, [showProgress, formData, validationErrors, selectedTechnologies]);
 
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.debug('[ModalShell] mount', { title });
-
-    if (typeof document === 'undefined') return undefined;
+    // eslint-disable-next-line no-consoleif (typeof document === 'undefined') return undefined;
 
     // cleanup any leftover modal shells
     try {
@@ -209,7 +206,6 @@ const ModalShell: FC<ModalShellProps> = ({
 
     return () => {
       // eslint-disable-next-line no-console
-      console.debug('[ModalShell] unmount', { title });
       try {
         document.body.classList.remove('modal-open');
       } catch (e) {

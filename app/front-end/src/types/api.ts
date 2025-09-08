@@ -2,6 +2,7 @@ export interface UserProfile {
   id: number | string;
   name: string;
   email: string;
+  email_contact?: string; // Email público para mostrar en el portafolio
   about_me?: string;
   status?: string;
   role_title?: string;

@@ -3,6 +3,56 @@ import bcrypt from 'bcryptjs';
 import { User } from '../models/index.js';
 import { config } from '../config/index.js';
 import { securityMiddleware } from '../middleware/security.js';
+import { cleanseObject } from './profileController.js';
+import { logger } from '../utils/logger';
+
+// Helper específico para sanitizar respuestas de usuario en endpoints de auth
+/**
+ * Sanitiza datos de usuario para endpoints públicos (elimina información sensible)
+ */
+export function sanitizeAuthUser(user: any): any {
+  if (!user) return null;
+
+  return cleanseObject({
+    name: user.name,
+    username: user.username || 'admin', // Username público para acceso al perfil
+    publicId: 'admin', // ID público que no expone la ID real de la base de datos
+  });
+}
+
+// Helper para endpoints de auth que SÍ deben devolver email/role (login, register, verify)
+function sanitizeAuthUserInternal(user: any) {
+  if (!user || typeof user !== 'object') return user;
+  const copy: Record<string, any> = { ...user };
+
+  // Normalizar id
+  if (copy._id) {
+    try {
+      copy.id = copy._id.toString();
+    } catch {
+      copy.id = copy._id;
+    }
+  }
+
+  // Eliminar solo campos específicos para endpoints internos de auth
+  delete copy._id;
+  delete copy.__v;
+  delete copy.password;
+  delete copy.pattern;
+  delete copy.salt;
+  delete copy.token;
+  delete copy.admin_secret;
+  delete copy.user_id;
+  delete copy.last_login_at;
+  delete copy.created_at;
+  delete copy.updated_at;
+  delete copy.phone; // No exponer teléfono salvo que sea necesario
+
+  // Mantener email y role para funcionalidad de auth
+  // NOTA: email se mantiene solo para endpoints autenticados
+
+  return copy;
+}
 
 export const authController = {
   // Verificar si existe al menos un usuario registrado
@@ -10,9 +60,9 @@ export const authController = {
     try {
       const count = await User.countDocuments();
       res.json({ exists: count > 0 });
-    } catch (error: any) {
-      console.error('Error verificando usuarios:', error);
-      res.status(500).json({ error: 'Error verificando usuarios' });
+    } catch (error) {
+      logger.error('Error en login:', error);
+      res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
   },
 
@@ -29,17 +79,15 @@ export const authController = {
         return;
       }
 
+      // Sanitizar datos antes de enviar
+      const sanitizedUser = sanitizeAuthUser(adminUser as any);
+
       res.json({
         success: true,
-        user: {
-          id: adminUser._id.toString(),
-          name: adminUser.name,
-          email: adminUser.email,
-          role: adminUser.role,
-        },
+        user: sanitizedUser,
       });
     } catch (error: any) {
-      console.error('🔥 Error obteniendo primer usuario admin:', error);
+      logger.error('🔥 Error obteniendo primer usuario admin:', error);
       res.status(500).json({
         success: false,
         error: 'Error obteniendo usuario admin',
@@ -72,17 +120,13 @@ export const authController = {
       await newUser.save();
 
       // Eliminar token de la respuesta, solo devolver datos del usuario
+      const sanitizedUser = sanitizeAuthUserInternal(newUser as any);
       res.status(201).json({
         message: 'Usuario registrado exitosamente',
-        user: {
-          id: newUser._id.toString(),
-          name: newUser.name,
-          email: newUser.email,
-          role: newUser.role,
-        },
+        user: sanitizedUser,
       });
     } catch (error: any) {
-      console.error('Error en registro:', error);
+      logger.error('Error en registro:', error);
       res.status(500).json({ error: 'Error al registrar usuario' });
     }
   },
@@ -120,23 +164,20 @@ export const authController = {
       res.cookie('portfolio_auth_token', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        // En desarrollo usar 'lax' para evitar que sameSite strict impida envío desde el proxy dev
+        sameSite: config.isDevelopment ? 'lax' : 'strict',
         maxAge: 15 * 60 * 1000, // 15 minutos
       });
 
       securityMiddleware.logSecurityEvent('LOGIN_SUCCESS', { email, userId: user._id }, req);
 
+      const sanitizedUser = sanitizeAuthUserInternal(user as any);
       res.json({
         message: 'Inicio de sesión exitoso',
-        user: {
-          id: user._id.toString(),
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        },
+        user: sanitizedUser,
       });
     } catch (error: any) {
-      console.error('Error en login:', error);
+      logger.error('Error en login:', error);
       res.status(500).json({ error: 'Error al iniciar sesión' });
     }
   },
@@ -144,23 +185,26 @@ export const authController = {
   // Verificar token
   verify: async (req: any, res: any): Promise<void> => {
     try {
-      const user = await User.findById(req.user.userId).select('-password');
-      if (!user) {
-        res.status(404).json({ error: 'Usuario no encontrado' });
+      // Si no viene un usuario en req (optionalAuth), no es un error: devolver valid:false
+      if (!req.user) {
+        res.json({ valid: false, user: null });
         return;
       }
 
+      const user = await User.findById(req.user.userId).select('-password');
+
+      if (!user) {
+        res.json({ valid: false, user: null });
+        return;
+      }
+
+      const sanitizedUser = sanitizeAuthUserInternal(user as any);
       res.json({
         valid: true,
-        user: {
-          id: user._id.toString(),
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        },
+        user: sanitizedUser,
       });
     } catch (error: any) {
-      console.error('Error verificando token:', error);
+      logger.error('Error verificando token:', error);
       res.status(500).json({ error: 'Error al verificar token' });
     }
   },
@@ -181,98 +225,13 @@ export const authController = {
       res.clearCookie('portfolio_auth_token', {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
+        sameSite: config.isDevelopment ? 'lax' : 'strict',
       });
 
       res.json({ message: 'Sesión cerrada exitosamente' });
     } catch (error: any) {
-      console.error('Error en logout:', error);
+      logger.error('Error en logout:', error);
       res.status(500).json({ error: 'Error al cerrar sesión' });
-    }
-  },
-
-  // Token de desarrollo
-  devToken: async (req: any, res: any): Promise<void> => {
-    try {
-      if (config.isDevelopment) {
-        const adminUser = await User.findOne({ role: 'admin' });
-        if (!adminUser) {
-          res.status(404).json({ error: 'No se encontró usuario admin' });
-          return;
-        }
-
-        const token = jwt.sign(
-          {
-            userId: adminUser._id.toString(),
-            email: adminUser.email,
-            role: adminUser.role,
-          },
-          config.JWT_SECRET,
-          { expiresIn: '7d' }
-        );
-
-        res.json({
-          token,
-          user: {
-            id: adminUser._id.toString(),
-            name: adminUser.name,
-            email: adminUser.email,
-            role: adminUser.role,
-          },
-        });
-      } else {
-        res.status(403).json({ error: 'Solo disponible en desarrollo' });
-      }
-    } catch (error: any) {
-      console.error('Error generando token de desarrollo:', error);
-      res.status(500).json({ error: 'Error generando token' });
-    }
-  },
-
-  // Dev helper: set cookie for admin user (solo en desarrollo)
-  devLogin: async (req: any, res: any): Promise<void> => {
-    try {
-      if (!config.isDevelopment) {
-        res.status(403).json({ error: 'Solo disponible en desarrollo' });
-        return;
-      }
-
-      const adminUser = await User.findOne({ role: 'admin' });
-      if (!adminUser) {
-        res.status(404).json({ error: 'No se encontró usuario admin' });
-        return;
-      }
-
-      const token = jwt.sign(
-        {
-          userId: adminUser._id.toString(),
-          email: adminUser.email,
-          role: adminUser.role,
-        },
-        config.JWT_SECRET,
-        { expiresIn: '7d' }
-      );
-
-      // Set cookie httpOnly igual que en login
-      res.cookie('portfolio_auth_token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
-
-      res.json({
-        message: 'Dev login cookie seteada',
-        user: {
-          id: adminUser._id.toString(),
-          name: adminUser.name,
-          email: adminUser.email,
-          role: adminUser.role,
-        },
-      });
-    } catch (error: any) {
-      console.error('Error en devLogin:', error);
-      res.status(500).json({ error: 'Error en dev login' });
     }
   },
 
@@ -299,7 +258,7 @@ export const authController = {
 
       res.json({ message: 'Contraseña actualizada exitosamente' });
     } catch (error: any) {
-      console.error('Error cambiando contraseña:', error);
+      logger.error('Error cambiando contraseña:', error);
       res.status(500).json({ error: 'Error al cambiar contraseña' });
     }
   },

@@ -17,7 +17,7 @@ const svgModules = import.meta.glob('/src/assets/svg/*.svg', {
  */
 export const svgMap: Record<string, string> = Object.entries(svgModules).reduce(
   (acc, [path, url]) => {
-    const match = path.match(/([^\/]+)\.svg$/i);
+    const match = path.match(/([^/]+)\.svg$/i);
     if (!match) return acc;
 
     const rawName = match[1];
@@ -26,7 +26,7 @@ export const svgMap: Record<string, string> = Object.entries(svgModules).reduce(
       .trim()
       .toLowerCase()
       .replace(/\s|\+/g, '-')
-      .replace(/[^a-z0-9\-\.]/g, '');
+      .replace(/[^a-z0-9.-]/g, '');
 
     const variants = generateSkillVariants(normalized);
 

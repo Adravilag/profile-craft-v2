@@ -1,6 +1,7 @@
 // src/services/cloudinaryService.ts
 import { v2 as cloudinary } from 'cloudinary';
 import { Readable } from 'stream';
+import { logger } from '../utils/logger';
 
 // Verificar configuración de Cloudinary
 const isCloudinaryConfigured = () => {
@@ -8,7 +9,7 @@ const isCloudinaryConfigured = () => {
   const missingVars = requiredVars.filter(varName => !process.env[varName]);
 
   if (missingVars.length > 0) {
-    console.warn(`⚠️ Cloudinary no configurado. Variables faltantes: ${missingVars.join(', ')}`);
+    logger.warn(`⚠️ Cloudinary no configurado. Variables faltantes: ${missingVars.join(', ')}`);
     return false;
   }
   return true;
@@ -21,9 +22,9 @@ if (isCloudinaryConfigured()) {
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
   });
-  console.log('✅ Cloudinary configurado correctamente');
+  logger.debug('✅ Cloudinary configurado correctamente');
 } else {
-  console.warn('⚠️ Cloudinary no está configurado. Las funciones de upload fallarán.');
+  logger.warn('⚠️ Cloudinary no está configurado. Las funciones de upload fallarán.');
 }
 
 export interface CloudinaryUploadResult {
@@ -42,7 +43,7 @@ export const cloudinaryService = {
    */
   uploadProfileImage: async (
     buffer: Buffer,
-    originalName: string
+    _originalName: string
   ): Promise<CloudinaryUploadResult> => {
     try {
       // Verificar si Cloudinary está configurado
@@ -52,7 +53,7 @@ export const cloudinaryService = {
         );
       }
 
-      console.log('📸 Subiendo imagen de perfil a Cloudinary...');
+      logger.debug('📸 Subiendo imagen de perfil a Cloudinary...');
 
       const stream = Readable.from(buffer);
 
@@ -70,10 +71,10 @@ export const cloudinaryService = {
           },
           (error, result) => {
             if (error) {
-              console.error('❌ Error subiendo a Cloudinary:', error);
+              logger.error('❌ Error subiendo a Cloudinary:', error);
               reject(error);
             } else if (result) {
-              console.log('✅ Imagen subida exitosamente a Cloudinary:', result.secure_url);
+              logger.debug('✅ Imagen subida exitosamente a Cloudinary:', result.secure_url);
               resolve(result as CloudinaryUploadResult);
             } else {
               reject(new Error('No se obtuvo resultado de Cloudinary'));
@@ -86,7 +87,7 @@ export const cloudinaryService = {
 
       return result;
     } catch (error) {
-      console.error('❌ Error en uploadProfileImage:', error);
+      logger.error('❌ Error en uploadProfileImage:', error);
       throw error;
     }
   },
@@ -95,7 +96,7 @@ export const cloudinaryService = {
    */
   uploadProjectImage: async (
     buffer: Buffer,
-    originalName: string
+    _originalName: string
   ): Promise<CloudinaryUploadResult> => {
     try {
       // Verificar si Cloudinary está configurado
@@ -105,7 +106,7 @@ export const cloudinaryService = {
         );
       }
 
-      console.log('🖼️ Subiendo imagen de proyecto a Cloudinary...');
+      logger.debug('🖼️ Subiendo imagen de proyecto a Cloudinary...');
 
       const stream = Readable.from(buffer);
 
@@ -123,10 +124,10 @@ export const cloudinaryService = {
           },
           (error, result) => {
             if (error) {
-              console.error('❌ Error subiendo a Cloudinary:', error);
+              logger.error('❌ Error subiendo a Cloudinary:', error);
               reject(error);
             } else if (result) {
-              console.log('✅ Imagen de proyecto subida exitosamente:', result.secure_url);
+              logger.debug('✅ Imagen de proyecto subida exitosamente:', result.secure_url);
               resolve(result as CloudinaryUploadResult);
             } else {
               reject(new Error('No se obtuvo resultado de Cloudinary'));
@@ -139,7 +140,7 @@ export const cloudinaryService = {
 
       return result;
     } catch (error) {
-      console.error('❌ Error en uploadProjectImage:', error);
+      logger.error('❌ Error en uploadProjectImage:', error);
       throw error;
     }
   },
@@ -149,19 +150,19 @@ export const cloudinaryService = {
    */
   deleteImage: async (publicId: string): Promise<boolean> => {
     try {
-      console.log('🗑️ Eliminando imagen de Cloudinary:', publicId);
+      logger.debug('🗑️ Eliminando imagen de Cloudinary:', publicId);
 
       const result = await cloudinary.uploader.destroy(publicId);
 
       if (result.result === 'ok') {
-        console.log('✅ Imagen eliminada exitosamente de Cloudinary');
+        logger.debug('✅ Imagen eliminada exitosamente de Cloudinary');
         return true;
       } else {
-        console.warn('⚠️ No se pudo eliminar la imagen de Cloudinary:', result);
+        logger.warn('⚠️ No se pudo eliminar la imagen de Cloudinary:', result);
         return false;
       }
     } catch (error) {
-      console.error('❌ Error eliminando imagen de Cloudinary:', error);
+      logger.error('❌ Error eliminando imagen de Cloudinary:', error);
       return false;
     }
   },

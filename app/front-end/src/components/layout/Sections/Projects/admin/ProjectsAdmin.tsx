@@ -56,7 +56,6 @@ const ProjectsAdmin: React.FC = () => {
     } catch (error: any) {
       // Si el error es de autenticación, intentar obtener token de desarrollo
       if (error?.response?.status === 401) {
-        console.log('🔑 Error de autenticación detectado, obteniendo token de desarrollo...');
         try {
           await authApi.getDevToken();
           showError('Información', 'Token de desarrollo obtenido. Recargando artículos...');

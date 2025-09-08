@@ -66,11 +66,11 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
     },
     {
       name: 'Email',
-      url: `mailto:${profile?.email || 'contact@example.com'}`,
+      url: `mailto:${profile?.email_contact || 'contact@example.com'}`,
       icon: 'fas fa-envelope',
       color: '#ea4335',
       ariaLabel: 'Enviar email',
-      show: !!profile?.email, // Only show if email exists
+      show: !!profile?.email_contact, // Only show if email_contact exists
     },
   ].filter(link => link.show); // Filter out links without real data
 
@@ -229,10 +229,11 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
                   <span>{profile.location}</span>
                 </div>
               )}
-              {profile?.email && (
+              {profile?.email_contact && (
                 <div className={styles.contactItem}>
-                  <a href={`mailto:${profile.email}`} className={styles.contactLink}>
-                    {profile.email}
+                  <a href={`mailto:${profile.email_contact}`} className={styles.contactLink}>
+                    <i className="fas fa-envelope" aria-hidden="true"></i>
+                    {profile.email_contact}
                   </a>
                 </div>
               )}
@@ -244,7 +245,7 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
               )}
 
               {/* Fallback message when profile data is loading or missing */}
-              {!profile?.location && !profile?.email && !profile?.phone && !loading && (
+              {!profile?.location && !profile?.email_contact && !profile?.phone && !loading && (
                 <div className={styles.contactItem}>
                   <i className="fas fa-info-circle" aria-hidden="true"></i>
                   <span>Información de contacto disponible en el CV</span>

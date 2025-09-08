@@ -356,8 +356,6 @@ export const searchLogoHub = async (
     }
 
     const apiUrl = `https://api.logohub.dev/v1/logos?${params.toString()}`;
-    console.log(`📡 [LogoHub] URL: ${apiUrl}`);
-
     const startTime = performance.now();
 
     const response = await fetch(apiUrl, {
@@ -384,15 +382,7 @@ export const searchLogoHub = async (
       }
     }
 
-    const data = await response.json();
-    console.log(`✅ [LogoHub] Respuesta recibida en ${duration}ms:`, {
-      resultados: data.logos?.length || 0,
-      total: data.total || 0,
-      limite: data.page?.limit || limit,
-      offset: data.page?.offset || 0,
-    });
-
-    // Log detallado de los primeros 3 resultados
+    const data = await response.json(); // Log detallado de los primeros 3 resultados
     if (data.logos && data.logos.length > 0) {
       console.log(
         `📋 [LogoHub] Primeros resultados:`,
@@ -547,17 +537,11 @@ export const debugSvgPaths = () => {
     '/profile-craft/public/assets/svg/',
     '/profile-craft/assets/svg/',
   ];
-
-  console.log('🔍 Testing common SVG base paths...');
-
   testPaths.forEach(async basePath => {
     try {
       const testPath = `${basePath}react.svg`;
       const response = await fetch(testPath);
-      console.log(`${response.ok ? '✅' : '❌'} ${testPath} - Status: ${response.status}`);
-    } catch (error) {
-      console.log(`❌ ${basePath}react.svg - Error: ${error}`);
-    }
+    } catch (error) {}
   });
 
   // También probar algunas rutas absolutas comunes
@@ -566,15 +550,10 @@ export const debugSvgPaths = () => {
     `${window.location.origin}/src/assets/svg/react.svg`,
     `${window.location.origin}/public/assets/svg/react.svg`,
   ];
-
-  console.log('🔍 Testing absolute paths...');
   absolutePaths.forEach(async absolutePath => {
     try {
       const response = await fetch(absolutePath);
-      console.log(`${response.ok ? '✅' : '❌'} ${absolutePath} - Status: ${response.status}`);
-    } catch (error) {
-      console.log(`❌ ${absolutePath} - Error: ${error}`);
-    }
+    } catch (error) {}
   });
 };
 
@@ -584,23 +563,10 @@ if (import.meta.env.DEV && typeof window !== 'undefined') {
 
   // Función para inspeccionar el estado actual de los iconos
   (window as any).inspectSkillIcons = () => {
-    console.log('📊 Current window location:', window.location.href);
-    console.log('📊 Base URI:', document.baseURI);
-    console.log('📊 Origin:', window.location.origin);
-
     // Listar todos los elementos img con src que contenga svg
     const svgImages = Array.from(document.querySelectorAll('img[src*="svg"]'));
-    console.log(`📊 Found ${svgImages.length} SVG images in DOM:`);
-
     svgImages.forEach((img, index) => {
       const imgElement = img as HTMLImageElement;
-      console.log(`${index + 1}. ${imgElement.alt}:`, {
-        src: imgElement.src,
-        naturalWidth: imgElement.naturalWidth,
-        naturalHeight: imgElement.naturalHeight,
-        complete: imgElement.complete,
-        loaded: imgElement.naturalWidth > 0,
-      });
     });
 
     return {
@@ -609,8 +575,6 @@ if (import.meta.env.DEV && typeof window !== 'undefined') {
       location: window.location.href,
     };
   };
-
-  console.log('🛠️ Debug tools available:');
   console.log('- debugSvgPaths() - Test common SVG paths');
   console.log('- inspectSkillIcons() - Inspect current icon state');
 }

@@ -1,10 +1,14 @@
 import { Skill } from '../models/index.js';
+import { logger } from '../utils/logger';
 
 export const skillsController = {
   // Obtener todas las habilidades
   getSkills: async (req: any, res: any): Promise<void> => {
     try {
-      const userId = req.query.userId || 1;
+      // Usar el userId resuelto por el middleware, fallback a query original
+      const userId = req.resolvedUserId || req.query.userId || 1;
+
+      logger.debug('🛠️ Skills Controller - userId final:', userId);
 
       // MongoDB-only implementation
       const skills = await Skill.find({ user_id: userId }).sort({ order_index: 1, _id: 1 }).lean();
@@ -16,7 +20,7 @@ export const skillsController = {
         }))
       );
     } catch (error: any) {
-      console.error('Error al obtener skills:', error);
+      logger.error('Error al obtener skills:', error);
       res.status(500).json({ error: 'Error al obtener las habilidades' });
     }
   },
@@ -43,14 +47,14 @@ export const skillsController = {
       });
 
       await skill.save();
-      console.log('✅ Habilidad creada exitosamente:', skill._id);
+      logger.debug('✅ Habilidad creada exitosamente:', skill._id);
 
       res.status(201).json({
         ...skill.toObject(),
         id: skill._id,
       });
     } catch (error: any) {
-      console.error('Error al crear skill:', error);
+      logger.error('Error al crear skill:', error);
       res.status(500).json({ error: 'Error al crear la habilidad' });
     }
   },
@@ -85,13 +89,13 @@ export const skillsController = {
         return;
       }
 
-      console.log('✅ Habilidad actualizada exitosamente:', skill._id);
+      logger.debug('✅ Habilidad actualizada exitosamente:', skill._id);
       res.json({
         ...skill,
         id: skill._id,
       });
     } catch (error: any) {
-      console.error('Error al actualizar skill:', error);
+      logger.error('Error al actualizar skill:', error);
       res.status(500).json({ error: 'Error al actualizar la habilidad' });
     }
   },
@@ -107,10 +111,10 @@ export const skillsController = {
         return;
       }
 
-      console.log('✅ Habilidad eliminada exitosamente:', req.params.id);
+      logger.debug('✅ Habilidad eliminada exitosamente:', req.params.id);
       res.json({ message: 'Habilidad eliminada correctamente' });
     } catch (error: any) {
-      console.error('Error al eliminar skill:', error);
+      logger.error('Error al eliminar skill:', error);
       res.status(500).json({ error: 'Error al eliminar la habilidad' });
     }
   },

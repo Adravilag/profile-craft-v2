@@ -16,7 +16,8 @@ vi.mock('@/services/endpoints', () => ({
     getUserProfile: vi.fn().mockResolvedValue({
       id: 1,
       name: 'Adrian Vila',
-      email: 'adavilag.contact@gmail.com',
+      email: 'admin@example.com', // Email privado de autenticación
+      email_contact: 'adavilag.contact@gmail.com', // Email público para contacto
       linkedin_url: 'https://linkedin.com/in/adravilag',
       github_url: 'https://github.com/adravilag',
       location: 'Madrid, España',
@@ -29,7 +30,8 @@ vi.mock('@/services/endpoints', () => ({
 const mockProfile = {
   id: 1,
   name: 'Adrian Vila',
-  email: 'adavilag.contact@gmail.com',
+  email: 'admin@example.com', // Email privado de autenticación
+  email_contact: 'adavilag.contact@gmail.com', // Email público para contacto
   linkedin_url: 'https://linkedin.com/in/adravilag',
   github_url: 'https://github.com/adravilag',
   location: 'Madrid, España',

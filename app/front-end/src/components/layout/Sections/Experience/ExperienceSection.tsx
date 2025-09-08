@@ -97,7 +97,6 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
 
   // Funciones de manejo para administración usando los hooks
   const handleEditExperience = async (experience: Experience) => {
-    console.log('handleEditExperience llamado con:', experience);
     try {
       const mod = await import('./components/FormModal');
       const FormModalComp = mod.default;
@@ -113,14 +112,11 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
         isEditing: true,
         initialData: experience,
         onSubmit: async (data: any) => {
-          console.log('Actualizando experiencia:', data);
           // Aquí iría la lógica de actualización
           closeModal('edit-experience');
           refreshAll();
         },
       });
-
-      console.log('Abriendo modal edit-experience');
       openModal('edit-experience', modalContent, {
         title: 'Editar Experiencia',
         disableAutoFocus: true,
@@ -131,7 +127,6 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
   };
 
   const handleEditEducation = async (edu: Education) => {
-    console.log('handleEditEducation llamado con:', edu);
     try {
       const mod = await import('./components/FormModal');
       const FormModalComp = mod.default;
@@ -147,14 +142,11 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
         isEditing: true,
         initialData: edu,
         onSubmit: async (data: any) => {
-          console.log('Actualizando educación:', data);
           // Aquí iría la lógica de actualización
           closeModal('edit-education');
           refreshAll();
         },
       });
-
-      console.log('Abriendo modal edit-education');
       openModal('edit-education', modalContent, {
         title: 'Editar Educación',
         disableAutoFocus: true,
@@ -165,7 +157,6 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
   };
 
   const handleAddEducation = async () => {
-    console.log('handleAddEducation llamado');
     try {
       const mod = await import('./components/FormModal');
       const FormModalComp = mod.default;
@@ -180,14 +171,11 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
         formType: 'education',
         isEditing: false,
         onSubmit: async (data: any) => {
-          console.log('Creando nueva educación:', data);
           // Aquí iría la lógica de creación
           closeModal('add-education');
           refreshAll();
         },
       });
-
-      console.log('Abriendo modal add-education');
       openModal('add-education', modalContent, {
         title: 'Nueva Educación',
         disableAutoFocus: true,
@@ -198,7 +186,6 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
   };
 
   const handleAddExperience = async () => {
-    console.log('handleAddExperience llamado');
     try {
       const mod = await import('./components/FormModal');
       const FormModalComp = mod.default;
@@ -213,14 +200,11 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
         formType: 'experience',
         isEditing: false,
         onSubmit: async (data: any) => {
-          console.log('Creando nueva experiencia:', data);
           // Aquí iría la lógica de creación
           closeModal('add-experience');
           refreshAll();
         },
       });
-
-      console.log('Abriendo modal add-experience');
       openModal('add-experience', modalContent, {
         title: 'Nueva Experiencia',
         disableAutoFocus: true,
@@ -232,7 +216,6 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
 
   // Función para manejar edición desde vista cronológica (puede ser experiencia o educación)
   const handleEditCombined = (item: any) => {
-    console.log('handleEditCombined llamado con:', item);
     if (!item) return;
 
     if (item.type === 'experience') {
@@ -485,12 +468,6 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
                   className={styles.adminBtnDanger}
                   onClick={() => {
                     const eduId = edu._id || edu.id;
-                    console.log('🎯 Educación seleccionada para eliminar:', {
-                      eduId,
-                      title: edu.title,
-                      eduObject: edu,
-                    });
-
                     if (eduId) {
                       handleDeleteEducation(eduId, edu.title);
                     } else {

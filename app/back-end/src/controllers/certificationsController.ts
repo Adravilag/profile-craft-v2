@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
-import { Certification, User } from '../models/index.js';
+import { Certification } from '../models/index.js';
 import mongoose from 'mongoose';
 import { getFirstAdminUserId, resolveUserId } from '../services/userService.js';
+import { logger } from '../utils/logger';
 
 // Usar userService para resolver user ids dinámicos
 
@@ -10,13 +11,13 @@ export const certificationsController = {
   getCertifications: async (req: Request, res: Response): Promise<void> => {
     try {
       const { userId } = req.query;
-      console.log('🏆 Obteniendo certificaciones para usuario:', userId);
+      logger.debug('🏆 Obteniendo certificaciones para usuario:', userId);
 
       // Resolver el user_id dinámico
       let queryUserId = userId;
       if (userId === 'dynamic-admin-id') {
         queryUserId = await getFirstAdminUserId();
-        console.log('🔄 User ID resuelto para certificaciones:', queryUserId);
+        logger.debug('🔄 User ID resuelto para certificaciones:', queryUserId);
       }
 
       // Validar que el userId sea un ObjectId válido
@@ -37,10 +38,10 @@ export const certificationsController = {
         _id: cert._id.toString(),
       }));
 
-      console.log('✅ Certificaciones encontradas:', mappedCertifications.length, 'registros');
+      logger.debug('✅ Certificaciones encontradas:', mappedCertifications.length, 'registros');
       res.json(mappedCertifications);
     } catch (error: any) {
-      console.error('❌ Error obteniendo certificaciones:', error);
+      logger.error('❌ Error obteniendo certificaciones:', error);
       res.status(500).json({ error: 'Error obteniendo certificaciones' });
     }
   },
@@ -57,7 +58,7 @@ export const certificationsController = {
         user_id,
         order_index = 0,
       } = req.body;
-      console.log('🏆 Creando nueva certificación:', { title, issuer, user_id });
+      logger.debug('🏆 Creando nueva certificación:', { title, issuer, user_id });
 
       if (!title || !issuer || !date) {
         res.status(400).json({ error: 'Título, emisor y fecha son requeridos' });
@@ -66,7 +67,7 @@ export const certificationsController = {
 
       // Resolver el user_id dinámico
       const resolvedUserId = await resolveUserId(user_id);
-      console.log('🔄 User ID resuelto:', resolvedUserId);
+      logger.debug('🔄 User ID resuelto:', resolvedUserId);
 
       // Validar que el ID sea un ObjectId válido
       if (!mongoose.Types.ObjectId.isValid(resolvedUserId)) {
@@ -86,7 +87,7 @@ export const certificationsController = {
         order_index,
       });
       await newCertification.save();
-      console.log('✅ Certificación creada exitosamente:', newCertification._id);
+      logger.debug('✅ Certificación creada exitosamente:', newCertification._id);
 
       // Mapear _id a id para compatibilidad con frontend
       const responseData = {
@@ -97,7 +98,7 @@ export const certificationsController = {
 
       res.status(201).json(responseData);
     } catch (error: any) {
-      console.error('❌ Error creando certificación:', error);
+      logger.error('❌ Error creando certificación:', error);
       res.status(500).json({ error: 'Error creando certificación' });
     }
   },
@@ -135,7 +136,7 @@ export const certificationsController = {
 
       res.json(responseData);
     } catch (error: any) {
-      console.error('Error actualizando certificación:', error);
+      logger.error('Error actualizando certificación:', error);
       res.status(500).json({ error: 'Error actualizando certificación' });
     }
   }, // Eliminar certificación (Admin)
@@ -143,11 +144,11 @@ export const certificationsController = {
     try {
       const { id } = req.params;
 
-      console.log('🗑️ Intentando eliminar certificación con ID:', id);
+      logger.debug('🗑️ Intentando eliminar certificación con ID:', id);
 
       // Validar que el ID no sea undefined o inválido
       if (!id || id === 'undefined' || !mongoose.Types.ObjectId.isValid(id)) {
-        console.error('❌ ID de certificación inválido:', id);
+        logger.error('❌ ID de certificación inválido:', id);
         res.status(400).json({ error: 'ID de certificación inválido' });
         return;
       }
@@ -155,15 +156,15 @@ export const certificationsController = {
       const result = await Certification.findByIdAndDelete(id);
 
       if (!result) {
-        console.log('❌ Certificación no encontrada con ID:', id);
+        logger.debug('❌ Certificación no encontrada con ID:', id);
         res.status(404).json({ error: 'Certificación no encontrada' });
         return;
       }
 
-      console.log('✅ Certificación eliminada exitosamente:', id);
+      logger.debug('✅ Certificación eliminada exitosamente:', id);
       res.status(204).send();
     } catch (error: any) {
-      console.error('❌ Error eliminando certificación:', error);
+      logger.error('❌ Error eliminando certificación:', error);
       res.status(500).json({ error: 'Error eliminando certificación' });
     }
   },

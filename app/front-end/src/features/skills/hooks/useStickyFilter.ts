@@ -65,11 +65,9 @@ export const useStickyFilter = ({
       currentSection === sectionId || bodyActive === sectionId || !!sectionElement;
     setIsInSection(isInSkillsSection);
 
-    if (debug) {
-      console.log(
-        `[STICKY_FILTER] Sección actual: ${currentSection}, En sección de habilidades: ${isInSkillsSection}`
-      );
-    }
+    // if (debug) {
+    //   // Aquí se puede agregar logging si se desea
+    // }
   }, [currentSection, sectionId, debug]);
 
   // Función para calcular los rectángulos de los elementos
@@ -131,7 +129,9 @@ export const useStickyFilter = ({
 
     if (shouldBeSticky !== isSticky) {
       setIsSticky(shouldBeSticky);
-      if (debug) console.log(`[STICKY_FILTER] Estado sticky cambiado a: ${shouldBeSticky}`);
+      if (debug) {
+        console.log('Sticky state changed:', shouldBeSticky);
+      }
     }
 
     // Actualizar estilos según el estado usando las medidas actuales

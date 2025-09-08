@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import advancedStyles from './AdvancedEditor.module.css';
 import styles from './ProjectEditor.module.css';
+import MediaLibrary from '@features/projects/components/ProjectEditor/plugins/MediaLibrary';
 
 // Props del editor
 
@@ -816,6 +817,10 @@ const LexicalEditorNew: React.FC<SimpleLexicalEditorProps> = ({
             : ''
       }`}
     >
+      {/* Biblioteca de medios */}
+      {showMediaLibrary && (
+        <MediaLibrary onSelect={handleMediaSelection} onClose={() => setShowMediaLibrary(false)} />
+      )}
       {/* Selector de modo de vista */}
       <div className={advancedStyles.editorToolbar}>
         <div className={advancedStyles.viewModeSelector}>

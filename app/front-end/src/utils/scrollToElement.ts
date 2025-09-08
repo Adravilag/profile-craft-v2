@@ -4,7 +4,9 @@ let animId: number | null = null;
 export function cancelScroll() {
   try {
     if (animId) cancelAnimationFrame(animId);
-  } catch (e) {}
+  } catch {
+    // no-op
+  }
   animId = null;
 }
 
@@ -48,7 +50,9 @@ export function scrollToElement(
       if (animId) {
         try {
           cancelAnimationFrame(animId);
-        } catch (e) {}
+        } catch {
+          // no-op
+        }
         animId = null;
       }
 
@@ -74,7 +78,7 @@ export function scrollToElement(
       };
 
       animId = requestAnimationFrame(step);
-    } catch (err) {
+    } catch {
       // En caso de error, fallback instantáneo
       try {
         if (typeof targetElOrTop === 'number') window.scrollTo(0, targetElOrTop);
@@ -83,7 +87,9 @@ export function scrollToElement(
             0,
             Math.round(targetElOrTop.getBoundingClientRect().top + window.scrollY)
           );
-      } catch (e) {}
+      } catch {
+        // no-op
+      }
       resolve();
     }
   });

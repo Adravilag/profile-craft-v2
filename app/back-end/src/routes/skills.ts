@@ -1,11 +1,12 @@
 import express from 'express';
 import { skillsController } from '../controllers/skillsController.js';
 import { authenticateAdmin } from '../middleware/auth.js';
+import { publicIdMiddleware } from '../middleware/publicId.js';
 
 const router = express.Router();
 
 // Rutas públicas
-router.get('/', skillsController.getSkills);
+router.get('/', publicIdMiddleware.resolveUserIdQuery, skillsController.getSkills);
 
 // Rutas de administración
 router.post('/', authenticateAdmin, skillsController.createSkill);

@@ -386,7 +386,6 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
           // Unconditional console log of payload so it's visible in DevTools
           // además de usar debugLog si está activado
           // eslint-disable-next-line no-console
-          console.log('📤 Payload createExperience:', experienceData);
           try {
             const { debugLog } = await import('@/utils/debugConfig');
             debugLog.api('📤 Payload createExperience:', experienceData);

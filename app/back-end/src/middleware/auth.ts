@@ -1,14 +1,33 @@
-import express from 'express';
+// import express from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '../config/index.js';
 import { securityMiddleware } from './security.js';
+import { logger } from '../utils/logger';
 
 // Middleware de autenticación básica (cualquier usuario autenticado)
 export const authenticate = (req: any, res: any, next: any): void => {
   // Leer token desde cookie httpOnly
   const token = req.cookies?.portfolio_auth_token;
-
   if (!token) {
+    // Logs de ayuda en desarrollo para diagnosticar por qué no llega la cookie
+    if (process.env.NODE_ENV !== 'production') {
+      try {
+        const origin = req.get('Origin') || req.get('Referer') || 'no-origin';
+        const cookieHeader = !!req.headers?.cookie;
+        const cookieKeys = Object.keys(req.cookies || {});
+        logger.debug(
+          '[auth] Token no encontrado - Origin:',
+          origin,
+          'hasCookieHeader:',
+          cookieHeader,
+          'cookieKeys:',
+          cookieKeys
+        );
+      } catch {
+        // ignore logging errors
+      }
+    }
+
     res.status(401).json({ error: 'Token de acceso requerido' });
     return;
   }
@@ -28,7 +47,7 @@ export const authenticate = (req: any, res: any, next: any): void => {
     req.user = decoded as jwt.JwtPayload & { role?: string };
     next();
   } catch (error) {
-    console.error('Error verificando token:', error);
+    logger.error('Error verificando token:', error);
     res.status(403).json({ error: 'Token inválido' });
   }
 };
@@ -58,7 +77,43 @@ export const authenticateAdmin = (req: any, res: any, next: any): void => {
     req.user = decoded as jwt.JwtPayload & { role?: string };
     next();
   } catch (error) {
-    console.error('❌ Error verificando token admin:', error);
+    logger.error('❌ Error verificando token admin:', error);
     res.status(403).json({ error: 'Token inválido' });
+  }
+};
+
+// Middleware opcional: si existe token intenta decodificar y setear req.user,
+// pero no falla si no hay token (útil para endpoints públicos que quieren
+// conocer al usuario si está autenticado sin exigirlo).
+export const optionalAuth = (req: any, res: any, next: any): void => {
+  const token = req.cookies?.portfolio_auth_token;
+  if (!token) {
+    // No hay token: continuar sin error
+    return next();
+  }
+
+  // Si el token está en blacklist, no bloquear: simplemente continuar
+  if (securityMiddleware.isTokenBlacklisted(token)) {
+    if (process.env.NODE_ENV !== 'production') {
+      logger.debug('[optionalAuth] token en blacklist, continuando sin usuario');
+    }
+    return next();
+  }
+
+  try {
+    const decoded = jwt.verify(token, config.JWT_SECRET);
+    if (typeof decoded === 'string' || !decoded) {
+      if (process.env.NODE_ENV !== 'production') {
+        logger.debug('[optionalAuth] token inválido al intentar decodificar');
+      }
+      return next();
+    }
+    req.user = decoded as jwt.JwtPayload & { role?: string };
+    return next();
+  } catch (error) {
+    if (process.env.NODE_ENV !== 'production') {
+      logger.error('[optionalAuth] error verificando token:', (error as any)?.message || error);
+    }
+    return next();
   }
 };

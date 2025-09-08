@@ -7,6 +7,7 @@ export { useLanguage } from './useLanguage';
 export { useThemeManager } from './useThemeManager';
 export { useTypingRotator } from './useTypingRotator';
 export { useSkills } from './useSkills';
+export { useUserPattern } from './useUserPattern';
 
 // Tipos exportados
 export type { ProjectTheme } from '../../../../../contexts/ThemeContext';

@@ -21,10 +21,7 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const openModal = React.useCallback(
     (id: string, content: React.ReactNode, props?: Record<string, any>) => {
       // Debug
-      // eslint-disable-next-line no-console
-      console.debug('[ModalContext] openModal request', { id });
-
-      // If content is a React element, clone it with a unique key to force React to remount
+      // eslint-disable-next-line no-console// If content is a React element, clone it with a unique key to force React to remount
       let finalContent = content;
       try {
         if (React.isValidElement(content)) {
@@ -67,8 +64,6 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const closeModal = React.useCallback((id?: string) => {
     // Debug
     // eslint-disable-next-line no-console
-    console.debug('[ModalContext] closeModal request', { id });
-
     setActiveModal(current => {
       if (!current) return null;
       if (!id || current.id === id) {

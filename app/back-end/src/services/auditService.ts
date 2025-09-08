@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { logger } from '../utils/logger';
 
 // Construir ruta de logs relativa al archivo actual para evitar problemas de cwd
 const __filename = fileURLToPath(import.meta.url);
@@ -11,7 +12,7 @@ const auditLog = path.join(logsDir, 'audit.log');
 try {
   if (!fs.existsSync(logsDir)) fs.mkdirSync(logsDir, { recursive: true });
 } catch (e) {
-  console.error('No se pudo crear directorio de logs:', e);
+  logger.error('No se pudo crear directorio de logs:', e);
 }
 
 export const logSentinelUsage = async (
@@ -32,13 +33,13 @@ export const logSentinelUsage = async (
 
     const line = JSON.stringify(entry) + '\n';
     // Log to console
-    console.log('📋 AUDIT:', entry);
+    logger.debug('📋 AUDIT:', entry);
     // Append to audit log file (best-effort)
     fs.appendFile(auditLog, line, err => {
-      if (err) console.error('Error escribiendo audit log:', err);
+      if (err) logger.error('Error escribiendo audit log:', err);
     });
   } catch (error) {
-    console.error('Error en logSentinelUsage:', error);
+    logger.error('Error en logSentinelUsage:', error);
   }
 };
 

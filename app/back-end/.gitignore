@@ -39,9 +39,7 @@ data/
 # Environment variables
 .env
 .env.development.local
-.env.test.local
 .env.production.local
-.env.local
 
 # Runtime data
 pids
@@ -52,9 +50,6 @@ pids
 # Coverage directory used by tools like istanbul
 coverage
 *.lcov
-
-# nyc test coverage
-.nyc_output
 
 # TypeScript cache
 *.tsbuildinfo
@@ -91,11 +86,8 @@ out
 # DynamoDB Local files
 .dynamodb/
 
-# TernJS port file
+# Yarn PnP
 .tern-port
-
-# Stores VSCode versions used for testing VSCode extensions
-.vscode-test
 
 # yarn v2
 .yarn/cache
@@ -140,14 +132,10 @@ Thumbs.db
 # uploads/
 
 # Scripts de desarrollo y archivos temporales
-test-*.js
 check_*.js
 list_*.js
 add-*.js
 migrate*.js
-*Test.js
-*test.js
-*.spec.js
 
 # Archivos JavaScript compilados desde TypeScript (ya que usamos TypeScript)
 *.js

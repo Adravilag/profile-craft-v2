@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
-import { Education, User } from '../models/index.js';
+import { Education } from '../models/index.js';
 import mongoose from 'mongoose';
 import { getFirstAdminUserId, resolveUserId } from '../services/userService.js';
+import { logger } from '../utils/logger';
 
 // Usar userService para resolver user ids dinámicos
 
@@ -10,14 +11,14 @@ export const educationController = {
   getEducation: async (req: Request, res: Response): Promise<void> => {
     try {
       const { userId } = req.query;
-      console.log('🎓 Obteniendo educación para usuario:', userId);
+      logger.debug('🎓 Obteniendo educación para usuario:', userId);
 
       let queryUserId = userId;
 
       // Si el userId es 'dynamic-admin-id', buscar el primer usuario admin
       if (userId === 'dynamic-admin-id') {
         queryUserId = await getFirstAdminUserId();
-        console.log('🔄 User ID resuelto para dynamic-admin-id:', queryUserId);
+        logger.debug('🔄 User ID resuelto para dynamic-admin-id:', queryUserId);
       }
 
       // Validar que el userId sea un ObjectId válido
@@ -31,7 +32,7 @@ export const educationController = {
         .sort({ order_index: 1, start_date: -1 })
         .lean();
 
-      console.log('✅ Educación encontrada:', education.length, 'registros');
+      logger.debug('✅ Educación encontrada:', education.length, 'registros');
 
       // Mapear los datos para incluir el id junto con _id para compatibilidad con frontend
       const mappedEducation = education.map(edu => ({
@@ -41,34 +42,11 @@ export const educationController = {
 
       res.json(mappedEducation);
     } catch (error: any) {
-      console.error('❌ Error obteniendo educación:', error);
+      logger.error('❌ Error obteniendo educación:', error);
       res.status(500).json({ error: 'Error obteniendo educación' });
     }
   },
 
-  // Método de debug para obtener todos los IDs de educación
-  debugEducationIds: async (req: Request, res: Response): Promise<void> => {
-    try {
-      const allEducation = await Education.find().select('_id title user_id').lean();
-      console.log('🔍 DEBUG: Todos los IDs de educación en la base de datos:');
-      allEducation.forEach(edu => {
-        console.log(`   - ID: ${edu._id}, Título: ${edu.title}, Usuario: ${edu.user_id}`);
-      });
-
-      res.json({
-        count: allEducation.length,
-        educations: allEducation.map(edu => ({
-          id: edu._id.toString(),
-          _id: edu._id.toString(),
-          title: edu.title,
-          user_id: edu.user_id,
-        })),
-      });
-    } catch (error: any) {
-      console.error('❌ Error en debug de educación:', error);
-      res.status(500).json({ error: 'Error en debug de educación' });
-    }
-  },
   // Crear nueva educación (Admin)
   createEducation: async (req: Request, res: Response): Promise<void> => {
     try {
@@ -85,7 +63,7 @@ export const educationController = {
         logo_image,
       } = req.body;
 
-      console.log('🎓 Creando nueva educación:', { title, institution, user_id });
+      logger.debug('🎓 Creando nueva educación:', { title, institution, user_id });
 
       if (!title || !institution || !start_date) {
         res.status(400).json({ error: 'Título, institución y fecha de inicio son requeridos' });
@@ -94,7 +72,7 @@ export const educationController = {
 
       // Resolver el user_id dinámico
       const resolvedUserId = await resolveUserId(user_id);
-      console.log('🔄 User ID resuelto:', resolvedUserId);
+      logger.debug('🔄 User ID resuelto:', resolvedUserId);
 
       // Validar que el ID sea un ObjectId válido
       if (!mongoose.Types.ObjectId.isValid(resolvedUserId)) {
@@ -117,10 +95,10 @@ export const educationController = {
       });
 
       await newEducation.save();
-      console.log('✅ Educación creada exitosamente:', newEducation._id);
+      logger.debug('✅ Educación creada exitosamente:', newEducation._id);
       res.status(201).json(newEducation);
     } catch (error: any) {
-      console.error('❌ Error creando educación:', error);
+      logger.error('❌ Error creando educación:', error);
       res.status(500).json({ error: 'Error creando educación' });
     }
   },
@@ -163,10 +141,10 @@ export const educationController = {
         return;
       }
 
-      console.log('✅ Educación actualizada exitosamente:', updatedEducation._id);
+      logger.debug('✅ Educación actualizada exitosamente:', updatedEducation._id);
       res.json(updatedEducation);
     } catch (error: any) {
-      console.error('Error actualizando educación:', error);
+      logger.error('Error actualizando educación:', error);
       res.status(500).json({ error: 'Error actualizando educación' });
     }
   },
@@ -175,25 +153,25 @@ export const educationController = {
     try {
       const { id } = req.params;
 
-      console.log('🗑️ Intentando eliminar educación con ID:', id);
-      console.log('🔍 Tipo de ID:', typeof id);
-      console.log('🔍 Longitud del ID:', id ? id.length : 'undefined');
-      console.log('🔍 ID como string:', JSON.stringify(id));
+      logger.debug('🗑️ Intentando eliminar educación con ID:', id);
+      logger.debug('🔍 Tipo de ID:', typeof id);
+      logger.debug('🔍 Longitud del ID:', id ? id.length : 'undefined');
+      logger.debug('🔍 ID como string:', JSON.stringify(id));
 
       // Validar que el ID no sea undefined o vacío
       if (!id || id === 'undefined' || id.trim() === '') {
-        console.error('❌ ID de educación vacío o indefinido:', id);
+        logger.error('❌ ID de educación vacío o indefinido:', id);
         res.status(400).json({ error: 'ID de educación requerido' });
         return;
       }
 
       // Limpiar el ID removiendo caracteres no válidos y espacios en blanco
       const cleanId = id.trim().replace(/[^a-fA-F0-9]/g, '');
-      console.log('🧹 ID limpio:', cleanId);
+      logger.debug('🧹 ID limpio:', cleanId);
 
       // Validar que el ID tenga el formato correcto de ObjectId (24 caracteres hexadecimales)
       if (cleanId.length !== 24) {
-        console.error(
+        logger.error(
           '❌ ID de educación con longitud incorrecta:',
           cleanId,
           'Longitud:',
@@ -205,7 +183,7 @@ export const educationController = {
 
       // Validar que el ID sea un ObjectId válido
       if (!mongoose.Types.ObjectId.isValid(cleanId)) {
-        console.error('❌ ID de educación no es un ObjectId válido:', cleanId);
+        logger.error('❌ ID de educación no es un ObjectId válido:', cleanId);
         res.status(400).json({ error: 'ID de educación inválido' });
         return;
       }
@@ -214,11 +192,11 @@ export const educationController = {
       const result = await Education.findByIdAndDelete(cleanId);
 
       if (!result) {
-        console.log('❌ Educación no encontrada con ID:', cleanId);
+        logger.debug('❌ Educación no encontrada con ID:', cleanId);
 
         // Intentar buscar si existe un documento con un ID similar
         const allEducation = await Education.find().select('_id title user_id').lean();
-        console.log(
+        logger.debug(
           '📋 IDs existentes de educación:',
           allEducation.map(e => e._id.toString())
         );
@@ -232,7 +210,7 @@ export const educationController = {
         });
 
         if (similarIds.length > 0) {
-          console.log(
+          logger.debug(
             '🔍 IDs similares encontrados:',
             similarIds.map(e => ({
               id: e._id.toString(),
@@ -256,11 +234,11 @@ export const educationController = {
         return;
       }
 
-      console.log('✅ Educación eliminada exitosamente:', cleanId);
+      logger.debug('✅ Educación eliminada exitosamente:', cleanId);
       res.status(204).send();
     } catch (error: any) {
-      console.error('❌ Error eliminando educación:', error);
-      console.error('❌ Stack trace:', error.stack);
+      logger.error('❌ Error eliminando educación:', error);
+      logger.error('❌ Stack trace:', error.stack);
       res.status(500).json({ error: 'Error eliminando educación' });
     }
   },
