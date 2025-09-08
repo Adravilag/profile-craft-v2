@@ -1,6 +1,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '../config/index.js';
+import { securityMiddleware } from './security.js';
 
 // Middleware de autenticación básica (cualquier usuario autenticado)
 export const authenticate = (req: any, res: any, next: any): void => {
@@ -9,6 +10,12 @@ export const authenticate = (req: any, res: any, next: any): void => {
 
   if (!token) {
     res.status(401).json({ error: 'Token de acceso requerido' });
+    return;
+  }
+
+  // Verificar si el token está en blacklist
+  if (securityMiddleware.isTokenBlacklisted(token)) {
+    res.status(401).json({ error: 'Token invalidado' });
     return;
   }
 
@@ -33,6 +40,12 @@ export const authenticateAdmin = (req: any, res: any, next: any): void => {
 
   if (!token) {
     res.status(401).json({ error: 'Token de acceso requerido' });
+    return;
+  }
+
+  // Verificar si el token está en blacklist
+  if (securityMiddleware.isTokenBlacklisted(token)) {
+    res.status(401).json({ error: 'Token invalidado' });
     return;
   }
 

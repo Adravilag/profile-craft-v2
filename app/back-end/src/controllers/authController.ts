@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { User } from '../models/index.js';
 import { config } from '../config/index.js';
+import { securityMiddleware } from '../middleware/security.js';
 
 export const authController = {
   // Verificar si existe al menos un usuario registrado
@@ -93,12 +94,14 @@ export const authController = {
 
       const user = await User.findOne({ email });
       if (!user) {
+        securityMiddleware.logSecurityEvent('LOGIN_FAILED_USER_NOT_FOUND', { email }, req);
         res.status(401).json({ error: 'Credenciales inválidas' });
         return;
       }
 
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
+        securityMiddleware.logSecurityEvent('LOGIN_FAILED_WRONG_PASSWORD', { email }, req);
         res.status(401).json({ error: 'Credenciales inválidas' });
         return;
       }
@@ -110,7 +113,7 @@ export const authController = {
           role: user.role,
         },
         config.JWT_SECRET,
-        { expiresIn: '7d' }
+        { expiresIn: '15m' } // Reducido de 7d a 15m para mayor seguridad
       );
 
       // Enviar token en cookie httpOnly
@@ -118,8 +121,10 @@ export const authController = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict',
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
+        maxAge: 15 * 60 * 1000, // 15 minutos
       });
+
+      securityMiddleware.logSecurityEvent('LOGIN_SUCCESS', { email, userId: user._id }, req);
 
       res.json({
         message: 'Inicio de sesión exitoso',
@@ -162,13 +167,28 @@ export const authController = {
 
   // Cerrar sesión
   logout: async (req: any, res: any): Promise<void> => {
-    // Limpiar la cookie httpOnly
-    res.clearCookie('portfolio_auth_token', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-    });
-    res.json({ message: 'Sesión cerrada exitosamente' });
+    try {
+      // Obtener el token antes de limpiarlo
+      const token = req.cookies?.portfolio_auth_token;
+
+      if (token) {
+        // Agregar token a blacklist
+        securityMiddleware.addToBlacklist(token);
+        securityMiddleware.logSecurityEvent('LOGOUT_SUCCESS', { userId: req.user?.userId }, req);
+      }
+
+      // Limpiar la cookie httpOnly
+      res.clearCookie('portfolio_auth_token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+      });
+
+      res.json({ message: 'Sesión cerrada exitosamente' });
+    } catch (error: any) {
+      console.error('Error en logout:', error);
+      res.status(500).json({ error: 'Error al cerrar sesión' });
+    }
   },
 
   // Token de desarrollo

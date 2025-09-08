@@ -28,6 +28,7 @@ import aboutRoutes from './src/routes/aboutRoutes.js';
 // Servicios
 import { emailService } from './src/services/emailService.js';
 import { healthCheck, readinessCheck } from './src/controllers/healthController.js';
+import { securityMiddleware } from './src/middleware/security.js';
 
 // Obtener el directorio actual
 const __filename = fileURLToPath(import.meta.url);
@@ -171,6 +172,11 @@ app.use(express.json({ limit: appConfig.API_LIMITS.JSON_LIMIT }));
 app.use(express.urlencoded({ limit: appConfig.API_LIMITS.URL_ENCODED_LIMIT, extended: true }));
 // Permitir parseo de cookies (necesario para leer portfolio_auth_token desde req.cookies)
 app.use(cookieParser());
+
+// Middlewares de seguridad globales
+app.use(securityMiddleware.removeServerHeaders);
+app.use(securityMiddleware.securityHeaders);
+app.use(securityMiddleware.sanitizeInput);
 
 // Configurar directorio estático para archivos subidos
 app.use('/uploads', express.static(path.join(__dirname, appConfig.FILE_UPLOAD.UPLOAD_DIR)));
