@@ -1232,22 +1232,6 @@
   background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 50%, #0a0a0a 100%);
 }
 
-/* Light Theme (if needed) */
-.light .terminal-container {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-color: #dee2e6;
-  color: #212529;
-}
-
-.light .terminal-content {
-  background: #ffffff;
-  color: #212529;
-}
-
-.light .terminal-prompt {
-  color: #0056b3;
-}
-
-.light .command-text {
-  color: #e83e8c;
-}
+/* ==========================================
+   END OF TERMINAL MACOS STYLE - DARK ONLY
+   ========================================== */

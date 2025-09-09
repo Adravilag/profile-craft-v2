@@ -112,16 +112,6 @@
   --color-primary-foreground: #fff;
 }
 
-/* Light mode (default) */
-.languageToggle,
-.langButton,
-.select {
-  --color-surface: #ffffff;
-  --color-surface-hover: #f9fafb;
-  --color-border: #d1d5db;
-  --color-border-hover: #9ca3af;
-  --color-text: #111827;
-  --color-text-secondary: #6b7280;
-  --color-primary: #3b82f6;
-  --color-primary-foreground: #ffffff;
-}
+/* ==========================================
+   END OF LANGUAGE SELECTOR - DARK ONLY
+   ========================================== */

@@ -95,26 +95,9 @@
   --terminal-complete: var(--color-success);
 }
 
-/* Light theme overrides for terminal */
-@media (prefers-color-scheme: light) {
-  :root {
-    --terminal-bg: var(--bg-primary);
-    --terminal-surface: var(--bg-secondary);
-    --terminal-border: var(--border-primary);
-    --terminal-text: var(--text-primary);
-    --terminal-text-muted: var(--text-secondary);
-    --terminal-prompt: var(--color-accent);
-    --terminal-command: var(--text-primary);
-    --terminal-output: var(--text-secondary);
-    --terminal-selection: rgb(9, 105, 218, 0.2);
-    --terminal-header-bg: var(--bg-tertiary);
-    --terminal-header-bg-rgb: 234, 238, 242; /* Light theme RGB values */
-    --terminal-scrollbar-track: var(--bg-secondary);
-    --terminal-scrollbar-thumb: var(--border-primary);
-    --terminal-scrollbar-thumb-hover: var(--color-accent);
-    --color-accent-rgb: 9, 105, 218; /* Light theme accent RGB */
-  }
-}
+/* ==========================================
+   END OF TERMINAL TOKENS - DARK THEME ONLY
+   ========================================== */
 
 /* ===========================================
    TERMINAL THEME VARIANTS

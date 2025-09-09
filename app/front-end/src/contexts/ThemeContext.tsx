@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 
-export type ProjectTheme = 'light' | 'dark' | 'sepia' | 'auto';
+export type ProjectTheme = 'dark';
 export type ReadingMode = 'normal' | 'focus' | 'minimal';
 
 interface ThemePreferences {
@@ -28,12 +28,12 @@ interface ThemeContextType {
 }
 
 const defaultPreferences: ThemePreferences = {
-  theme: 'auto',
+  theme: 'dark',
   readingMode: 'normal',
   fontSize: 18,
   lineHeight: 1.6,
   maxWidth: 650,
-  autoNightMode: true,
+  autoNightMode: false,
   nightModeStart: '20:00',
   nightModeEnd: '06:00',
 };
@@ -72,43 +72,20 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   // Flag para prevenir bucles infinitos
   const [isEmittingEvent, setIsEmittingEvent] = useState(false);
 
-  // Determinar tema actual
+  // Determinar tema actual - siempre oscuro
   const getCurrentTheme = (): Exclude<ProjectTheme, 'auto'> => {
-    if (preferences.theme !== 'auto') {
-      return preferences.theme;
-    }
-
-    // Modo automático: priorizar tema global del sistema de CV si existe
-    const globalThemePreference = localStorage.getItem('cv-theme');
-    if (globalThemePreference && globalThemePreference !== 'auto') {
-      if (globalThemePreference === 'light' || globalThemePreference === 'dark') {
-        return globalThemePreference;
-      }
-    }
-
-    // Modo automático con horario nocturno
-    if (preferences.autoNightMode) {
-      const now = new Date();
-      const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-
-      if (currentTime >= preferences.nightModeStart || currentTime <= preferences.nightModeEnd) {
-        return 'dark';
-      }
-    }
-
-    return systemPrefersDark ? 'dark' : 'light';
+    return 'dark';
   };
 
-  const [currentTheme, setCurrentTheme] = useState<Exclude<ProjectTheme, 'auto'>>(getCurrentTheme);
+  const [currentTheme, setCurrentTheme] = useState<Exclude<ProjectTheme, 'auto'>>('dark');
 
   // Sincronización simplificada con localStorage
   useEffect(() => {
     const checkGlobalThemeChange = () => {
-      if (preferences.theme === 'auto') {
-        const newTheme = getCurrentTheme();
-        if (newTheme !== currentTheme) {
-          setCurrentTheme(newTheme);
-        }
+      // Siempre dark theme
+      const newTheme = 'dark';
+      if (newTheme !== currentTheme) {
+        setCurrentTheme(newTheme);
       }
     };
 
@@ -116,7 +93,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     const interval = setInterval(checkGlobalThemeChange, 500);
 
     return () => clearInterval(interval);
-  }, [preferences.theme, currentTheme]);
+  }, [currentTheme]);
 
   // Escuchar cambios en preferencia del sistema
   useEffect(() => {
@@ -131,11 +108,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
   // Actualizar tema cuando cambien las preferencias del sistema
   useEffect(() => {
-    if (preferences.theme === 'auto') {
-      const newTheme = getCurrentTheme();
-      setCurrentTheme(newTheme);
-    }
-  }, [preferences, systemPrefersDark]);
+    // Siempre tema oscuro
+    setCurrentTheme('dark');
+  }, [preferences]);
 
   // Guardar preferencias en localStorage
   useEffect(() => {
@@ -178,23 +153,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
   // Verificar modo nocturno automático cada minuto
   useEffect(() => {
-    if (!preferences.autoNightMode || preferences.theme !== 'auto') return;
-
-    const interval = setInterval(() => {
-      const newTheme = getCurrentTheme();
-      if (newTheme !== currentTheme) {
-        setCurrentTheme(newTheme);
-      }
-    }, 60000); // Cada minuto
-
-    return () => clearInterval(interval);
-  }, [
-    preferences.autoNightMode,
-    preferences.theme,
-    preferences.nightModeStart,
-    preferences.nightModeEnd,
-    currentTheme,
-  ]);
+    // No hay modo automático, siempre oscuro
+    return;
+  }, []);
 
   const updatePreference = <K extends keyof ThemePreferences>(
     key: K,
@@ -202,18 +163,15 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   ) => {
     setPreferences(prev => ({ ...prev, [key]: value }));
 
-    // Si el usuario cambió el tema manualmente (no auto), sincronizar con el sistema global
-    if (key === 'theme' && value !== 'auto') {
-      const newTheme = value as Exclude<ProjectTheme, 'auto'>;
-      if (newTheme === 'light' || newTheme === 'dark') {
-        localStorage.setItem('cv-theme', newTheme);
+    // Si el usuario cambió el tema manualmente, sincronizar con el sistema global
+    if (key === 'theme' && value === 'dark') {
+      localStorage.setItem('cv-theme', 'dark');
 
-        // Emitir evento para notificar al sistema global
-        const syncEvent = new CustomEvent('projectThemeSync', {
-          detail: { theme: newTheme },
-        });
-        window.dispatchEvent(syncEvent);
-      }
+      // Emitir evento para notificar al sistema global
+      const syncEvent = new CustomEvent('projectThemeSync', {
+        detail: { theme: 'dark' },
+      });
+      window.dispatchEvent(syncEvent);
     }
   };
 

@@ -790,12 +790,11 @@ padding: var(--space-6);
 ### **Dark Mode Support**
 
 ```css
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--color-neutral-900);
-    --color-surface: var(--color-neutral-800);
-    --color-text: var(--color-neutral-100);
-  }
+/* Solo modo oscuro - no hay modo claro */
+:root {
+  --color-background: var(--color-neutral-900);
+  --color-surface: var(--color-neutral-800);
+  --color-text: var(--color-neutral-100);
 }
 ```
 

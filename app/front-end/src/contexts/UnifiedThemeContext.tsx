@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 
 // Tipos unificados
-export type Theme = 'light' | 'dark' | 'auto';
+export type Theme = 'dark';
 export type ReadingMode = 'normal' | 'focus' | 'minimal';
 
 interface ThemePreferences {
@@ -48,12 +48,12 @@ export interface UnifiedThemeContextType {
 }
 
 const defaultPreferences: ThemePreferences = {
-  globalTheme: 'auto',
+  globalTheme: 'dark',
   readingMode: 'normal',
   fontSize: 14,
   lineHeight: 1.6,
   maxWidth: 650,
-  autoNightMode: true,
+  autoNightMode: false,
   nightModeStart: '20:00',
   nightModeEnd: '06:00',
 };
@@ -127,21 +127,8 @@ export const UnifiedThemeProvider: React.FC<UnifiedThemeProviderProps> = ({ chil
 
   // Función para determinar tema efectivo basado en preferencias
   const getEffectiveTheme = (themePreference: Theme): Exclude<Theme, 'auto'> => {
-    if (themePreference !== 'auto') {
-      return themePreference;
-    }
-
-    // Modo automático con horario nocturno
-    if (preferences.autoNightMode) {
-      const now = new Date();
-      const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-
-      if (currentTime >= preferences.nightModeStart || currentTime <= preferences.nightModeEnd) {
-        return 'dark';
-      }
-    }
-
-    return systemPrefersDark ? 'dark' : 'light';
+    // Solo modo oscuro disponible
+    return 'dark';
   };
   // Tema efectivo actual
   const currentGlobalTheme = getEffectiveTheme(preferences.globalTheme);
@@ -188,14 +175,9 @@ export const UnifiedThemeProvider: React.FC<UnifiedThemeProviderProps> = ({ chil
     // Guardar preferencia en localStorage para compatibilidad (tema efectivo)
     localStorage.setItem('cv-theme', currentGlobalTheme);
 
-    // Aplicar clases de modo para compatibilidad
-    if (currentGlobalTheme === 'dark') {
-      body.classList.add('dark-mode');
-      body.classList.remove('light-mode');
-    } else {
-      body.classList.add('light-mode');
-      body.classList.remove('dark-mode');
-    } // Aplicar tema global a elementos de artículos también
+    // Aplicar clases de modo para compatibilidad - siempre modo oscuro
+    body.classList.add('dark-mode');
+    body.classList.remove('light-mode'); // Aplicar tema global a elementos de artículos también
     body.classList.remove('project-theme-light', 'project-theme-dark', 'project-theme-sepia');
     body.classList.add(`project-theme-${currentGlobalTheme}`);
 
@@ -215,10 +197,10 @@ export const UnifiedThemeProvider: React.FC<UnifiedThemeProviderProps> = ({ chil
     body.style.setProperty('--project-line-height', preferences.lineHeight.toString());
     body.style.setProperty('--project-max-width', `${preferences.maxWidth}px`);
 
-    // Actualizar meta theme-color para navegadores móviles
+    // Actualizar meta theme-color para navegadores móviles - siempre modo oscuro
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
-      metaThemeColor.setAttribute('content', currentGlobalTheme === 'dark' ? '#101418' : '#fdfcff');
+      metaThemeColor.setAttribute('content', '#101418');
     }
 
     // Finalizar animación de transición después de la duración de la animación
@@ -248,8 +230,8 @@ export const UnifiedThemeProvider: React.FC<UnifiedThemeProviderProps> = ({ chil
     setPreferences(prev => ({ ...prev, globalTheme: theme }));
   };
   const toggleGlobalTheme = () => {
-    const newTheme = currentGlobalTheme === 'dark' ? 'light' : 'dark';
-    setGlobalTheme(newTheme);
+    // Solo modo oscuro disponible - no hacer nada
+    setGlobalTheme('dark');
   };
 
   const updateReadingPreference = <K extends keyof Omit<ThemePreferences, 'globalTheme'>>(

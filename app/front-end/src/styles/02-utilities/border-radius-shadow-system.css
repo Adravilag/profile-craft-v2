@@ -418,22 +418,6 @@
    THEME-SPECIFIC ADJUSTMENTS
    =========================================== */
 
-/* Light theme shadow adjustments */
-@media (prefers-color-scheme: light) {
-  .shadow-accent {
-    box-shadow: 0 4px 14px rgb(9, 105, 218, 0.15);
-  }
-  .shadow-success {
-    box-shadow: 0 4px 14px rgb(26, 127, 55, 0.15);
-  }
-  .shadow-warning {
-    box-shadow: 0 4px 14px rgb(154, 103, 0, 0.15);
-  }
-  .shadow-error {
-    box-shadow: 0 4px 14px rgb(207, 34, 46, 0.15);
-  }
-}
-
 /* Hack theme adjustments */
 [data-theme='hack'] .card,
 [data-theme='hack'] .btn,

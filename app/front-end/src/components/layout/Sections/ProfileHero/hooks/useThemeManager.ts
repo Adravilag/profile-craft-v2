@@ -28,30 +28,14 @@ export function useThemeManager(): UseThemeManagerReturn {
   );
 
   const getThemeIcon = useCallback(() => {
-    switch (preferences.globalTheme) {
-      case 'light':
-        return '☀️';
-      case 'dark':
-        return '🌙';
-      case 'auto':
-        return '🔄';
-      default:
-        return '🌙';
-    }
-  }, [preferences.globalTheme]);
+    // Solo modo oscuro disponible
+    return '🌙';
+  }, []);
 
   const getThemeLabel = useCallback(() => {
-    switch (preferences.globalTheme) {
-      case 'light':
-        return 'Modo claro';
-      case 'dark':
-        return 'Modo oscuro';
-      case 'auto':
-        return 'Automático';
-      default:
-        return 'Modo oscuro';
-    }
-  }, [preferences.globalTheme]);
+    // Solo modo oscuro disponible
+    return 'Modo oscuro';
+  }, []);
 
   return {
     theme: preferences.globalTheme,
