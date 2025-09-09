@@ -4,7 +4,7 @@ import type { Theme } from '../../../../../contexts/UnifiedThemeContext';
 
 interface UseThemeManagerReturn {
   theme: Theme;
-  currentTheme: 'light' | 'dark';
+  currentTheme: 'dark';
   isDark: boolean;
   setTheme: (theme: Theme) => void;
   getThemeIcon: () => string;

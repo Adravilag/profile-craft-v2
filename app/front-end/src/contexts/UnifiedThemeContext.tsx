@@ -82,7 +82,7 @@ export const UnifiedThemeProvider: React.FC<UnifiedThemeProviderProps> = ({ chil
     let migratedPrefs = { ...defaultPreferences };
 
     // Migrar tema global existente
-    if (oldGlobalTheme && ['light', 'dark', 'auto'].includes(oldGlobalTheme)) {
+    if (oldGlobalTheme && oldGlobalTheme === 'dark') {
       migratedPrefs.globalTheme = oldGlobalTheme as Theme;
     }
 
@@ -177,8 +177,8 @@ export const UnifiedThemeProvider: React.FC<UnifiedThemeProviderProps> = ({ chil
 
     // Aplicar clases de modo para compatibilidad - siempre modo oscuro
     body.classList.add('dark-mode');
-    body.classList.remove('light-mode'); // Aplicar tema global a elementos de artículos también
-    body.classList.remove('project-theme-light', 'project-theme-dark', 'project-theme-sepia');
+    // Aplicar tema global a elementos de artículos también
+    body.classList.remove('project-theme-dark', 'project-theme-sepia');
     body.classList.add(`project-theme-${currentGlobalTheme}`);
 
     // Asegurar que el atributo data-theme en el elemento raíz refleje el tema efectivo

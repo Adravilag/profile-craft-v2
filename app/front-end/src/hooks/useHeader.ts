@@ -191,7 +191,7 @@ export const useHeader = (options: HeaderOptions) => {
 
     try {
       // URL del CV en Google Drive (enlace directo de descarga)
-      const googleDriveFileId = '1vNkB5NRzjiKyrs3ug3y8tkUtyB6IT0sb';
+      const googleDriveFileId = '1K_Sppk7ftVUpa7Kozm8QsdZEyl5hNSe-';
       const downloadUrl = `https://drive.google.com/uc?export=download&id=${googleDriveFileId}`;
 
       // Crear un enlace temporal y hacer clic para descargar

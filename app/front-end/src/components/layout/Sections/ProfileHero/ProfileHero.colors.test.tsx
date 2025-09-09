@@ -73,7 +73,7 @@ vi.mock('@/contexts', () => ({
     logout: vi.fn(),
   }),
   useUnifiedTheme: () => ({
-    currentTheme: 'light',
+    currentGlobalTheme: 'dark',
     themeConfig: {
       colors: {
         primary: '#007acc',

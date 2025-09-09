@@ -132,7 +132,7 @@ const config: any = {
           vendor: ['react', 'react-dom'],
           ui: ['@headlessui/react', '@heroicons/react'],
           router: ['react-router-dom'],
-          utils: ['date-fns', 'lodash'],
+          utils: ['date-fns'],
         },
       },
     },

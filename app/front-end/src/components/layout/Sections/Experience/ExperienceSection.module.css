@@ -54,6 +54,7 @@
   margin: 0 auto;
   padding: 0 1rem;
   display: flex;
+  gap: 12px;
   justify-content: center;
   margin: 12px auto 18px;
 }

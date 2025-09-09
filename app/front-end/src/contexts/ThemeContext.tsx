@@ -122,7 +122,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     const body = document.body;
 
     // Limpiar clases anteriores
-    body.classList.remove('project-theme-light', 'project-theme-dark', 'project-theme-sepia');
+    body.classList.remove('project-theme-dark', 'project-theme-sepia');
     body.classList.remove('reading-mode-normal', 'reading-mode-focus', 'reading-mode-minimal');
 
     // Aplicar tema actual

@@ -29,7 +29,6 @@ export interface Translations {
   profileHero: {
     downloadCV: string;
     generating: string;
-    switchToLightMode: string;
     switchToDarkMode: string;
     toggleLanguage: string;
     available: string;
@@ -525,8 +524,7 @@ const esTranslations: Translations = {
   profileHero: {
     downloadCV: 'Descargar CV',
     generating: 'Generando...',
-    switchToLightMode: 'Cambiar a modo claro',
-    switchToDarkMode: 'Cambiar a modo oscuro',
+    switchToDarkMode: 'Modo oscuro activo',
     toggleLanguage: 'Cambiar idioma',
     available: 'Disponible',
     openToRemote: 'Abierto a remoto / híbrido / freelance',
@@ -1016,8 +1014,7 @@ const enTranslations: Translations = {
   profileHero: {
     downloadCV: 'Download CV',
     generating: 'Generating...',
-    switchToLightMode: 'Switch to light mode',
-    switchToDarkMode: 'Switch to dark mode',
+    switchToDarkMode: 'Dark mode active',
     toggleLanguage: 'Toggle language',
     available: 'Available',
     openToRemote: 'Open to remote / hybrid / freelance',

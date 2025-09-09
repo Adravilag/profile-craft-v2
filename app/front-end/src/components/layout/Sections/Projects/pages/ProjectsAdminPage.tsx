@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useUnifiedTheme } from '@/hooks';
 import useAuthGuard from '@/hooks/useAuthGuard';
 import { SmartNavigation, Footer } from '@/ui';
 import ProjectsAdmin from '../admin/ProjectsAdmin';
@@ -11,7 +10,6 @@ import styles from './ProjectsAdminPage.module.css';
 
 const ProjectsAdminPage: React.FC = () => {
   const location = useLocation();
-  const { currentGlobalTheme, toggleGlobalTheme } = useUnifiedTheme();
 
   const { isLoading, isAuthenticated, shouldRender, error } = useAuthGuard({
     redirectTo: '/',
@@ -76,20 +74,14 @@ const ProjectsAdminPage: React.FC = () => {
                 <h1 className={styles.title}>Administración de Proyectos</h1>
               </div>
               <div className={styles.headerRight}>
-                <button
+                <div
                   className={styles.themeToggle}
-                  onClick={toggleGlobalTheme}
-                  title={
-                    currentGlobalTheme === 'dark' ? 'Cambiar a modo día' : 'Cambiar a modo noche'
-                  }
-                  aria-label={
-                    currentGlobalTheme === 'dark' ? 'Cambiar a modo día' : 'Cambiar a modo noche'
-                  }
+                  title="Modo oscuro activo"
+                  aria-label="Modo oscuro activo"
                 >
-                  <i className={`fas fa-sun ${styles.sunIcon}`}></i>
                   <i className={`fas fa-moon ${styles.moonIcon}`}></i>
-                  <span>{currentGlobalTheme === 'dark' ? 'Modo Día' : 'Modo Noche'}</span>
-                </button>
+                  <span>Modo Oscuro</span>
+                </div>
               </div>
             </div>
           </header>

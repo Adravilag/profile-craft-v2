@@ -324,7 +324,7 @@ const InteractiveTerminalContent: React.FC = () => {
               const restoreTimeout = setTimeout(() => {
                 // Verificar si el tema fue cambiado durante el hack
                 const originalTheme = localStorage.getItem('hack-original-theme');
-                if (originalTheme === 'light' && currentGlobalTheme === 'dark') {
+                if (originalTheme && currentGlobalTheme === 'dark') {
                   // Sonido de "sistema restaurado"
                   if (audioContextRef.current) {
                     const ctx = audioContextRef.current;
@@ -672,9 +672,8 @@ const InteractiveTerminalContent: React.FC = () => {
 
     // Restaurar tema original INMEDIATAMENTE si fue cambiado durante hack (sin delays ni sonidos)
     const originalTheme = localStorage.getItem('hack-original-theme');
-    if (originalTheme === 'light' && currentGlobalTheme === 'dark') {
-      // Restaurar tema inmediatamente sin delays ni sonidos
-      toggleGlobalTheme();
+    if (originalTheme && currentGlobalTheme === 'dark') {
+      // Limpiar el indicador ya que solo usamos modo oscuro
       localStorage.removeItem('hack-original-theme');
     } else {
       // Limpiar el indicador sin cambiar tema

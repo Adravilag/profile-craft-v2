@@ -35,8 +35,7 @@ vi.mock('./hooks', () => ({
     changeLanguage: vi.fn(),
     t: {
       profileHero: {
-        switchToLightMode: 'Switch to light mode',
-        switchToDarkMode: 'Switch to dark mode',
+        switchToDarkMode: 'Dark mode active',
         toggleLanguage: 'Toggle language',
         profilePhotoAlt: 'Profile photo of {name}',
         available: 'Available',

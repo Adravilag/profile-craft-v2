@@ -195,16 +195,12 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
           type="button"
           className={`${styles.topRightButton} transition-all hover:scale-105 active:scale-95`}
           onClick={() => {
-            if (onToggleDarkMode) onToggleDarkMode();
+            // Solo modo oscuro disponible - botón decorativo
           }}
-          aria-pressed={darkMode}
-          title={darkMode ? t.profileHero.switchToLightMode : t.profileHero.switchToDarkMode}
+          aria-pressed={true}
+          title={t.profileHero.switchToDarkMode}
         >
-          {darkMode ? (
-            <i className="fas fa-sun transition-transform hover:rotate-12" aria-hidden="true" />
-          ) : (
-            <i className="fas fa-moon transition-transform hover:rotate-12" aria-hidden="true" />
-          )}
+          <i className="fas fa-moon transition-transform hover:rotate-12" aria-hidden="true" />
         </button>
 
         <button

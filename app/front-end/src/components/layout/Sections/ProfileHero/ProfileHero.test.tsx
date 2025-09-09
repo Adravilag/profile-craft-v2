@@ -214,8 +214,7 @@ vi.mock('@/components/layout/Sections/ProfileHero/hooks/useLanguage', () => ({
           'Desarrollador de soluciones accesibles',
         ],
         profilePhotoAlt: 'Foto de perfil de {name}',
-        switchToLightMode: 'Cambiar a modo claro',
-        switchToDarkMode: 'Cambiar a modo oscuro',
+        switchToDarkMode: 'Modo oscuro activo',
         toggleLanguage: 'Cambiar idioma',
         accountMenu: 'Menú de cuenta',
         logout: 'Cerrar sesión',
@@ -417,7 +416,7 @@ describe('ProfileHero', () => {
 
     // Buscar el contenedor de controles fijos
     const fixedTopRight = await screen.findByRole('button', {
-      name: /cambiar a modo oscuro|cambiar a modo claro/i,
+      name: /modo oscuro activo/i,
     });
     const container = fixedTopRight.closest('div');
 
@@ -446,7 +445,7 @@ describe('ProfileHero', () => {
 
     // Buscar elementos específicos y verificar sus clases
     const themeButton = await screen.findByRole('button', {
-      name: /cambiar a modo oscuro|cambiar a modo claro/i,
+      name: /modo oscuro activo/i,
     });
     expect(themeButton.className).toContain('topRightButton');
     expect(themeButton.className).not.toContain('undefined');

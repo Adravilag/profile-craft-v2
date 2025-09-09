@@ -28,7 +28,7 @@ Object.defineProperty(window, 'matchMedia', {
 
     let matches = false;
     if (isDarkQuery) {
-      matches = false; // Default to light theme
+      matches = true; // Default to dark theme
     } else if (isMobileQuery) {
       // Check window.innerWidth if defined for mobile queries
       const width = window.innerWidth || 1024;
@@ -130,10 +130,10 @@ try {
       const makeNotif = () => ({ showSuccess: _vi.fn(), showError: _vi.fn(), showInfo: _vi.fn() });
       const useNavigation = () => ({ currentSection: '', navigateToSection: _vi.fn() });
       const useUnifiedTheme = () => ({
-        theme: 'light',
+        theme: 'dark',
         setTheme: _vi.fn(),
-        preferences: { globalTheme: 'light' },
-        currentGlobalTheme: 'light',
+        preferences: { globalTheme: 'dark' },
+        currentGlobalTheme: 'dark',
         setGlobalTheme: _vi.fn(),
       });
       return {
@@ -170,10 +170,10 @@ try {
       // UnifiedThemeProvider and hook
       const UnifiedThemeProvider = ({ children }: any) => children;
       const useUnifiedTheme = () => ({
-        theme: 'light',
+        theme: 'dark',
         setTheme: _vi.fn(),
-        preferences: { globalTheme: 'light' },
-        currentGlobalTheme: 'light',
+        preferences: { globalTheme: 'dark' },
+        currentGlobalTheme: 'dark',
         setGlobalTheme: _vi.fn(),
       });
 
@@ -225,10 +225,10 @@ try {
     _vi.mock('@/contexts/UnifiedThemeContext', () => {
       const UnifiedThemeProvider = ({ children }: any) => children;
       const useUnifiedTheme = () => ({
-        theme: 'light',
+        theme: 'dark',
         setTheme: _vi.fn(),
-        preferences: { globalTheme: 'light' },
-        currentGlobalTheme: 'light',
+        preferences: { globalTheme: 'dark' },
+        currentGlobalTheme: 'dark',
         setGlobalTheme: _vi.fn(),
       });
       return {
