@@ -81,16 +81,28 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
     let mounted = true;
     (async () => {
       try {
+        console.log('[AuthContext] Inicializando contexto de autenticación...');
+
+        // Verificar si hay token en localStorage
+        const savedToken = localStorage.getItem('portfolio_auth_token');
+        console.log('[AuthContext] Token en localStorage:', {
+          exists: !!savedToken,
+          preview: savedToken ? savedToken.substring(0, 50) + '...' : 'no token',
+        });
+
         // Verificar si el usuario hizo logout explícitamente
         const explicitLogout = localStorage.getItem('explicit_logout');
+        console.log('[AuthContext] Logout explícito previo:', !!explicitLogout);
 
         // Detectar si estamos en modo incógnito
         const isIncognito = await detectIncognitoMode();
+        console.log('[AuthContext] Modo incógnito detectado:', isIncognito);
 
         // En desarrollo, solo auto-loguear si:
         // 1. NO hay logout explícito
         // 2. NO estamos en modo incógnito
         if (import.meta.env.DEV && !explicitLogout && !isIncognito) {
+          console.log('[AuthContext] Intentando auto-login en desarrollo...');
           try {
             // Preferir endpoint dev-login que setea la cookie httpOnly desde el servidor
             try {
@@ -123,14 +135,32 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
           } catch {}
         }
 
+        // Si hay token en localStorage, configurarlo en axios
+        if (savedToken) {
+          console.log('[AuthContext] Configurando token en axios headers...');
+          const { setAuthToken } = await import('@/services/http');
+          setAuthToken(savedToken);
+        }
+
+        console.log('[AuthContext] Verificando sesión existente...');
         const res = await fetch('/api/auth/verify', { method: 'GET', credentials: 'include' });
         if (!mounted) return;
+        console.log('[AuthContext] Resultado de verificación:', {
+          status: res.status,
+          ok: res.ok,
+        });
+
         if (res.ok) {
           const data = await res.json();
+          console.log('[AuthContext] Datos de verificación:', {
+            valid: data.valid,
+            hasUser: !!data.user,
+          });
           setUser(data.user ?? null);
           // Si hay usuario válido, limpiar flag de logout explícito
           if (data.user) {
             localStorage.removeItem('explicit_logout');
+            console.log('[AuthContext] Sesión restaurada exitosamente');
           }
         } else {
           // En desarrollo, intentar leer y loggear el cuerpo para ayudar a depurar 500/403
@@ -143,12 +173,17 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
           } catch (e) {
             // ignore
           }
+          console.log('[AuthContext] No se pudo restaurar sesión, usuario no autenticado');
           setUser(null);
         }
       } catch (err) {
+        console.error('[AuthContext] Error durante inicialización:', err);
         setUser(null);
       } finally {
-        if (mounted) setLoading(false);
+        if (mounted) {
+          setLoading(false);
+          console.log('[AuthContext] Inicialización completada');
+        }
       }
     })();
 
@@ -160,24 +195,50 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
   const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
   const login = useCallback(async (creds: { email: string; password: string }) => {
+    console.log('[AuthContext] Iniciando login con:', { email: creds.email });
+
     const res = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(creds),
       credentials: 'include',
     });
+
+    console.log('[AuthContext] Response status:', res.status);
+
     if (!res.ok) {
       const text = await res.text().catch(() => '');
+      console.error('[AuthContext] Login failed:', text);
       throw new Error(text || 'Login failed');
     }
+
     const data = await res.json();
+    console.log('[AuthContext] Response data:', {
+      hasUser: !!data.user,
+      hasToken: !!data.token,
+      tokenPreview: data.token ? data.token.substring(0, 50) + '...' : 'no token',
+    });
+
     // Guardar token JWT si viene en la respuesta
     if (data.token) {
+      console.log('[AuthContext] Guardando token en localStorage...');
       // Importar dinámicamente para evitar ciclo
       const { setAuthToken } = await import('@/services/http');
       setAuthToken(data.token);
+      console.log('[AuthContext] Token guardado exitosamente');
+
+      // Verificar que se guardó correctamente
+      const savedToken = localStorage.getItem('portfolio_auth_token');
+      console.log('[AuthContext] Verificación localStorage:', {
+        tokenSaved: !!savedToken,
+        tokensMatch: savedToken === data.token,
+      });
+    } else {
+      console.warn('[AuthContext] ⚠️ NO se recibió token en la respuesta del login');
     }
+
     setUser(data.user ?? null);
+    console.log('[AuthContext] Login completado, usuario establecido:', !!data.user);
   }, []);
 
   const logout = useCallback(async () => {

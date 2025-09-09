@@ -6,8 +6,19 @@ import { logger } from '../utils/logger.js';
 
 // Middleware de autenticación básica (cualquier usuario autenticado)
 export const authenticate = (req: any, res: any, next: any): void => {
-  // Leer token desde cookie httpOnly
-  const token = req.cookies?.portfolio_auth_token;
+  // Leer token desde cookie httpOnly (preferido)
+  let token = req.cookies?.portfolio_auth_token;
+  let tokenSource = 'cookie';
+
+  // Si no hay cookie, intentar token desde Authorization header (localStorage -> frontend)
+  if (!token) {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.substring(7);
+      tokenSource = 'header';
+    }
+  }
+
   if (!token) {
     // Logs de ayuda en desarrollo para diagnosticar por qué no llega la cookie
     if (process.env.NODE_ENV !== 'production') {
@@ -15,13 +26,16 @@ export const authenticate = (req: any, res: any, next: any): void => {
         const origin = req.get('Origin') || req.get('Referer') || 'no-origin';
         const cookieHeader = !!req.headers?.cookie;
         const cookieKeys = Object.keys(req.cookies || {});
+        const hasAuthHeader = !!req.headers.authorization;
         logger.debug(
           '[auth] Token no encontrado - Origin:',
           origin,
           'hasCookieHeader:',
           cookieHeader,
           'cookieKeys:',
-          cookieKeys
+          cookieKeys,
+          'hasAuthHeader:',
+          hasAuthHeader
         );
       } catch {
         // ignore logging errors
@@ -44,10 +58,14 @@ export const authenticate = (req: any, res: any, next: any): void => {
       res.status(403).json({ error: 'Token inválido' });
       return;
     }
+
+    // Agregar información de origen del token para logs
     req.user = decoded as jwt.JwtPayload & { role?: string };
+    req.tokenSource = tokenSource;
+
     next();
   } catch (error) {
-    logger.error('Error verificando token:', error);
+    logger.error(`Error verificando token (${tokenSource}):`, error);
     res.status(403).json({ error: 'Token inválido' });
   }
 };
@@ -86,7 +104,18 @@ export const authenticateAdmin = (req: any, res: any, next: any): void => {
 // pero no falla si no hay token (útil para endpoints públicos que quieren
 // conocer al usuario si está autenticado sin exigirlo).
 export const optionalAuth = (req: any, res: any, next: any): void => {
-  const token = req.cookies?.portfolio_auth_token;
+  // Leer token desde cookie httpOnly (preferido) o Authorization header
+  let token = req.cookies?.portfolio_auth_token;
+  let tokenSource = 'cookie';
+
+  if (!token) {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      token = authHeader.substring(7);
+      tokenSource = 'header';
+    }
+  }
+
   if (!token) {
     // No hay token: continuar sin error
     return next();
@@ -109,10 +138,14 @@ export const optionalAuth = (req: any, res: any, next: any): void => {
       return next();
     }
     req.user = decoded as jwt.JwtPayload & { role?: string };
+    req.tokenSource = tokenSource;
     return next();
   } catch (error) {
     if (process.env.NODE_ENV !== 'production') {
-      logger.error('[optionalAuth] error verificando token:', (error as any)?.message || error);
+      logger.error(
+        `[optionalAuth] error verificando token (${tokenSource}):`,
+        (error as any)?.message || error
+      );
     }
     return next();
   }

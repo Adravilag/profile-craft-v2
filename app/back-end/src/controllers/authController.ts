@@ -150,6 +150,7 @@ export const authController = {
         return;
       }
 
+      // Crear token de sesión corto para cookie HttpOnly (máxima seguridad)
       const token = jwt.sign(
         {
           userId: user._id.toString(),
@@ -157,7 +158,20 @@ export const authController = {
           role: user.role,
         },
         config.JWT_SECRET,
-        { expiresIn: '15m' } // Reducido de 7d a 15m para mayor seguridad
+        { expiresIn: '15m' } // Token corto para cookie HttpOnly (máxima seguridad)
+      );
+
+      // Crear token persistente para localStorage (duración más larga para UX)
+      // Este token permite mantener la sesión activa después de recargas de página
+      const persistentToken = jwt.sign(
+        {
+          userId: user._id.toString(),
+          email: user.email,
+          role: user.role,
+          type: 'persistent', // Marcar como token persistente
+        },
+        config.JWT_SECRET,
+        { expiresIn: '7d' } // Token largo para persistencia (7 días)
       );
 
       // Enviar token en cookie httpOnly
@@ -175,6 +189,7 @@ export const authController = {
       res.json({
         message: 'Inicio de sesión exitoso',
         user: sanitizedUser,
+        token: persistentToken, // Enviar token persistente para localStorage
       });
     } catch (error: any) {
       logger.error('Error en login:', error);
@@ -212,14 +227,20 @@ export const authController = {
   // Cerrar sesión
   logout: async (req: any, res: any): Promise<void> => {
     try {
-      // Obtener el token antes de limpiarlo
-      const token = req.cookies?.portfolio_auth_token;
+      // Obtener tokens desde cookie y header
+      const cookieToken = req.cookies?.portfolio_auth_token;
+      const authHeader = req.headers.authorization;
+      const headerToken = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
 
-      if (token) {
-        // Agregar token a blacklist
-        securityMiddleware.addToBlacklist(token);
-        securityMiddleware.logSecurityEvent('LOGOUT_SUCCESS', { userId: req.user?.userId }, req);
+      // Agregar ambos tokens a blacklist si existen
+      if (cookieToken) {
+        securityMiddleware.addToBlacklist(cookieToken);
       }
+      if (headerToken && headerToken !== cookieToken) {
+        securityMiddleware.addToBlacklist(headerToken);
+      }
+
+      securityMiddleware.logSecurityEvent('LOGOUT_SUCCESS', { userId: req.user?.userId }, req);
 
       // Limpiar la cookie httpOnly
       res.clearCookie('portfolio_auth_token', {
