@@ -25,6 +25,16 @@ export const API: AxiosInstance = axios.create({
 });
 
 // --- Helpers públicos para manejar token de autenticación ---
+function getCookie(name: string): string | null {
+  try {
+    if (typeof document === 'undefined') return null;
+    const match = document.cookie.split('; ').find(row => row.startsWith(name + '='));
+    return match ? decodeURIComponent(match.split('=')[1]) : null;
+  } catch {
+    return null;
+  }
+}
+
 export function setAuthToken(token: string | null) {
   if (token) {
     localStorage.setItem('portfolio_auth_token', token);
@@ -47,7 +57,11 @@ if (import.meta.env.DEV) {
 // --- Interceptors ---
 // Request: añade Authorization si hay token en localStorage (fallback)
 API.interceptors.request.use(config => {
-  const token = getAuthToken();
+  let token = getAuthToken();
+  // Fallback en DEV: si no hay token en LS, intentar desde cookie de desarrollo
+  if (!token && import.meta.env.DEV) {
+    token = getCookie('portfolio_auth_token');
+  }
   if (token) {
     // Evitar conflictos de tipos: asignar directamente en forma de índice
     (config.headers as Record<string, string | undefined>)['Authorization'] = `Bearer ${token}`;
