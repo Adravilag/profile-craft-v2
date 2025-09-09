@@ -151,16 +151,27 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
         });
 
         if (res.ok) {
-          const data = await res.json();
-          console.log('[AuthContext] Datos de verificación:', {
-            valid: data.valid,
-            hasUser: !!data.user,
-          });
-          setUser(data.user ?? null);
-          // Si hay usuario válido, limpiar flag de logout explícito
-          if (data.user) {
-            localStorage.removeItem('explicit_logout');
-            console.log('[AuthContext] Sesión restaurada exitosamente');
+          const contentType = res.headers.get('content-type') || '';
+          if (!contentType.includes('application/json')) {
+            // Evitar fallo al parsear HTML devuelto por error/proxy
+            const text = await res.text().catch(() => '');
+            console.warn('[AuthContext] verify devolvió contenido no-JSON', {
+              contentType,
+              preview: text?.slice(0, 120),
+            });
+            setUser(null);
+          } else {
+            const data = await res.json();
+            console.log('[AuthContext] Datos de verificación:', {
+              valid: data.valid,
+              hasUser: !!data.user,
+            });
+            setUser(data.user ?? null);
+            // Si hay usuario válido, limpiar flag de logout explícito
+            if (data.user) {
+              localStorage.removeItem('explicit_logout');
+              console.log('[AuthContext] Sesión restaurada exitosamente');
+            }
           }
         } else {
           // En desarrollo, intentar leer y loggear el cuerpo para ayudar a depurar 500/403
