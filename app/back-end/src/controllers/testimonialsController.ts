@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { Testimonial } from '../models/index.js';
 import { logger } from '../utils/logger.js';
+import { resolveUserId } from '../services/userService.js';
 
 export const testimonialsController = {
   // Obtener testimonios de un usuario (solo aprobados para vista pública)
@@ -46,6 +47,29 @@ export const testimonialsController = {
         res.status(400).json({ error: 'Nombre, posición y texto son requeridos' });
         return;
       }
+      // Resolver user_id cuando venga como alias público (admin/dynamic-admin-id/username)
+      let resolvedUserId: string | null = null;
+      try {
+        if (user_id && typeof user_id === 'string') {
+          resolvedUserId = await resolveUserId(user_id);
+        }
+      } catch (e) {
+        logger.warn('⚠️ No se pudo resolver user_id proporcionado, se usará tal cual si es válido');
+      }
+
+      const finalUserId = resolvedUserId || user_id;
+
+      // Validación de user_id requerido y con formato válido para Mongo
+      if (!finalUserId || typeof finalUserId !== 'string') {
+        res.status(400).json({ error: 'user_id es requerido' });
+        return;
+      }
+      if (!/^[0-9a-fA-F]{24}$/.test(finalUserId)) {
+        logger.warn('⚠️ user_id con formato inválido para Mongo ObjectId:', finalUserId);
+        res.status(400).json({ error: 'user_id inválido' });
+        return;
+      }
+
       const newTestimonial = new Testimonial({
         name,
         position,
@@ -55,7 +79,7 @@ export const testimonialsController = {
         website,
         avatar,
         rating,
-        user_id,
+        user_id: finalUserId,
         order_index,
       });
 
