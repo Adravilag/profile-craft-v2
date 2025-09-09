@@ -157,12 +157,14 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
     };
   }, []);
 
+  const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+
   const login = useCallback(async (creds: { email: string; password: string }) => {
-    const res = await fetch('/api/auth/login', {
+    const res = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(creds),
-      credentials: 'include', // permite que el servidor setee refresh token HttpOnly
+      credentials: 'include',
     });
     if (!res.ok) {
       const text = await res.text().catch(() => '');
