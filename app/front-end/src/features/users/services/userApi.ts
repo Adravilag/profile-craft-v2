@@ -7,7 +7,8 @@ let cachedAdminUserId: string | null = null;
 
 export const getFirstAdminUsername = async (): Promise<string> => {
   if (cachedAdminUsername) return cachedAdminUsername;
-  const { data } = await API.get('/auth/first-admin-user');
+  // Nota: no usar prefijo '/' para que axios concatene correctamente con baseURL que ya incluye '/api'
+  const { data } = await API.get('auth/first-admin-user');
   if (data?.success && data?.user?.username) {
     cachedAdminUsername = data.user.username;
     return cachedAdminUsername;
@@ -29,7 +30,7 @@ export const getFirstAdminUserId = async (): Promise<string> => {
       return cachedAdminUserId;
     }
 
-    const { data } = await API.get('/auth/first-admin-user');
+    const { data } = await API.get('auth/first-admin-user');
 
     if (!data.success || !data.user?.publicId) {
       throw new Error('No se pudo obtener el ID público del usuario administrador');
@@ -45,6 +46,7 @@ export const getFirstAdminUserId = async (): Promise<string> => {
 };
 
 export const hasRegisteredUser = async (): Promise<boolean> => {
-  const { data } = await API.get('/api/auth/has-user');
+  // Respetar baseURL; usar ruta relativa sin '/'
+  const { data } = await API.get('auth/has-user');
   return !!data?.exists;
 };
