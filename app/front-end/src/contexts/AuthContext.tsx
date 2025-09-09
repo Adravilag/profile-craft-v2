@@ -171,6 +171,12 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
       throw new Error(text || 'Login failed');
     }
     const data = await res.json();
+    // Guardar token JWT si viene en la respuesta
+    if (data.token) {
+      // Importar dinámicamente para evitar ciclo
+      const { setAuthToken } = await import('@/services/http');
+      setAuthToken(data.token);
+    }
     setUser(data.user ?? null);
   }, []);
 
