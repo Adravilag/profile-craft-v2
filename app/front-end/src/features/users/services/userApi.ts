@@ -45,6 +45,6 @@ export const getFirstAdminUserId = async (): Promise<string> => {
 };
 
 export const hasRegisteredUser = async (): Promise<boolean> => {
-  const { data } = await API.get('/auth/has-user');
+  const { data } = await API.get('/api/auth/has-user');
   return !!data?.exists;
 };

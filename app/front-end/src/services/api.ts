@@ -515,7 +515,7 @@ export const hasRegisteredUser = async (): Promise<boolean> => {
     secureApiLogger.info('🌐 API_BASE_URL configurada');
 
     // Hacer la petición directamente con fetch para mayor control
-    const url = `${API_BASE_URL}/auth/has-user`;
+    const url = `${API_BASE_URL}/api/auth/has-user`;
     secureApiLogger.info('📡 Realizando petición has-user');
 
     const response = await fetch(url, {

@@ -5,7 +5,7 @@ import {
   createProject as createProjectImpl,
   updateProject as updateProjectImpl,
   deleteProject as deleteProjectImpl,
-} from '../api/index';
+} from '../api';
 
 /**
  * Obtiene los proyectos del usuario.
