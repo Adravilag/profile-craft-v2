@@ -468,6 +468,13 @@
   }
 }
 
+/* Ocultar los botones de cambio de vista en dispositivos móviles (solo escritorio) */
+@media (max-width: 768px) {
+  .view-toggle-container {
+    display: none !important;
+  }
+}
+
 /* ---------- Loading / Error / Admin minimal styles ---------- */
 .experienceLoading {
   display: flex;

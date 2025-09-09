@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import useNavigation from '@/hooks/useNavigation';
+import { scrollToElement } from '@/utils/scrollToElement';
 import styles from './Footer.module.css';
 import { profile } from '@/services/endpoints';
 const { getUserProfile } = profile;
@@ -12,8 +13,8 @@ interface FooterProps {
 
 const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp }) => {
   const currentYear = new Date().getFullYear();
-  // Obtener la función de navegación del hook una vez en el nivel del componente
-  const { navigateToSection } = useNavigation();
+  // Obtener la función de navegación y la sección actual del hook una vez en el nivel del componente
+  const { navigateToSection, currentSection } = useNavigation();
   const [profile, setProfile] = useState<UserProfile | null>(profileProp || null);
   const [loading, setLoading] = useState(!profileProp);
   const [error, setError] = useState<string | null>(null);
@@ -190,19 +191,68 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
                   <li key={link.name} role="listitem">
                     <a
                       href={link.href}
-                      className={styles.quickLink}
-                      onClick={e => {
+                      className={`${styles.quickLink} ${currentSection === link.id ? styles.active : ''}`}
+                      onClick={async e => {
                         e.preventDefault();
+
                         try {
-                          // Preferir la navegación centralizada que actualiza URL y hace scroll
+                          // Usar el sistema de navegación centralizado
                           navigateToSection(link.id as string);
+
+                          // Hacer scroll inteligente a la sección
+                          const targetElement = document.getElementById(link.id as string);
+                          if (targetElement) {
+                            // Calcular offset para el header/nav
+                            const headerEl = document.querySelector(
+                              '.header-curriculum'
+                            ) as HTMLElement | null;
+                            const navEl = document.querySelector(
+                              '.header-portfolio-nav'
+                            ) as HTMLElement | null;
+
+                            const headerHeight = headerEl
+                              ? headerEl.getBoundingClientRect().height
+                              : 0;
+                            const navHeight = navEl ? navEl.getBoundingClientRect().height : 0;
+                            const totalOffset = Math.max(headerHeight, navHeight) + 16; // 16px extra spacing
+
+                            await scrollToElement(targetElement, {
+                              offset: totalOffset,
+                              minDur: 300,
+                              maxDur: 800,
+                            });
+                          }
                         } catch (err) {
-                          // Si no hay provider, fallback al salto instantáneo usando el id
+                          console.warn('Error en navegación desde Footer:', err);
+
+                          // Fallback: scroll básico con elemento encontrado
                           const el = document.getElementById(link.id as string);
                           if (el) {
-                            (el as Element).scrollIntoView({ behavior: 'auto', block: 'start' });
+                            try {
+                              // Scroll suave respetando preferencias de accesibilidad
+                              const prefersReduced = window.matchMedia(
+                                '(prefers-reduced-motion: reduce)'
+                              ).matches;
+                              const behavior: ScrollBehavior = prefersReduced ? 'auto' : 'smooth';
+
+                              el.scrollIntoView({
+                                behavior,
+                                block: 'start',
+                                inline: 'nearest',
+                              });
+
+                              // Actualizar URL sin recargar
+                              window.history.pushState(null, '', link.href);
+                            } catch (scrollErr) {
+                              // Último fallback: navegación directa
+                              console.warn(
+                                'Scroll fallback falló, navegando directamente:',
+                                scrollErr
+                              );
+                              window.location.href = link.href;
+                            }
                           } else {
-                            // Si no hay elemento, navegar a la ruta limpia
+                            // Si no hay elemento, navegar a la ruta
                             window.location.href = link.href;
                           }
                         }
@@ -276,7 +326,7 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
               <div className={styles.inputGroup}>
                 <input
                   type="email"
-                  placeholder="adavilag.contact@gmail.com"
+                  placeholder={profile?.email_contact || 'tu@email.com'}
                   className={styles.emailInput}
                   aria-label="Dirección de email para newsletter"
                   required

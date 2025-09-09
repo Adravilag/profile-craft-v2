@@ -4,10 +4,17 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Footer from './Footer';
 
 // Mock del hook de navegación
+const mockNavigateToSection = vi.fn();
 vi.mock('@/hooks/useNavigation', () => ({
   default: () => ({
-    navigateToSection: vi.fn(),
+    navigateToSection: mockNavigateToSection,
+    currentSection: 'home',
   }),
+}));
+
+// Mock de la utilidad scrollToElement
+vi.mock('@/utils/scrollToElement', () => ({
+  scrollToElement: vi.fn().mockResolvedValue(undefined),
 }));
 
 // Mock de la API de perfil
@@ -213,5 +220,141 @@ describe('[TEST] Footer - Mejoras de diseño', () => {
     // [TEST] Simular hover y verificar que el elemento responde
     fireEvent.mouseEnter(linkedinLink);
     expect(linkedinLink).toBeInTheDocument(); // Sigue existiendo después del hover
+  });
+
+  // [TEST] 🟢 NUEVOS TESTS - Navegación mejorada
+  it('[TEST] 🟢 debería usar scrollToElement para navegación suave', async () => {
+    const { scrollToElement } = await import('@/utils/scrollToElement');
+
+    // Mock DOM element
+    const mockElement = document.createElement('div');
+    mockElement.id = 'about';
+    document.body.appendChild(mockElement);
+
+    render(<Footer profile={mockProfile} />);
+
+    const aboutLink = screen.getByText('Sobre mí');
+
+    // [TEST] Simular click en enlace de navegación
+    fireEvent.click(aboutLink);
+
+    // [TEST] Verificar que se llamó navigateToSection
+    await waitFor(() => {
+      expect(mockNavigateToSection).toHaveBeenCalledWith('about');
+    });
+
+    // [TEST] Verificar que se llamó scrollToElement con parámetros correctos
+    await waitFor(() => {
+      expect(scrollToElement).toHaveBeenCalledWith(
+        mockElement,
+        expect.objectContaining({
+          offset: expect.any(Number),
+          minDur: 300,
+          maxDur: 800,
+        })
+      );
+    });
+
+    // Cleanup
+    document.body.removeChild(mockElement);
+  });
+
+  it('[TEST] 🟢 debería manejar fallback cuando scrollToElement falla', async () => {
+    const { scrollToElement } = await import('@/utils/scrollToElement');
+    (scrollToElement as any).mockRejectedValueOnce(new Error('Scroll failed'));
+
+    // Mock DOM element
+    const mockElement = document.createElement('div');
+    mockElement.id = 'projects';
+    mockElement.scrollIntoView = vi.fn();
+    document.body.appendChild(mockElement);
+
+    // Mock window.history
+    const mockPushState = vi.fn();
+    Object.defineProperty(window, 'history', {
+      value: { pushState: mockPushState },
+      writable: true,
+    });
+
+    // Mock matchMedia para asegurar que está disponible
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockReturnValue({
+        matches: false, // No prefers-reduced-motion
+      }),
+    });
+
+    render(<Footer profile={mockProfile} />);
+
+    const projectsLink = screen.getByText('Proyectos');
+
+    // [TEST] Simular click en enlace
+    fireEvent.click(projectsLink);
+
+    // [TEST] Verificar que se intentó usar scrollToElement
+    await waitFor(() => {
+      expect(scrollToElement).toHaveBeenCalled();
+    });
+
+    // [TEST] Esperar un poco más para que se ejecute el catch y el fallback
+    await waitFor(
+      () => {
+        expect(mockElement.scrollIntoView).toHaveBeenCalledWith({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest',
+        });
+      },
+      { timeout: 2000 }
+    );
+
+    // [TEST] Verificar que se actualizó la URL
+    await waitFor(() => {
+      expect(mockPushState).toHaveBeenCalledWith(null, '', '//projects');
+    });
+
+    // Cleanup
+    document.body.removeChild(mockElement);
+  });
+
+  it('[TEST] 🟢 debería respetar prefers-reduced-motion en el fallback', async () => {
+    const { scrollToElement } = await import('@/utils/scrollToElement');
+    (scrollToElement as any).mockRejectedValueOnce(new Error('Scroll failed'));
+
+    // Mock prefers-reduced-motion
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: vi.fn().mockReturnValue({
+        matches: true, // Usuario prefiere movimiento reducido
+      }),
+    });
+
+    // Mock DOM element
+    const mockElement = document.createElement('div');
+    mockElement.id = 'experience';
+    mockElement.scrollIntoView = vi.fn();
+    document.body.appendChild(mockElement);
+
+    render(<Footer profile={mockProfile} />);
+
+    const experienceLink = screen.getByText('Experiencia');
+
+    // [TEST] Simular click en enlace
+    fireEvent.click(experienceLink);
+
+    // [TEST] Verificar que se usó behavior: 'auto' por prefers-reduced-motion
+    await waitFor(
+      () => {
+        expect(mockElement.scrollIntoView).toHaveBeenCalledWith({
+          behavior: 'auto', // No smooth por prefers-reduced-motion
+          block: 'start',
+          inline: 'nearest',
+        });
+      },
+      { timeout: 2000 }
+    );
+
+    // Cleanup
+    document.body.removeChild(mockElement);
   });
 });

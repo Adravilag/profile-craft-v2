@@ -536,6 +536,52 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+/* Botón destacado para el enlace al artículo (acción principal) */
+.articleLink {
+  background: linear-gradient(90deg, #67b0ff, #6ee6a6);
+  color: #031016;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 800;
+  border: none;
+  box-shadow:
+    0 10px 30px rgba(103, 176, 255, 0.12),
+    0 4px 12px rgba(0, 0, 0, 0.35);
+  text-shadow: none;
+  transition:
+    transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 200ms ease,
+    opacity 200ms ease;
+  animation: breathe 4s ease-in-out infinite;
+}
+.articleLink:hover {
+  background: linear-gradient(90deg, #5a9eff, #5fe3b8);
+  color: #031016;
+  transform: translateY(-4px) scale(1.04);
+  box-shadow:
+    0 18px 48px rgba(103, 176, 255, 0.2),
+    0 8px 28px rgba(0, 0, 0, 0.55),
+    0 0 18px rgba(110, 230, 166, 0.12) inset;
+  opacity: 1;
+  outline: 0;
+}
+.articleLink:focus-visible {
+  outline: 3px solid rgba(103, 176, 255, 0.28);
+  outline-offset: 4px;
+  transform: translateY(-2px) scale(1.02);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .articleLink {
+    animation: none !important;
+    transition: none !important;
+  }
+  .articleLink:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
 /* ------------------ Estados y Animaciones ------------------ */
 .skeleton {
   position: absolute;

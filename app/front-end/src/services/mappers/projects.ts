@@ -36,6 +36,9 @@ export const mapApiToUi = (api: any): MappedProject => {
 
   const media = detectMedia();
 
+  // Si se proporciona una URL de proyecto externa, se usa. Si no, se construye la URL interna.
+  const finalProjectUrl = api.project_url || `/project/${id}`;
+
   return {
     id,
     title: api.title ?? '',
@@ -48,11 +51,12 @@ export const mapApiToUi = (api: any): MappedProject => {
     // El tipo 'Artículo' ya no existe; todo se considera 'Proyecto'
     projectType: api.type ?? 'Proyecto',
     status: api.status ?? undefined,
-    projectUrl: api.project_url ?? api.projectUrl ?? undefined,
+    // Se asigna la URL final a ambas propiedades para consistencia
+    projectUrl: finalProjectUrl,
     image_url: api.image_url,
     live_url: api.live_url,
     github_url: api.github_url,
-    project_url: api.project_url,
+    project_url: finalProjectUrl,
     video_demo_url: api.video_demo_url,
     published_at: api.created_at ?? api.published_at,
     views: api.views,

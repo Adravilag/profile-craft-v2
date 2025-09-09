@@ -456,11 +456,12 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
                       aria-hidden="true"
                     />
                   </button>
+                  {/* BOTÓN VIDEOCV OCULTO TEMPORALMENTE
                   <button
                     type="button"
                     onClick={() => setActiveWidget('video')}
                     aria-pressed={activeWidget === 'video'}
-                    className={`${
+                    className={`$${
                       activeWidget === 'video' ? styles.widgetButtonActive : styles.widgetButton
                     } transition-all hover:scale-105 active:scale-95`}
                     title={t.profileHero.videoCurriculum}
@@ -470,6 +471,7 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
                       aria-hidden="true"
                     />
                   </button>
+                  */}
                   <button
                     type="button"
                     onClick={() => setActiveWidget('projects')}

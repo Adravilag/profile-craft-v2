@@ -180,7 +180,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
 
   if (currentLoading) {
     return (
-      <div className={`section-cv ${styles.projectsSection}`} id="projects">
+      <div className={`section-cv`} id="projects">
         <HeaderSection
           icon="fas fa-code"
           title="Proyectos"
@@ -220,7 +220,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
 
   if (currentError) {
     return (
-      <div className={`section-cv ${styles.projectsSection}`} id="projects">
+      <div className={`section-cv`} id="projects">
         <HeaderSection
           icon="fas fa-code"
           title="Proyectos"
@@ -243,7 +243,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
 
   if (currentProjects.length === 0) {
     return (
-      <div className={`section-cv ${styles.projectsSection}`} id="projects">
+      <div className={`section-cv`} id="projects">
         <HeaderSection
           icon="fas fa-code"
           title="Proyectos"
@@ -264,7 +264,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
   }
 
   return (
-    <div className={`section-cv ${styles.projectsSection}`} id="projects">
+    <div className={`section-cv`} id="projects">
       <HeaderSection
         icon="fas fa-code"
         title="Proyectos"

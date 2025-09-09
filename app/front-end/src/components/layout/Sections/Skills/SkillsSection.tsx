@@ -215,7 +215,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
 
   if (loading) {
     return (
-      <div className={`section-cv ${styles.projectsSection}`} id="skills">
+      <div className={`section-cv`} id="skills">
         <HeaderSection
           icon={getDynamicIcon()}
           title={getDynamicTitle()}
@@ -234,7 +234,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
 
   if (error) {
     return (
-      <div className={`section-cv ${styles.projectsSection}`} id="skills">
+      <div className={`section-cv`} id="skills">
         <HeaderSection
           icon="fas fa-exclamation-triangle"
           title="Habilidades"
@@ -252,7 +252,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
   }
 
   return (
-    <div className={`section-cv ${styles.projectsSection}`} id="skills">
+    <div className={`section-cv`} id="skills">
       <HeaderSection
         icon={getDynamicIcon()}
         title={getDynamicTitle()}

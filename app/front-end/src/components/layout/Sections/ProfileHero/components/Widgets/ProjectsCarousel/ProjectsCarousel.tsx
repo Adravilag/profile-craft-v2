@@ -139,7 +139,15 @@ const ProjectsCarousel: React.FC<Props> = ({ projects: initialProjects }) => {
       if (el) observer.observe(el);
     });
 
-    return () => observer.disconnect();
+    return () => {
+      try {
+        if (observer && typeof (observer as any).disconnect === 'function') {
+          (observer as any).disconnect();
+        }
+      } catch {
+        // ignore
+      }
+    };
   }, [projects, index]);
 
   // Lógica de arrastre
@@ -417,17 +425,7 @@ const ProjectsCarousel: React.FC<Props> = ({ projects: initialProjects }) => {
                     {t.projectsCarousel.live}
                   </a>
                 )}
-                {current.project_url && (
-                  <a
-                    href={current.project_url}
-                    className={`${styles.badge} ${styles.project}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={t.projectsCarousel.article}
-                  >
-                    {t.projectsCarousel.article}
-                  </a>
-                )}
+                {/* Eliminamos el badge de artículo aquí para que solo aparezca como botón en projectLinks */}
                 {current.status &&
                   (String(current.status) === 'completed' ? (
                     <span
@@ -523,9 +521,9 @@ const ProjectsCarousel: React.FC<Props> = ({ projects: initialProjects }) => {
                 {current.project_url && (
                   <a
                     href={current.project_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className={styles.projectLink}
+                    target={current.project_url.startsWith('/') ? '_self' : '_blank'}
+                    rel={current.project_url.startsWith('/') ? undefined : 'noreferrer'}
+                    className={`${styles.projectLink} ${styles.articleLink}`}
                   >
                     {t.projectsCarousel.article}
                   </a>
@@ -544,8 +542,67 @@ const ProjectsCarousel: React.FC<Props> = ({ projects: initialProjects }) => {
           <div className={styles.placeholderLarge}>{current?.title?.slice(0, 2) || 'PR'}</div>
         </div>
         <div className={styles.detailsPane} aria-live="polite">
-          {/* Contenido del panel de detalles */}
-          {/* ... (código existente para badges, chips, etc.) ... */}
+          <div className={styles.badgesRow}>
+            {current?.live_url && (
+              <a
+                href={current.live_url}
+                className={`${styles.badge} ${styles.live}`}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={t.projectsCarousel.live}
+              >
+                {t.projectsCarousel.live}
+              </a>
+            )}
+            {current?.project_url && (
+              <a
+                href={current.project_url}
+                className={`${styles.badge} ${styles.project}`}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={t.projectsCarousel.article}
+              >
+                {t.projectsCarousel.article}
+              </a>
+            )}
+            {current?.status && (
+              <span className={`${styles.badge} ${getStatusClass(current.status)}`}>
+                {statusHuman}
+              </span>
+            )}
+          </div>
+          <div className={styles.titleRow}>
+            <h4 className={styles.projectTitle}>{current?.title}</h4>
+          </div>
+          {current?.description && <p className={styles.projectDesc}>{current.description}</p>}
+          <div className={styles.chips}>
+            {chipList.slice(0, 6).map((t: string, idx: number) => (
+              <SkillPill key={`${t}-${idx}`} name={t} colored className={styles.chipPill} />
+            ))}
+          </div>
+          <div className={styles.projectLinks}>
+            {current?.github_url && (
+              <a
+                href={current.github_url}
+                target="_blank"
+                rel="noreferrer"
+                className={styles.projectLink}
+              >
+                {t.projectsCarousel.code}
+              </a>
+            )}
+            {current?.project_url && (
+              <a
+                href={current.project_url}
+                target="_blank"
+                rel="noreferrer"
+                className={styles.projectLink}
+              >
+                {t.projectsCarousel.article}
+              </a>
+            )}
+            {!footerEl && dotsNode}
+          </div>
         </div>
       </div>
     );

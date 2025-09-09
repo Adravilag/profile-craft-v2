@@ -249,6 +249,13 @@ const renderWithProviders = (ui: React.ReactElement, options = {}) => {
 };
 
 describe('ProfileHero', () => {
+  it('does not render video curriculum widget button', async () => {
+    renderWithProviders(<ProfileHero darkMode={false} />);
+    // El botón de video se identificaba por el título del tooltip del botón
+    const videoBtn = screen.queryByTitle(/video currículum|video curriculum|videocurrículum/i);
+    expect(videoBtn).toBeNull();
+  });
+
   it('renders profile name and tagline', async () => {
     renderWithProviders(<ProfileHero darkMode={false} />);
     expect(await screen.findByText(/Test User/)).toBeInTheDocument();
