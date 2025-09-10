@@ -15,12 +15,50 @@ vi.mock('@/contexts/AuthContext', () => ({
   useAuth: vi.fn(),
 }));
 
-// Mock del contexto de datos
-vi.mock('@/contexts', () => ({
-  useData: vi.fn(() => ({
+// Mock de los hooks personalizados
+vi.mock('@/hooks', () => ({
+  useProjectsData: vi.fn(() => ({
     projects: [], // Array vacío para mostrar estado empty
-    projectsLoading: false, // No está cargando
-    projectsError: null, // Sin errores
+    loading: false, // No está cargando
+    error: null, // Sin errores
+    hasLoadedLocal: true,
+    retry: vi.fn(),
+    refresh: vi.fn(),
+  })),
+  useProjectMapper: vi.fn(() => ({
+    mapItemToProject: vi.fn(item => ({
+      id: String(item.id),
+      title: item.title,
+      description: item.description,
+      technologies: item.technologies || [],
+    })),
+    mapProjects: vi.fn(items =>
+      items.map(item => ({
+        id: String(item.id),
+        title: item.title,
+        description: item.description,
+        technologies: item.technologies || [],
+      }))
+    ),
+  })),
+  useProjectsFilter: vi.fn(() => ({
+    selectedFilter: 'all',
+    filteredProjects: [],
+    setFilter: vi.fn(),
+    showFilters: false,
+  })),
+  usePagination: vi.fn(() => ({
+    currentPage: 1,
+    totalPages: 1,
+    paginatedItems: vi.fn(items => items),
+    handlePageChange: vi.fn(),
+    isChangingPage: false,
+  })),
+  useProjectModal: vi.fn(() => ({
+    activeProject: null,
+    openModal: vi.fn(),
+    closeModal: vi.fn(),
+    isModalOpen: false,
   })),
 }));
 

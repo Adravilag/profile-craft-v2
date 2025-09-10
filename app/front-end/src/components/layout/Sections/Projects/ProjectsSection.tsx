@@ -1,20 +1,22 @@
 // src/components/sections/projects/ProjectsSection.tsx
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { projects } from '@/services/endpoints';
 import ProjectCard from '@/components/layout/Sections/Projects/components/ProjectCard/ProjectCard';
-import type { Project as ApiProject } from '@/types/api';
 import type { Project as UiProject } from '@/components/layout/Sections/Projects/components/ProjectCard/ProjectCard';
 import ProjectModal from '@/features/projects/components/ProjectModal/ProjectModal';
-const { getProjects } = projects;
-import { useData } from '@/contexts';
 import { useAuth } from '@/contexts/AuthContext';
-import { debugLog } from '@/utils/debugConfig';
 import HeaderSection from '../../HeaderSection/HeaderSection';
 import styles from './ProjectsSection.module.css';
 import Pagination from '@/ui/components/layout/Pagination';
 import { useTranslation } from '@/contexts/TranslationContext';
+import {
+  useProjectsData,
+  usePagination,
+  useProjectsFilter,
+  useProjectMapper,
+  useProjectModal,
+} from '@/hooks';
 
 // Definición de tipos y estados
 interface ProjectsSectionProps {
@@ -22,163 +24,44 @@ interface ProjectsSectionProps {
   // showAdminButton y onAdminClick removidos - administración vía FAB
 }
 
-// Función de mapeo para normalizar un ApiProject al shape que espera la UI (UiProject)
-const mapItemToProject = (item: ApiProject): UiProject => {
-  const isProject = true; // all items are considered projects now
-  const projectType = 'Proyecto';
-  const canonicalPath = `/profile-craft/projects/${item.id}`;
-
-  const detectMedia = () => {
-    const videoUrl = (item as any).video_demo_url || (item as any).video_demo || undefined;
-    const imageUrl = item.image_url || (item as any).thumbnail || undefined;
-
-    if (videoUrl) {
-      return { type: 'video' as const, src: videoUrl, poster: (item as any).thumbnail || imageUrl };
-    }
-
-    if (typeof imageUrl === 'string') {
-      const lower = imageUrl.split('?')[0].toLowerCase();
-      if (lower.endsWith('.mp4') || lower.endsWith('.webm') || lower.endsWith('.mov')) {
-        return {
-          type: 'video' as const,
-          src: imageUrl,
-          poster: (item as any).thumbnail || undefined,
-        };
-      }
-      if (lower.endsWith('.gif')) {
-        return { type: 'gif' as const, src: imageUrl, poster: (item as any).thumbnail || imageUrl };
-      }
-    }
-
-    return {
-      type: 'image' as const,
-      src: imageUrl || '/vite.svg',
-      poster: (item as any).thumbnail || imageUrl,
-    };
-  };
-
-  return {
-    id: String(item.id),
-    title: String(item.title ?? ''),
-    // map both description and shortDescription for the UI component
-    description: String(item.description ?? '') || undefined,
-    shortDescription: String(item.description ?? '') || undefined,
-    technologies: item.technologies || [],
-    // expose both camelCase and snake_case urls for compatibility
-    demoUrl: item.live_url ? String(item.live_url) : undefined,
-    live_url: item.live_url ? String(item.live_url) : undefined,
-    repoUrl: item.github_url ? String(item.github_url) : undefined,
-    github_url: item.github_url ? String(item.github_url) : undefined,
-    video_demo_url: (item as any).video_demo_url || (item as any).video_demo || undefined,
-    media: detectMedia() as any,
-    projectType: projectType,
-    // prefer `type` property as human readable project type; keep `projectType` too
-    type: projectType,
-    status: item.status as any,
-    projectUrl: !isProject ? canonicalPath : undefined,
-  } as UiProject;
-};
-
 const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { projects: contextProjects, projectsLoading, projectsError } = useData();
   const { isAuthenticated } = useAuth();
-  const [localProjects, setLocalProjects] = useState<ApiProject[]>([]);
-  const [hasLoadedLocal, setHasLoadedLocal] = useState(false);
 
-  // Administración de proyectos ahora manejada por el FAB
+  // Use custom hooks for data management and logic
+  const { projects, loading, error, retry } = useProjectsData();
+  const { mapItemToProject } = useProjectMapper();
 
-  const [currentPage, setCurrentPage] = useState(1);
+  // Set up filtering with callback to reset pagination
+  const { selectedFilter, filteredProjects, setFilter, showFilters } = useProjectsFilter(projects, {
+    onFilterChange: () => {
+      // Reset pagination when filter changes - handled by pagination hook
+    },
+  });
+
+  // Set up pagination
   const articlesPerPage = 3;
-  const [isChangingPage, setIsChangingPage] = useState(false);
-  const [activeProject, setActiveProject] = useState<UiProject | null>(null);
-  const [selectedFilter, setSelectedFilter] = useState<'all' | 'projects'>('all');
+  const { currentPage, totalPages, paginatedItems, handlePageChange, isChangingPage } =
+    usePagination({
+      totalItems: filteredProjects.length,
+      itemsPerPage: articlesPerPage,
+      initialPage: 1,
+    });
 
-  // Usar useMemo para evitar recálculos innecesarios
-  const currentProjects = useMemo(() => {
-    const contextArray = contextProjects || [];
-    const localArray = localProjects || [];
-    return contextArray.length > 0 ? contextArray : localArray;
-  }, [contextProjects, localProjects]) as ApiProject[];
+  // Set up modal management
+  const { activeProject, openModal, closeModal } = useProjectModal();
 
-  const currentLoading =
-    projectsLoading || (currentProjects.length === 0 && (localProjects || []).length === 0);
-  const currentError = projectsError;
+  // Get paginated items for current page
+  const paginatedFilteredItems = paginatedItems(filteredProjects);
 
-  const getFilteredProjects = useMemo(() => {
-    let filtered = currentProjects;
-
-    // Since "article" type no longer exists, treat projects filter as items without project_content
-    if (selectedFilter === 'projects') {
-      filtered = currentProjects.filter(p => !p.project_content);
-    }
-
-    return filtered;
-  }, [currentProjects, selectedFilter]);
-
-  const filteredTotalItems = getFilteredProjects.length;
-  const filteredTotalPages = Math.ceil(filteredTotalItems / articlesPerPage);
-  const paginatedFilteredItems = getFilteredProjects.slice(
-    (currentPage - 1) * articlesPerPage,
-    currentPage * articlesPerPage
-  ) as ApiProject[];
-
-  const handlePageChange = (page: number) => {
-    // ensure page is in valid range
-    const maxPage = Math.max(1, filteredTotalPages);
-    const target = Math.min(Math.max(1, page), maxPage);
-    if (target === currentPage) return;
-    setIsChangingPage(true);
-    setTimeout(() => {
-      setCurrentPage(target);
-      setIsChangingPage(false);
-      document.querySelector('#projects')?.scrollIntoView({ behavior: 'auto', block: 'start' });
-    }, 100);
-  };
-
+  // Handle filter changes with pagination reset
   const handleFilterChange = (filter: 'all' | 'projects') => {
-    setSelectedFilter(filter);
-    setCurrentPage(1);
+    setFilter(filter);
+    // Pagination will automatically reset to page 1 due to totalItems change
   };
 
-  const loadProjects = async () => {
-    try {
-      const data = await getProjects();
-
-      debugLog.dataLoading(`${t.projects.title} loaded:`, data?.length || 0);
-      setLocalProjects(data);
-      setHasLoadedLocal(true);
-    } catch (err) {
-      console.error(t.projectsCarousel.loadingProblem, err);
-      setHasLoadedLocal(true); // Marcar como intentado incluso si falló
-    }
-  };
-
-  useEffect(() => {
-    // Solo cargar proyectos locales si:
-    // 1. No hay proyectos del contexto disponibles
-    // 2. No hemos intentado cargar proyectos locales aún
-    if (!contextProjects?.length && !hasLoadedLocal) {
-      loadProjects();
-    }
-  }, [contextProjects?.length, hasLoadedLocal]);
-
-  // If the available pages change (filtering / data load), clamp the current page
-  useEffect(() => {
-    // filteredTotalPages may be 0 when there are no items; keep page at 1 in that case
-    const maxPage = Math.max(1, filteredTotalPages);
-    if (currentPage > maxPage) {
-      setCurrentPage(maxPage);
-    }
-  }, [filteredTotalPages]);
-
-  // Administración movida al FAB - handleAdminClick eliminado
-
-  const hasProjects = currentProjects.some(p => !p.project_content);
-  const showFilters = hasProjects && currentProjects.length > 1;
-
-  if (currentLoading) {
+  if (loading) {
     return (
       <div className={`section-cv`} id="projects">
         <HeaderSection
@@ -218,7 +101,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
     );
   }
 
-  if (currentError) {
+  if (error) {
     return (
       <div className={`section-cv`} id="projects">
         <HeaderSection
@@ -230,8 +113,8 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
         <div className="section-container">
           <div className={styles.panel}>
             <div className={styles.projectsError}>
-              <p>{currentError}</p>
-              <button onClick={loadProjects} className={styles.retryButton}>
+              <p>{error}</p>
+              <button onClick={retry} className={styles.retryButton}>
                 {t.projectsCarousel.retry}
               </button>
             </div>
@@ -241,7 +124,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
     );
   }
 
-  if (currentProjects.length === 0) {
+  if (projects.length === 0) {
     return (
       <div className={`section-cv`} id="projects">
         <HeaderSection
@@ -293,14 +176,17 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
             </div>
           )}
 
-          <div className={`${styles.projectsGrid} ${isChangingPage ? styles.loading : ''}`}>
+          <div
+            className={`${styles.projectsGrid} ${isChangingPage ? styles.loading : ''}`}
+            data-testid="projects-grid"
+          >
             {paginatedFilteredItems.map(item => {
               const projectData = mapItemToProject(item);
               const handleOpen = () => {
                 if (onProjectClick) {
                   onProjectClick(String(item.id));
                 } else {
-                  setActiveProject(projectData);
+                  openModal(projectData);
                 }
               };
 
@@ -322,17 +208,15 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
                 </div>
               );
             })}
-            {activeProject && (
-              <ProjectModal project={activeProject} onClose={() => setActiveProject(null)} />
-            )}
+            {activeProject && <ProjectModal project={activeProject} onClose={closeModal} />}
           </div>
 
-          {filteredTotalPages > 1 && (
+          {totalPages > 1 && (
             <Pagination
               currentPage={currentPage}
-              totalPages={filteredTotalPages}
+              totalPages={totalPages}
               onPageChange={handlePageChange}
-              totalItems={filteredTotalItems}
+              totalItems={filteredProjects.length}
               itemsPerPage={articlesPerPage}
               showInfo={true}
             />
