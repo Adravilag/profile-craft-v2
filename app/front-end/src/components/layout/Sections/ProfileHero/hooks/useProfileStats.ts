@@ -68,42 +68,32 @@ export function useProfileStats(
         if (Array.isArray(experiencesList) && experiencesList.length > 0) {
           const parseDate = (d?: string) => (d ? Date.parse(d) : NaN);
 
-          // Obtener todas las fechas de inicio válidas
-          const startDates = experiencesList
-            .map(e => parseDate(e.start_date))
-            .filter(v => !isNaN(v)) as number[];
+          // Sumaremos la duración (end - start) de cada experiencia válida.
+          // Para experiencias actuales (is_current) usaremos Date.now() como end.
+          const MS_PER_YEAR = 1000 * 60 * 60 * 24 * 365.25;
 
-          if (startDates.length > 0) {
-            // Fecha de inicio más temprana
-            const earliestStart = Math.min(...startDates);
+          let totalMs = 0;
 
-            // Determinar la fecha de fin más tardía
-            let latestEnd = 0;
+          experiencesList.forEach(exp => {
+            const start = parseDate(exp.start_date);
+            if (isNaN(start)) return; // ignorar experiencias sin fecha de inicio válida
 
-            // Buscar experiencias actuales primero
-            const currentExperiences = experiencesList.filter(e => e.is_current);
-            if (currentExperiences.length > 0) {
-              // Si hay experiencias actuales, usar fecha actual como fin
-              latestEnd = Date.now();
+            let end: number;
+            if (exp.is_current) {
+              end = Date.now();
             } else {
-              // Si no hay experiencias actuales, buscar la fecha de fin más tardía
-              const endDates = experiencesList
-                .map(e => parseDate(e.end_date))
-                .filter(v => !isNaN(v)) as number[];
-
-              if (endDates.length > 0) {
-                latestEnd = Math.max(...endDates);
-              } else {
-                // Si no hay fechas de fin válidas, usar fecha actual como fallback
-                latestEnd = Date.now();
-              }
+              const parsedEnd = parseDate(exp.end_date);
+              end = isNaN(parsedEnd) ? Date.now() : parsedEnd; // fallback a ahora si no hay end
             }
 
-            // Calcular años de experiencia
-            years_experience = Math.max(
-              1,
-              Math.round((latestEnd - earliestStart) / (1000 * 60 * 60 * 24 * 365.25))
-            );
+            const duration = Math.max(0, end - start);
+            totalMs += duration;
+          });
+
+          if (totalMs > 0) {
+            const totalYears = totalMs / MS_PER_YEAR;
+            // redondear a años enteros, mínimo 1
+            years_experience = Math.max(1, Math.round(totalYears));
           }
         }
 
