@@ -70,11 +70,21 @@ const CertificationsAdmin: React.FC<CertificationsAdminProps> = ({ onClose }) =>
   const handleIssuerChange = (issuer: CertificationIssuer) => {
     if (issuer && issuer.name) {
       setSelectedIssuer(issuer);
+
+      // Si es una nueva certificación o el título está en blanco/es de ejemplo, actualizar con plantilla
+      const isNewCertOrExampleTitle =
+        !editingId ||
+        form.title === '' ||
+        form.title === 'Certificación de ejemplo' ||
+        form.title.includes('- Certificación de ejemplo');
+
       setForm(prev => ({
         ...prev,
         issuer: issuer.name,
+        title: isNewCertOrExampleTitle ? `${issuer.name} - Certificación de ejemplo` : prev.title,
         image_url: issuer.logoUrl || prev.image_url,
       }));
+
       if (form.credential_id && form.credential_id.trim()) {
         if (issuer.verifyBaseUrl) {
           const v = generateVerifyUrl(issuer, form.credential_id);
@@ -230,30 +240,22 @@ const CertificationsAdmin: React.FC<CertificationsAdminProps> = ({ onClose }) =>
   };
 
   const handleNewCertification = () => {
-    const defaultIssuer = CERTIFICATION_ISSUERS[0] || null;
-    const credentialExample = defaultIssuer ? getCredentialExample(defaultIssuer) : '';
+    // Al crear una nueva certificación no preseleccionamos un emisor ni rellenamos el título
+    // Dejamos los campos principales vacíos para que el usuario elija el emisor y complete
+    // el ID; sólo establecemos fecha por defecto y el índice de orden.
     const now = new Date();
     const ym = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-    const imageUrl =
-      defaultIssuer && defaultIssuer.certificateImageUrl && credentialExample
-        ? generateCertificateImageUrl(defaultIssuer, credentialExample)
-        : defaultIssuer?.logoUrl || '';
-    const verifyUrl =
-      defaultIssuer && credentialExample && defaultIssuer.verifyBaseUrl
-        ? generateVerifyUrl(defaultIssuer, credentialExample)
-        : '';
     setForm({
-      title: defaultIssuer
-        ? `${defaultIssuer.name} - Certificación de ejemplo`
-        : 'Certificación de ejemplo',
-      issuer: defaultIssuer?.name || '',
+      title: '',
+      issuer: '',
       date: ym,
-      credential_id: credentialExample,
-      image_url: imageUrl || '',
+      credential_id: '',
+      image_url: '',
       order_index: certifications.length,
-      verify_url: verifyUrl || '',
+      verify_url: '',
     });
-    setSelectedIssuer(defaultIssuer);
+    // No seleccionamos ningún emisor por defecto
+    setSelectedIssuer(null);
     setEditingId(null);
     setShowForm(true);
   };

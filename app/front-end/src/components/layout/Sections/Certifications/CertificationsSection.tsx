@@ -5,10 +5,10 @@ import BlurImage from '@/components/utils/BlurImage';
 const { getCertifications, createCertification, updateCertification, deleteCertification } =
   certificationsApi;
 import { useNotification } from '@/hooks/useNotification';
+import { findIssuerByName } from '@/features/certifications';
 import { debugLog } from '@/utils/debugConfig';
 import HeaderSection from '../../HeaderSection/HeaderSection';
 import FloatingActionButtonGroup from '@/components/ui/FloatingActionButtonGroup/FloatingActionButtonGroup';
-import CertificationsAdmin from './admin/CertificationsAdmin';
 import CertificationModal from './CertificationModal';
 import { useFABActions } from '@/components/layout/RootLayout/hooks/useFABActions';
 import styles from './CertificationsSection.module.css';
@@ -22,6 +22,7 @@ interface Certification {
   credentialId?: string;
   image: string;
   verifyUrl?: string;
+  courseUrl?: string;
 }
 
 interface CertificationsSectionProps {
@@ -52,15 +53,20 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
       debugLog.dataLoading('Datos recibidos de la API:', data);
 
       // Mapear los campos de la API a la interfaz del componente
-      const mappedData: Certification[] = data.map((cert: APICertification) => ({
-        id: cert._id || cert.id || '',
-        title: cert.title,
-        issuer: cert.issuer,
-        date: cert.date,
-        credentialId: cert.credential_id,
-        image: cert.image_url || '/assets/images/foto-perfil.jpg',
-        verifyUrl: cert.verify_url,
-      }));
+      const mappedData: Certification[] = data.map((cert: APICertification) => {
+        const issuerLogo = cert.issuer ? findIssuerByName(String(cert.issuer))?.logoUrl : undefined;
+        return {
+          id: cert._id || cert.id || '',
+          title: cert.title,
+          issuer: cert.issuer,
+          date: cert.date,
+          credentialId: cert.credential_id,
+          // Prefer explicit image_url, fallback to issuer logo (if known), then to a generic placeholder
+          image: cert.image_url || issuerLogo || '/assets/images/foto-perfil.jpg',
+          verifyUrl: cert.verify_url,
+          courseUrl: cert.course_url,
+        };
+      });
 
       debugLog.dataLoading('Datos mapeados:', mappedData);
       setCertifications(mappedData);
@@ -166,8 +172,9 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                       src={cert.image}
                       alt={cert.title}
                       onError={e => {
+                        const fallbackLogo = findIssuerByName(String(cert.issuer))?.logoUrl;
                         (e.target as HTMLImageElement).src =
-                          'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjVGNUY1Ii8+CjxwYXRoIGQ9Ik0zMiAyMEwyNiAyNkgzOEwzMiAyMFoiIGZpbGw9IiM5Q0E0QUYiLz4KPHBhdGggZD0iTTQ0IDM4SDIwVjQySDQ0VjM4WiIgZmlsbD0iIzlDQTRBRiIvPgo8L3N2Zz4K';
+                          fallbackLogo || '/assets/images/foto-perfil.jpg';
                       }}
                     />
                   </div>
@@ -187,31 +194,39 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                           <span>ID: {cert.credentialId}</span>
                         </div>
                       )}
-                    </div>
-
-                    <div className={styles.certActions}>
-                      {cert.verifyUrl ? (
+                      {cert.courseUrl && (
+                        <div className={styles.certSite}>
+                          <i className="fas fa-globe"></i>
+                          <a
+                            href={cert.courseUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.certSiteLink}
+                            title="Visitar sitio del curso"
+                          >
+                            Sitio del curso
+                          </a>
+                        </div>
+                      )}
+                      {/* añadir aquí verificar */}
+                      <div className={styles.certSite}>
+                        <i className="fas fa-globe"></i>
                         <a
-                          href={cert.verifyUrl}
+                          href={cert.verifyUrl || '#'}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={styles.certVerifyBtn}
-                          title="Verificar certificación"
+                          className={styles.certSiteLink}
+                          title={
+                            cert.verifyUrl
+                              ? 'Verificar certificación'
+                              : 'Verificación no disponible'
+                          }
                         >
-                          <i className="fas fa-check-circle"></i>
-                          <span>Verificar</span>
+                          {cert.verifyUrl ? 'Verificar' : 'No disponible'}
                         </a>
-                      ) : (
-                        <button
-                          className={`${styles.certVerifyBtn} ${styles.disabled}`}
-                          title="Verificación no disponible"
-                          disabled
-                        >
-                          <i className="fas fa-check-circle"></i>
-                          <span>Verificar</span>
-                        </button>
-                      )}
-
+                      </div>
+                    </div>
+                    <div className={styles.certActions}>
                       {/* Botones de administración */}
                       {isAdminMode && (
                         <div className={styles.adminControls}>
@@ -256,16 +271,13 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
         )}
 
         {/* Floating Action Buttons para certificaciones */}
-        {!isAdminMode && showAdminFAB && (
+        {showAdminFAB && (
           <FloatingActionButtonGroup
             actions={certificationsFABActions as any}
             position="bottom-right"
           />
         )}
       </div>
-
-      {/* Panel de administración */}
-      {showAdminPanel && <CertificationsAdmin onClose={handleAdminClose} />}
 
       {/* Modal de certificación */}
       <CertificationModal
@@ -282,6 +294,7 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                 credential_id: editingCert.credentialId || '',
                 image_url: editingCert.image || '',
                 verify_url: editingCert.verifyUrl || '',
+                course_url: editingCert.courseUrl || '',
                 order_index: 0,
                 user_id: 1,
               }

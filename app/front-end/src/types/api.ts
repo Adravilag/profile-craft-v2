@@ -137,6 +137,7 @@ export interface Certification {
   credential_id?: string;
   image_url?: string;
   verify_url?: string;
+  course_url?: string;
   order_index: number;
   created_at?: string;
   updated_at?: string;

@@ -7,6 +7,7 @@ export interface ICertification extends Document {
   credential_id?: string;
   image_url?: string;
   verify_url?: string;
+  course_url?: string;
   user_id: string | mongoose.Types.ObjectId;
   order_index: number;
   created_at: Date;
@@ -42,6 +43,11 @@ const certificationSchema = new Schema<ICertification>(
       maxlength: 500,
     },
     verify_url: {
+      type: String,
+      trim: true,
+      maxlength: 500,
+    },
+    course_url: {
       type: String,
       trim: true,
       maxlength: 500,

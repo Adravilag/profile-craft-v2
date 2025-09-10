@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { ModalShell } from '@/components/ui';
 import { useNotification } from '@/hooks/useNotification';
 import type { CertificationIssuer } from '@/features/certifications';
@@ -100,32 +100,23 @@ const CertificationModal: React.FC<CertificationModalProps> = ({
         image_url: initialData.image_url || '',
         order_index: initialData.order_index || 0,
         verify_url: initialData.verify_url || '',
+        course_url: initialData.course_url || '',
       };
     } else {
-      // Nuevo formulario con datos por defecto
-      const defaultIssuer = CERTIFICATION_ISSUERS[0] || null;
-      const credentialExample = defaultIssuer ? getCredentialExample(defaultIssuer) : '';
+      // Nuevo formulario: no preseleccionamos emisor ni rellenamos título.
+      // Dejamos los campos principales vacíos para que el usuario complete.
       const now = new Date();
       const ym = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-      const imageUrl =
-        defaultIssuer && defaultIssuer.certificateImageUrl && credentialExample
-          ? generateCertificateImageUrl(defaultIssuer, credentialExample)
-          : defaultIssuer?.logoUrl || '';
-      const verifyUrl =
-        defaultIssuer && credentialExample && defaultIssuer.verifyBaseUrl
-          ? generateVerifyUrl(defaultIssuer, credentialExample)
-          : '';
 
       return {
-        title: defaultIssuer
-          ? `${defaultIssuer.name} - Certificación de ejemplo`
-          : 'Certificación de ejemplo',
-        issuer: defaultIssuer?.name || '',
+        title: '',
+        issuer: '',
         date: ym,
-        credential_id: credentialExample,
-        image_url: imageUrl || '',
+        credential_id: '',
+        image_url: '',
         order_index: 0,
-        verify_url: verifyUrl || '',
+        verify_url: '',
+        course_url: '',
       };
     }
   };
@@ -135,14 +126,30 @@ const CertificationModal: React.FC<CertificationModalProps> = ({
     if (initialData) {
       return CERTIFICATION_ISSUERS.find(i => i.name === initialData.issuer) || null;
     }
-    return CERTIFICATION_ISSUERS[0] || null;
+    return null;
   });
-  const [imageSource, setImageSource] = useState<'auto' | 'logo' | 'custom'>(() => 'auto');
   const [previewUrl, setPreviewUrl] = useState<string>(() => {
-    if (initialData && initialData.image_url) return initialData.image_url;
-    const def = CERTIFICATION_ISSUERS[0];
-    return def?.logoUrl || '';
+    if (initialData && selectedIssuer) return selectedIssuer.logoUrl || '';
+    return '';
   });
+
+  // Effect para reinicializar el formulario cuando cambien los datos iniciales
+  useEffect(() => {
+    if (isOpen) {
+      const newForm = initForm();
+      setForm(newForm);
+
+      if (initialData) {
+        const issuer = CERTIFICATION_ISSUERS.find(i => i.name === initialData.issuer) || null;
+        setSelectedIssuer(issuer);
+        setPreviewUrl(issuer?.logoUrl || '');
+      } else {
+        setSelectedIssuer(null);
+        setPreviewUrl('');
+      }
+    }
+  }, [isOpen, initialData]);
+
   const placeholderDataUri =
     'data:image/svg+xml;utf8,' +
     encodeURIComponent(
@@ -169,51 +176,24 @@ const CertificationModal: React.FC<CertificationModalProps> = ({
       setForm(prev => ({
         ...prev,
         issuer: issuer.name,
-        image_url: issuer.logoUrl || prev.image_url,
+        image_url: issuer.logoUrl || '',
       }));
+
+      // Generar URL de verificación si hay credential_id
       if (form.credential_id && form.credential_id.trim()) {
         if (issuer.verifyBaseUrl) {
           const v = generateVerifyUrl(issuer, form.credential_id);
           if (v) setForm(prev => ({ ...prev, verify_url: v }));
         }
-        if (issuer.certificateImageUrl) {
-          const img = generateCertificateImageUrl(issuer, form.credential_id);
-          if (img) setForm(prev => ({ ...prev, image_url: img }));
-        }
       }
-      // update preview according to imageSource
-      setTimeout(() => {
-        refreshPreview(issuer, form.credential_id, form.image_url, imageSource);
-      }, 0);
+
+      // Actualizar preview con el logo del emisor
+      setPreviewUrl(issuer.logoUrl || '');
     } else {
       setSelectedIssuer(null);
       setForm(prev => ({ ...prev, issuer: '', image_url: '', verify_url: '' }));
+      setPreviewUrl('');
     }
-  };
-
-  const refreshPreview = (
-    issuer: CertificationIssuer | null,
-    credentialId: string,
-    manualUrl: string,
-    src: typeof imageSource
-  ) => {
-    setImgError(false); // Reset error state on refresh
-    if (src === 'custom' && manualUrl && manualUrl.trim()) {
-      setPreviewUrl(manualUrl);
-      return;
-    }
-    if ((src === 'auto' || src === 'logo') && issuer) {
-      if (src === 'auto' && credentialId && issuer.certificateImageUrl) {
-        const gen = generateCertificateImageUrl(issuer, credentialId);
-        if (gen) {
-          setPreviewUrl(gen);
-          return;
-        }
-      }
-      setPreviewUrl(issuer.logoUrl || manualUrl || '');
-      return;
-    }
-    setPreviewUrl(manualUrl || issuer?.logoUrl || '');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -225,15 +205,18 @@ const CertificationModal: React.FC<CertificationModalProps> = ({
 
     try {
       setSaving(true);
-      let imageUrl = form.image_url;
+      let imageUrl = '';
       let verifyUrl = '';
-      if (selectedIssuer && form.credential_id.trim()) {
-        const v = generateVerifyUrl(selectedIssuer, form.credential_id);
-        if (v) verifyUrl = v;
-        const img = generateCertificateImageUrl(selectedIssuer, form.credential_id);
-        if (img) imageUrl = img;
-      } else if (selectedIssuer && !form.credential_id.trim()) {
-        imageUrl = selectedIssuer.logoUrl || form.image_url;
+
+      // Siempre usar el logo del emisor como imagen por defecto
+      if (selectedIssuer) {
+        imageUrl = selectedIssuer.logoUrl || '';
+
+        // Generar URL de verificación si hay credential_id
+        if (form.credential_id.trim()) {
+          const v = generateVerifyUrl(selectedIssuer, form.credential_id);
+          if (v) verifyUrl = v;
+        }
       }
 
       const payload = {
@@ -241,6 +224,7 @@ const CertificationModal: React.FC<CertificationModalProps> = ({
         date: convertMonthFormatToReadable(form.date),
         image_url: imageUrl,
         verify_url: verifyUrl || undefined,
+        course_url: form.course_url || undefined,
         user_id: 1,
       } as Omit<Certification, 'id'>;
 
@@ -360,81 +344,22 @@ const CertificationModal: React.FC<CertificationModalProps> = ({
                   onChange={e => {
                     const v = e.target.value;
                     setForm(p => ({ ...p, credential_id: v }));
-                    if (selectedIssuer && v.trim()) {
-                      if (selectedIssuer.verifyBaseUrl) {
-                        const verifyUrl = generateVerifyUrl(selectedIssuer, v);
-                        if (verifyUrl) setForm(p => ({ ...p, verify_url: verifyUrl }));
-                      }
-                      if (selectedIssuer.certificateImageUrl) {
-                        const imageUrl = generateCertificateImageUrl(selectedIssuer, v);
-                        if (imageUrl) {
-                          setForm(p => ({ ...p, image_url: imageUrl }));
-                          refreshPreview(selectedIssuer, v, imageUrl, imageSource);
-                        }
-                      }
+
+                    // Solo generar URL de verificación
+                    if (selectedIssuer && v.trim() && selectedIssuer.verifyBaseUrl) {
+                      const verifyUrl = generateVerifyUrl(selectedIssuer, v);
+                      if (verifyUrl) setForm(p => ({ ...p, verify_url: verifyUrl }));
                     }
                   }}
                   className={styles.certificationModalInput}
                   placeholder={
                     selectedIssuer
-                      ? `Ej: ${getCredentialExample(selectedIssuer)}`
+                      ? `${getCredentialExample(selectedIssuer)}`
                       : 'ID de la certificación'
                   }
                 />
               </div>
             </div>
-
-            <div className={styles.certificationModalGroup}>
-              <label className={styles.certificationModalLabel} htmlFor="image_source">
-                Fuente de imagen
-              </label>
-              <select
-                id="image_source"
-                value={imageSource}
-                onChange={e => {
-                  const v = e.target.value as any;
-                  setImageSource(v);
-                  refreshPreview(selectedIssuer, form.credential_id, form.image_url, v);
-                }}
-                className={styles.certificationModalSelect}
-              >
-                <option value="auto">Auto (generado)</option>
-                <option value="logo">Logo del emisor</option>
-                <option value="custom">Personalizada (URL)</option>
-              </select>
-            </div>
-
-            {imageSource === 'custom' && (
-              <div className={styles.certificationModalGroup}>
-                <label className={styles.certificationModalLabel} htmlFor="image_url">
-                  <i className={`fas fa-image ${styles.certificationModalIcon}`}></i> URL de imagen
-                  personalizada
-                </label>
-                <div className={styles.inputWithAction}>
-                  <input
-                    id="image_url"
-                    name="image_url"
-                    value={form.image_url}
-                    onChange={e => {
-                      handleChange(e);
-                      refreshPreview(selectedIssuer, form.credential_id, e.target.value, 'custom');
-                    }}
-                    className={styles.certificationModalInput}
-                    placeholder="URL de la imagen de la certificación"
-                    disabled={imageSource !== 'custom'}
-                  />
-                  {form.image_url && imageSource === 'custom' && (
-                    <img
-                      src={form.image_url}
-                      alt="Preview"
-                      className={`${styles.actionIcon} ${styles.imagePreviewIcon}`}
-                      onError={e => (e.currentTarget.style.display = 'none')}
-                      onLoad={e => (e.currentTarget.style.display = 'block')}
-                    />
-                  )}
-                </div>
-              </div>
-            )}
 
             <div className={styles.certificationModalGroup}>
               <label className={styles.certificationModalLabel} htmlFor="verify_url">
@@ -465,19 +390,30 @@ const CertificationModal: React.FC<CertificationModalProps> = ({
             </div>
 
             <div className={styles.certificationModalGroup}>
-              <label className={styles.certificationModalLabel} htmlFor="order_index">
-                <i className={`fas fa-sort-numeric-up ${styles.certificationModalIcon}`}></i> Orden
+              <label className={styles.certificationModalLabel} htmlFor="course_url">
+                <i className={`fas fa-graduation-cap ${styles.certificationModalIcon}`}></i> URL del
+                sitio del curso
               </label>
-              <input
-                type="number"
-                id="order_index"
-                name="order_index"
-                value={form.order_index}
-                onChange={handleChange}
-                className={styles.certificationModalInput}
-                min="0"
-                placeholder="Orden de visualización"
-              />
+              <div className={styles.inputWithAction}>
+                <input
+                  id="course_url"
+                  name="course_url"
+                  value={form.course_url}
+                  onChange={handleChange}
+                  className={styles.certificationModalInput}
+                  placeholder="https://ejemplo.com/curso"
+                />
+                {form.course_url && (
+                  <a
+                    href={form.course_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.actionIcon}
+                  >
+                    <i className="fas fa-external-link-alt"></i>
+                  </a>
+                )}
+              </div>
             </div>
           </div>
 

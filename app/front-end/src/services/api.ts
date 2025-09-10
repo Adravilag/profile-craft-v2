@@ -293,8 +293,9 @@ export const createCertification = (certification: Omit<Certification, 'id'>) =>
   return API.post<Certification>(`/certifications`, certificationWithUserId).then(r => r.data);
 };
 
-export const updateCertification = (id: number | string, certification: Partial<Certification>) =>
-  API.put<Certification>(`/certifications/${id}`, certification).then(r => r.data);
+export const updateCertification = (id: number | string, certification: Partial<Certification>) => {
+  return API.put<Certification>(`/certifications/${id}`, certification).then(r => r.data);
+};
 
 export const deleteCertification = (id: string | number) => API.delete(`/certifications/${id}`);
 

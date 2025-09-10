@@ -183,8 +183,7 @@ export const CERTIFICATION_ISSUERS: CertificationIssuer[] = [
   {
     id: 'midudev',
     name: 'MiduDev',
-    logoUrl:
-      'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzI1NjNlYiIvPgo8dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPk08L3RleHQ+Cjwvc3ZnPgo=',
+    logoUrl: '/assets/images/certification-logos/midudev.svg',
     verifyBaseUrl: 'https://certificados.midudev.com/',
     certificateImageUrl: 'https://certificados.midudev.com/{credentialId}.pdf',
     category: 'programming',
@@ -214,6 +213,8 @@ export const generateVerifyUrl = (
   credentialId: string
 ): string | undefined => {
   if (!issuer.verifyBaseUrl || !credentialId) return undefined;
+  // Algunas plataformas exponen la verificación en una URL base + id (sin .pdf)
+  // Para imágenes/descargas específicas se usa `certificateImageUrl` con sufijo si aplica.
   return `${issuer.verifyBaseUrl}${credentialId}`;
 };
 
@@ -223,7 +224,20 @@ export const generateCertificateImageUrl = (
   credentialId: string
 ): string | undefined => {
   if (!issuer.certificateImageUrl || !credentialId) return undefined;
-  return issuer.certificateImageUrl.replace('{credentialId}', credentialId);
+  const result = issuer.certificateImageUrl.replace('{credentialId}', credentialId);
+
+  // Debug log para MiduDev
+  if (issuer.id === 'midudev') {
+    console.log('🐛 generateCertificateImageUrl DEBUG:', {
+      issuer: issuer.id,
+      template: issuer.certificateImageUrl,
+      credentialId,
+      result,
+      endsWithPdf: result.endsWith('.pdf'),
+    });
+  }
+
+  return result;
 };
 
 // Función para validar formato de credencial según el emisor
@@ -293,6 +307,10 @@ export const validateCredentialId = (
       // Platzi: username/certificado
       return /^[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+$/.test(cleanId);
 
+    case 'midudev':
+      // MiduDev: formato hexadecimal de 24 caracteres (ObjectId de MongoDB)
+      return /^[a-f0-9]{24}$/.test(cleanId);
+
     default:
       // Validación general: al menos 6 caracteres alfanuméricos
       return /^[A-Za-z0-9-_]{6,50}$/.test(cleanId);
@@ -330,6 +348,8 @@ export const getCredentialExample = (issuer: CertificationIssuer): string => {
       return 'Ej: AaBbCcDdEeFf';
     case 'platzi':
       return 'Ej: usuario/certificado-react';
+    case 'midudev':
+      return 'Ej: 66b2ab03a4a4d5c8e7894c23';
     default:
       return 'Ej: ABC123XYZ789';
   }

@@ -55,10 +55,12 @@ export const certificationsController = {
         credential_id,
         image_url,
         verify_url,
+        course_url,
         user_id,
         order_index = 0,
       } = req.body;
       logger.debug('🏆 Creando nueva certificación:', { title, issuer, user_id });
+      logger.debug('🐛 DEBUG - Image URL recibida:', image_url);
 
       if (!title || !issuer || !date) {
         res.status(400).json({ error: 'Título, emisor y fecha son requeridos' });
@@ -83,6 +85,7 @@ export const certificationsController = {
         credential_id,
         image_url,
         verify_url,
+        course_url,
         user_id: new mongoose.Types.ObjectId(resolvedUserId),
         order_index,
       });
@@ -107,7 +110,8 @@ export const certificationsController = {
   updateCertification: async (req: Request, res: Response): Promise<void> => {
     try {
       const { id } = req.params;
-      const { title, issuer, date, credential_id, image_url, verify_url, order_index } = req.body;
+      const { title, issuer, date, credential_id, image_url, verify_url, course_url, order_index } =
+        req.body;
 
       const updatedCertification = await Certification.findByIdAndUpdate(
         id,
@@ -118,6 +122,7 @@ export const certificationsController = {
           credential_id,
           image_url,
           verify_url,
+          course_url,
           order_index,
         },
         { new: true }
