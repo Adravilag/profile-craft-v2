@@ -3,12 +3,11 @@
 
 // Nota: ruta relativa desde src/utils a src/assets
 const svgModules =
-  ((import.meta.glob &&
-    import.meta.glob('../assets/svg/*.svg', {
-      eager: true,
-      query: '?url',
-      import: 'default',
-    })) as Record<string, string>) || {};
+  (import.meta.glob('../assets/svg/*.svg', {
+    eager: true,
+    query: '?url',
+    import: 'default',
+  }) as Record<string, string>) || {};
 
 // normaliza un nombre a minúsculas y variantes útiles
 const normalize = (name: string) =>

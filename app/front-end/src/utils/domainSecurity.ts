@@ -6,6 +6,8 @@
 import axios from 'axios';
 import { createSecureLogger } from './secureLogging';
 
+type AxiosInstance = ReturnType<typeof axios.create>;
+
 const securityLogger = createSecureLogger('DOMAIN_SECURITY');
 
 // Dominios autorizados
@@ -68,7 +70,7 @@ export function validateRequest(): boolean {
   if (!isValid) {
     securityLogger.error('🚫 Acceso denegado desde origen no autorizado:', {
       origin: currentOrigin,
-      authorized: import.meta.env.PROD
+      authorized: Boolean(import.meta.env.PROD)
         ? AUTHORIZED_DOMAINS.PRODUCTION
         : AUTHORIZED_DOMAINS.DEVELOPMENT,
     });
@@ -83,12 +85,9 @@ export function validateRequest(): boolean {
  * Crea un cliente de axios con validación de dominio automática
  */
 export function createSecureApiClient(baseURL?: string) {
+  const viteApiUrl = import.meta.env?.VITE_API_URL;
   const client = axios.create({
-    baseURL:
-      baseURL ||
-      (typeof import.meta.env?.VITE_API_URL === 'string'
-        ? import.meta.env.VITE_API_URL
-        : 'http://localhost:3000/api'),
+    baseURL: baseURL || (typeof viteApiUrl === 'string' ? viteApiUrl : 'http://localhost:3000/api'),
     timeout: 10000,
     headers: {
       'Content-Type': 'application/json',
@@ -154,7 +153,7 @@ export function isProductionDomain(): boolean {
  */
 export function isDevelopmentOrigin(): boolean {
   if (typeof window === 'undefined') {
-    return import.meta.env.DEV === true;
+    return Boolean(import.meta.env.DEV);
   }
 
   const currentOrigin = window.location.origin;

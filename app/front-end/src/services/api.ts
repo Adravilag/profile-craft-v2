@@ -35,10 +35,10 @@ const secureApiLogger = createSecureLogger('API');
 
 // If using Vite, use import.meta.env; if using Create React App, ensure @types/node is installed and add a declaration for process.env if needed.
 // Usar solo el dominio/base, sin /api al final
+const apiUrl = import.meta.env?.VITE_API_URL;
 const API_BASE_URL =
-  (typeof import.meta.env?.VITE_API_URL === 'string'
-    ? import.meta.env.VITE_API_URL.replace(/\/?api\/?$/, '')
-    : null) || (import.meta.env.DEV ? '' : 'http://localhost:3000');
+  (typeof apiUrl === 'string' ? apiUrl.replace(/\/?api\/?$/, '') : null) ||
+  (import.meta.env.DEV ? '' : 'http://localhost:3000');
 debugLog.api('🔧 API Base URL configurada:', API_BASE_URL);
 
 // Validación de seguridad de dominio antes de configurar interceptors
@@ -350,13 +350,14 @@ export const deleteEducation = (id: string) => {
 export const setDevelopmentToken = async () => {
   try {
     // Buscar token de desarrollo en variable de entorno SOLO en local
-    if (import.meta.env && typeof import.meta.env.VITE_DEV_JWT_TOKEN === 'string') {
-      localStorage.setItem('portfolio_auth_token', import.meta.env.VITE_DEV_JWT_TOKEN);
+    const devToken = import.meta.env?.VITE_DEV_JWT_TOKEN;
+    if (import.meta.env && typeof devToken === 'string') {
+      localStorage.setItem('portfolio_auth_token', devToken);
       // En desarrollo también exponer la cookie no-HttpOnly para que el backend
       // que valida req.cookies.portfolio_auth_token pueda leerla en requests.
       try {
         if (import.meta.env.DEV) {
-          document.cookie = `portfolio_auth_token=${import.meta.env.VITE_DEV_JWT_TOKEN}; path=/`;
+          document.cookie = `portfolio_auth_token=${devToken}; path=/`;
           secureApiLogger.info('🔑 Cookie de desarrollo seteada');
         }
       } catch (e) {

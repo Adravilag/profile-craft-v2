@@ -10,7 +10,7 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
   readonly env: ImportMetaEnv;
-  glob?: (
+  glob: (
     pattern: string,
     options?: {
       eager?: boolean;

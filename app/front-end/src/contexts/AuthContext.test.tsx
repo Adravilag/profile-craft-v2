@@ -10,7 +10,7 @@ vi.mock('@/features/users/services/userId', () => ({
   getDynamicUserId: async () => 'admin',
 }));
 vi.mock('@/services/http', async () => {
-  const actual = await vi.importActual<typeof http>('@/services/http');
+  const actual = await vi.importActual('@/services/http');
   return {
     ...actual,
     API: {

@@ -2,6 +2,8 @@
 import axios from 'axios';
 import { debugLog } from '@/utils/debugConfig';
 
+type AxiosInstance = ReturnType<typeof axios.create>;
+
 // Servicio HTTP centralizado (axios) con configuración y helpers claros.
 
 /**

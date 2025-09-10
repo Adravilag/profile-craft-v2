@@ -19,11 +19,11 @@ export async function apiFetch(input: RequestInfo, init: RequestInit = {}) {
 
   // Detectar si la URL es relativa y anteponer la base
   let url = input as string;
+  const viteApiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+  const viteApiUrl = import.meta.env.VITE_API_URL;
   const baseUrl =
-    (typeof import.meta.env.VITE_API_BASE_URL === 'string'
-      ? import.meta.env.VITE_API_BASE_URL
-      : '') ||
-    (typeof import.meta.env.VITE_API_URL === 'string' ? import.meta.env.VITE_API_URL : '') ||
+    (typeof viteApiBaseUrl === 'string' ? viteApiBaseUrl : '') ||
+    (typeof viteApiUrl === 'string' ? viteApiUrl : '') ||
     '';
   if (typeof url === 'string' && url.startsWith('/')) {
     // Evitar doble barra

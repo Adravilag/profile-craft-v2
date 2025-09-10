@@ -25,7 +25,7 @@ vi.mock('@/hooks/useNotification', () => ({
 // ---- mock useNavigation con estado mutable ----
 let navState: 'idle' | 'loading' = 'idle';
 vi.mock('react-router-dom', async importOriginal => {
-  const actual = await importOriginal<typeof import('react-router-dom')>();
+  const actual = await importOriginal();
   return {
     ...actual,
     useNavigation: () => ({ state: navState }),
