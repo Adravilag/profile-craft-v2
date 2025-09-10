@@ -454,24 +454,52 @@ code {
   color: #86efac;
 }
 
-/* Métricas */
+/* ===========================================
+   4. MÉTRICAS Y ESTADÍSTICAS RESPONSIVE
+   =========================================== */
+
 .headerHighlights {
   display: flex;
   gap: 8px;
   margin-top: 12px;
   justify-content: center;
-  flex-wrap: nowrap;
+  flex-wrap: wrap; /* Permitir wrap para móvil */
   align-items: center;
+  /* Mejora visual: transición suave en cambios de layout */
+  transition:
+    gap 0.2s ease,
+    margin 0.2s ease;
 }
 
 .statBadge {
-  background: rgb(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.03);
   color: var(--color-text-primary);
   padding: 6px 10px;
   border-radius: 999px;
   font-weight: 600;
   font-size: 0.9rem;
-  border: 1px solid rgb(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  /* Mejoras para accesibilidad y táctil */
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.2;
+  /* Mejoras visuales */
+  backdrop-filter: blur(4px);
+  transition: all 0.2s ease;
+  /* Prevenir texto cortado */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Estados hover mejorados */
+.statBadge:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
 }
 
 /* Skeleton for stat badges */
@@ -1610,6 +1638,19 @@ code {
   .headerTerminalContainer {
     min-height: 300px;
   }
+
+  /* Ajustes para burbujas en tablets verticales */
+  .headerHighlights {
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-md);
+  }
+
+  .statBadge {
+    font-size: 13px;
+    padding: 8px 14px;
+    min-height: 40px;
+    border-radius: 20px;
+  }
 }
 
 /* Móviles pequeños (480px y menos) - DISEÑO RESPONSIVE PRINCIPAL */
@@ -1703,11 +1744,60 @@ code {
     border-bottom: none; /* Última fila sin borde inferior */
   }
 
-  /* Destacados centrados */
+  /* ===========================================
+     ESTADÍSTICAS RESPONSIVE - MÓVIL OPTIMIZADO
+     =========================================== */
+
+  /* Destacados centrados con mejor espaciado */
   .headerHighlights {
-    gap: var(--spacing-sm);
+    gap: var(--spacing-xs) var(--spacing-sm);
     justify-content: center;
+    margin-top: var(--spacing-md);
     margin-bottom: var(--spacing-lg);
+    /* Mejora en el wrap y distribución */
+    flex-wrap: wrap;
+    align-items: stretch; /* Altura uniforme */
+  }
+
+  /* Stats badges optimizados para táctil móvil */
+  .statBadge {
+    font-size: 14px;
+    padding: 10px 16px;
+    margin: 2px;
+    min-height: 44px; /* Tamaño táctil estándar iOS/Android */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Flexbox: no crecer, permitir shrink, tamaño automático */
+    flex: 0 1 auto;
+    white-space: nowrap;
+    border-radius: 22px; /* Más redondeado para mejor apariencia móvil */
+    /* Mejores contrastes en móvil */
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    /* Tipografía optimizada para legibilidad móvil */
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    /* Mejorar contraste de texto en pantallas móviles */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Hover táctil-friendly en móvil */
+  .statBadge:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Clases helper para tests y responsive */
+  .responsiveWrap {
+    flex-wrap: wrap;
+  }
+
+  .mobileOptimized {
+    min-height: 44px;
+    padding: 8px 16px;
   }
 
   .stackRow {
@@ -1861,8 +1951,33 @@ code {
     height: 32px;
   }
 
+  /* Optimización de burbujas para pantallas muy pequeñas */
+  .headerHighlights {
+    gap: 6px 8px; /* Reducir gap horizontal y vertical */
+    margin-top: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    /* En pantallas muy pequeñas, permitir que se apilen mejor */
+    justify-content: center;
+  }
+
   .statBadge {
     font-size: 12px;
-    padding: 4px 8px;
+    padding: 8px 12px;
+    min-height: 36px; /* Reducir ligeramente para pantallas muy pequeñas pero mantener usabilidad */
+    border-radius: 18px;
+    /* Mejorar legibilidad en pantallas muy pequeñas */
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    /* Asegurar que el texto siga siendo legible */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    /* Mejor contraste en pantallas pequeñas */
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Asegurar que las burbujas no se vuelvan demasiado pequeñas */
+  .statBadge {
+    min-width: 80px; /* Ancho mínimo para evitar burbujas demasiado estrechas */
+    max-width: 140px; /* Máximo para evitar burbujas demasiado anchas */
   }
 }

@@ -371,7 +371,7 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
 
             {/* Stats - mostrar siempre todas las estadísticas */}
             <div
-              className={`${styles.headerHighlights} animate-slide-in-up delay-600`}
+              className={`${styles.headerHighlights} ${styles.responsiveWrap} animate-slide-in-up delay-600`}
               aria-live="polite"
             >
               {remoteLoading ? (
@@ -387,7 +387,7 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
                 statsArray.map(s => (
                   <span
                     key={s.key}
-                    className={`${styles.statBadge} ${
+                    className={`${styles.statBadge} ${styles.mobileOptimized} ${
                       s.key === 'years_experience' ? styles.statPrimary : ''
                     } transition-all hover:scale-105 hover:-translate-y-1`}
                   >
