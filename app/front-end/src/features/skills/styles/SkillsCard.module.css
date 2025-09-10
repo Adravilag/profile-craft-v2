@@ -99,7 +99,12 @@
   justify-content: center;
   margin-bottom: 8px;
   position: relative;
-  transition: all 150ms ease;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease,
+    box-shadow 150ms ease,
+    opacity 150ms ease;
   /* Colores por defecto basados en --skill-color */
   background: color-mix(in oklab, var(--skill-color) 18%, transparent);
   border: 1px solid color-mix(in oklab, var(--skill-color) 35%, transparent);
@@ -179,7 +184,7 @@
   border-radius: 8px !important;
   cursor: pointer;
   color: rgb(255, 255, 255, 0.7) !important;
-  transition: all 150ms ease !important;
+  transition: opacity 150ms ease !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -217,7 +222,10 @@
   opacity: 0;
   visibility: hidden;
   transform: translateY(-8px) scale(0.95);
-  transition: all 150ms ease;
+  transition:
+    opacity 150ms ease,
+    visibility 150ms ease,
+    transform 150ms ease;
   backdrop-filter: blur(20px);
   overflow: hidden;
 }
@@ -253,7 +261,9 @@
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
-  transition: all 120ms ease;
+  transition:
+    color 120ms ease,
+    background 120ms ease;
   width: 100%;
   text-align: left;
   position: relative;
@@ -358,7 +368,10 @@
   white-space: nowrap;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease,
+    transform 0.2s ease;
   z-index: 10;
   border: 1px solid rgb(255, 255, 255, 0.1);
 }
@@ -524,7 +537,12 @@
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   border: 1px solid;
   cursor: pointer;
   background: none;
@@ -585,7 +603,10 @@
   background: rgb(255, 255, 255, 0.05);
   border-radius: 12px;
   border: 1px solid rgb(255, 255, 255, 0.1);
-  transition: all 0.2s ease;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
   min-height: 44px;
   min-width: 60px;
 }
@@ -602,7 +623,10 @@
   color: rgb(255, 255, 255, 0.6);
   cursor: pointer;
   font-size: 18px;
-  transition: all 0.2s ease;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease;
   padding: 6px;
   border-radius: 6px;
   min-height: 32px;
@@ -1298,7 +1322,10 @@
   white-space: nowrap;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease,
+    transform 0.2s ease;
   z-index: 100;
   pointer-events: none;
   margin-bottom: 4px;

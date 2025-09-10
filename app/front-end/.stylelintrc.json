@@ -38,7 +38,6 @@
   "ignoreFiles": [
     "**/dist/**",
     "**/node_modules/**",
-    "src/styles/browser-specific-fixes.css",
     "src/styles/cross-browser-compatibility.css",
     "src/components/styles/modal.css",
     "src/components/layout/Modal/Modal.module.css",

@@ -12,7 +12,12 @@
   border-radius: 12px;
   background: var(--md-sys-color-surface, #1e1e1e);
   padding: 8px 12px;
-  transition: all 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
   min-height: 48px;
 }
 
@@ -50,7 +55,10 @@
   border-radius: 16px;
   font-size: 0.875rem;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    opacity 0.2s ease;
   max-width: 200px;
 }
 
@@ -73,7 +81,10 @@
   align-items: center;
   justify-content: center;
   font-size: 0.75rem;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
   opacity: 0.8;
 }
 
@@ -130,7 +141,10 @@
   align-items: center;
   justify-content: center;
   font-size: 0.875rem;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease,
+    opacity 0.2s ease;
   flex-shrink: 0;
 }
 

@@ -88,7 +88,10 @@
   overflow: hidden;
   border-top: 2px solid var(--md-sys-color-primary);
   box-shadow: 0 -8px 32px rgba(187, 134, 252, 0.15);
-  transition: all var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+  transition:
+    background 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
   z-index: 5;
 
   /* Optimizaciones de rendimiento */
@@ -244,7 +247,10 @@
     var(--md-elevation-2),
     0 0 20px rgba(187, 134, 252, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  transition: all var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard);
+  transition:
+    transform var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
+    box-shadow var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
+    background var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard);
 }
 
 .brandIcon:hover {
@@ -331,7 +337,12 @@
   text-decoration: none;
   border-radius: var(--md-sys-shape-corner-large);
   border: 1px solid rgba(187, 134, 252, 0.3);
-  transition: all var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized);
+  transition:
+    transform var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized),
+    box-shadow var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized),
+    border-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized),
+    color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized),
+    background var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized);
   position: relative;
   overflow: hidden;
   font-size: var(--md-sys-typescale-body-medium-size);
@@ -407,7 +418,12 @@
   color: var(--md-sys-color-on-surface-variant);
   text-decoration: none;
   border-radius: var(--md-sys-shape-corner-medium);
-  transition: all var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized);
+  transition:
+    transform var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized),
+    box-shadow var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized),
+    border-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized),
+    color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized),
+    background var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized);
   font-size: var(--md-sys-typescale-body-medium-size);
   font-weight: 500;
   background: linear-gradient(90deg, transparent, rgba(187, 134, 252, 0.05));
@@ -446,7 +462,9 @@
 .quickLink i {
   font-size: 0.875rem;
   opacity: 0.7;
-  transition: all var(--md-sys-motion-duration-short3) ease;
+  transition:
+    opacity var(--md-sys-motion-duration-short3) ease,
+    transform var(--md-sys-motion-duration-short3) ease;
 }
 
 .quickLink:hover i {
@@ -594,7 +612,10 @@
   border-radius: var(--md-sys-shape-corner-large);
   border: 2px solid var(--md-sys-color-outline-variant);
   overflow: hidden;
-  transition: all var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard);
+  transition:
+    border-color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
+    box-shadow var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard),
+    background var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-standard);
   position: relative;
 }
 
@@ -642,7 +663,11 @@
   color: var(--md-sys-color-on-primary);
   border: none;
   cursor: pointer;
-  transition: all var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized);
+  transition:
+    background var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized),
+    color var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized),
+    transform var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized),
+    box-shadow var(--md-sys-motion-duration-short3) var(--md-sys-motion-easing-emphasized);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -752,7 +777,11 @@
   font-size: var(--md-sys-typescale-body-small-size);
   color: var(--md-sys-color-on-surface-variant);
   text-decoration: none;
-  transition: all var(--md-sys-motion-duration-short3) ease;
+  transition:
+    color var(--md-sys-motion-duration-short3) ease,
+    background var(--md-sys-motion-duration-short3) ease,
+    transform var(--md-sys-motion-duration-short3) ease,
+    box-shadow var(--md-sys-motion-duration-short3) ease;
   padding: var(--md-sys-spacing-sm) var(--md-sys-spacing-md);
   border-radius: var(--md-sys-shape-corner-small);
   font-family: var(--font-sans, 'Inter', sans-serif);
@@ -794,7 +823,11 @@
 .techIcons i {
   font-size: 1.3rem;
   color: var(--md-sys-color-on-surface-variant);
-  transition: all var(--md-sys-motion-duration-short3) ease;
+  transition:
+    color var(--md-sys-motion-duration-short3) ease,
+    transform var(--md-sys-motion-duration-short3) ease,
+    background var(--md-sys-motion-duration-short3) ease,
+    box-shadow var(--md-sys-motion-duration-short3) ease;
   cursor: pointer;
   padding: var(--md-sys-spacing-xs);
   border-radius: var(--md-sys-shape-corner-small);
@@ -1179,7 +1212,11 @@
     background: var(--md-sys-color-primary-container);
     color: var(--md-sys-color-on-primary-container);
     border-radius: var(--md-sys-shape-corner-medium);
-    transition: all var(--md-sys-motion-duration-short3) ease;
+    transition:
+      background var(--md-sys-motion-duration-short3) ease,
+      color var(--md-sys-motion-duration-short3) ease,
+      transform var(--md-sys-motion-duration-short3) ease,
+      box-shadow var(--md-sys-motion-duration-short3) ease;
   }
 
   .techIcons i:hover {

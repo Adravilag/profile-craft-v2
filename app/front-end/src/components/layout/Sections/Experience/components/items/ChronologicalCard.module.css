@@ -6,7 +6,10 @@
 /* ---------- Variables CSS ---------- */
 :root {
   --card-border-radius: 20px;
-  --card-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --card-transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --card-z-content: 15;
 
   /* Colores adaptativos para modo oscuro */
@@ -145,7 +148,11 @@
   object-fit: cover;
   object-position: center;
   filter: saturate(0.95) brightness(0.9) contrast(1.05);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Only animate transform, filter and opacity to avoid layout paints */
+  transition:
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .chronological-card:hover .card-media img {
@@ -186,7 +193,12 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Limit transitions to transform, background-color, color and box-shadow */
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: default;
 }
 

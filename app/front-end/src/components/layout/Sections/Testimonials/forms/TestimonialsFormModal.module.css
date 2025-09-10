@@ -169,7 +169,12 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all var(--modal-transition-duration) var(--modal-transition-timing);
+  transition:
+    transform var(--modal-transition-duration) var(--modal-transition-timing),
+    background-color var(--modal-transition-duration) var(--modal-transition-timing),
+    border-color var(--modal-transition-duration) var(--modal-transition-timing),
+    color var(--modal-transition-duration) var(--modal-transition-timing),
+    box-shadow var(--modal-transition-duration) var(--modal-transition-timing);
   font-size: 18px;
   position: relative;
   z-index: 1;
@@ -277,7 +282,12 @@
   padding: 16px;
   font-size: 16px;
   color: var(--md-sys-color-on-surface);
-  transition: all 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
   font-family: inherit;
   box-sizing: border-box;
 }
@@ -358,7 +368,10 @@
   color: var(--md-sys-color-outline);
   font-size: 24px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   padding: 4px;
   border-radius: 8px;
 }
@@ -394,7 +407,12 @@
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   display: flex;
   align-items: center;
   gap: 8px;

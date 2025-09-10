@@ -99,7 +99,11 @@
   text-decoration: none;
   outline: none;
   overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow:
     0 3px 5px -1px rgb(0, 0, 0, 0.2),
     0 6px 10px 0 rgb(0, 0, 0, 0.14),
@@ -231,7 +235,10 @@
   opacity: 0;
   visibility: hidden;
   transform: translateX(10px);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
   box-shadow:
     0 2px 4px -1px rgb(0, 0, 0, 0.2),

@@ -84,17 +84,20 @@ code {
   border-bottom: none;
   padding-right: var(--spacing-xxl);
   /* mantener padding interno pero usar valores responsivos para evitar cortes
-    y permitir que la separación entre secciones se controle por margin-bottom */
+    y permitir que la separaci9n entre secciones se controle por margin-bottom */
   padding-bottom: clamp(var(--spacing-lg), 2vh, var(--spacing-xxl));
   padding-left: var(--spacing-xxl);
-  /* Separación visual entre el hero y la siguiente sección (About). Use clamp para responsive */
+  /* Separaci9n visual entre el hero y la siguiente secci9n (About). Use clamp para responsive */
   position: relative;
   min-height: calc(100vh - 76px);
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  transition: all 0.5s ease-in-out;
+  transition:
+    opacity 0.5s ease-in-out,
+    transform 0.5s ease-in-out,
+    background 0.5s ease-in-out;
   overflow: hidden;
   border: none;
   box-shadow: none;
@@ -141,23 +144,23 @@ code {
   background-position: center center;
   background-repeat: no-repeat;
 
-  /* más vida al fondo */
-  opacity: 0.35; /* ↓ de 0.42 */
+  /* ms vida al fondo */
+  opacity: 0.35; /*  de 0.42 */
   filter: saturate(0.75) blur(4px) brightness(1.05);
   /* evitar escala para que el pseudo-elemento no provoque "descuadres" visuales
     ni artefactos de layout en distintos navegadores */
   transform: none;
   transform-origin: center center;
   will-change: opacity, filter;
+  transition:
+    opacity 0.5s ease-in-out,
+    filter 0.5s ease-in-out;
   border-radius: inherit;
 
   /* desvanecido hacia los bordes para fusionar */
   mask-image: radial-gradient(120% 120% at 50% 50%, black 62%, transparent 92%);
   /* prefijo para compatibilidad en navegadores basados en WebKit */
   -webkit-mask-image: radial-gradient(120% 120% at 50% 50%, black 62%, transparent 92%);
-  transition:
-    opacity 0.5s ease-in-out,
-    filter 0.5s ease-in-out;
 }
 
 /* Overlay homogéneo (menos oscuro) */
@@ -977,7 +980,10 @@ code {
   padding: var(--spacing-xxs) var(--spacing-sm);
   border-radius: var(--radius-sm);
   box-shadow: 0 0 5px var(--color-success);
-  transition: all 0.3s ease;
+  transition:
+    box-shadow 0.3s ease,
+    transform 0.3s ease,
+    background-color 0.3s ease;
   animation: pulse-glow 2s infinite ease-in-out;
 }
 
@@ -1026,7 +1032,11 @@ code {
   font-weight: 600;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    color 0.2s ease;
   box-shadow: var(--shadow-elevation-1);
 }
 
@@ -1058,7 +1068,10 @@ code {
 .headerTerminalSection {
   backdrop-filter: blur(8px);
   padding: var(--spacing-lg);
-  transition: all 0.5s ease-in-out;
+  transition:
+    opacity 0.5s ease-in-out,
+    transform 0.5s ease-in-out,
+    background 0.5s ease-in-out;
 }
 
 .headerTerminalIntro {
@@ -1304,7 +1317,11 @@ code {
   justify-content: center;
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
   box-shadow: var(--shadow-elevation-1);
 }
 
@@ -1349,7 +1366,11 @@ code {
   white-space: nowrap;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .headerShareOption:hover {
@@ -1389,7 +1410,11 @@ code {
   justify-content: center;
   border: none;
   cursor: pointer;
-  transition: all 0.16s ease;
+  transition:
+    transform 0.16s ease,
+    background-color 0.16s ease,
+    color 0.16s ease,
+    opacity 0.16s ease;
   box-shadow: var(--shadow-elevation-1);
   font-weight: 700;
 }

@@ -20,7 +20,12 @@
   border: 1px solid var(--md-sys-color-outline);
   border-radius: 4px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .toolbarButton:hover {
@@ -149,7 +154,12 @@
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
   white-space: nowrap;
   min-height: 32px;
 }
@@ -262,7 +272,11 @@
 
 /* Animaciones de transición */
 .editorContent {
-  transition: all 0.3s ease;
+  transition:
+    width 0.3s ease,
+    height 0.3s ease,
+    transform 0.3s ease,
+    opacity 0.3s ease;
 }
 
 /* Indicador de ventana externa */
@@ -324,7 +338,12 @@
   border-radius: 50%;
   cursor: pointer;
   color: var(--md-sys-color-on-surface-variant);
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .closeBtn:hover {
@@ -369,7 +388,12 @@
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.875rem;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   color: var(--md-sys-color-on-surface-variant);
 }
 
@@ -469,7 +493,12 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.7rem;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   color: var(--md-sys-color-on-surface);
   min-height: 28px;
   white-space: nowrap;
@@ -499,7 +528,12 @@
   cursor: pointer;
   font-size: 0.75rem;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   color: var(--md-sys-color-on-tertiary-container);
   min-height: 32px;
 }
@@ -624,7 +658,12 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.75rem;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   color: var(--md-sys-color-on-surface);
   min-width: 32px;
   height: 32px;
@@ -658,4 +697,23 @@
   display: flex;
   gap: 8px;
   font-style: italic;
+}
+
+/* Respect prefers-reduced-motion: remove non-essential transitions */
+@media (prefers-reduced-motion: reduce) {
+  .toolbarButton,
+  .editorActions button,
+  .editorContent,
+  .closeBtn,
+  .templateButtons button,
+  .semanticButtons button,
+  .conversionButtons button,
+  .editorModeButtons button,
+  .htmlActionBtn,
+  .htmlProcessBtn,
+  .markdownActionBtn {
+    transition: none !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

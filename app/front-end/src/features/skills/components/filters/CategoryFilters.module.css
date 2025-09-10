@@ -17,7 +17,11 @@
   padding: 1rem 1.25rem;
   cursor: pointer;
   box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex !important;
   align-items: center;
   gap: 0.75rem;
@@ -89,7 +93,10 @@
   z-index: 10000;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    visibility 0.3s;
   border: 1px solid var(--border-color, #374151);
   overflow: hidden;
   backdrop-filter: blur(20px);
@@ -111,7 +118,9 @@
   z-index: 9998;
   opacity: 0;
   visibility: hidden;
-  transition: all 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
   backdrop-filter: blur(2px);
 }
 
@@ -169,7 +178,12 @@
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 0.5rem;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -217,7 +231,12 @@
   background: var(--input-background, #111827);
   color: var(--text-primary, #f9fafb);
   font-size: 0.9rem;
-  transition: all 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .searchInput:focus {
@@ -248,7 +267,11 @@
   border: 1px solid var(--border-color, #374151);
   border-radius: 0.75rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   text-align: left;
   width: 100%;
 }
@@ -334,7 +357,9 @@
   color: white;
   font-size: 0.75rem;
   opacity: 0;
-  transition: all 0.2s ease;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
 
 .categoryItem.active .activeIndicator {

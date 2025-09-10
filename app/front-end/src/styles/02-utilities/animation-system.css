@@ -339,7 +339,13 @@
 }
 
 .transition-all {
-  transition: all var(--duration-normal) var(--ease-out);
+  transition:
+    opacity var(--duration-normal) var(--ease-out),
+    transform var(--duration-normal) var(--ease-out),
+    box-shadow var(--duration-normal) var(--ease-out),
+    color var(--duration-normal) var(--ease-out),
+    background-color var(--duration-normal) var(--ease-out),
+    border-color var(--duration-normal) var(--ease-out);
 }
 
 .transition-colors {
@@ -397,7 +403,11 @@
 
 /* Enhanced button transitions */
 .btn-enhanced {
-  transition: all var(--duration-fast) var(--ease-out);
+  transition:
+    box-shadow var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
   transform: translateY(0);
 }
 
@@ -419,7 +429,11 @@
 
 /* Enhanced input transitions */
 .input-enhanced {
-  transition: all var(--duration-fast) var(--ease-out);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
   border: 1px solid var(--border-primary);
 }
 
@@ -435,7 +449,10 @@
 
 /* Enhanced link transitions */
 .link-enhanced {
-  transition: all var(--duration-fast) var(--ease-out);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    text-shadow var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
   position: relative;
 }
 
@@ -456,7 +473,11 @@
 
 /* Enhanced card transitions */
 .card-enhanced {
-  transition: all var(--duration-normal) var(--ease-out);
+  transition:
+    box-shadow var(--duration-normal) var(--ease-out),
+    transform var(--duration-normal) var(--ease-out),
+    color var(--duration-normal) var(--ease-out),
+    background-color var(--duration-normal) var(--ease-out);
   transform: translateY(0);
 }
 
@@ -471,7 +492,12 @@
 
 /* Terminal command line enhancements */
 .terminal-input {
-  transition: all var(--duration-fast) var(--ease-out);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
 }
 
 .terminal-input:focus {
@@ -489,7 +515,10 @@
 
 /* Terminal prompt enhancements */
 .terminal-prompt {
-  transition: all var(--duration-fast) var(--ease-out);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    text-shadow var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
 }
 
 .terminal-prompt:hover {
@@ -498,7 +527,11 @@
 
 /* Terminal window controls */
 .terminal-control {
-  transition: all var(--duration-fast) var(--ease-out);
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
   border-radius: var(--radius-full);
 }
 
@@ -627,7 +660,9 @@
     0 0 10px rgb(0, 255, 65, 0.4),
     0 0 20px rgb(0, 255, 65, 0.2);
   transform: translateY(-1px);
-  transition: all var(--duration-fast) var(--ease-out);
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
 }
 
 /* Matrix-style code rain animation for hack theme */
@@ -671,7 +706,9 @@
     0 0 10px rgb(255, 255, 0, 0.4),
     0 0 20px rgb(255, 255, 0, 0.2);
   transform: scale(1.05);
-  transition: all 0.1s step-end;
+  transition:
+    transform 0.1s step-end,
+    box-shadow 0.1s step-end;
 }
 
 /* Undertale-style retro animations */

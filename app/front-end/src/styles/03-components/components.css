@@ -16,12 +16,16 @@
   background-color: var(--md-sys-color-surface);
   color: var(--md-sys-color-on-surface);
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 2px 8px rgb(0, 0, 0, 0.1);
-  position: relative;
   overflow: hidden;
   backdrop-filter: blur(10px);
   border: 1px solid var(--md-sys-color-outline-variant);
@@ -29,7 +33,9 @@
 
 .header-icon-button i {
   font-size: 1.1rem;
-  transition: all 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
 }
 .header-icon-button:hover {
   background-color: var(--md-sys-color-primary);
@@ -37,24 +43,15 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 16px rgb(0, 0, 0, 0.15);
 }
-.header-icon-button:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 8px rgb(0, 0, 0, 0.1);
-}
-.header-icon-button:focus-visible {
-  outline: 2px solid var(--md-sys-color-primary);
-  outline-offset: 2px;
-}
 
 .header-icon-button.theme-toggle {
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    transform 0.2s;
   background-color: var(--md-sys-color-secondary-container);
   color: var(--md-sys-color-on-secondary-container);
 }
-.header-icon-button.theme-toggle:hover {
-  background-color: var(--md-sys-color-secondary);
-  color: var(--md-sys-color-on-secondary);
-}
-
 .header-icon-button.share-button {
   background-color: var(--md-sys-color-tertiary-container);
   color: var(--md-sys-color-on-tertiary-container);
@@ -107,7 +104,10 @@
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    transform 0.2s;
   text-align: left;
 }
 .header-top-right-actions .header-share-option:hover {
@@ -127,7 +127,11 @@
   border-radius: var(--md-sys-shape-corner-large);
   padding: 2rem;
   text-align: center;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
   cursor: pointer;

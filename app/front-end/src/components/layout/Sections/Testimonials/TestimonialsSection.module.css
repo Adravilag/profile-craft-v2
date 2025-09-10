@@ -32,9 +32,18 @@
   --shadow-expanded:
     0 8px 32px rgb(var(--md-sys-color-primary-rgb), 0.12), 0 16px 64px rgb(0, 0, 0, 0.08);
 
-  /* Transitions */
-  --transition-ease-in-out: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
-  --transition-ease-in-out-long: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Transitions (explicit property lists for performance) */
+  --transition-ease-in-out:
+    transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
+    opacity 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
+    background-color 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
+    border-color 0.35s cubic-bezier(0.25, 0.8, 0.25, 1),
+    box-shadow 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), color 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  --transition-ease-in-out-long:
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-fast: transform 0.1s ease;
   --transition-color: color 0.3s ease;
   --transition-shadow: box-shadow 0.3s ease;
@@ -177,7 +186,12 @@
   font-family: inherit;
   font-size: 1rem;
   line-height: 1.5;
-  transition: all 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
   box-sizing: border-box;
 }
 
@@ -272,7 +286,12 @@
   border: none;
   font-size: 1.75rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   padding: 2px;
   border-radius: 4px;
   touch-action: manipulation;
@@ -369,7 +388,12 @@
   padding: 0.75rem 1.25rem;
   border-radius: var(--border-radius-sm);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
@@ -390,7 +414,12 @@
   padding: 0.75rem 1.25rem;
   border-radius: var(--border-radius-sm);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-xs);
@@ -491,7 +520,10 @@
   display: inline-flex;
   align-items: center;
   gap: var(--spacing-sm);
-  transition: all 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    opacity 0.3s ease;
   box-shadow: 0 4px 12px rgba(var(--md-sys-color-primary-rgb), 0.3);
 }
 
@@ -672,7 +704,10 @@
   pointer-events: none;
   font-size: 16px;
   line-height: 1;
-  transition: all 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .starFilled {

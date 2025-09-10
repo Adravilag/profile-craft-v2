@@ -21,9 +21,6 @@
 /* 04 - Features (sections, header, skills, highlights, terminal) */
 @import url('./04-features/index.css');
 
-/* 05 - Optimizations (performance, accessibility, compatibility) */
-@import url('./05-optimizations/index.css');
-
 /* ===== Global background + bleed + reveal ===== */
 :root {
   --app-bg: #0b0f17;

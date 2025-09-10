@@ -728,7 +728,11 @@
   font-weight: var(--md3-weight-medium);
   font-size: var(--md3-label-large);
   cursor: pointer;
-  transition: all var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+  transition:
+    transform var(--md3-motion-duration-short2) var(--md3-motion-easing-standard),
+    box-shadow var(--md3-motion-duration-short2) var(--md3-motion-easing-standard),
+    background-color var(--md3-motion-duration-short2) var(--md3-motion-easing-standard),
+    color var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
   margin-bottom: var(--md3-space-3xl);
   box-shadow: var(--md3-elevation-1);
 }
@@ -764,7 +768,12 @@
   justify-content: center;
   cursor: pointer;
   box-shadow: var(--md3-elevation-3);
-  transition: all var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
+  transition:
+    transform var(--md3-motion-duration-short2) var(--md3-motion-easing-standard),
+    box-shadow var(--md3-motion-duration-short2) var(--md3-motion-easing-standard),
+    background-color var(--md3-motion-duration-short2) var(--md3-motion-easing-standard),
+    color var(--md3-motion-duration-short2) var(--md3-motion-easing-standard),
+    opacity var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
   backdrop-filter: blur(10px);
   animation: fabSlideIn var(--md3-motion-duration-short2) var(--md3-motion-easing-emphasized)
     calc(var(--i, 0) * 0.1s) both;

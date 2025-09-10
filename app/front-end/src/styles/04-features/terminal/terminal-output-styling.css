@@ -19,7 +19,9 @@
   color: var(--terminal-prompt);
   font-weight: var(--terminal-font-weight-bold);
   text-shadow: 0 0 8px rgb(var(--color-accent-rgb), 0.3);
-  transition: all var(--terminal-transition);
+  transition:
+    text-shadow var(--terminal-transition),
+    color var(--terminal-transition);
 }
 
 .interactive-terminal-prompt .at,
@@ -80,7 +82,10 @@
   padding: var(--terminal-padding-xs) var(--terminal-gap-xs);
   border-radius: var(--radius-sm);
   text-shadow: 0 0 8px rgb(var(--color-accent-rgb), 0.3);
-  transition: all var(--terminal-transition);
+  transition:
+    background-color var(--terminal-transition),
+    box-shadow var(--terminal-transition),
+    transform var(--terminal-transition);
 }
 
 .interactive-output-line .terminal-name-highlight:hover {
@@ -162,7 +167,10 @@ pre.assistant-code {
   font-family: var(--terminal-font);
   font-size: var(--terminal-font-size-sm);
   line-height: var(--terminal-line-height-normal);
-  transition: all var(--terminal-transition);
+  transition:
+    border-left-color var(--terminal-transition),
+    box-shadow var(--terminal-transition),
+    transform var(--terminal-transition);
 }
 
 .assistant-code::before,
@@ -219,7 +227,11 @@ code:not(pre code) {
   font-weight: var(--terminal-font-weight-medium);
   border: 1px solid rgb(var(--color-accent-rgb), 0.2);
   text-shadow: 0 0 4px rgb(var(--color-accent-rgb), 0.3);
-  transition: all var(--terminal-transition);
+  transition:
+    background-color var(--terminal-transition),
+    box-shadow var(--terminal-transition),
+    transform var(--terminal-transition),
+    border-color var(--terminal-transition);
 }
 
 code:not(pre code):hover {
@@ -375,7 +387,11 @@ pre.assistant-code .token.attr-value {
   text-decoration: none;
   font-weight: var(--terminal-font-weight-medium);
   border-bottom: 1px solid rgb(var(--color-accent-rgb), 0.3);
-  transition: all var(--terminal-transition);
+  transition:
+    color var(--terminal-transition),
+    border-bottom-color var(--terminal-transition),
+    text-shadow var(--terminal-transition),
+    transform var(--terminal-transition);
   text-shadow: 0 0 4px rgb(var(--color-accent-rgb), 0.2);
 }
 

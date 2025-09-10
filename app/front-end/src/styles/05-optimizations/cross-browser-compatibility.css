@@ -1,8 +1,0 @@
-/* Placeholder: reglas de compatibilidad entre navegadores.
-	Añadir hacks específicos si es necesario. */
-
-/* Ejemplo: forzar -webkit-font-smoothing */
-html,
-body {
-  -webkit-font-smoothing: antialiased;
-}

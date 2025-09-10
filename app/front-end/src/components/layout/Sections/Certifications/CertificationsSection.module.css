@@ -4,7 +4,10 @@
 :root {
   --cert-border-radius: 20px;
   --cert-border-radius-lg: 24px;
-  --cert-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --cert-transition:
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --cert-shadow-sm: 0 2px 8px rgb(0, 0, 0, 0.04);
   --cert-shadow-md: 0 8px 32px rgb(0, 0, 0, 0.08);
   --cert-shadow-lg: 0 16px 48px rgb(0, 0, 0, 0.12);
@@ -163,7 +166,12 @@
   opacity: 0;
   transform: translateY(40px) scale(0.96);
   box-shadow: var(--cert-shadow-sm);
-  transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    transform 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.7s cubic-bezier(0.4, 0, 0.2, 1);
   animation: cardSlideIn 0.9s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   backdrop-filter: var(--cert-backdrop-filter);
   cursor: pointer;
@@ -590,7 +598,10 @@
   font-size: 1rem;
   opacity: 0;
   transform: scale(0) rotate(-180deg);
-  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition:
+    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 15px rgb(0, 0, 0, 0.2);
 }
 

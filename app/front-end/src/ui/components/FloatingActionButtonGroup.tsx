@@ -1,5 +1,4 @@
 import React from 'react';
-import './fab.css';
 
 export type FABAction = {
   id: string;

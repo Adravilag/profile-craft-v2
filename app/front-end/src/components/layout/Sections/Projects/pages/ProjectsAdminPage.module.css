@@ -47,7 +47,10 @@
   background: color-mix(in srgb, var(--md3-surface-container) 95%, transparent);
   backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--md3-outline-variant);
-  position: sticky;
+  transition:
+    transform var(--md3-motion-duration-short2) var(--md3-motion-easing-standard),
+    box-shadow var(--md3-motion-duration-short2) var(--md3-motion-easing-standard),
+    background-color var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
   top: 0;
   z-index: 100;
   box-shadow: var(--md3-elevation-2);
@@ -60,7 +63,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: relative;
+  transition:
+    background-color var(--md3-motion-duration-short2) var(--md3-motion-easing-standard),
+    color var(--md3-motion-duration-short2) var(--md3-motion-easing-standard),
+    border-color var(--md3-motion-duration-short2) var(--md3-motion-easing-standard),
+    transform var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
   z-index: 1;
 }
 
@@ -72,7 +79,11 @@
 
 .headerRight {
   display: flex;
-  align-items: center;
+  transition:
+    background-color var(--md3-motion-duration-short2) var(--md3-motion-easing-standard),
+    color var(--md3-motion-duration-short2) var(--md3-motion-easing-standard),
+    border-color var(--md3-motion-duration-short2) var(--md3-motion-easing-standard),
+    transform var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
   gap: var(--md3-space-lg);
 }
 
@@ -89,12 +100,11 @@
   color: var(--md3-on-surface-variant);
   text-decoration: none;
   font-size: var(--md3-body-medium);
-  font-weight: var(--md3-weight-medium);
+  transition:
+    opacity var(--md3-motion-duration-short2) var(--md3-motion-easing-standard),
+    visibility var(--md3-motion-duration-short2) var(--md3-motion-easing-standard),
+    transform var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
   transition: color var(--md3-motion-duration-short2) var(--md3-motion-easing-standard);
-}
-
-.backButton:hover {
-  color: var(--md3-on-surface);
 }
 
 /* Botón de vista previa Material Design 3 */

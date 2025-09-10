@@ -139,7 +139,11 @@
   font-size: var(--md-sys-typescale-label-medium-size);
   color: #b5b5b5;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease,
+    border-color 0.2s ease;
   font-family: inherit;
   position: relative;
 }
@@ -182,7 +186,9 @@
   gap: var(--md-sys-spacing-md);
   padding: var(--md-sys-spacing-sm) 0 32px;
   justify-content: center;
-  transition: all 0.5s ease-in-out;
+  transition:
+    transform 0.5s ease-in-out,
+    opacity 0.5s ease-in-out;
 }
 
 /* Asegurar que todas las skill cards aprovechen el ancho disponible */
@@ -359,7 +365,11 @@
   font-size: var(--md-sys-typescale-body-medium-size);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+  transition:
+    transform 0.3s cubic-bezier(0.2, 0, 0, 1),
+    background-color 0.3s cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 0.3s cubic-bezier(0.2, 0, 0, 1),
+    color 0.3s cubic-bezier(0.2, 0, 0, 1);
   position: relative;
   overflow: hidden;
 }
@@ -412,24 +422,26 @@
 
 /* Ocultar texto en botones de ordenación en móvil, excepto si está activo */
 @media (max-width: 768px) {
-  .sortButton span {
-    display: none;
-  }
-
-  .sortButton.active span {
-    display: inline;
-  }
-
-  .sortButton.active {
-    flex: none;
-    padding: var(--md-sys-spacing-xs) var(--md-sys-spacing-sm);
-  }
-
   .sortButton {
-    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--md-sys-spacing-xs);
+    padding: var(--md-sys-spacing-xs) var(--md-sys-spacing-sm);
+    background: var(--md-sys-color-surface-container);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 8px;
+    font-size: var(--md-sys-typescale-label-small-size);
+    color: #b5b5b5;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.2s ease,
+      border-color 0.2s ease;
+    font-family: inherit;
+    position: relative;
     justify-content: center;
     min-width: 0;
-    font-size: var(--md-sys-typescale-label-small-size);
   }
 }
 

@@ -68,7 +68,10 @@
   border-radius: var(--radius-md);
   background: rgb(var(--bg-tertiary-rgb, 33, 38, 45), 0.5);
   border: 1px solid var(--border-secondary);
-  transition: all var(--terminal-transition);
+  transition:
+    background-color var(--terminal-transition),
+    border-color var(--terminal-transition),
+    box-shadow var(--terminal-transition);
 }
 
 .interactive-terminal-controls:hover {
@@ -85,7 +88,10 @@
   border: 1px solid rgb(0, 0, 0, 0.2);
   position: relative;
   cursor: pointer;
-  transition: all var(--terminal-transition);
+  transition:
+    transform var(--terminal-transition),
+    filter var(--terminal-transition),
+    box-shadow var(--terminal-transition);
   box-shadow:
     inset 0 1px 0 rgb(255, 255, 255, 0.2),
     0 1px 2px rgb(0, 0, 0, 0.1);
@@ -194,7 +200,12 @@
   border: 1px solid var(--border-primary);
   background: var(--bg-tertiary);
   color: var(--terminal-text);
-  transition: all var(--terminal-transition);
+  transition:
+    background-color var(--terminal-transition),
+    border-color var(--terminal-transition),
+    box-shadow var(--terminal-transition),
+    transform var(--terminal-transition),
+    color var(--terminal-transition);
   white-space: nowrap;
   box-shadow: var(--shadow-sm);
   position: relative;
@@ -268,7 +279,9 @@
   color: var(--pill-color);
   text-transform: uppercase;
   box-shadow: var(--shadow-sm);
-  transition: all var(--terminal-transition);
+  transition:
+    box-shadow var(--terminal-transition),
+    transform var(--terminal-transition);
   backdrop-filter: blur(4px);
 }
 
@@ -398,7 +411,12 @@
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-out);
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
   border-radius: var(--radius-md);
   position: relative;
   background: transparent;
@@ -438,7 +456,9 @@
   background: var(--bg-primary);
   cursor: pointer;
   position: relative;
-  transition: all var(--duration-fast) var(--ease-out);
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
 }
 
 .menu-item input[type='checkbox']:checked {
@@ -466,7 +486,9 @@
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-out);
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
   min-width: 120px;
 }
 

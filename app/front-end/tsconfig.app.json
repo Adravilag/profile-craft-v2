@@ -36,9 +36,8 @@
       "@types/*": ["src/types/*"],
       "@assets/*": ["src/assets/*"],
       "@locales/*": ["public/locales/*"]
-    },
-    "types": ["vite/client"]
+    }
   },
-  "include": ["src", "vite.config.ts"],
+  "include": ["src", "vite.config.ts", "types"],
   "exclude": ["**/*.stories.ts", "**/*.stories.tsx", "src/utils/testAboutAPI.ts"]
 }

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:prod:purge": "cross-env NODE_ENV=production vite build",
     "preview": "vite preview",
     "lint": "eslint ../../eslint.config.js . --ext .ts,.tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "npm run lint -- --fix",
@@ -101,7 +102,8 @@
     "vite": "^7.1.2",
     "vite-bundle-analyzer": "^1.2.1",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "cross-env": "^7.0.3"
   },
   "overrides": {
     "react-datepicker": {

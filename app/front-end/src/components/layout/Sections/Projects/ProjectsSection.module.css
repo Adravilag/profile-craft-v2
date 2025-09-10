@@ -54,7 +54,12 @@
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
-  transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    background-color 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    color 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1);
   backdrop-filter: blur(8px);
   position: relative;
   overflow: hidden;
@@ -126,7 +131,12 @@
   border: 1px solid var(--projects-card-border);
   border-radius: var(--projects-radius);
   overflow: hidden;
-  transition: all 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition:
+    transform 400ms cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 400ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 400ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 400ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 400ms cubic-bezier(0.16, 1, 0.3, 1);
   backdrop-filter: blur(12px) saturate(120%);
   cursor: pointer;
   position: relative;
@@ -276,7 +286,11 @@
   color: white;
   font-weight: 600;
   cursor: pointer;
-  transition: all 200ms ease;
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease;
 }
 
 .retryButton:hover {
@@ -319,7 +333,11 @@
   color: #000;
   font-weight: 600;
   cursor: pointer;
-  transition: all 200ms ease;
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease;
 }
 
 .adminButton:hover {
