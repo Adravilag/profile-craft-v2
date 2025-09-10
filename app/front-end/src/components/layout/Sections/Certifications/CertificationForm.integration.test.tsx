@@ -121,7 +121,7 @@ describe('[TEST] Certification Form Integration', () => {
 
       // Estado inicial
       expect(credentialInput).toHaveAttribute('placeholder', 'ID de credencial');
-      expect(titleInput.value).toBe('');
+      expect((titleInput as HTMLInputElement).value).toBe('');
 
       // Seleccionar AWS
       fireEvent.change(issuerSelect, { target: { value: 'Amazon Web Services (AWS)' } });
@@ -129,7 +129,9 @@ describe('[TEST] Certification Form Integration', () => {
       await waitFor(() => {
         // [RESULTADO] Test passed
         expect(credentialInput).toHaveAttribute('placeholder', 'Ej: ABC123DEF456');
-        expect(titleInput.value).toBe('Amazon Web Services (AWS) - Certificación de ejemplo');
+        expect((titleInput as HTMLInputElement).value).toBe(
+          'Amazon Web Services (AWS) - Certificación de ejemplo'
+        );
         expect(screen.getByTestId('selected-issuer')).toHaveTextContent(
           'Amazon Web Services (AWS)'
         );
@@ -159,8 +161,10 @@ describe('[TEST] Certification Form Integration', () => {
 
       await waitFor(() => {
         // [RESULTADO] Test passed
-        expect(verifyUrlInput.value).toBe(`https://certificados.midudev.com/${testCredentialId}`);
-        expect(imageUrlInput.value).toBe(
+        expect((verifyUrlInput as HTMLInputElement).value).toBe(
+          `https://certificados.midudev.com/${testCredentialId}`
+        );
+        expect((imageUrlInput as HTMLInputElement).value).toBe(
           `https://certificados.midudev.com/${testCredentialId}.pdf`
         );
       });
@@ -179,7 +183,7 @@ describe('[TEST] Certification Form Integration', () => {
 
       await waitFor(() => {
         expect(credentialInput).toHaveAttribute('placeholder', 'Ej: CT-SBWD5KGG');
-        expect(titleInput.value).toBe('SoloLearn - Certificación de ejemplo');
+        expect((titleInput as HTMLInputElement).value).toBe('SoloLearn - Certificación de ejemplo');
       });
 
       // Cambiar a Coursera
@@ -188,7 +192,7 @@ describe('[TEST] Certification Form Integration', () => {
       await waitFor(() => {
         // [RESULTADO] Test passed
         expect(credentialInput).toHaveAttribute('placeholder', 'Ej: ABCD1234EFGH');
-        expect(titleInput.value).toBe('Coursera - Certificación de ejemplo');
+        expect((titleInput as HTMLInputElement).value).toBe('Coursera - Certificación de ejemplo');
       });
     });
 
@@ -207,7 +211,7 @@ describe('[TEST] Certification Form Integration', () => {
 
       await waitFor(() => {
         // [RESULTADO] Test passed - El título personalizado se preserva
-        expect(titleInput.value).toBe('Mi Certificación Personalizada');
+        expect((titleInput as HTMLInputElement).value).toBe('Mi Certificación Personalizada');
       });
     });
   });

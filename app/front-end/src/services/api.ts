@@ -36,8 +36,9 @@ const secureApiLogger = createSecureLogger('API');
 // If using Vite, use import.meta.env; if using Create React App, ensure @types/node is installed and add a declaration for process.env if needed.
 // Usar solo el dominio/base, sin /api al final
 const API_BASE_URL =
-  import.meta.env?.VITE_API_URL?.replace(/\/?api\/?$/, '') ||
-  (import.meta.env.DEV ? '' : 'http://localhost:3000');
+  (typeof import.meta.env?.VITE_API_URL === 'string'
+    ? import.meta.env.VITE_API_URL.replace(/\/?api\/?$/, '')
+    : null) || (import.meta.env.DEV ? '' : 'http://localhost:3000');
 debugLog.api('🔧 API Base URL configurada:', API_BASE_URL);
 
 // Validación de seguridad de dominio antes de configurar interceptors
@@ -349,7 +350,7 @@ export const deleteEducation = (id: string) => {
 export const setDevelopmentToken = async () => {
   try {
     // Buscar token de desarrollo en variable de entorno SOLO en local
-    if (import.meta.env && import.meta.env.VITE_DEV_JWT_TOKEN) {
+    if (import.meta.env && typeof import.meta.env.VITE_DEV_JWT_TOKEN === 'string') {
       localStorage.setItem('portfolio_auth_token', import.meta.env.VITE_DEV_JWT_TOKEN);
       // En desarrollo también exponer la cookie no-HttpOnly para que el backend
       // que valida req.cookies.portfolio_auth_token pueda leerla en requests.
@@ -392,7 +393,7 @@ export const getDevToken = async () => {
     }
 
     const response = await API.get('/auth/dev-token');
-    const { token, user } = response.data;
+    const { token, user } = response.data as any;
 
     // Guardar token en localStorage y también exponer cookie no-HttpOnly en dev
     localStorage.setItem('portfolio_auth_token', token);
@@ -441,24 +442,29 @@ export const uploadImage = async (
 
 // Obtener lista de archivos de media
 export const getMediaFiles = (): Promise<MediaItem[]> =>
-  API.get<MediaItem[]>('/media').then(r => r.data);
+  API.get<MediaItem[]>('/media').then(r => r.data) as Promise<MediaItem[]>;
 
 // Eliminar archivo de media
 export const deleteMediaFile = (filename: string): Promise<{ success: boolean; message: string }> =>
-  API.delete(`/media/${filename}`).then(r => r.data);
+  API.delete(`/media/${filename}`).then(r => r.data) as Promise<{
+    success: boolean;
+    message: string;
+  }>;
 
 // Eliminar imagen de Cloudinary
 export const deleteCloudinaryImage = async (
   publicId: string
 ): Promise<{ success: boolean; message: string }> => {
-  return API.delete('/media/cloudinary/delete', {
+  return API.request({
+    method: 'DELETE',
+    url: '/media/cloudinary/delete',
     data: { publicId },
-  }).then(r => r.data);
+  }).then(r => r.data) as unknown as Promise<{ success: boolean; message: string }>;
 };
 
 // Obtener media por id (metadatos)
 export const getMediaById = (id: string): Promise<MediaItem> =>
-  API.get<MediaItem>(`/media/${id}`).then(r => r.data);
+  API.get<MediaItem>(`/media/${id}`).then(r => r.data) as Promise<MediaItem>;
 
 // ===== AUTH =====
 export const authLogin = async (credentials: { email: string; password: string }) => {

@@ -10,10 +10,12 @@ export const GENERIC_ICON_URL = genericIconUrl;
 // Usamos as:'url' para obtener directamente la URL final servida por Vite
 // Nota: el tipo lo forzamos a Record<string, string> para simplicidad
 // use a relative glob from project root that Vite accepts in tests
-const svgModules = import.meta.glob('/src/assets/svg/*.svg', {
-  eager: true,
-  as: 'url',
-}) as unknown as Record<string, string>;
+const svgModules =
+  ((import.meta.glob &&
+    import.meta.glob('/src/assets/svg/*.svg', {
+      eager: true,
+      as: 'url',
+    })) as unknown as Record<string, string>) || {};
 
 // Índices para búsqueda por nombre de archivo (con y sin extensión)
 const svgByFileName: Record<string, string> = {};

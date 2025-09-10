@@ -26,12 +26,15 @@ export const useContactForm = (): UseContactFormReturn => {
 
       try {
         const response = await contactService.sendMessage(data);
-        if (response.success) {
-          notifySuccess('Mensaje enviado', response.message || '¡Gracias por contactarme!');
+        if ((response as any).success) {
+          notifySuccess(
+            'Mensaje enviado',
+            (response as any).message || '¡Gracias por contactarme!'
+          );
           // Reset form
           (e.currentTarget as HTMLFormElement).reset();
         } else {
-          throw new Error(response.message || 'Error al enviar el mensaje');
+          throw new Error((response as any).message || 'Error al enviar el mensaje');
         }
       } catch (error) {
         console.error('Error al enviar mensaje:', error);

@@ -4,7 +4,6 @@
  */
 
 import axios from 'axios';
-import type { AxiosInstance } from 'axios';
 import { createSecureLogger } from './secureLogging';
 
 const securityLogger = createSecureLogger('DOMAIN_SECURITY');
@@ -83,9 +82,13 @@ export function validateRequest(): boolean {
 /**
  * Crea un cliente de axios con validación de dominio automática
  */
-export function createSecureApiClient(baseURL?: string): AxiosInstance {
+export function createSecureApiClient(baseURL?: string) {
   const client = axios.create({
-    baseURL: baseURL || import.meta.env?.VITE_API_URL || 'http://localhost:3000/api',
+    baseURL:
+      baseURL ||
+      (typeof import.meta.env?.VITE_API_URL === 'string'
+        ? import.meta.env.VITE_API_URL
+        : 'http://localhost:3000/api'),
     timeout: 10000,
     headers: {
       'Content-Type': 'application/json',
@@ -151,7 +154,7 @@ export function isProductionDomain(): boolean {
  */
 export function isDevelopmentOrigin(): boolean {
   if (typeof window === 'undefined') {
-    return import.meta.env.DEV;
+    return import.meta.env.DEV === true;
   }
 
   const currentOrigin = window.location.origin;

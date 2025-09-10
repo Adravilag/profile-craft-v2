@@ -28,8 +28,8 @@ describe('AppProviders', () => {
 
   afterEach(() => {
     // Restore the original environment variable after each test.
-    vi.stubEnv('DEV', originalEnv);
-    vi.stubEnv('VITE_ENABLE_REACT_QUERY', originalViteEnable);
+    vi.stubEnv('DEV', originalEnv === true);
+    vi.stubEnv('VITE_ENABLE_REACT_QUERY', String(originalViteEnable));
   });
 
   it('should render children within QueryClientProvider', () => {

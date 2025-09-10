@@ -2,11 +2,13 @@
 // Carga todos los SVG de src/assets/svg y construye un mapa de búsqueda robusto
 
 // Nota: ruta relativa desde src/utils a src/assets
-const svgModules = import.meta.glob('../assets/svg/*.svg', {
-  eager: true,
-  query: '?url',
-  import: 'default',
-}) as Record<string, string>;
+const svgModules =
+  ((import.meta.glob &&
+    import.meta.glob('../assets/svg/*.svg', {
+      eager: true,
+      query: '?url',
+      import: 'default',
+    })) as Record<string, string>) || {};
 
 // normaliza un nombre a minúsculas y variantes útiles
 const normalize = (name: string) =>

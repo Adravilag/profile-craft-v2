@@ -11,7 +11,9 @@ describe('[TEST] Forms Components', () => {
       const mockOnChange = vi.fn();
 
       render(
-        <IssuerSelector value="" onChange={mockOnChange} placeholder="Seleccionar emisor..." />
+        (
+          <IssuerSelector value="" onChange={mockOnChange} placeholder="Seleccionar emisor..." />
+        ) as unknown as any
       );
 
       // [RESULTADO] Test passed
@@ -31,7 +33,7 @@ describe('[TEST] Forms Components', () => {
       // [TEST]
       const mockOnChange = vi.fn();
 
-      render(<IssuerSelector value="" onChange={mockOnChange} />);
+      render((<IssuerSelector value="" onChange={mockOnChange} />) as unknown as any);
 
       const select = screen.getByRole('combobox');
       fireEvent.change(select, { target: { value: 'Amazon Web Services (AWS)' } });
@@ -51,7 +53,11 @@ describe('[TEST] Forms Components', () => {
       // [TEST]
       const mockOnChange = vi.fn();
 
-      render(<CredentialIdInput value="" onChange={mockOnChange} placeholder="ID de credencial" />);
+      render(
+        (
+          <CredentialIdInput value="" onChange={mockOnChange} placeholder="ID de credencial" />
+        ) as unknown as any
+      );
 
       // [RESULTADO] Test passed
       const input = screen.getByPlaceholderText('ID de credencial');
@@ -63,7 +69,11 @@ describe('[TEST] Forms Components', () => {
       const mockOnChange = vi.fn();
       const awsIssuer = CERTIFICATION_ISSUERS.find(i => i.id === 'aws')!;
 
-      render(<CredentialIdInput value="" onChange={mockOnChange} issuer={awsIssuer} />);
+      render(
+        (
+          <CredentialIdInput value="" onChange={mockOnChange} issuer={awsIssuer} />
+        ) as unknown as any
+      );
 
       // [RESULTADO] Test passed
       const input = screen.getByPlaceholderText('Ej: ABC123DEF456');
@@ -75,7 +85,11 @@ describe('[TEST] Forms Components', () => {
       const mockOnChange = vi.fn();
       const midudevIssuer = CERTIFICATION_ISSUERS.find(i => i.id === 'midudev')!;
 
-      render(<CredentialIdInput value="" onChange={mockOnChange} issuer={midudevIssuer} />);
+      render(
+        (
+          <CredentialIdInput value="" onChange={mockOnChange} issuer={midudevIssuer} />
+        ) as unknown as any
+      );
 
       // [RESULTADO] Test passed
       const input = screen.getByPlaceholderText('Ej: 66b2ab03a4a4d5c8e7894c23');
@@ -86,7 +100,7 @@ describe('[TEST] Forms Components', () => {
       // [TEST]
       const mockOnChange = vi.fn();
 
-      render(<CredentialIdInput value="" onChange={mockOnChange} />);
+      render((<CredentialIdInput value="" onChange={mockOnChange} />) as unknown as any);
 
       const input = screen.getByRole('textbox');
       fireEvent.change(input, { target: { value: 'test-123' } });

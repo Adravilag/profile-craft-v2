@@ -3,9 +3,11 @@
 
 type ModulesMap = Record<string, any>;
 
-const modules = import.meta.glob('/src/assets/img/*.{png,jpg,jpeg,svg}', {
-  eager: true,
-}) as ModulesMap;
+const modules =
+  ((import.meta.glob &&
+    import.meta.glob('/src/assets/img/*.{png,jpg,jpeg,svg}', {
+      eager: true,
+    })) as ModulesMap) || {};
 
 const imageMap = new Map<string, string>();
 

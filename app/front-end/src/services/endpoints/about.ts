@@ -44,7 +44,7 @@ export interface AboutResponse {
  */
 export const getAboutSection = async (): Promise<AboutResponse> => {
   const response = await getAboutSectionImpl();
-  return response.data;
+  return response.data as AboutResponse;
 };
 
 /**
@@ -54,7 +54,7 @@ export const updateAboutSection = async (
   data: Partial<Pick<AboutSectionData, 'aboutText' | 'collaborationNote'>>
 ): Promise<AboutResponse> => {
   const response = await updateAboutSectionImpl(data);
-  return response.data;
+  return response.data as AboutResponse;
 };
 
 /**
@@ -64,7 +64,7 @@ export const addHighlight = async (
   data: Omit<AboutHighlightData, '_id' | 'isActive'>
 ): Promise<AboutResponse> => {
   const response = await addAboutHighlightImpl(data);
-  return response.data;
+  return response.data as AboutResponse;
 };
 
 /**
@@ -75,7 +75,7 @@ export const updateHighlight = async (
   data: Partial<AboutHighlightData>
 ): Promise<AboutResponse> => {
   const response = await updateAboutHighlightImpl(highlightId, data);
-  return response.data;
+  return response.data as AboutResponse;
 };
 
 /**
@@ -83,5 +83,5 @@ export const updateHighlight = async (
  */
 export const deleteHighlight = async (highlightId: string): Promise<AboutResponse> => {
   const response = await deleteAboutHighlightImpl(highlightId);
-  return response.data;
+  return response.data as AboutResponse;
 };

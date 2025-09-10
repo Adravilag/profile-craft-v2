@@ -1,6 +1,5 @@
 // src/services/http.ts
 import axios from 'axios';
-import type { AxiosInstance } from 'axios';
 import { debugLog } from '@/utils/debugConfig';
 
 // Servicio HTTP centralizado (axios) con configuración y helpers claros.
@@ -19,7 +18,7 @@ function getApiBaseUrl(): string {
 const API_BASE_URL = getApiBaseUrl();
 
 /** Instancia axios exportada para uso en la app */
-export const API: AxiosInstance = axios.create({
+export const API = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
 });

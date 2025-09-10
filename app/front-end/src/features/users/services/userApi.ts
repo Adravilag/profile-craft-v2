@@ -9,8 +9,8 @@ export const getFirstAdminUsername = async (): Promise<string> => {
   if (cachedAdminUsername) return cachedAdminUsername;
   // Nota: no usar prefijo '/' para que axios concatene correctamente con baseURL que ya incluye '/api'
   const { data } = await API.get('auth/first-admin-user');
-  if (data?.success && data?.user?.username) {
-    cachedAdminUsername = data.user.username;
+  if ((data as any)?.success && (data as any)?.user?.username) {
+    cachedAdminUsername = (data as any).user.username;
     return cachedAdminUsername;
   }
   if (API_CONFIG.IS_MONGODB)
@@ -32,12 +32,12 @@ export const getFirstAdminUserId = async (): Promise<string> => {
 
     const { data } = await API.get('auth/first-admin-user');
 
-    if (!data.success || !data.user?.publicId) {
+    if (!(data as any).success || !(data as any).user?.publicId) {
       throw new Error('No se pudo obtener el ID público del usuario administrador');
     }
 
     // Cachear el resultado
-    cachedAdminUserId = data.user.publicId; // 'admin'
+    cachedAdminUserId = (data as any).user.publicId; // 'admin'
     return cachedAdminUserId;
   } catch (error) {
     console.error('Error obteniendo el ID público del usuario administrador:', error);
@@ -48,5 +48,5 @@ export const getFirstAdminUserId = async (): Promise<string> => {
 export const hasRegisteredUser = async (): Promise<boolean> => {
   // Respetar baseURL; usar ruta relativa sin '/'
   const { data } = await API.get('auth/has-user');
-  return !!data?.exists;
+  return !!(data as any)?.exists;
 };
