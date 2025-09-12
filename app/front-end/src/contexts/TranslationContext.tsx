@@ -679,8 +679,7 @@ const esTranslations: Translations = {
     retry: 'Reintentar',
     retryInline: 'Reintentar',
     noProjects: 'No hay proyectos para mostrar',
-    noProjectsDescription:
-      'Aún no hay proyectos públicos en este perfil. Puedes añadir proyectos desde el panel de administración o comprobar tus filtros.',
+    noProjectsDescription: 'Aún no hay proyectos públicos en este perfil.',
     createProject: 'Crear proyecto',
     checkFilters: 'Revisar filtros',
     contactSupport: 'Contactar soporte',

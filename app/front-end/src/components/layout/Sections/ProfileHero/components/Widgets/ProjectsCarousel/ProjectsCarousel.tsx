@@ -232,6 +232,10 @@ const ProjectsCarousel: React.FC<Props> = ({ projects: initialProjects }) => {
   const footerEl =
     typeof document !== 'undefined' ? document.getElementById('header-terminal-footer') : null;
 
+  // Si no hay proyectos cargados y no estamos en loading ni en error, no renderizamos el carrusel
+  const hasProjects = Array.isArray(projects) && projects.length > 0;
+  if (!hasProjects && !loading && !error) return null;
+
   const dotsNode =
     projects && projects.length > 1 ? (
       <div
@@ -375,14 +379,6 @@ const ProjectsCarousel: React.FC<Props> = ({ projects: initialProjects }) => {
             <div className={styles.emptyText}>
               <div className={styles.emptyTitle}>{t.projectsCarousel.noProjects}</div>
               <div className={styles.emptySubtitle}>{t.projectsCarousel.noProjectsDescription}</div>
-              <div className={styles.emptyActions}>
-                <a href="/projects/admin" className={styles.emptyCta}>
-                  {t.projectsCarousel.createProject}
-                </a>
-                <a href="#filters" className={styles.emptyLink}>
-                  {t.projectsCarousel.checkFilters}
-                </a>
-              </div>
             </div>
           </div>
         </div>
