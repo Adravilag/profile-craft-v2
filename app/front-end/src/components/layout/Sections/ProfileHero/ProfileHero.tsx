@@ -413,19 +413,6 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
                 />
               ))}
             </div>
-
-            {/* Projects preview */}
-            {projects.length > 0 && (
-              <div className={`${styles.projectsPreview} animate-slide-in-right delay-800`}>
-                {projects.slice(0, 4).map((p, idx) => (
-                  <ProjectWidget
-                    key={`${p.title ?? 'project'}-${idx}`}
-                    project={p}
-                    variant="thumb"
-                  />
-                ))}
-              </div>
-            )}
           </div>
         </div>
         {/* WIDGET: terminal / video / projects */}
