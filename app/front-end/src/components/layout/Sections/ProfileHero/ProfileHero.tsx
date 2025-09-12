@@ -17,6 +17,7 @@ import {
   useSkills,
   useUserPattern,
 } from './hooks';
+import { useProjectsData } from '@/hooks';
 import { useHeader } from '@/hooks/useHeader';
 import InteractiveTerminal from './components/Widgets/Terminal/InteractiveTerminal';
 import VideoCurriculum from './components/Widgets/VideoCurriculum/VideoCurriculum';
@@ -96,7 +97,9 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
     return getTopFeaturedSkills(MAX_FEATURED_SKILLS);
   }, [getTopFeaturedSkills]);
 
-  const projects = useMemo(() => (userProfile as any)?.projects || [], [userProfile]);
+  // Projects come from the centralized projects hook (not from userProfile)
+  const { projects: projectsFromHook = [], loading: projectsLoading } = useProjectsData();
+  const projects = useMemo(() => projectsFromHook || [], [projectsFromHook]);
 
   // === 4. Efectos Secundarios (useEffect) ===
   useEffect(() => {
