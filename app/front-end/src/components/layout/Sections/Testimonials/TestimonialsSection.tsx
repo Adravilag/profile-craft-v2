@@ -353,6 +353,21 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
 
       {/* Modal is handled via ModalContext; modal content is rendered through openModal */}
 
+      {/* Botón persistente para añadir testimonio (visible para usuarios no admin) */}
+      {!isAdminMode && (
+        <div className={styles.persistentCta}>
+          <button
+            className={styles.emptyCtaBtn}
+            onClick={() => handleOpenAddModalWithSubmit()}
+            aria-label="Añadir testimonio"
+            title="Añadir mi testimonio"
+          >
+            <i className="fas fa-plus-circle" />
+            Añadir mi testimonio
+          </button>
+        </div>
+      )}
+
       {isAdminMode && (
         <form
           className={`${styles['testimonial-form']} ${styles['admin-form']}`}
@@ -599,12 +614,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
               ? 'Añade el primer testimonio usando el formulario de arriba.'
               : '¡Sé el primero en compartir tu experiencia!'}
           </p>
-          {!isAdminMode && (
-            <button className={styles.emptyCtaBtn} onClick={() => handleOpenAddModalWithSubmit()}>
-              <i className="fas fa-plus-circle" />
-              Añadir mi testimonio
-            </button>
-          )}
+          {/* El botón de añadir ya es persistente arriba; no mostrar duplicado aquí */}
         </div>
       )}
 

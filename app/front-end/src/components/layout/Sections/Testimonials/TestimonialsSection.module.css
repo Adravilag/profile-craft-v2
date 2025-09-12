@@ -510,7 +510,7 @@
 
 .emptyCtaBtn {
   background: var(--md-sys-color-primary);
-  color: var(--md-sys-color-on-primary);
+  color: var(--md-sys-color-on-surface);
   border: none;
   padding: 1rem 2rem;
   border-radius: var(--border-radius-md);
@@ -528,9 +528,34 @@
 }
 
 .emptyCtaBtn:hover {
-  background: var(--md-sys-color-primary-dark);
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(var(--md-sys-color-primary-rgb), 0.4);
+}
+
+/* Persistent CTA container placed under header and centered */
+.persistentCta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: clamp(12px, 2vh, 24px);
+  margin-bottom: clamp(12px, 2vh, 24px);
+}
+
+/* Make the CTA more pill-like and add subtle hover/focus states */
+.emptyCtaBtn {
+  border-radius: 999px; /* pill */
+  padding: 0.75rem 1.5rem;
+  box-shadow: 0 6px 18px rgba(var(--md-sys-color-primary-rgb), 0.18);
+}
+
+.emptyCtaBtn:focus {
+  outline: 3px solid rgba(var(--md-sys-color-primary-rgb), 0.18);
+  outline-offset: 3px;
+}
+
+.emptyCtaBtn:hover i {
+  transform: translateX(-4px);
+  transition: transform 0.25s ease;
 }
 
 /*
