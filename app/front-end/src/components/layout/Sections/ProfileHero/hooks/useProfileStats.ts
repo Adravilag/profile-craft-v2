@@ -117,14 +117,30 @@ export function useProfileStats(
 
     // Localized labels (usar `t` obtenido al tope del hook)
     const yearsLabel = `👨‍💻 +${rs.years_experience ?? meta.years_experience ?? 5} ${t.profileHero.yearsExperience}`;
-    const projectsLabel = `📂 ${rs.projects_count ?? meta.projects_count ?? '3+'} ${t.profileHero.projectsCompleted}`;
+
+    // Determinar si mostramos el contador de proyectos completados.
+    // Si el valor efectivo (remoto o en meta) es 0, lo ocultamos.
+    const projectsCountRaw =
+      typeof (rs as any).projects_count === 'number'
+        ? (rs as any).projects_count
+        : typeof meta.projects_count === 'number'
+          ? meta.projects_count
+          : null;
+    const projectsLabelValue = projectsCountRaw !== null ? projectsCountRaw : '3+';
 
     const certCount = rs.certifications_count ?? meta.certifications_count ?? 0;
 
     const items: { key: string; label: string }[] = [
       { key: 'years_experience', label: yearsLabel },
-      { key: 'projects_count', label: projectsLabel },
     ];
+
+    // Añadir proyectos completados sólo si el valor efectivo no es 0.
+    if (projectsCountRaw !== 0) {
+      items.push({
+        key: 'projects_count',
+        label: `📂 ${projectsLabelValue} ${t.profileHero.projectsCompleted}`,
+      });
+    }
 
     // Mostrar certificaciones solo si hay al menos una
     if (certCount > 0) {

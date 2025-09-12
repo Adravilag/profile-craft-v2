@@ -468,20 +468,24 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
                     />
                   </button>
                   */}
-                  <button
-                    type="button"
-                    onClick={() => setActiveWidget('projects')}
-                    aria-pressed={activeWidget === 'projects'}
-                    className={`${
-                      activeWidget === 'projects' ? styles.widgetButtonActive : styles.widgetButton
-                    } transition-all hover:scale-105 active:scale-95`}
-                    title={t.profileHero.projects}
-                  >
-                    <i
-                      className="fas fa-th-large transition-transform hover:rotate-3"
-                      aria-hidden="true"
-                    />
-                  </button>
+                  {projects && projects.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => setActiveWidget('projects')}
+                      aria-pressed={activeWidget === 'projects'}
+                      className={`${
+                        activeWidget === 'projects'
+                          ? styles.widgetButtonActive
+                          : styles.widgetButton
+                      } transition-all hover:scale-105 active:scale-95`}
+                      title={t.profileHero.projects}
+                    >
+                      <i
+                        className="fas fa-th-large transition-transform hover:rotate-3"
+                        aria-hidden="true"
+                      />
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
