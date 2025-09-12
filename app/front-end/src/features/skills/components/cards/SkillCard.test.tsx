@@ -42,7 +42,7 @@ const mockSkill = {
   category: 'Frontend',
   level: 85,
   featured: true,
-  icon_class: '/mock-icon.svg',
+  svg_path: '/mock-icon.svg',
 };
 
 const mockSkillsIcons = [

@@ -58,7 +58,7 @@ vi.mock('@/features/skills', () => ({
     handleDrop: vi.fn(),
     draggedSkillId: null,
     showModal: false,
-    newSkill: { name: '', category: 'Frontend', icon_class: '', level: 50, featured: false },
+    newSkill: { name: '', category: 'Frontend', svg_path: '', level: 50, featured: false },
     editingId: null,
     handleOpenModal: vi.fn(),
     handleCloseModal: vi.fn(),

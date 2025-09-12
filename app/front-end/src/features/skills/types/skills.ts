@@ -44,7 +44,10 @@ export interface ExternalSkillData {
 export interface SkillFormData {
   name: string;
   category: string;
-  icon_class: string;
+  // icon_class removed - prefer svg_path or leave blank; keep compatibility with older code via any casts
+  svg_path?: string;
+  /** @deprecated legacy; kept for tests and older code paths */
+  icon_class?: string;
   level: number;
   featured?: boolean;
 }
@@ -95,7 +98,7 @@ export interface SkillModalProps {
   onClose: () => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void | Promise<void>;
   onFormChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
-  onFormChangeWithIcon?: (updates: Partial<SkillFormData & { icon_class?: string }>) => void;
+  onFormChangeWithIcon?: (updates: Partial<SkillFormData & { svg_path?: string }>) => void;
   isAdmin?: boolean;
   /** Opcionales: permiten ajustar el tamaño máximo del modal desde el consumidor */
   maxWidth?: string | number;

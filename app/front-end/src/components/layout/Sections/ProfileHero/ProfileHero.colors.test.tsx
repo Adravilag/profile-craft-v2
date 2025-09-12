@@ -28,7 +28,7 @@ vi.mock('@/services/endpoints', async importOriginal => {
           user_id: 0,
           category: 'Frontend',
           name: 'React',
-          icon_class: 'fab fa-react',
+          svg_path: '/mock-icons/react.svg',
           level: 90,
           order_index: 1,
         },

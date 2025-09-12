@@ -223,10 +223,13 @@ const SkillModal: React.FC<SkillModalProps> = ({
 
       // Use the new handler if available, otherwise fallback to individual events
       if (onFormChangeWithIcon) {
+        // Use the new handler and pass the chosen SVG URL as `svg_path`.
+        // Do NOT write legacy `icon_class` here anymore — migration should normalize
+        // legacy data in a single place (useSkillsIcons / backend) to avoid dupes.
         onFormChangeWithIcon({
           name: result.name,
           category: suggestedCategory,
-          icon_class: svgUrl,
+          svg_path: svgUrl,
         });
       } else {
         // Fallback: create synthetic events

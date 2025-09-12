@@ -32,7 +32,7 @@ vi.mock('@/features/skills', () => ({
       loading: false,
       error: null,
       showModal: false,
-      newSkill: { name: '', category: 'Frontend', icon_class: '', level: 50, featured: false },
+      newSkill: { name: '', category: 'Frontend', svg_path: '', level: 50, featured: false },
       editingId: null,
       draggedSkillId: null,
       selectedCategory: 'All',

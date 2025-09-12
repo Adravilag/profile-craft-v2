@@ -24,7 +24,7 @@ const SkillBadge: React.FC<SkillBadgeProps> = ({
   const name = String(skill?.name ?? rawName ?? '');
   const lvl = (skill as any)?.level ?? level;
   const { canonical, normalized, original } = normalizeSkillName(name);
-  const svg = findSkillIcon(canonical, normalized);
+  const svg = (skill as any)?.svg_path || findSkillIcon(canonical, normalized);
 
   return (
     <div
@@ -44,6 +44,7 @@ const SkillBadge: React.FC<SkillBadgeProps> = ({
       {svg ? (
         <img src={svg} alt={original} style={{ width: size, height: size }} />
       ) : (
+        // Prefer svg_path; fall back to legacy icon_class only if present, otherwise generic icon class
         <i className={(skill as any)?.icon_class || 'fas fa-code'} aria-hidden="true" />
       )}
       <span

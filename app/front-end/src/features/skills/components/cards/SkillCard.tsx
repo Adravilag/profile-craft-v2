@@ -84,7 +84,10 @@ const SkillCard: React.FC<SkillCardProps> = ({
     );
 
     // Determinar SVG usando la función utilitaria
-    const path = getSkillSvg(skill.name, skill.icon_class, skillsIcons);
+    // Prefer `svg_path` on the skill if present (new approach).
+    // We no longer rely on legacy `icon_class` here; any remaining legacy data
+    // should be normalized earlier in the pipeline (useSkillsIcons / API layer).
+    const path = getSkillSvg(skill.name, (skill as any).svg_path, skillsIcons);
 
     // Determinar color desde CSV o mapa de marca
     const brandColorMap: Record<string, string> = {
@@ -113,7 +116,7 @@ const SkillCard: React.FC<SkillCardProps> = ({
     const stars = getDifficultyStars(difficultySource);
 
     return { svgPath: path, skillColor: color, difficultyStars: stars };
-  }, [skill.name, skill.icon_class, skillsIcons]);
+  }, [skill.name, (skill as any).svg_path, skillsIcons]);
 
   // Resolver rutas de icono: respetar URLs absolutas (http(s)://, //, data:, blob:)
   const resolveIconUrl = useCallback((path?: string | null) => {

@@ -5,7 +5,6 @@ export interface ISkill extends Document {
   user_id: string;
   name: string;
   category: string;
-  icon_class?: string;
   level: number;
   order_index: number;
   created_at: Date;
@@ -28,10 +27,6 @@ const SkillSchema: Schema = new Schema(
       type: String,
       required: true,
       trim: true,
-    },
-    icon_class: {
-      type: String,
-      default: null,
     },
     featured: {
       type: Boolean,

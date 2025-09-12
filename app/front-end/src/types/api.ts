@@ -71,6 +71,7 @@ export interface Project {
 
   // Lightweight fields used by Profile hero / skills
   category?: string;
+  /** @deprecated legacy: prefer svg_path / skill icons from assets; kept for compatibility */
   icon_class?: string;
   featured?: boolean;
   level?: number;
@@ -186,7 +187,6 @@ export interface Skill {
   years_experience?: number;
   color?: string;
   // legacy/ui fields used across the codebase
-  icon_class?: string;
   featured?: boolean;
   order_index?: number;
   created_at?: string;

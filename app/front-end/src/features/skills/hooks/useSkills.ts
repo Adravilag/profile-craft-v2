@@ -11,7 +11,7 @@ import { useSectionsLoadingContext } from '@/contexts/SectionsLoadingContext';
 const defaultNewSkill: SkillFormData = {
   name: '',
   category: 'Frontend',
-  icon_class: '',
+  svg_path: undefined,
   level: 50,
   featured: false,
 };
@@ -107,12 +107,12 @@ export const useSkills = () => {
     }
   };
 
-  // Handler específico para manejar selecciones de LogoHub con icon_class
-  const handleFormChangeWithIcon = (updates: Partial<SkillFormData & { icon_class?: string }>) => {
+  // Handler específico para manejar selecciones de LogoHub con svg_path (acepta legacy icon_class por compat)
+  const handleFormChangeWithIcon = (updates: Partial<SkillFormData & { svg_path?: string }>) => {
     const updatedSkill = {
       ...newSkill,
       ...updates,
-    } as SkillFormData & { icon_class?: string };
+    } as SkillFormData & { svg_path?: string };
     setNewSkill(updatedSkill as SkillFormData);
   };
 
@@ -133,12 +133,13 @@ export const useSkills = () => {
       console.error('❌ Error: No se puede guardar una habilidad sin categoría');
       alert('Error: Debe seleccionar una categoría para la habilidad');
       return;
-    } // Determinar SVG: priorizar icon_class si existe (posiblemente de LogoHub), luego usar utils
-    let svg_path = (newSkill as any).icon_class || '';
+    }
+    // Determinar SVG para uso local/UI: priorizar svg_path del form, luego utilitario
+    let svg_path = (newSkill as any).svg_path || '';
 
-    // Si no hay icon_class o es vacío, usar la función utilitaria
-    if (!svg_path || svg_path.trim() === '') {
-      svg_path = getSkillSvg(newSkill.name, (newSkill as any).icon_class || '', skillsIcons);
+    // Si no hay svg_path en el formulario, intentar utilitario
+    if (!svg_path || String(svg_path).trim() === '') {
+      svg_path = getSkillSvg(newSkill.name, undefined, skillsIcons);
     }
 
     // Si aún no se encontró nada local y el resultado es el icono genérico, intentar LogoHub como último recurso
@@ -155,11 +156,15 @@ export const useSkills = () => {
     }
 
     try {
+      // Nota: El backend ya no almacena icon_class/svg_path. Enviar sólo campos de dominio.
       if (editingId != null) {
-        const updated = await updateSkill(editingId as any, {
+        const payload = {
           ...newSkill,
-          icon_class: svg_path,
-        });
+        } as any;
+        // eliminar campos locales antes de enviar (backend no almacena iconos)
+        delete payload.svg_path;
+
+        const updated = await updateSkill(editingId as any, payload);
         setSkills(prev =>
           prev.map(s =>
             s.id === editingId
@@ -168,16 +173,19 @@ export const useSkills = () => {
           )
         );
       } else {
-        const created = await createSkill({
+        const payload = {
           ...newSkill,
-          icon_class: svg_path,
           user_id: 1,
           order_index: skills.length + 1,
-        });
+        } as any;
+        delete payload.svg_path;
+
+        const created = await createSkill(payload);
         // If created doesn't contain featured flag, infer from newSkill or default false
         setSkills(prev => [
           ...prev,
           {
+            // store created as-is; UI will compute svg_path locally when rendering
             ...created,
             featured: (created as any).featured ?? (newSkill as any).featured ?? false,
           } as any,
@@ -196,7 +204,7 @@ export const useSkills = () => {
     setNewSkill({
       name: skill.name,
       category: skill.category || 'General',
-      icon_class: (skill as any).icon_class || '',
+      svg_path: (skill as any).svg_path || '',
       level: skill.level ?? 50,
       featured: (skill as any).featured ?? false,
     });

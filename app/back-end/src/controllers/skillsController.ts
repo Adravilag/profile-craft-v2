@@ -28,7 +28,8 @@ export const skillsController = {
   // Crear nueva habilidad
   createSkill: async (req: any, res: any): Promise<void> => {
     try {
-      const { user_id, name, category, icon_class, level, order_index, featured } = req.body;
+      const { user_id, name, category, /* icon_class removed */ level, order_index, featured } =
+        req.body;
 
       if (!name || !category) {
         res.status(400).json({ error: 'Nombre y categoría son requeridos' });
@@ -40,7 +41,6 @@ export const skillsController = {
         user_id: user_id || 1,
         name,
         category,
-        icon_class: icon_class || null,
         featured: typeof featured === 'boolean' ? featured : false,
         level: level || 50,
         order_index: order_index || 1,
@@ -62,7 +62,7 @@ export const skillsController = {
   // Actualizar habilidad
   updateSkill: async (req: any, res: any): Promise<void> => {
     try {
-      const { name, category, icon_class, level, order_index, featured } = req.body;
+      const { name, category, /* icon_class removed */ level, order_index, featured } = req.body;
 
       if (!name || !category) {
         res.status(400).json({ error: 'Nombre y categoría son requeridos' });
@@ -75,7 +75,6 @@ export const skillsController = {
         {
           name,
           category,
-          icon_class: icon_class || null,
           featured: typeof featured === 'boolean' ? featured : undefined,
           level: level || 50,
           order_index: order_index || 1,

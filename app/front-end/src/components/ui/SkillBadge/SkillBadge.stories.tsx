@@ -26,19 +26,25 @@ const Template = (args: SkillBadgeProps) => (
 
 export const Default = () => (
   <Template
-    {...{ skill: { name: 'TypeScript', level: 85, icon_class: 'fab fa-js' } as any, size: 20 }}
+    {...{
+      skill: { name: 'TypeScript', level: 85, svg_path: '/mock-icons/typescript.svg' } as any,
+      size: 20,
+    }}
   />
 );
 
 export const WithLevel = () => (
   <Template
-    {...{ skill: { name: 'React', level: 92, icon_class: 'fab fa-react' } as any, size: 20 }}
+    {...{ skill: { name: 'React', level: 92, svg_path: '/mock-icons/react.svg' } as any, size: 20 }}
   />
 );
 
 export const Large = () => (
   <Template
-    {...{ skill: { name: 'Node.js', level: 75, icon_class: 'fab fa-node-js' } as any, size: 36 }}
+    {...{
+      skill: { name: 'Node.js', level: 75, svg_path: '/mock-icons/nodejs.svg' } as any,
+      size: 36,
+    }}
   />
 );
 

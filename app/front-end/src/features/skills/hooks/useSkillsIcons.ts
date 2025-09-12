@@ -372,19 +372,26 @@ export const useSkillsIcons = () => {
           let hasChanges = false;
           const updatedSkills = prevSkills.map(skill => {
             // Solo actualizar si realmente no tiene icono válido
+            const currentSvg = (skill as any).svg_path || '';
+            const currentLegacy = (skill as any).icon_class || '';
             if (
-              !skill.icon_class ||
-              skill.icon_class.trim() === '' ||
-              skill.icon_class.includes('fa-') ||
-              skill.icon_class.includes('fas ') ||
-              skill.icon_class.includes('fab ')
+              !currentSvg ||
+              String(currentSvg).trim() === '' ||
+              !currentLegacy ||
+              String(currentLegacy).trim() === '' ||
+              String(currentLegacy).includes('fa-') ||
+              String(currentLegacy).includes('fas ') ||
+              String(currentLegacy).includes('fab ')
             ) {
-              const bestIconSvg = getSkillSvg(skill.name, skill.icon_class, skillsIcons);
+              const bestIconSvg = getSkillSvg(skill.name, currentLegacy, skillsIcons);
               debugLog.dataLoading(
                 `[SkillsIcons] Actualizando icono para: ${skill.name} - Nuevo: ${bestIconSvg}`
               );
               hasChanges = true;
-              return { ...skill, icon_class: bestIconSvg };
+              // Establecer svg_path preferido. No escribir `icon_class` aquí —
+              // mantenemos compatibilidad de lectura, pero la normalización de datos
+              // debe ocurrir en un único lugar para evitar duplicados.
+              return { ...skill, svg_path: bestIconSvg } as any;
             }
             return skill;
           });
