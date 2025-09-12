@@ -615,15 +615,6 @@ const ProjectsCarousel: React.FC<Props> = ({ projects: initialProjects }) => {
       aria-label={t.projectsCarousel.pagination}
       aria-roledescription="carrusel"
     >
-      <button
-        className={styles.navLeft}
-        aria-label={t.projectsCarousel.previous}
-        onClick={prev}
-        disabled={length <= 1 || loading || !!error}
-      >
-        ‹
-      </button>
-
       <div
         key={current?.id ?? 'placeholder'}
         id={wrapperIdRef.current}
@@ -646,16 +637,6 @@ const ProjectsCarousel: React.FC<Props> = ({ projects: initialProjects }) => {
 
         {renderContent()}
       </div>
-
-      <button
-        className={styles.navRight}
-        aria-label={t.projectsCarousel.next}
-        onClick={next}
-        disabled={length <= 1 || loading || !!error}
-      >
-        ›
-      </button>
-
       {footerEl ? createPortal(dotsNode, footerEl) : null}
     </div>
   );

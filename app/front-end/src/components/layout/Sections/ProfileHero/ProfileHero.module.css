@@ -1145,11 +1145,6 @@ code {
   justify-content: center; /* centra verticalmente */
   overflow: auto;
   font-family: Consolas, monospace;
-  padding: 18px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0));
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.03);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
   /* Mantener espacio mínimo estable para evitar 'baile' entre cambios de página */
   min-height: 499px; /* fijo: evita reflow brusco al cambiar contenido */
 }
@@ -1938,12 +1933,6 @@ code {
 
   .headerTagline {
     font-size: 14px;
-  }
-
-  .headerTerminalContainer {
-    min-height: 220px;
-    padding: var(--spacing-sm);
-    font-size: 12px;
   }
 
   .stackIcon {
