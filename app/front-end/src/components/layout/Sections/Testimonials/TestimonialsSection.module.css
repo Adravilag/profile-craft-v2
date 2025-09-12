@@ -625,7 +625,7 @@
 }
 
 .testimonialText {
-  margin: 0;
+  padding-right: 20px;
   font-size: clamp(15px, 2.5vw, var(--font-size-md));
   line-height: 1.6;
   color: var(--md-sys-color-on-surface);
@@ -655,6 +655,7 @@
   font-size: var(--font-size-md);
   cursor: pointer;
   padding: var(--spacing-sm) var(--spacing-lg);
+  margin: 3px 10px 10px 3px;
   border-radius: var(--border-radius-md);
   position: relative;
   display: inline-flex;

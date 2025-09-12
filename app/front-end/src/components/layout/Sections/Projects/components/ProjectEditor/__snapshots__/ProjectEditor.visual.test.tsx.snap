@@ -1,0 +1,3173 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Responsive Visual Regression > should render correctly on desktop (1200x800) > default-responsive-desktop 1`] = `
+<div
+  style="height: 100vh; padding: 1rem;"
+>
+  <div
+    class="project-editor"
+  >
+    <div
+      class="project-editor__toolbar"
+    >
+      <div
+        class="project-editor__mode-selector"
+      >
+        <button
+          aria-label="Cambiar a modo HTML"
+          class="project-editor__mode-btn project-editor__mode-btn--active"
+          title="Modo HTML"
+        >
+          <i
+            class="fas fa-code project-editor__mode-icon"
+          />
+          HTML
+        </button>
+        <button
+          aria-label="Cambiar a modo Markdown"
+          class="project-editor__mode-btn "
+          title="Modo Markdown"
+        >
+          <i
+            class="fab fa-markdown project-editor__mode-icon"
+          />
+          Markdown
+        </button>
+        <button
+          aria-label="Cambiar a vista previa"
+          class="project-editor__mode-btn "
+          title="Solo vista previa"
+        >
+          <i
+            class="fas fa-eye project-editor__mode-icon"
+          />
+          Vista previa
+        </button>
+      </div>
+      <div
+        class="project-editor__actions"
+      >
+        <button
+          aria-label="Abrir vista previa en ventana externa"
+          class="project-editor__action-btn"
+          title="Abrir vista previa en ventana externa"
+        >
+          <i
+            class="fas fa-external-link-alt"
+          />
+          Ventana externa
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida horizontal"
+          class="project-editor__action-btn "
+          title="Vista dividida horizontal"
+        >
+          <i
+            class="fas fa-grip-lines"
+          />
+          Horizontal
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida vertical"
+          class="project-editor__action-btn "
+          title="Vista dividida vertical"
+        >
+          <i
+            class="fas fa-grip-lines-vertical"
+          />
+          Vertical
+        </button>
+        <button
+          aria-label="Abrir biblioteca de medios"
+          class="project-editor__action-btn"
+          title="Abrir biblioteca de medios"
+        >
+          <i
+            class="fas fa-photo-video"
+          />
+          Medios
+        </button>
+      </div>
+      <div
+        class="project-editor__format-toolbar"
+      >
+        <button
+          aria-label="Aplicar formato negrita"
+          title="Negrita"
+        >
+          <i
+            class="fas fa-bold"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato cursiva"
+          title="Cursiva"
+        >
+          <i
+            class="fas fa-italic"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato código"
+          title="Código"
+        >
+          <i
+            class="fas fa-code"
+          />
+        </button>
+        <button
+          aria-label="Insertar encabezado H1"
+          title="Encabezado H1"
+        >
+          H1
+        </button>
+        <button
+          aria-label="Insertar encabezado H2"
+          title="Encabezado H2"
+        >
+          H2
+        </button>
+        <button
+          aria-label="Insertar lista no ordenada"
+          title="Lista no ordenada"
+        >
+          <i
+            class="fas fa-list-ul"
+          />
+        </button>
+        <button
+          aria-label="Insertar lista ordenada"
+          title="Lista ordenada"
+        >
+          <i
+            class="fas fa-list-ol"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="project-editor__content"
+    >
+      <div
+        class="project-editor__editor-container"
+      >
+        <textarea
+          aria-label="Editor de contenido"
+          class="project-editor__textarea"
+          placeholder="Escribe el contenido de tu proyecto aquí..."
+          spellcheck="false"
+        />
+      </div>
+    </div>
+    <div
+      class="project-editor__status-bar"
+    >
+      <div
+        class="project-editor__status-info"
+      >
+        <span>
+          Modo: 
+          html
+        </span>
+        <span>
+          Caracteres: 
+          0
+        </span>
+        <span>
+          Palabras: 
+          0
+        </span>
+      </div>
+      <div
+        class="project-editor__status-shortcuts"
+      >
+        <span>
+          Ctrl+B: Negrita
+        </span>
+        <span>
+          Ctrl+I: Cursiva
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Responsive Visual Regression > should render correctly on desktop (1200x800) > html-content-responsive-desktop 1`] = `
+<div
+  style="height: 100vh; padding: 1rem;"
+>
+  <div
+    class="project-editor"
+  >
+    <div
+      class="project-editor__toolbar"
+    >
+      <div
+        class="project-editor__mode-selector"
+      >
+        <button
+          aria-label="Cambiar a modo HTML"
+          class="project-editor__mode-btn project-editor__mode-btn--active"
+          title="Modo HTML"
+        >
+          <i
+            class="fas fa-code project-editor__mode-icon"
+          />
+          HTML
+        </button>
+        <button
+          aria-label="Cambiar a modo Markdown"
+          class="project-editor__mode-btn "
+          title="Modo Markdown"
+        >
+          <i
+            class="fab fa-markdown project-editor__mode-icon"
+          />
+          Markdown
+        </button>
+        <button
+          aria-label="Cambiar a vista previa"
+          class="project-editor__mode-btn "
+          title="Solo vista previa"
+        >
+          <i
+            class="fas fa-eye project-editor__mode-icon"
+          />
+          Vista previa
+        </button>
+      </div>
+      <div
+        class="project-editor__actions"
+      >
+        <button
+          aria-label="Abrir vista previa en ventana externa"
+          class="project-editor__action-btn"
+          title="Abrir vista previa en ventana externa"
+        >
+          <i
+            class="fas fa-external-link-alt"
+          />
+          Ventana externa
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida horizontal"
+          class="project-editor__action-btn "
+          title="Vista dividida horizontal"
+        >
+          <i
+            class="fas fa-grip-lines"
+          />
+          Horizontal
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida vertical"
+          class="project-editor__action-btn "
+          title="Vista dividida vertical"
+        >
+          <i
+            class="fas fa-grip-lines-vertical"
+          />
+          Vertical
+        </button>
+        <button
+          aria-label="Abrir biblioteca de medios"
+          class="project-editor__action-btn"
+          title="Abrir biblioteca de medios"
+        >
+          <i
+            class="fas fa-photo-video"
+          />
+          Medios
+        </button>
+      </div>
+      <div
+        class="project-editor__format-toolbar"
+      >
+        <button
+          aria-label="Aplicar formato negrita"
+          title="Negrita"
+        >
+          <i
+            class="fas fa-bold"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato cursiva"
+          title="Cursiva"
+        >
+          <i
+            class="fas fa-italic"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato código"
+          title="Código"
+        >
+          <i
+            class="fas fa-code"
+          />
+        </button>
+        <button
+          aria-label="Insertar encabezado H1"
+          title="Encabezado H1"
+        >
+          H1
+        </button>
+        <button
+          aria-label="Insertar encabezado H2"
+          title="Encabezado H2"
+        >
+          H2
+        </button>
+        <button
+          aria-label="Insertar lista no ordenada"
+          title="Lista no ordenada"
+        >
+          <i
+            class="fas fa-list-ul"
+          />
+        </button>
+        <button
+          aria-label="Insertar lista ordenada"
+          title="Lista ordenada"
+        >
+          <i
+            class="fas fa-list-ol"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="project-editor__content"
+    >
+      <div
+        class="project-editor__editor-container"
+      >
+        <textarea
+          aria-label="Editor de contenido"
+          class="project-editor__textarea"
+          placeholder="Escribe el contenido de tu proyecto aquí..."
+          spellcheck="false"
+        >
+          &lt;h1&gt;Mi Proyecto Increíble&lt;/h1&gt;
+&lt;p&gt;Este es un proyecto desarrollado con &lt;strong&gt;React&lt;/strong&gt; y &lt;em&gt;TypeScript&lt;/em&gt;.&lt;/p&gt;
+&lt;h2&gt;Características&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Interfaz moderna y responsive&lt;/li&gt;
+  &lt;li&gt;Componentes reutilizables&lt;/li&gt;
+  &lt;li&gt;Testing completo&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Tecnologías&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;React 19&lt;/li&gt;
+  &lt;li&gt;TypeScript&lt;/li&gt;
+  &lt;li&gt;Vite&lt;/li&gt;
+  &lt;li&gt;Vitest&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Puedes ver el código en &lt;a href="https://github.com/usuario/proyecto"&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+        </textarea>
+      </div>
+    </div>
+    <div
+      class="project-editor__status-bar"
+    >
+      <div
+        class="project-editor__status-info"
+      >
+        <span>
+          Modo: 
+          html
+        </span>
+        <span>
+          Caracteres: 
+          459
+        </span>
+        <span>
+          Palabras: 
+          38
+        </span>
+      </div>
+      <div
+        class="project-editor__status-shortcuts"
+      >
+        <span>
+          Ctrl+B: Negrita
+        </span>
+        <span>
+          Ctrl+I: Cursiva
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Responsive Visual Regression > should render correctly on desktop (1200x800) > split-horizontal-responsive-desktop 1`] = `
+<div
+  style="height: 100vh; padding: 1rem;"
+>
+  <div
+    class="project-editor"
+  >
+    <div
+      class="project-editor__toolbar"
+    >
+      <div
+        class="project-editor__mode-selector"
+      >
+        <button
+          aria-label="Cambiar a modo HTML"
+          class="project-editor__mode-btn project-editor__mode-btn--active"
+          title="Modo HTML"
+        >
+          <i
+            class="fas fa-code project-editor__mode-icon"
+          />
+          HTML
+        </button>
+        <button
+          aria-label="Cambiar a modo Markdown"
+          class="project-editor__mode-btn "
+          title="Modo Markdown"
+        >
+          <i
+            class="fab fa-markdown project-editor__mode-icon"
+          />
+          Markdown
+        </button>
+        <button
+          aria-label="Cambiar a vista previa"
+          class="project-editor__mode-btn "
+          title="Solo vista previa"
+        >
+          <i
+            class="fas fa-eye project-editor__mode-icon"
+          />
+          Vista previa
+        </button>
+      </div>
+      <div
+        class="project-editor__actions"
+      >
+        <button
+          aria-label="Abrir vista previa en ventana externa"
+          class="project-editor__action-btn"
+          title="Abrir vista previa en ventana externa"
+        >
+          <i
+            class="fas fa-external-link-alt"
+          />
+          Ventana externa
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida horizontal"
+          class="project-editor__action-btn "
+          title="Vista dividida horizontal"
+        >
+          <i
+            class="fas fa-grip-lines"
+          />
+          Horizontal
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida vertical"
+          class="project-editor__action-btn "
+          title="Vista dividida vertical"
+        >
+          <i
+            class="fas fa-grip-lines-vertical"
+          />
+          Vertical
+        </button>
+        <button
+          aria-label="Abrir biblioteca de medios"
+          class="project-editor__action-btn"
+          title="Abrir biblioteca de medios"
+        >
+          <i
+            class="fas fa-photo-video"
+          />
+          Medios
+        </button>
+      </div>
+      <div
+        class="project-editor__format-toolbar"
+      >
+        <button
+          aria-label="Aplicar formato negrita"
+          title="Negrita"
+        >
+          <i
+            class="fas fa-bold"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato cursiva"
+          title="Cursiva"
+        >
+          <i
+            class="fas fa-italic"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato código"
+          title="Código"
+        >
+          <i
+            class="fas fa-code"
+          />
+        </button>
+        <button
+          aria-label="Insertar encabezado H1"
+          title="Encabezado H1"
+        >
+          H1
+        </button>
+        <button
+          aria-label="Insertar encabezado H2"
+          title="Encabezado H2"
+        >
+          H2
+        </button>
+        <button
+          aria-label="Insertar lista no ordenada"
+          title="Lista no ordenada"
+        >
+          <i
+            class="fas fa-list-ul"
+          />
+        </button>
+        <button
+          aria-label="Insertar lista ordenada"
+          title="Lista ordenada"
+        >
+          <i
+            class="fas fa-list-ol"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="project-editor__content"
+    >
+      <div
+        class="project-editor__editor-container"
+      >
+        <textarea
+          aria-label="Editor de contenido"
+          class="project-editor__textarea"
+          placeholder="Escribe el contenido de tu proyecto aquí..."
+          spellcheck="false"
+        >
+          &lt;h1&gt;Vista Dividida Horizontal&lt;/h1&gt;&lt;p&gt;Editor y vista previa lado a lado.&lt;/p&gt;
+        </textarea>
+      </div>
+    </div>
+    <div
+      class="project-editor__status-bar"
+    >
+      <div
+        class="project-editor__status-info"
+      >
+        <span>
+          Modo: 
+          html
+        </span>
+        <span>
+          Caracteres: 
+          75
+        </span>
+        <span>
+          Palabras: 
+          9
+        </span>
+      </div>
+      <div
+        class="project-editor__status-shortcuts"
+      >
+        <span>
+          Ctrl+B: Negrita
+        </span>
+        <span>
+          Ctrl+I: Cursiva
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Responsive Visual Regression > should render correctly on desktop (1200x800) > split-vertical-responsive-desktop 1`] = `
+<div
+  style="height: 100vh; padding: 1rem;"
+>
+  <div
+    class="project-editor"
+  >
+    <div
+      class="project-editor__toolbar"
+    >
+      <div
+        class="project-editor__mode-selector"
+      >
+        <button
+          aria-label="Cambiar a modo HTML"
+          class="project-editor__mode-btn project-editor__mode-btn--active"
+          title="Modo HTML"
+        >
+          <i
+            class="fas fa-code project-editor__mode-icon"
+          />
+          HTML
+        </button>
+        <button
+          aria-label="Cambiar a modo Markdown"
+          class="project-editor__mode-btn "
+          title="Modo Markdown"
+        >
+          <i
+            class="fab fa-markdown project-editor__mode-icon"
+          />
+          Markdown
+        </button>
+        <button
+          aria-label="Cambiar a vista previa"
+          class="project-editor__mode-btn "
+          title="Solo vista previa"
+        >
+          <i
+            class="fas fa-eye project-editor__mode-icon"
+          />
+          Vista previa
+        </button>
+      </div>
+      <div
+        class="project-editor__actions"
+      >
+        <button
+          aria-label="Abrir vista previa en ventana externa"
+          class="project-editor__action-btn"
+          title="Abrir vista previa en ventana externa"
+        >
+          <i
+            class="fas fa-external-link-alt"
+          />
+          Ventana externa
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida horizontal"
+          class="project-editor__action-btn "
+          title="Vista dividida horizontal"
+        >
+          <i
+            class="fas fa-grip-lines"
+          />
+          Horizontal
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida vertical"
+          class="project-editor__action-btn "
+          title="Vista dividida vertical"
+        >
+          <i
+            class="fas fa-grip-lines-vertical"
+          />
+          Vertical
+        </button>
+        <button
+          aria-label="Abrir biblioteca de medios"
+          class="project-editor__action-btn"
+          title="Abrir biblioteca de medios"
+        >
+          <i
+            class="fas fa-photo-video"
+          />
+          Medios
+        </button>
+      </div>
+      <div
+        class="project-editor__format-toolbar"
+      >
+        <button
+          aria-label="Aplicar formato negrita"
+          title="Negrita"
+        >
+          <i
+            class="fas fa-bold"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato cursiva"
+          title="Cursiva"
+        >
+          <i
+            class="fas fa-italic"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato código"
+          title="Código"
+        >
+          <i
+            class="fas fa-code"
+          />
+        </button>
+        <button
+          aria-label="Insertar encabezado H1"
+          title="Encabezado H1"
+        >
+          H1
+        </button>
+        <button
+          aria-label="Insertar encabezado H2"
+          title="Encabezado H2"
+        >
+          H2
+        </button>
+        <button
+          aria-label="Insertar lista no ordenada"
+          title="Lista no ordenada"
+        >
+          <i
+            class="fas fa-list-ul"
+          />
+        </button>
+        <button
+          aria-label="Insertar lista ordenada"
+          title="Lista ordenada"
+        >
+          <i
+            class="fas fa-list-ol"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="project-editor__content"
+    >
+      <div
+        class="project-editor__editor-container"
+      >
+        <textarea
+          aria-label="Editor de contenido"
+          class="project-editor__textarea"
+          placeholder="Escribe el contenido de tu proyecto aquí..."
+          spellcheck="false"
+        >
+          &lt;h1&gt;Vista Dividida Vertical&lt;/h1&gt;&lt;p&gt;Editor arriba y vista previa abajo.&lt;/p&gt;
+        </textarea>
+      </div>
+    </div>
+    <div
+      class="project-editor__status-bar"
+    >
+      <div
+        class="project-editor__status-info"
+      >
+        <span>
+          Modo: 
+          html
+        </span>
+        <span>
+          Caracteres: 
+          74
+        </span>
+        <span>
+          Palabras: 
+          8
+        </span>
+      </div>
+      <div
+        class="project-editor__status-shortcuts"
+      >
+        <span>
+          Ctrl+B: Negrita
+        </span>
+        <span>
+          Ctrl+I: Cursiva
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Responsive Visual Regression > should render correctly on large (1920x1080) > default-responsive-large 1`] = `
+<div
+  style="height: 100vh; padding: 1rem;"
+>
+  <div
+    class="project-editor"
+  >
+    <div
+      class="project-editor__toolbar"
+    >
+      <div
+        class="project-editor__mode-selector"
+      >
+        <button
+          aria-label="Cambiar a modo HTML"
+          class="project-editor__mode-btn project-editor__mode-btn--active"
+          title="Modo HTML"
+        >
+          <i
+            class="fas fa-code project-editor__mode-icon"
+          />
+          HTML
+        </button>
+        <button
+          aria-label="Cambiar a modo Markdown"
+          class="project-editor__mode-btn "
+          title="Modo Markdown"
+        >
+          <i
+            class="fab fa-markdown project-editor__mode-icon"
+          />
+          Markdown
+        </button>
+        <button
+          aria-label="Cambiar a vista previa"
+          class="project-editor__mode-btn "
+          title="Solo vista previa"
+        >
+          <i
+            class="fas fa-eye project-editor__mode-icon"
+          />
+          Vista previa
+        </button>
+      </div>
+      <div
+        class="project-editor__actions"
+      >
+        <button
+          aria-label="Abrir vista previa en ventana externa"
+          class="project-editor__action-btn"
+          title="Abrir vista previa en ventana externa"
+        >
+          <i
+            class="fas fa-external-link-alt"
+          />
+          Ventana externa
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida horizontal"
+          class="project-editor__action-btn "
+          title="Vista dividida horizontal"
+        >
+          <i
+            class="fas fa-grip-lines"
+          />
+          Horizontal
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida vertical"
+          class="project-editor__action-btn "
+          title="Vista dividida vertical"
+        >
+          <i
+            class="fas fa-grip-lines-vertical"
+          />
+          Vertical
+        </button>
+        <button
+          aria-label="Abrir biblioteca de medios"
+          class="project-editor__action-btn"
+          title="Abrir biblioteca de medios"
+        >
+          <i
+            class="fas fa-photo-video"
+          />
+          Medios
+        </button>
+      </div>
+      <div
+        class="project-editor__format-toolbar"
+      >
+        <button
+          aria-label="Aplicar formato negrita"
+          title="Negrita"
+        >
+          <i
+            class="fas fa-bold"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato cursiva"
+          title="Cursiva"
+        >
+          <i
+            class="fas fa-italic"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato código"
+          title="Código"
+        >
+          <i
+            class="fas fa-code"
+          />
+        </button>
+        <button
+          aria-label="Insertar encabezado H1"
+          title="Encabezado H1"
+        >
+          H1
+        </button>
+        <button
+          aria-label="Insertar encabezado H2"
+          title="Encabezado H2"
+        >
+          H2
+        </button>
+        <button
+          aria-label="Insertar lista no ordenada"
+          title="Lista no ordenada"
+        >
+          <i
+            class="fas fa-list-ul"
+          />
+        </button>
+        <button
+          aria-label="Insertar lista ordenada"
+          title="Lista ordenada"
+        >
+          <i
+            class="fas fa-list-ol"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="project-editor__content"
+    >
+      <div
+        class="project-editor__editor-container"
+      >
+        <textarea
+          aria-label="Editor de contenido"
+          class="project-editor__textarea"
+          placeholder="Escribe el contenido de tu proyecto aquí..."
+          spellcheck="false"
+        />
+      </div>
+    </div>
+    <div
+      class="project-editor__status-bar"
+    >
+      <div
+        class="project-editor__status-info"
+      >
+        <span>
+          Modo: 
+          html
+        </span>
+        <span>
+          Caracteres: 
+          0
+        </span>
+        <span>
+          Palabras: 
+          0
+        </span>
+      </div>
+      <div
+        class="project-editor__status-shortcuts"
+      >
+        <span>
+          Ctrl+B: Negrita
+        </span>
+        <span>
+          Ctrl+I: Cursiva
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Responsive Visual Regression > should render correctly on large (1920x1080) > html-content-responsive-large 1`] = `
+<div
+  style="height: 100vh; padding: 1rem;"
+>
+  <div
+    class="project-editor"
+  >
+    <div
+      class="project-editor__toolbar"
+    >
+      <div
+        class="project-editor__mode-selector"
+      >
+        <button
+          aria-label="Cambiar a modo HTML"
+          class="project-editor__mode-btn project-editor__mode-btn--active"
+          title="Modo HTML"
+        >
+          <i
+            class="fas fa-code project-editor__mode-icon"
+          />
+          HTML
+        </button>
+        <button
+          aria-label="Cambiar a modo Markdown"
+          class="project-editor__mode-btn "
+          title="Modo Markdown"
+        >
+          <i
+            class="fab fa-markdown project-editor__mode-icon"
+          />
+          Markdown
+        </button>
+        <button
+          aria-label="Cambiar a vista previa"
+          class="project-editor__mode-btn "
+          title="Solo vista previa"
+        >
+          <i
+            class="fas fa-eye project-editor__mode-icon"
+          />
+          Vista previa
+        </button>
+      </div>
+      <div
+        class="project-editor__actions"
+      >
+        <button
+          aria-label="Abrir vista previa en ventana externa"
+          class="project-editor__action-btn"
+          title="Abrir vista previa en ventana externa"
+        >
+          <i
+            class="fas fa-external-link-alt"
+          />
+          Ventana externa
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida horizontal"
+          class="project-editor__action-btn "
+          title="Vista dividida horizontal"
+        >
+          <i
+            class="fas fa-grip-lines"
+          />
+          Horizontal
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida vertical"
+          class="project-editor__action-btn "
+          title="Vista dividida vertical"
+        >
+          <i
+            class="fas fa-grip-lines-vertical"
+          />
+          Vertical
+        </button>
+        <button
+          aria-label="Abrir biblioteca de medios"
+          class="project-editor__action-btn"
+          title="Abrir biblioteca de medios"
+        >
+          <i
+            class="fas fa-photo-video"
+          />
+          Medios
+        </button>
+      </div>
+      <div
+        class="project-editor__format-toolbar"
+      >
+        <button
+          aria-label="Aplicar formato negrita"
+          title="Negrita"
+        >
+          <i
+            class="fas fa-bold"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato cursiva"
+          title="Cursiva"
+        >
+          <i
+            class="fas fa-italic"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato código"
+          title="Código"
+        >
+          <i
+            class="fas fa-code"
+          />
+        </button>
+        <button
+          aria-label="Insertar encabezado H1"
+          title="Encabezado H1"
+        >
+          H1
+        </button>
+        <button
+          aria-label="Insertar encabezado H2"
+          title="Encabezado H2"
+        >
+          H2
+        </button>
+        <button
+          aria-label="Insertar lista no ordenada"
+          title="Lista no ordenada"
+        >
+          <i
+            class="fas fa-list-ul"
+          />
+        </button>
+        <button
+          aria-label="Insertar lista ordenada"
+          title="Lista ordenada"
+        >
+          <i
+            class="fas fa-list-ol"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="project-editor__content"
+    >
+      <div
+        class="project-editor__editor-container"
+      >
+        <textarea
+          aria-label="Editor de contenido"
+          class="project-editor__textarea"
+          placeholder="Escribe el contenido de tu proyecto aquí..."
+          spellcheck="false"
+        >
+          &lt;h1&gt;Mi Proyecto Increíble&lt;/h1&gt;
+&lt;p&gt;Este es un proyecto desarrollado con &lt;strong&gt;React&lt;/strong&gt; y &lt;em&gt;TypeScript&lt;/em&gt;.&lt;/p&gt;
+&lt;h2&gt;Características&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Interfaz moderna y responsive&lt;/li&gt;
+  &lt;li&gt;Componentes reutilizables&lt;/li&gt;
+  &lt;li&gt;Testing completo&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Tecnologías&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;React 19&lt;/li&gt;
+  &lt;li&gt;TypeScript&lt;/li&gt;
+  &lt;li&gt;Vite&lt;/li&gt;
+  &lt;li&gt;Vitest&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Puedes ver el código en &lt;a href="https://github.com/usuario/proyecto"&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+        </textarea>
+      </div>
+    </div>
+    <div
+      class="project-editor__status-bar"
+    >
+      <div
+        class="project-editor__status-info"
+      >
+        <span>
+          Modo: 
+          html
+        </span>
+        <span>
+          Caracteres: 
+          459
+        </span>
+        <span>
+          Palabras: 
+          38
+        </span>
+      </div>
+      <div
+        class="project-editor__status-shortcuts"
+      >
+        <span>
+          Ctrl+B: Negrita
+        </span>
+        <span>
+          Ctrl+I: Cursiva
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Responsive Visual Regression > should render correctly on large (1920x1080) > split-horizontal-responsive-large 1`] = `
+<div
+  style="height: 100vh; padding: 1rem;"
+>
+  <div
+    class="project-editor"
+  >
+    <div
+      class="project-editor__toolbar"
+    >
+      <div
+        class="project-editor__mode-selector"
+      >
+        <button
+          aria-label="Cambiar a modo HTML"
+          class="project-editor__mode-btn project-editor__mode-btn--active"
+          title="Modo HTML"
+        >
+          <i
+            class="fas fa-code project-editor__mode-icon"
+          />
+          HTML
+        </button>
+        <button
+          aria-label="Cambiar a modo Markdown"
+          class="project-editor__mode-btn "
+          title="Modo Markdown"
+        >
+          <i
+            class="fab fa-markdown project-editor__mode-icon"
+          />
+          Markdown
+        </button>
+        <button
+          aria-label="Cambiar a vista previa"
+          class="project-editor__mode-btn "
+          title="Solo vista previa"
+        >
+          <i
+            class="fas fa-eye project-editor__mode-icon"
+          />
+          Vista previa
+        </button>
+      </div>
+      <div
+        class="project-editor__actions"
+      >
+        <button
+          aria-label="Abrir vista previa en ventana externa"
+          class="project-editor__action-btn"
+          title="Abrir vista previa en ventana externa"
+        >
+          <i
+            class="fas fa-external-link-alt"
+          />
+          Ventana externa
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida horizontal"
+          class="project-editor__action-btn "
+          title="Vista dividida horizontal"
+        >
+          <i
+            class="fas fa-grip-lines"
+          />
+          Horizontal
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida vertical"
+          class="project-editor__action-btn "
+          title="Vista dividida vertical"
+        >
+          <i
+            class="fas fa-grip-lines-vertical"
+          />
+          Vertical
+        </button>
+        <button
+          aria-label="Abrir biblioteca de medios"
+          class="project-editor__action-btn"
+          title="Abrir biblioteca de medios"
+        >
+          <i
+            class="fas fa-photo-video"
+          />
+          Medios
+        </button>
+      </div>
+      <div
+        class="project-editor__format-toolbar"
+      >
+        <button
+          aria-label="Aplicar formato negrita"
+          title="Negrita"
+        >
+          <i
+            class="fas fa-bold"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato cursiva"
+          title="Cursiva"
+        >
+          <i
+            class="fas fa-italic"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato código"
+          title="Código"
+        >
+          <i
+            class="fas fa-code"
+          />
+        </button>
+        <button
+          aria-label="Insertar encabezado H1"
+          title="Encabezado H1"
+        >
+          H1
+        </button>
+        <button
+          aria-label="Insertar encabezado H2"
+          title="Encabezado H2"
+        >
+          H2
+        </button>
+        <button
+          aria-label="Insertar lista no ordenada"
+          title="Lista no ordenada"
+        >
+          <i
+            class="fas fa-list-ul"
+          />
+        </button>
+        <button
+          aria-label="Insertar lista ordenada"
+          title="Lista ordenada"
+        >
+          <i
+            class="fas fa-list-ol"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="project-editor__content"
+    >
+      <div
+        class="project-editor__editor-container"
+      >
+        <textarea
+          aria-label="Editor de contenido"
+          class="project-editor__textarea"
+          placeholder="Escribe el contenido de tu proyecto aquí..."
+          spellcheck="false"
+        >
+          &lt;h1&gt;Vista Dividida Horizontal&lt;/h1&gt;&lt;p&gt;Editor y vista previa lado a lado.&lt;/p&gt;
+        </textarea>
+      </div>
+    </div>
+    <div
+      class="project-editor__status-bar"
+    >
+      <div
+        class="project-editor__status-info"
+      >
+        <span>
+          Modo: 
+          html
+        </span>
+        <span>
+          Caracteres: 
+          75
+        </span>
+        <span>
+          Palabras: 
+          9
+        </span>
+      </div>
+      <div
+        class="project-editor__status-shortcuts"
+      >
+        <span>
+          Ctrl+B: Negrita
+        </span>
+        <span>
+          Ctrl+I: Cursiva
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Responsive Visual Regression > should render correctly on large (1920x1080) > split-vertical-responsive-large 1`] = `
+<div
+  style="height: 100vh; padding: 1rem;"
+>
+  <div
+    class="project-editor"
+  >
+    <div
+      class="project-editor__toolbar"
+    >
+      <div
+        class="project-editor__mode-selector"
+      >
+        <button
+          aria-label="Cambiar a modo HTML"
+          class="project-editor__mode-btn project-editor__mode-btn--active"
+          title="Modo HTML"
+        >
+          <i
+            class="fas fa-code project-editor__mode-icon"
+          />
+          HTML
+        </button>
+        <button
+          aria-label="Cambiar a modo Markdown"
+          class="project-editor__mode-btn "
+          title="Modo Markdown"
+        >
+          <i
+            class="fab fa-markdown project-editor__mode-icon"
+          />
+          Markdown
+        </button>
+        <button
+          aria-label="Cambiar a vista previa"
+          class="project-editor__mode-btn "
+          title="Solo vista previa"
+        >
+          <i
+            class="fas fa-eye project-editor__mode-icon"
+          />
+          Vista previa
+        </button>
+      </div>
+      <div
+        class="project-editor__actions"
+      >
+        <button
+          aria-label="Abrir vista previa en ventana externa"
+          class="project-editor__action-btn"
+          title="Abrir vista previa en ventana externa"
+        >
+          <i
+            class="fas fa-external-link-alt"
+          />
+          Ventana externa
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida horizontal"
+          class="project-editor__action-btn "
+          title="Vista dividida horizontal"
+        >
+          <i
+            class="fas fa-grip-lines"
+          />
+          Horizontal
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida vertical"
+          class="project-editor__action-btn "
+          title="Vista dividida vertical"
+        >
+          <i
+            class="fas fa-grip-lines-vertical"
+          />
+          Vertical
+        </button>
+        <button
+          aria-label="Abrir biblioteca de medios"
+          class="project-editor__action-btn"
+          title="Abrir biblioteca de medios"
+        >
+          <i
+            class="fas fa-photo-video"
+          />
+          Medios
+        </button>
+      </div>
+      <div
+        class="project-editor__format-toolbar"
+      >
+        <button
+          aria-label="Aplicar formato negrita"
+          title="Negrita"
+        >
+          <i
+            class="fas fa-bold"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato cursiva"
+          title="Cursiva"
+        >
+          <i
+            class="fas fa-italic"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato código"
+          title="Código"
+        >
+          <i
+            class="fas fa-code"
+          />
+        </button>
+        <button
+          aria-label="Insertar encabezado H1"
+          title="Encabezado H1"
+        >
+          H1
+        </button>
+        <button
+          aria-label="Insertar encabezado H2"
+          title="Encabezado H2"
+        >
+          H2
+        </button>
+        <button
+          aria-label="Insertar lista no ordenada"
+          title="Lista no ordenada"
+        >
+          <i
+            class="fas fa-list-ul"
+          />
+        </button>
+        <button
+          aria-label="Insertar lista ordenada"
+          title="Lista ordenada"
+        >
+          <i
+            class="fas fa-list-ol"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="project-editor__content"
+    >
+      <div
+        class="project-editor__editor-container"
+      >
+        <textarea
+          aria-label="Editor de contenido"
+          class="project-editor__textarea"
+          placeholder="Escribe el contenido de tu proyecto aquí..."
+          spellcheck="false"
+        >
+          &lt;h1&gt;Vista Dividida Vertical&lt;/h1&gt;&lt;p&gt;Editor arriba y vista previa abajo.&lt;/p&gt;
+        </textarea>
+      </div>
+    </div>
+    <div
+      class="project-editor__status-bar"
+    >
+      <div
+        class="project-editor__status-info"
+      >
+        <span>
+          Modo: 
+          html
+        </span>
+        <span>
+          Caracteres: 
+          74
+        </span>
+        <span>
+          Palabras: 
+          8
+        </span>
+      </div>
+      <div
+        class="project-editor__status-shortcuts"
+      >
+        <span>
+          Ctrl+B: Negrita
+        </span>
+        <span>
+          Ctrl+I: Cursiva
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Responsive Visual Regression > should render correctly on mobile (375x667) > default-responsive-mobile 1`] = `
+<div
+  style="height: 100vh; padding: 1rem;"
+>
+  <div
+    class="project-editor"
+  >
+    <div
+      class="project-editor__toolbar"
+    >
+      <div
+        class="project-editor__mode-selector"
+      >
+        <button
+          aria-label="Cambiar a modo HTML"
+          class="project-editor__mode-btn project-editor__mode-btn--active"
+          title="Modo HTML"
+        >
+          <i
+            class="fas fa-code project-editor__mode-icon"
+          />
+          HTML
+        </button>
+        <button
+          aria-label="Cambiar a modo Markdown"
+          class="project-editor__mode-btn "
+          title="Modo Markdown"
+        >
+          <i
+            class="fab fa-markdown project-editor__mode-icon"
+          />
+          Markdown
+        </button>
+        <button
+          aria-label="Cambiar a vista previa"
+          class="project-editor__mode-btn "
+          title="Solo vista previa"
+        >
+          <i
+            class="fas fa-eye project-editor__mode-icon"
+          />
+          Vista previa
+        </button>
+      </div>
+      <div
+        class="project-editor__actions"
+      >
+        <button
+          aria-label="Abrir vista previa en ventana externa"
+          class="project-editor__action-btn"
+          title="Abrir vista previa en ventana externa"
+        >
+          <i
+            class="fas fa-external-link-alt"
+          />
+          Ventana externa
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida horizontal"
+          class="project-editor__action-btn "
+          title="Vista dividida horizontal"
+        >
+          <i
+            class="fas fa-grip-lines"
+          />
+          Horizontal
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida vertical"
+          class="project-editor__action-btn "
+          title="Vista dividida vertical"
+        >
+          <i
+            class="fas fa-grip-lines-vertical"
+          />
+          Vertical
+        </button>
+        <button
+          aria-label="Abrir biblioteca de medios"
+          class="project-editor__action-btn"
+          title="Abrir biblioteca de medios"
+        >
+          <i
+            class="fas fa-photo-video"
+          />
+          Medios
+        </button>
+      </div>
+      <div
+        class="project-editor__format-toolbar"
+      >
+        <button
+          aria-label="Aplicar formato negrita"
+          title="Negrita"
+        >
+          <i
+            class="fas fa-bold"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato cursiva"
+          title="Cursiva"
+        >
+          <i
+            class="fas fa-italic"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato código"
+          title="Código"
+        >
+          <i
+            class="fas fa-code"
+          />
+        </button>
+        <button
+          aria-label="Insertar encabezado H1"
+          title="Encabezado H1"
+        >
+          H1
+        </button>
+        <button
+          aria-label="Insertar encabezado H2"
+          title="Encabezado H2"
+        >
+          H2
+        </button>
+        <button
+          aria-label="Insertar lista no ordenada"
+          title="Lista no ordenada"
+        >
+          <i
+            class="fas fa-list-ul"
+          />
+        </button>
+        <button
+          aria-label="Insertar lista ordenada"
+          title="Lista ordenada"
+        >
+          <i
+            class="fas fa-list-ol"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="project-editor__content"
+    >
+      <div
+        class="project-editor__editor-container"
+      >
+        <textarea
+          aria-label="Editor de contenido"
+          class="project-editor__textarea"
+          placeholder="Escribe el contenido de tu proyecto aquí..."
+          spellcheck="false"
+        />
+      </div>
+    </div>
+    <div
+      class="project-editor__status-bar"
+    >
+      <div
+        class="project-editor__status-info"
+      >
+        <span>
+          Modo: 
+          html
+        </span>
+        <span>
+          Caracteres: 
+          0
+        </span>
+        <span>
+          Palabras: 
+          0
+        </span>
+      </div>
+      <div
+        class="project-editor__status-shortcuts"
+      >
+        <span>
+          Ctrl+B: Negrita
+        </span>
+        <span>
+          Ctrl+I: Cursiva
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Responsive Visual Regression > should render correctly on mobile (375x667) > html-content-responsive-mobile 1`] = `
+<div
+  style="height: 100vh; padding: 1rem;"
+>
+  <div
+    class="project-editor"
+  >
+    <div
+      class="project-editor__toolbar"
+    >
+      <div
+        class="project-editor__mode-selector"
+      >
+        <button
+          aria-label="Cambiar a modo HTML"
+          class="project-editor__mode-btn project-editor__mode-btn--active"
+          title="Modo HTML"
+        >
+          <i
+            class="fas fa-code project-editor__mode-icon"
+          />
+          HTML
+        </button>
+        <button
+          aria-label="Cambiar a modo Markdown"
+          class="project-editor__mode-btn "
+          title="Modo Markdown"
+        >
+          <i
+            class="fab fa-markdown project-editor__mode-icon"
+          />
+          Markdown
+        </button>
+        <button
+          aria-label="Cambiar a vista previa"
+          class="project-editor__mode-btn "
+          title="Solo vista previa"
+        >
+          <i
+            class="fas fa-eye project-editor__mode-icon"
+          />
+          Vista previa
+        </button>
+      </div>
+      <div
+        class="project-editor__actions"
+      >
+        <button
+          aria-label="Abrir vista previa en ventana externa"
+          class="project-editor__action-btn"
+          title="Abrir vista previa en ventana externa"
+        >
+          <i
+            class="fas fa-external-link-alt"
+          />
+          Ventana externa
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida horizontal"
+          class="project-editor__action-btn "
+          title="Vista dividida horizontal"
+        >
+          <i
+            class="fas fa-grip-lines"
+          />
+          Horizontal
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida vertical"
+          class="project-editor__action-btn "
+          title="Vista dividida vertical"
+        >
+          <i
+            class="fas fa-grip-lines-vertical"
+          />
+          Vertical
+        </button>
+        <button
+          aria-label="Abrir biblioteca de medios"
+          class="project-editor__action-btn"
+          title="Abrir biblioteca de medios"
+        >
+          <i
+            class="fas fa-photo-video"
+          />
+          Medios
+        </button>
+      </div>
+      <div
+        class="project-editor__format-toolbar"
+      >
+        <button
+          aria-label="Aplicar formato negrita"
+          title="Negrita"
+        >
+          <i
+            class="fas fa-bold"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato cursiva"
+          title="Cursiva"
+        >
+          <i
+            class="fas fa-italic"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato código"
+          title="Código"
+        >
+          <i
+            class="fas fa-code"
+          />
+        </button>
+        <button
+          aria-label="Insertar encabezado H1"
+          title="Encabezado H1"
+        >
+          H1
+        </button>
+        <button
+          aria-label="Insertar encabezado H2"
+          title="Encabezado H2"
+        >
+          H2
+        </button>
+        <button
+          aria-label="Insertar lista no ordenada"
+          title="Lista no ordenada"
+        >
+          <i
+            class="fas fa-list-ul"
+          />
+        </button>
+        <button
+          aria-label="Insertar lista ordenada"
+          title="Lista ordenada"
+        >
+          <i
+            class="fas fa-list-ol"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="project-editor__content"
+    >
+      <div
+        class="project-editor__editor-container"
+      >
+        <textarea
+          aria-label="Editor de contenido"
+          class="project-editor__textarea"
+          placeholder="Escribe el contenido de tu proyecto aquí..."
+          spellcheck="false"
+        >
+          &lt;h1&gt;Mi Proyecto Increíble&lt;/h1&gt;
+&lt;p&gt;Este es un proyecto desarrollado con &lt;strong&gt;React&lt;/strong&gt; y &lt;em&gt;TypeScript&lt;/em&gt;.&lt;/p&gt;
+&lt;h2&gt;Características&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Interfaz moderna y responsive&lt;/li&gt;
+  &lt;li&gt;Componentes reutilizables&lt;/li&gt;
+  &lt;li&gt;Testing completo&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Tecnologías&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;React 19&lt;/li&gt;
+  &lt;li&gt;TypeScript&lt;/li&gt;
+  &lt;li&gt;Vite&lt;/li&gt;
+  &lt;li&gt;Vitest&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Puedes ver el código en &lt;a href="https://github.com/usuario/proyecto"&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+        </textarea>
+      </div>
+    </div>
+    <div
+      class="project-editor__status-bar"
+    >
+      <div
+        class="project-editor__status-info"
+      >
+        <span>
+          Modo: 
+          html
+        </span>
+        <span>
+          Caracteres: 
+          459
+        </span>
+        <span>
+          Palabras: 
+          38
+        </span>
+      </div>
+      <div
+        class="project-editor__status-shortcuts"
+      >
+        <span>
+          Ctrl+B: Negrita
+        </span>
+        <span>
+          Ctrl+I: Cursiva
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Responsive Visual Regression > should render correctly on mobile (375x667) > split-horizontal-responsive-mobile 1`] = `
+<div
+  style="height: 100vh; padding: 1rem;"
+>
+  <div
+    class="project-editor"
+  >
+    <div
+      class="project-editor__toolbar"
+    >
+      <div
+        class="project-editor__mode-selector"
+      >
+        <button
+          aria-label="Cambiar a modo HTML"
+          class="project-editor__mode-btn project-editor__mode-btn--active"
+          title="Modo HTML"
+        >
+          <i
+            class="fas fa-code project-editor__mode-icon"
+          />
+          HTML
+        </button>
+        <button
+          aria-label="Cambiar a modo Markdown"
+          class="project-editor__mode-btn "
+          title="Modo Markdown"
+        >
+          <i
+            class="fab fa-markdown project-editor__mode-icon"
+          />
+          Markdown
+        </button>
+        <button
+          aria-label="Cambiar a vista previa"
+          class="project-editor__mode-btn "
+          title="Solo vista previa"
+        >
+          <i
+            class="fas fa-eye project-editor__mode-icon"
+          />
+          Vista previa
+        </button>
+      </div>
+      <div
+        class="project-editor__actions"
+      >
+        <button
+          aria-label="Abrir vista previa en ventana externa"
+          class="project-editor__action-btn"
+          title="Abrir vista previa en ventana externa"
+        >
+          <i
+            class="fas fa-external-link-alt"
+          />
+          Ventana externa
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida horizontal"
+          class="project-editor__action-btn "
+          title="Vista dividida horizontal"
+        >
+          <i
+            class="fas fa-grip-lines"
+          />
+          Horizontal
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida vertical"
+          class="project-editor__action-btn "
+          title="Vista dividida vertical"
+        >
+          <i
+            class="fas fa-grip-lines-vertical"
+          />
+          Vertical
+        </button>
+        <button
+          aria-label="Abrir biblioteca de medios"
+          class="project-editor__action-btn"
+          title="Abrir biblioteca de medios"
+        >
+          <i
+            class="fas fa-photo-video"
+          />
+          Medios
+        </button>
+      </div>
+      <div
+        class="project-editor__format-toolbar"
+      >
+        <button
+          aria-label="Aplicar formato negrita"
+          title="Negrita"
+        >
+          <i
+            class="fas fa-bold"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato cursiva"
+          title="Cursiva"
+        >
+          <i
+            class="fas fa-italic"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato código"
+          title="Código"
+        >
+          <i
+            class="fas fa-code"
+          />
+        </button>
+        <button
+          aria-label="Insertar encabezado H1"
+          title="Encabezado H1"
+        >
+          H1
+        </button>
+        <button
+          aria-label="Insertar encabezado H2"
+          title="Encabezado H2"
+        >
+          H2
+        </button>
+        <button
+          aria-label="Insertar lista no ordenada"
+          title="Lista no ordenada"
+        >
+          <i
+            class="fas fa-list-ul"
+          />
+        </button>
+        <button
+          aria-label="Insertar lista ordenada"
+          title="Lista ordenada"
+        >
+          <i
+            class="fas fa-list-ol"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="project-editor__content"
+    >
+      <div
+        class="project-editor__editor-container"
+      >
+        <textarea
+          aria-label="Editor de contenido"
+          class="project-editor__textarea"
+          placeholder="Escribe el contenido de tu proyecto aquí..."
+          spellcheck="false"
+        >
+          &lt;h1&gt;Vista Dividida Horizontal&lt;/h1&gt;&lt;p&gt;Editor y vista previa lado a lado.&lt;/p&gt;
+        </textarea>
+      </div>
+    </div>
+    <div
+      class="project-editor__status-bar"
+    >
+      <div
+        class="project-editor__status-info"
+      >
+        <span>
+          Modo: 
+          html
+        </span>
+        <span>
+          Caracteres: 
+          75
+        </span>
+        <span>
+          Palabras: 
+          9
+        </span>
+      </div>
+      <div
+        class="project-editor__status-shortcuts"
+      >
+        <span>
+          Ctrl+B: Negrita
+        </span>
+        <span>
+          Ctrl+I: Cursiva
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Responsive Visual Regression > should render correctly on mobile (375x667) > split-vertical-responsive-mobile 1`] = `
+<div
+  style="height: 100vh; padding: 1rem;"
+>
+  <div
+    class="project-editor"
+  >
+    <div
+      class="project-editor__toolbar"
+    >
+      <div
+        class="project-editor__mode-selector"
+      >
+        <button
+          aria-label="Cambiar a modo HTML"
+          class="project-editor__mode-btn project-editor__mode-btn--active"
+          title="Modo HTML"
+        >
+          <i
+            class="fas fa-code project-editor__mode-icon"
+          />
+          HTML
+        </button>
+        <button
+          aria-label="Cambiar a modo Markdown"
+          class="project-editor__mode-btn "
+          title="Modo Markdown"
+        >
+          <i
+            class="fab fa-markdown project-editor__mode-icon"
+          />
+          Markdown
+        </button>
+        <button
+          aria-label="Cambiar a vista previa"
+          class="project-editor__mode-btn "
+          title="Solo vista previa"
+        >
+          <i
+            class="fas fa-eye project-editor__mode-icon"
+          />
+          Vista previa
+        </button>
+      </div>
+      <div
+        class="project-editor__actions"
+      >
+        <button
+          aria-label="Abrir vista previa en ventana externa"
+          class="project-editor__action-btn"
+          title="Abrir vista previa en ventana externa"
+        >
+          <i
+            class="fas fa-external-link-alt"
+          />
+          Ventana externa
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida horizontal"
+          class="project-editor__action-btn "
+          title="Vista dividida horizontal"
+        >
+          <i
+            class="fas fa-grip-lines"
+          />
+          Horizontal
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida vertical"
+          class="project-editor__action-btn "
+          title="Vista dividida vertical"
+        >
+          <i
+            class="fas fa-grip-lines-vertical"
+          />
+          Vertical
+        </button>
+        <button
+          aria-label="Abrir biblioteca de medios"
+          class="project-editor__action-btn"
+          title="Abrir biblioteca de medios"
+        >
+          <i
+            class="fas fa-photo-video"
+          />
+          Medios
+        </button>
+      </div>
+      <div
+        class="project-editor__format-toolbar"
+      >
+        <button
+          aria-label="Aplicar formato negrita"
+          title="Negrita"
+        >
+          <i
+            class="fas fa-bold"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato cursiva"
+          title="Cursiva"
+        >
+          <i
+            class="fas fa-italic"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato código"
+          title="Código"
+        >
+          <i
+            class="fas fa-code"
+          />
+        </button>
+        <button
+          aria-label="Insertar encabezado H1"
+          title="Encabezado H1"
+        >
+          H1
+        </button>
+        <button
+          aria-label="Insertar encabezado H2"
+          title="Encabezado H2"
+        >
+          H2
+        </button>
+        <button
+          aria-label="Insertar lista no ordenada"
+          title="Lista no ordenada"
+        >
+          <i
+            class="fas fa-list-ul"
+          />
+        </button>
+        <button
+          aria-label="Insertar lista ordenada"
+          title="Lista ordenada"
+        >
+          <i
+            class="fas fa-list-ol"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="project-editor__content"
+    >
+      <div
+        class="project-editor__editor-container"
+      >
+        <textarea
+          aria-label="Editor de contenido"
+          class="project-editor__textarea"
+          placeholder="Escribe el contenido de tu proyecto aquí..."
+          spellcheck="false"
+        >
+          &lt;h1&gt;Vista Dividida Vertical&lt;/h1&gt;&lt;p&gt;Editor arriba y vista previa abajo.&lt;/p&gt;
+        </textarea>
+      </div>
+    </div>
+    <div
+      class="project-editor__status-bar"
+    >
+      <div
+        class="project-editor__status-info"
+      >
+        <span>
+          Modo: 
+          html
+        </span>
+        <span>
+          Caracteres: 
+          74
+        </span>
+        <span>
+          Palabras: 
+          8
+        </span>
+      </div>
+      <div
+        class="project-editor__status-shortcuts"
+      >
+        <span>
+          Ctrl+B: Negrita
+        </span>
+        <span>
+          Ctrl+I: Cursiva
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Responsive Visual Regression > should render correctly on tablet (768x1024) > default-responsive-tablet 1`] = `
+<div
+  style="height: 100vh; padding: 1rem;"
+>
+  <div
+    class="project-editor"
+  >
+    <div
+      class="project-editor__toolbar"
+    >
+      <div
+        class="project-editor__mode-selector"
+      >
+        <button
+          aria-label="Cambiar a modo HTML"
+          class="project-editor__mode-btn project-editor__mode-btn--active"
+          title="Modo HTML"
+        >
+          <i
+            class="fas fa-code project-editor__mode-icon"
+          />
+          HTML
+        </button>
+        <button
+          aria-label="Cambiar a modo Markdown"
+          class="project-editor__mode-btn "
+          title="Modo Markdown"
+        >
+          <i
+            class="fab fa-markdown project-editor__mode-icon"
+          />
+          Markdown
+        </button>
+        <button
+          aria-label="Cambiar a vista previa"
+          class="project-editor__mode-btn "
+          title="Solo vista previa"
+        >
+          <i
+            class="fas fa-eye project-editor__mode-icon"
+          />
+          Vista previa
+        </button>
+      </div>
+      <div
+        class="project-editor__actions"
+      >
+        <button
+          aria-label="Abrir vista previa en ventana externa"
+          class="project-editor__action-btn"
+          title="Abrir vista previa en ventana externa"
+        >
+          <i
+            class="fas fa-external-link-alt"
+          />
+          Ventana externa
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida horizontal"
+          class="project-editor__action-btn "
+          title="Vista dividida horizontal"
+        >
+          <i
+            class="fas fa-grip-lines"
+          />
+          Horizontal
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida vertical"
+          class="project-editor__action-btn "
+          title="Vista dividida vertical"
+        >
+          <i
+            class="fas fa-grip-lines-vertical"
+          />
+          Vertical
+        </button>
+        <button
+          aria-label="Abrir biblioteca de medios"
+          class="project-editor__action-btn"
+          title="Abrir biblioteca de medios"
+        >
+          <i
+            class="fas fa-photo-video"
+          />
+          Medios
+        </button>
+      </div>
+      <div
+        class="project-editor__format-toolbar"
+      >
+        <button
+          aria-label="Aplicar formato negrita"
+          title="Negrita"
+        >
+          <i
+            class="fas fa-bold"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato cursiva"
+          title="Cursiva"
+        >
+          <i
+            class="fas fa-italic"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato código"
+          title="Código"
+        >
+          <i
+            class="fas fa-code"
+          />
+        </button>
+        <button
+          aria-label="Insertar encabezado H1"
+          title="Encabezado H1"
+        >
+          H1
+        </button>
+        <button
+          aria-label="Insertar encabezado H2"
+          title="Encabezado H2"
+        >
+          H2
+        </button>
+        <button
+          aria-label="Insertar lista no ordenada"
+          title="Lista no ordenada"
+        >
+          <i
+            class="fas fa-list-ul"
+          />
+        </button>
+        <button
+          aria-label="Insertar lista ordenada"
+          title="Lista ordenada"
+        >
+          <i
+            class="fas fa-list-ol"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="project-editor__content"
+    >
+      <div
+        class="project-editor__editor-container"
+      >
+        <textarea
+          aria-label="Editor de contenido"
+          class="project-editor__textarea"
+          placeholder="Escribe el contenido de tu proyecto aquí..."
+          spellcheck="false"
+        />
+      </div>
+    </div>
+    <div
+      class="project-editor__status-bar"
+    >
+      <div
+        class="project-editor__status-info"
+      >
+        <span>
+          Modo: 
+          html
+        </span>
+        <span>
+          Caracteres: 
+          0
+        </span>
+        <span>
+          Palabras: 
+          0
+        </span>
+      </div>
+      <div
+        class="project-editor__status-shortcuts"
+      >
+        <span>
+          Ctrl+B: Negrita
+        </span>
+        <span>
+          Ctrl+I: Cursiva
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Responsive Visual Regression > should render correctly on tablet (768x1024) > html-content-responsive-tablet 1`] = `
+<div
+  style="height: 100vh; padding: 1rem;"
+>
+  <div
+    class="project-editor"
+  >
+    <div
+      class="project-editor__toolbar"
+    >
+      <div
+        class="project-editor__mode-selector"
+      >
+        <button
+          aria-label="Cambiar a modo HTML"
+          class="project-editor__mode-btn project-editor__mode-btn--active"
+          title="Modo HTML"
+        >
+          <i
+            class="fas fa-code project-editor__mode-icon"
+          />
+          HTML
+        </button>
+        <button
+          aria-label="Cambiar a modo Markdown"
+          class="project-editor__mode-btn "
+          title="Modo Markdown"
+        >
+          <i
+            class="fab fa-markdown project-editor__mode-icon"
+          />
+          Markdown
+        </button>
+        <button
+          aria-label="Cambiar a vista previa"
+          class="project-editor__mode-btn "
+          title="Solo vista previa"
+        >
+          <i
+            class="fas fa-eye project-editor__mode-icon"
+          />
+          Vista previa
+        </button>
+      </div>
+      <div
+        class="project-editor__actions"
+      >
+        <button
+          aria-label="Abrir vista previa en ventana externa"
+          class="project-editor__action-btn"
+          title="Abrir vista previa en ventana externa"
+        >
+          <i
+            class="fas fa-external-link-alt"
+          />
+          Ventana externa
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida horizontal"
+          class="project-editor__action-btn "
+          title="Vista dividida horizontal"
+        >
+          <i
+            class="fas fa-grip-lines"
+          />
+          Horizontal
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida vertical"
+          class="project-editor__action-btn "
+          title="Vista dividida vertical"
+        >
+          <i
+            class="fas fa-grip-lines-vertical"
+          />
+          Vertical
+        </button>
+        <button
+          aria-label="Abrir biblioteca de medios"
+          class="project-editor__action-btn"
+          title="Abrir biblioteca de medios"
+        >
+          <i
+            class="fas fa-photo-video"
+          />
+          Medios
+        </button>
+      </div>
+      <div
+        class="project-editor__format-toolbar"
+      >
+        <button
+          aria-label="Aplicar formato negrita"
+          title="Negrita"
+        >
+          <i
+            class="fas fa-bold"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato cursiva"
+          title="Cursiva"
+        >
+          <i
+            class="fas fa-italic"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato código"
+          title="Código"
+        >
+          <i
+            class="fas fa-code"
+          />
+        </button>
+        <button
+          aria-label="Insertar encabezado H1"
+          title="Encabezado H1"
+        >
+          H1
+        </button>
+        <button
+          aria-label="Insertar encabezado H2"
+          title="Encabezado H2"
+        >
+          H2
+        </button>
+        <button
+          aria-label="Insertar lista no ordenada"
+          title="Lista no ordenada"
+        >
+          <i
+            class="fas fa-list-ul"
+          />
+        </button>
+        <button
+          aria-label="Insertar lista ordenada"
+          title="Lista ordenada"
+        >
+          <i
+            class="fas fa-list-ol"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="project-editor__content"
+    >
+      <div
+        class="project-editor__editor-container"
+      >
+        <textarea
+          aria-label="Editor de contenido"
+          class="project-editor__textarea"
+          placeholder="Escribe el contenido de tu proyecto aquí..."
+          spellcheck="false"
+        >
+          &lt;h1&gt;Mi Proyecto Increíble&lt;/h1&gt;
+&lt;p&gt;Este es un proyecto desarrollado con &lt;strong&gt;React&lt;/strong&gt; y &lt;em&gt;TypeScript&lt;/em&gt;.&lt;/p&gt;
+&lt;h2&gt;Características&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Interfaz moderna y responsive&lt;/li&gt;
+  &lt;li&gt;Componentes reutilizables&lt;/li&gt;
+  &lt;li&gt;Testing completo&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Tecnologías&lt;/h2&gt;
+&lt;ol&gt;
+  &lt;li&gt;React 19&lt;/li&gt;
+  &lt;li&gt;TypeScript&lt;/li&gt;
+  &lt;li&gt;Vite&lt;/li&gt;
+  &lt;li&gt;Vitest&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Puedes ver el código en &lt;a href="https://github.com/usuario/proyecto"&gt;GitHub&lt;/a&gt;.&lt;/p&gt;
+        </textarea>
+      </div>
+    </div>
+    <div
+      class="project-editor__status-bar"
+    >
+      <div
+        class="project-editor__status-info"
+      >
+        <span>
+          Modo: 
+          html
+        </span>
+        <span>
+          Caracteres: 
+          459
+        </span>
+        <span>
+          Palabras: 
+          38
+        </span>
+      </div>
+      <div
+        class="project-editor__status-shortcuts"
+      >
+        <span>
+          Ctrl+B: Negrita
+        </span>
+        <span>
+          Ctrl+I: Cursiva
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Responsive Visual Regression > should render correctly on tablet (768x1024) > split-horizontal-responsive-tablet 1`] = `
+<div
+  style="height: 100vh; padding: 1rem;"
+>
+  <div
+    class="project-editor"
+  >
+    <div
+      class="project-editor__toolbar"
+    >
+      <div
+        class="project-editor__mode-selector"
+      >
+        <button
+          aria-label="Cambiar a modo HTML"
+          class="project-editor__mode-btn project-editor__mode-btn--active"
+          title="Modo HTML"
+        >
+          <i
+            class="fas fa-code project-editor__mode-icon"
+          />
+          HTML
+        </button>
+        <button
+          aria-label="Cambiar a modo Markdown"
+          class="project-editor__mode-btn "
+          title="Modo Markdown"
+        >
+          <i
+            class="fab fa-markdown project-editor__mode-icon"
+          />
+          Markdown
+        </button>
+        <button
+          aria-label="Cambiar a vista previa"
+          class="project-editor__mode-btn "
+          title="Solo vista previa"
+        >
+          <i
+            class="fas fa-eye project-editor__mode-icon"
+          />
+          Vista previa
+        </button>
+      </div>
+      <div
+        class="project-editor__actions"
+      >
+        <button
+          aria-label="Abrir vista previa en ventana externa"
+          class="project-editor__action-btn"
+          title="Abrir vista previa en ventana externa"
+        >
+          <i
+            class="fas fa-external-link-alt"
+          />
+          Ventana externa
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida horizontal"
+          class="project-editor__action-btn "
+          title="Vista dividida horizontal"
+        >
+          <i
+            class="fas fa-grip-lines"
+          />
+          Horizontal
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida vertical"
+          class="project-editor__action-btn "
+          title="Vista dividida vertical"
+        >
+          <i
+            class="fas fa-grip-lines-vertical"
+          />
+          Vertical
+        </button>
+        <button
+          aria-label="Abrir biblioteca de medios"
+          class="project-editor__action-btn"
+          title="Abrir biblioteca de medios"
+        >
+          <i
+            class="fas fa-photo-video"
+          />
+          Medios
+        </button>
+      </div>
+      <div
+        class="project-editor__format-toolbar"
+      >
+        <button
+          aria-label="Aplicar formato negrita"
+          title="Negrita"
+        >
+          <i
+            class="fas fa-bold"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato cursiva"
+          title="Cursiva"
+        >
+          <i
+            class="fas fa-italic"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato código"
+          title="Código"
+        >
+          <i
+            class="fas fa-code"
+          />
+        </button>
+        <button
+          aria-label="Insertar encabezado H1"
+          title="Encabezado H1"
+        >
+          H1
+        </button>
+        <button
+          aria-label="Insertar encabezado H2"
+          title="Encabezado H2"
+        >
+          H2
+        </button>
+        <button
+          aria-label="Insertar lista no ordenada"
+          title="Lista no ordenada"
+        >
+          <i
+            class="fas fa-list-ul"
+          />
+        </button>
+        <button
+          aria-label="Insertar lista ordenada"
+          title="Lista ordenada"
+        >
+          <i
+            class="fas fa-list-ol"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="project-editor__content"
+    >
+      <div
+        class="project-editor__editor-container"
+      >
+        <textarea
+          aria-label="Editor de contenido"
+          class="project-editor__textarea"
+          placeholder="Escribe el contenido de tu proyecto aquí..."
+          spellcheck="false"
+        >
+          &lt;h1&gt;Vista Dividida Horizontal&lt;/h1&gt;&lt;p&gt;Editor y vista previa lado a lado.&lt;/p&gt;
+        </textarea>
+      </div>
+    </div>
+    <div
+      class="project-editor__status-bar"
+    >
+      <div
+        class="project-editor__status-info"
+      >
+        <span>
+          Modo: 
+          html
+        </span>
+        <span>
+          Caracteres: 
+          75
+        </span>
+        <span>
+          Palabras: 
+          9
+        </span>
+      </div>
+      <div
+        class="project-editor__status-shortcuts"
+      >
+        <span>
+          Ctrl+B: Negrita
+        </span>
+        <span>
+          Ctrl+I: Cursiva
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Responsive Visual Regression > should render correctly on tablet (768x1024) > split-vertical-responsive-tablet 1`] = `
+<div
+  style="height: 100vh; padding: 1rem;"
+>
+  <div
+    class="project-editor"
+  >
+    <div
+      class="project-editor__toolbar"
+    >
+      <div
+        class="project-editor__mode-selector"
+      >
+        <button
+          aria-label="Cambiar a modo HTML"
+          class="project-editor__mode-btn project-editor__mode-btn--active"
+          title="Modo HTML"
+        >
+          <i
+            class="fas fa-code project-editor__mode-icon"
+          />
+          HTML
+        </button>
+        <button
+          aria-label="Cambiar a modo Markdown"
+          class="project-editor__mode-btn "
+          title="Modo Markdown"
+        >
+          <i
+            class="fab fa-markdown project-editor__mode-icon"
+          />
+          Markdown
+        </button>
+        <button
+          aria-label="Cambiar a vista previa"
+          class="project-editor__mode-btn "
+          title="Solo vista previa"
+        >
+          <i
+            class="fas fa-eye project-editor__mode-icon"
+          />
+          Vista previa
+        </button>
+      </div>
+      <div
+        class="project-editor__actions"
+      >
+        <button
+          aria-label="Abrir vista previa en ventana externa"
+          class="project-editor__action-btn"
+          title="Abrir vista previa en ventana externa"
+        >
+          <i
+            class="fas fa-external-link-alt"
+          />
+          Ventana externa
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida horizontal"
+          class="project-editor__action-btn "
+          title="Vista dividida horizontal"
+        >
+          <i
+            class="fas fa-grip-lines"
+          />
+          Horizontal
+        </button>
+        <button
+          aria-label="Cambiar a vista dividida vertical"
+          class="project-editor__action-btn "
+          title="Vista dividida vertical"
+        >
+          <i
+            class="fas fa-grip-lines-vertical"
+          />
+          Vertical
+        </button>
+        <button
+          aria-label="Abrir biblioteca de medios"
+          class="project-editor__action-btn"
+          title="Abrir biblioteca de medios"
+        >
+          <i
+            class="fas fa-photo-video"
+          />
+          Medios
+        </button>
+      </div>
+      <div
+        class="project-editor__format-toolbar"
+      >
+        <button
+          aria-label="Aplicar formato negrita"
+          title="Negrita"
+        >
+          <i
+            class="fas fa-bold"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato cursiva"
+          title="Cursiva"
+        >
+          <i
+            class="fas fa-italic"
+          />
+        </button>
+        <button
+          aria-label="Aplicar formato código"
+          title="Código"
+        >
+          <i
+            class="fas fa-code"
+          />
+        </button>
+        <button
+          aria-label="Insertar encabezado H1"
+          title="Encabezado H1"
+        >
+          H1
+        </button>
+        <button
+          aria-label="Insertar encabezado H2"
+          title="Encabezado H2"
+        >
+          H2
+        </button>
+        <button
+          aria-label="Insertar lista no ordenada"
+          title="Lista no ordenada"
+        >
+          <i
+            class="fas fa-list-ul"
+          />
+        </button>
+        <button
+          aria-label="Insertar lista ordenada"
+          title="Lista ordenada"
+        >
+          <i
+            class="fas fa-list-ol"
+          />
+        </button>
+      </div>
+    </div>
+    <div
+      class="project-editor__content"
+    >
+      <div
+        class="project-editor__editor-container"
+      >
+        <textarea
+          aria-label="Editor de contenido"
+          class="project-editor__textarea"
+          placeholder="Escribe el contenido de tu proyecto aquí..."
+          spellcheck="false"
+        >
+          &lt;h1&gt;Vista Dividida Vertical&lt;/h1&gt;&lt;p&gt;Editor arriba y vista previa abajo.&lt;/p&gt;
+        </textarea>
+      </div>
+    </div>
+    <div
+      class="project-editor__status-bar"
+    >
+      <div
+        class="project-editor__status-info"
+      >
+        <span>
+          Modo: 
+          html
+        </span>
+        <span>
+          Caracteres: 
+          74
+        </span>
+        <span>
+          Palabras: 
+          8
+        </span>
+      </div>
+      <div
+        class="project-editor__status-shortcuts"
+      >
+        <span>
+          Ctrl+B: Negrita
+        </span>
+        <span>
+          Ctrl+I: Cursiva
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+`;

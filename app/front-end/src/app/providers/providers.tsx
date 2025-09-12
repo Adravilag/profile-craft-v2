@@ -8,6 +8,7 @@ import {
   UnifiedThemeProvider,
   TranslationProvider,
 } from '@/contexts';
+import { SectionsLoadingProvider } from '@/contexts/SectionsLoadingContext';
 
 // Control de activación de React Query vía variable de entorno Vite
 // Para habilitar: VITE_ENABLE_REACT_QUERY=true
@@ -36,7 +37,9 @@ export function AppProviders({ children, client = defaultClient }: AppProvidersP
           <NotificationProvider>
             <AuthProvider>
               <UnifiedThemeProvider>
-                <DataProvider>{children}</DataProvider>
+                <SectionsLoadingProvider>
+                  <DataProvider>{children}</DataProvider>
+                </SectionsLoadingProvider>
               </UnifiedThemeProvider>
             </AuthProvider>
           </NotificationProvider>
@@ -51,7 +54,9 @@ export function AppProviders({ children, client = defaultClient }: AppProvidersP
         <NotificationProvider>
           <AuthProvider>
             <UnifiedThemeProvider>
-              <DataProvider>{children}</DataProvider>
+              <SectionsLoadingProvider>
+                <DataProvider>{children}</DataProvider>
+              </SectionsLoadingProvider>
             </UnifiedThemeProvider>
           </AuthProvider>
         </NotificationProvider>

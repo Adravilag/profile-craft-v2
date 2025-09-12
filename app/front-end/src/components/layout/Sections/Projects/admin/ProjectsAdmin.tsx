@@ -213,33 +213,25 @@ const ProjectsAdmin: React.FC = () => {
           <div className={styles.projectsAdminHeader}>
             <div className={styles.headerContent}>
               <h1 className={styles.projectsAdminTitle}>
-                <i className="fas fa-newspaper"></i>
-                Gestión de {t.projects.title}
+                <i className="fas fa-newspaper" aria-hidden="true"></i>
+                <span>Gestión de {t.projects.title}</span>
               </h1>
               <p className={styles.projectsAdminSubtitle}>
                 Administra y organiza todos tus artículos y proyectos
               </p>
             </div>
-            <div style={{ display: 'flex', gap: '10px' }}>
+
+            <div
+              className={styles.headerActions}
+              style={{ display: 'flex', gap: '10px', marginLeft: 'auto' }}
+            >
               <button
-                className={styles.btnSecondary}
-                onClick={async () => {
-                  try {
-                    await authApi.getDevToken();
-                    showError('Éxito', 'Token de desarrollo obtenido');
-                    loadProjects();
-                  } catch (error) {
-                    showError('Error', 'No se pudo obtener el token');
-                  }
-                }}
-                style={{ fontSize: '12px', padding: '8px 12px' }}
+                className={styles.btnPrimary}
+                onClick={handleNewProject}
+                aria-label="Crear nuevo proyecto"
               >
-                <i className="fas fa-key"></i>
-                Dev Token
-              </button>
-              <button className={styles.btnPrimary} onClick={handleNewProject}>
-                <i className="fas fa-plus"></i>
-                Nuevo {t.projects.title.slice(0, -1)}
+                <i className="fas fa-plus" aria-hidden="true"></i>
+                <span>Nuevo {t.projects.title.slice(0, -1)}</span>
               </button>
             </div>
           </div>
@@ -452,7 +444,7 @@ const ProjectsAdmin: React.FC = () => {
                                   onClick={() => handleView(project)}
                                   title={`${t.projects.viewProject}/${t.projects.title.slice(0, -1).toLowerCase()}`}
                                 >
-                                  <i className="fas fa-eye"></i>
+                                  <i className="fas fa-external-link-alt" aria-hidden></i>
                                 </button>
                                 <button
                                   className={`${styles.buttonIcon} ${styles.editBtn}`}
@@ -542,7 +534,7 @@ const ProjectsAdmin: React.FC = () => {
                             onClick={() => handleView(project)}
                             title="Ver artículo/proyecto"
                           >
-                            <i className="fas fa-eye"></i>
+                            <i className="fas fa-external-link-alt" aria-hidden></i>
                             Ver
                           </button>
                           <button

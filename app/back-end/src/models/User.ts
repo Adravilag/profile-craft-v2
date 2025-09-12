@@ -7,6 +7,9 @@ export interface IUser extends Document {
   email: string;
   email_contact?: string; // Email público para mostrar en el portafolio
   password: string;
+  tokenVersion?: number;
+  resetPasswordToken?: string | null;
+  resetPasswordExpires?: Date | null;
   role: 'user' | 'admin';
   about_me?: string;
   status?: string;
@@ -95,6 +98,20 @@ const UserSchema: Schema = new Schema(
       default: null,
     },
     last_login_at: {
+      type: Date,
+      default: null,
+    },
+    // Versión del token para permitir invalidar tokens antiguos
+    tokenVersion: {
+      type: Number,
+      default: 0,
+    },
+    // Campos para flujo de recuperación de contraseña
+    resetPasswordToken: {
+      type: String,
+      default: null,
+    },
+    resetPasswordExpires: {
       type: Date,
       default: null,
     },

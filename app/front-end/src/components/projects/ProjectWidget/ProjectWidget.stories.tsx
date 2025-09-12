@@ -1,6 +1,6 @@
 import ProjectWidget from './ProjectWidget';
 
-const meta: any = { title: 'Projects/ProjectWidget', component: ProjectWidget };
+const meta: any = { title: 'Legacy/Projects/ProjectWidget', component: ProjectWidget };
 export default meta;
 
 const project = {

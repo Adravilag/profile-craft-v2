@@ -508,14 +508,14 @@ export const getProjectById = async (id: string) =>
 export const createProject = async (project: Omit<Project, 'id'>) => {
   const userId = getUserId();
   const payload = { ...project, user_id: userId } as any;
-  debugLog.api('🔄 Creando proyecto para usuario:', userId);
-  return API.post<Project>('/projects', payload).then(r => r.data);
+  debugLog.api('🔄 Creando proyecto para usuario (admin):', userId);
+  return API.post<Project>('/projects/admin', payload).then(r => r.data);
 };
 
 export const updateProject = async (id: string, project: Partial<Project>) =>
-  API.put<Project>(`/projects/${id}`, project).then(r => r.data);
+  API.put<Project>(`/projects/admin/${id}`, project).then(r => r.data);
 
-export const deleteProject = async (id: string) => API.delete(`/projects/${id}`);
+export const deleteProject = async (id: string) => API.delete(`/projects/admin/${id}`);
 
 export const hasRegisteredUser = async (): Promise<boolean> => {
   try {

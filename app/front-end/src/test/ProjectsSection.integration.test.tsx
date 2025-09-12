@@ -61,15 +61,15 @@ vi.mock('@/components/layout/Sections/Projects/components/ProjectCard/ProjectCar
   ),
 }));
 
-// Mock the ProjectModal component
-vi.mock('@/features/projects/components/ProjectModal/ProjectModal', () => ({
-  default: ({ project, onClose }: { project: any; onClose: () => void }) => (
-    <div data-testid="project-modal">
-      <h2>{project.title}</h2>
-      <button onClick={onClose}>Close Modal</button>
-    </div>
-  ),
-}));
+// Mock react-router navigate to assert navigation when project is clicked
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', async importOriginal => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
 // Mock the Pagination component
 vi.mock('@/ui/components/layout/Pagination', () => ({
@@ -246,9 +246,11 @@ describe('[INTEGRATION] ProjectsSection Component', () => {
         expect(screen.getByTestId('project-card-3')).toBeInTheDocument();
       });
 
-      // Should show pagination
-      expect(screen.getByTestId('pagination')).toBeInTheDocument();
-      expect(screen.getByTestId('page-info')).toHaveTextContent('1 of 2');
+      // Should show pagination (top and bottom)
+      const paginations = screen.getAllByTestId('pagination');
+      expect(paginations.length).toBeGreaterThanOrEqual(1);
+      const pageInfos = screen.getAllByTestId('page-info');
+      expect(pageInfos[0]).toHaveTextContent('1 of 2');
     });
 
     it('should display loading state correctly', () => {
@@ -354,8 +356,8 @@ describe('[INTEGRATION] ProjectsSection Component', () => {
       // Verify useProjectMapper was called
       expect(mockUseProjectMapper).toHaveBeenCalled();
 
-      // Verify useProjectModal was called
-      expect(mockUseProjectModal).toHaveBeenCalled();
+      // Verify useProjectModal is not used by this component anymore
+      expect(mockUseProjectModal).not.toHaveBeenCalled();
     });
 
     it('should call mapItemToProject for each displayed project', async () => {
@@ -457,9 +459,9 @@ describe('[INTEGRATION] ProjectsSection Component', () => {
         </AllProvidersWrapper>
       );
 
-      // Click next page button
-      const nextButton = screen.getByTestId('next-page');
-      await user.click(nextButton);
+      // Click next page button (top pagination)
+      const nextButtons = screen.getAllByTestId('next-page');
+      await user.click(nextButtons[0]);
 
       // Should call handlePageChange with page 2
       expect(mockHandlePageChange).toHaveBeenCalledWith(2);
@@ -473,7 +475,7 @@ describe('[INTEGRATION] ProjectsSection Component', () => {
         </AllProvidersWrapper>
       );
 
-      expect(screen.getByTestId('pagination')).toBeInTheDocument();
+      expect(screen.getAllByTestId('pagination').length).toBeGreaterThanOrEqual(1);
     });
 
     it('should hide pagination when there is only one page', () => {
@@ -517,7 +519,7 @@ describe('[INTEGRATION] ProjectsSection Component', () => {
   });
 
   describe('🟢 Modal Functionality', () => {
-    it('should open modal when project is clicked', async () => {
+    it('should navigate to project page when project is clicked', async () => {
       const user = userEvent.setup();
 
       render(
@@ -530,17 +532,11 @@ describe('[INTEGRATION] ProjectsSection Component', () => {
       const projectCard = screen.getByTestId('project-card-1');
       await user.click(projectCard);
 
-      // Should call openModal with mapped project data
-      expect(mockOpenModal).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: '1',
-          title: 'Project One',
-          description: 'First test project',
-        })
-      );
+      // Should navigate to project page
+      expect(mockNavigate).toHaveBeenCalledWith('/project/1');
     });
 
-    it('should handle keyboard navigation for project cards', async () => {
+    it('should handle keyboard navigation for project cards and navigate', async () => {
       const user = userEvent.setup();
 
       render(
@@ -562,75 +558,14 @@ describe('[INTEGRATION] ProjectsSection Component', () => {
         firstProjectContainer.focus();
         await user.keyboard('{Enter}');
 
-        expect(mockOpenModal).toHaveBeenCalledWith(
-          expect.objectContaining({
-            id: '1',
-            title: 'Project One',
-          })
-        );
+        expect(mockNavigate).toHaveBeenCalledWith('/project/1');
 
         // Test Space key
         vi.clearAllMocks();
         await user.keyboard(' ');
 
-        expect(mockOpenModal).toHaveBeenCalledWith(
-          expect.objectContaining({
-            id: '1',
-            title: 'Project One',
-          })
-        );
+        expect(mockNavigate).toHaveBeenCalledWith('/project/1');
       }
-    });
-
-    it('should display modal when activeProject is set', () => {
-      const activeProject = {
-        id: '1',
-        title: 'Active Project',
-        description: 'Currently active project',
-      };
-
-      mockUseProjectModal.mockReturnValue({
-        activeProject,
-        openModal: mockOpenModal,
-        closeModal: mockCloseModal,
-      });
-
-      render(
-        <AllProvidersWrapper>
-          <ProjectsSection />
-        </AllProvidersWrapper>
-      );
-
-      // Should show modal
-      expect(screen.getByTestId('project-modal')).toBeInTheDocument();
-      expect(screen.getByText('Active Project')).toBeInTheDocument();
-    });
-
-    it('should close modal when close button is clicked', async () => {
-      const user = userEvent.setup();
-      const activeProject = {
-        id: '1',
-        title: 'Active Project',
-        description: 'Currently active project',
-      };
-
-      mockUseProjectModal.mockReturnValue({
-        activeProject,
-        openModal: mockOpenModal,
-        closeModal: mockCloseModal,
-      });
-
-      render(
-        <AllProvidersWrapper>
-          <ProjectsSection />
-        </AllProvidersWrapper>
-      );
-
-      // Click close button
-      const closeButton = screen.getByText('Close Modal');
-      await user.click(closeButton);
-
-      expect(mockCloseModal).toHaveBeenCalledTimes(1);
     });
 
     it('should call onProjectClick prop when provided instead of opening modal', async () => {
@@ -649,7 +584,7 @@ describe('[INTEGRATION] ProjectsSection Component', () => {
 
       // Should call onProjectClick instead of openModal
       expect(mockOnProjectClick).toHaveBeenCalledWith('1');
-      expect(mockOpenModal).not.toHaveBeenCalled();
+      expect(mockNavigate).not.toHaveBeenCalled();
     });
   });
 

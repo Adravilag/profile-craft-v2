@@ -3,7 +3,7 @@ import ProjectModal from './ProjectModal';
 import type { Project } from '../../layout/Sections/Projects/components/ProjectCard/ProjectCard';
 
 const meta: Meta<typeof ProjectModal> = {
-  title: 'Projects/ProjectModal',
+  title: 'Legacy/Projects/ProjectModal',
   component: ProjectModal,
   parameters: {
     layout: 'centered',

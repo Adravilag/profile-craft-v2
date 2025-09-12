@@ -52,7 +52,7 @@ const CertificationsSection = lazy(
 );
 const TestimonialsSection = lazy(() => import('../Sections/Testimonials/TestimonialsSection'));
 const ContactSection = lazy(() => import('../Sections/Contact/ContactSection'));
-const ProjectPage = lazy(() => import('../Sections/Projects/pages/ProjectPage'));
+const ProjectPage = lazy(() => import('../Sections/Projects/pages/ProjectPage/ProjectPage'));
 // Componentes de proyectos cargados bajo demanda (si se usan en el futuro pueden re-habilitarse)
 
 interface RootLayoutProps {

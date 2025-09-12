@@ -36,7 +36,7 @@ describe('useProfileData - Endpoint Security', () => {
   it('debe cargar el perfil correctamente sin llamadas adicionales', async () => {
     // Mock del perfil completo
     const mockProfile = {
-      id: '684965a62ebed45b3deabedd',
+      id: '68c3fb8a51694161d560442b',
       name: 'Test User',
       email: 'test@example.com',
       role_title: 'Developer',
@@ -78,7 +78,7 @@ describe('useProfileData - Endpoint Security', () => {
 
   it('debe permitir refetch del perfil', async () => {
     const mockProfile = {
-      id: '684965a62ebed45b3deabedd',
+      id: '68c3fb8a51694161d560442b',
       name: 'Test User',
       email: 'test@example.com',
     };

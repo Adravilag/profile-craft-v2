@@ -4,13 +4,16 @@ import { NORMALIZED_BASE } from '@/config/basePath';
 import { lazy, Suspense } from 'react';
 import type { ReactNode } from 'react';
 import { QueryErrorBoundary } from '@/components/layout/ErrorBoundary/QueryErrorBoundary';
+import RouteError from '@/components/layout/RouteError/RouteError';
 
 // Lazy layout + pages
 const RootLayout = lazy(() => import('@/components/layout/RootLayout/RootLayout'));
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage/NotFoundPage'));
-const ProjectPage = lazy(() => import('@/components/layout/Sections/Projects/pages/ProjectPage'));
-const ProjectsAdminPage = lazy(
-  () => import('@/components/layout/Sections/Projects/pages/ProjectsAdminPage')
+const ProjectPage = lazy(
+  () => import('@/components/layout/Sections/Projects/pages/ProjectPage/ProjectPage')
+);
+const ProjectAdminPage = lazy(
+  () => import('@/components/layout/Sections/Projects/pages/ProjectAdminPage/ProjectAdminPage')
 );
 
 const OverlayFallback: React.FC = () => (
@@ -73,9 +76,21 @@ export const router = createBrowserRouter(
     // Páginas independientes para proyectos (no renderizadas dentro del layout de secciones)
     { path: '/projects/:id', element: withSuspense(<ProjectPage />) },
     // Admin pages for projects (list, create, edit)
-    { path: '/projects/admin', element: withSuspense(<ProjectsAdminPage />) },
-    { path: '/projects/new', element: withSuspense(<ProjectsAdminPage />) },
-    { path: '/projects/edit/:id', element: withSuspense(<ProjectsAdminPage />) },
+    {
+      path: '/projects/admin',
+      element: withSuspense(<ProjectAdminPage />),
+      errorElement: <RouteError />,
+    },
+    {
+      path: '/projects/new',
+      element: withSuspense(<ProjectAdminPage />),
+      errorElement: <RouteError />,
+    },
+    {
+      path: '/projects/edit/:id',
+      element: withSuspense(<ProjectAdminPage />),
+      errorElement: <RouteError />,
+    },
     // Rutas legacy/compatibilidad
     { path: '/project/:id', element: withSuspense(<ProjectPage />) },
   ],

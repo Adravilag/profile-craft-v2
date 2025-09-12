@@ -29,7 +29,7 @@ export async function getProjectById(id: string) {
 }
 
 export async function createProject(project: any) {
-  const res = await apiFetch(`/api/projects`, {
+  const res = await apiFetch(`/api/projects/admin`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(project),
@@ -39,7 +39,7 @@ export async function createProject(project: any) {
 }
 
 export async function updateProject(id: string, project: any) {
-  const res = await apiFetch(`/api/projects/${encodeURIComponent(id)}`, {
+  const res = await apiFetch(`/api/projects/admin/${encodeURIComponent(id)}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(project),
@@ -49,7 +49,7 @@ export async function updateProject(id: string, project: any) {
 }
 
 export async function deleteProject(id: string) {
-  const res = await apiFetch(`/api/projects/${encodeURIComponent(id)}`, { method: 'DELETE' });
+  const res = await apiFetch(`/api/projects/admin/${encodeURIComponent(id)}`, { method: 'DELETE' });
   if (!res.ok) throw new Error('Failed to delete project');
   return res;
 }

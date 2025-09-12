@@ -1,7 +1,8 @@
 import express from 'express';
+import { body } from 'express-validator';
 import { authController } from '../controllers/authController.js';
 import { profileController } from '../controllers/profileController.js';
-import { authenticate, optionalAuth } from '../middleware/auth.js';
+import { authenticate, optionalAuth, authenticateAdmin } from '../middleware/auth.js';
 import { securityMiddleware, authSecurityMiddleware } from '../middleware/security.js';
 
 const router = express.Router();
@@ -54,6 +55,29 @@ router.post(
   securityMiddleware.limitPayloadSize(10 * 1024),
   authenticate,
   authController.changePassword
+);
+
+// Endpoints públicos para recuperación de contraseña
+router.post(
+  '/request-reset',
+  securityMiddleware.sanitizeInput,
+  securityMiddleware.limitPayloadSize(10 * 1024),
+  authController.requestPasswordReset
+);
+
+router.post(
+  '/confirm-reset',
+  securityMiddleware.sanitizeInput,
+  securityMiddleware.limitPayloadSize(10 * 1024),
+  authController.confirmPasswordReset
+);
+
+// Ruta administrativa para resetear contraseñas
+router.post(
+  '/admin/reset-password',
+  authenticateAdmin,
+  [body('email').isEmail(), body('newPassword').isLength({ min: 6 })],
+  authController.resetUserPassword
 );
 
 export default router;

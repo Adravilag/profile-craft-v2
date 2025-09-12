@@ -1,0 +1,873 @@
+/* project-editor.css - Project Editor Component Styles */
+
+/* =====================================================
+   PROJECT EDITOR - ENHANCED DESIGN SYSTEM
+   ===================================================== */
+
+/* CSS Custom Properties for Project Editor */
+:root {
+  --project-editor-min-height: 500px;
+  --project-editor-split-min-height: 600px;
+  --project-editor-border-radius: var(--radius-lg);
+  --project-editor-shadow: var(--shadow-md);
+  --project-editor-content-padding: var(--space-4);
+  --project-editor-toolbar-padding: var(--space-3);
+  --project-editor-gap: var(--space-3);
+
+  /* Enhanced Typography Scale */
+  --project-editor-title-size: var(--text-lg);
+  --project-editor-body-size: var(--text-base);
+  --project-editor-caption-size: var(--text-sm);
+  --project-editor-small-size: var(--text-xs);
+
+  /* Enhanced Animation Timing */
+  --project-editor-transition-fast: var(--duration-fast) var(--ease-out);
+  --project-editor-transition-normal: var(--duration-normal) var(--ease-out);
+  --project-editor-transition-slow: var(--duration-slow) var(--ease-out);
+}
+
+/* =====================================================
+   MAIN EDITOR CONTAINER
+   ===================================================== */
+
+.project-editor {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--project-editor-border-radius);
+  overflow: hidden;
+  box-shadow: var(--project-editor-shadow);
+  margin-bottom: var(--space-6);
+  min-height: var(--project-editor-min-height);
+  font-size: var(--project-editor-body-size);
+  line-height: 1.6;
+  color: var(--text-primary);
+  position: relative;
+}
+
+.project-editor--split-mode {
+  min-height: var(--project-editor-split-min-height);
+}
+
+.project-editor--split-horizontal {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-editor--split-vertical {
+  display: flex;
+  flex-direction: row;
+}
+
+/* =====================================================
+   TOOLBAR SECTION
+   ===================================================== */
+
+.project-editor__toolbar {
+  display: flex;
+  align-items: center;
+  padding: var(--project-editor-toolbar-padding);
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-primary);
+  flex-wrap: wrap;
+  gap: var(--project-editor-gap);
+  position: relative;
+}
+
+.project-editor__toolbar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgb(var(--color-accent-rgb) / 0.02) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.project-editor__toolbar > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* =====================================================
+   MODE SELECTORS
+   ===================================================== */
+
+.project-editor__mode-selector {
+  display: flex;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  margin-right: auto;
+}
+
+.project-editor__mode-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border: none;
+  background-color: var(--bg-primary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: var(--project-editor-caption-size);
+  font-weight: var(--font-weight-medium);
+  transition:
+    background-color var(--project-editor-transition-fast),
+    color var(--project-editor-transition-fast),
+    transform var(--project-editor-transition-fast),
+    box-shadow var(--project-editor-transition-fast);
+  border-right: 1px solid var(--border-primary);
+  min-height: 36px;
+  white-space: nowrap;
+  font-family: var(--font-sans);
+}
+
+.project-editor__mode-btn:last-child {
+  border-right: none;
+}
+
+.project-editor__mode-btn:hover:not(.project-editor__mode-btn--active) {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.project-editor__mode-btn:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+.project-editor__mode-btn--active {
+  background-color: var(--color-accent-button);
+  color: var(--text-primary);
+  box-shadow: 0 2px 8px rgb(var(--color-accent-rgb) / 0.25);
+}
+
+.project-editor__mode-icon {
+  font-size: var(--project-editor-caption-size);
+  transition: transform var(--project-editor-transition-fast);
+}
+
+.project-editor__mode-btn:hover .project-editor__mode-icon {
+  transform: scale(1.1);
+}
+
+/* =====================================================
+   ADDITIONAL ACTIONS
+   ===================================================== */
+
+.project-editor__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+.project-editor__action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: var(--project-editor-small-size);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  transition:
+    background-color var(--project-editor-transition-fast),
+    color var(--project-editor-transition-fast),
+    transform var(--project-editor-transition-fast),
+    box-shadow var(--project-editor-transition-fast),
+    border-color var(--project-editor-transition-fast);
+  min-height: 32px;
+  white-space: nowrap;
+  font-family: var(--font-sans);
+}
+
+.project-editor__action-btn:hover {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+  border-color: var(--border-accent);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.project-editor__action-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+.project-editor__action-btn:active {
+  transform: translateY(0);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.1);
+}
+
+.project-editor__action-btn--active {
+  background-color: var(--color-accent-button);
+  color: var(--text-primary);
+  border-color: var(--color-accent);
+}
+
+/* =====================================================
+   CONTENT AREA
+   ===================================================== */
+
+.project-editor__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+.project-editor--split-horizontal .project-editor__content {
+  flex-direction: column;
+}
+
+.project-editor--split-vertical .project-editor__content {
+  flex-direction: row;
+}
+
+/* =====================================================
+   EDITOR CONTAINER
+   ===================================================== */
+
+.project-editor__editor-container {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-primary);
+  position: relative;
+}
+
+.project-editor--split-horizontal .project-editor__editor-container {
+  flex: 0 0 50%;
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.project-editor--split-vertical .project-editor__editor-container {
+  /* allow the editor to flex and shrink properly alongside the preview */
+  flex: 1 1 50%;
+  border-right: 1px solid var(--border-primary);
+}
+
+/* =====================================================
+   EDITOR TEXTAREA
+   ===================================================== */
+
+.project-editor__textarea {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  padding: var(--project-editor-content-padding);
+  font-family: var(--font-mono);
+  font-size: var(--project-editor-body-size);
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  border: none;
+  resize: none;
+  outline: none;
+  tab-size: 2;
+  transition:
+    background-color var(--project-editor-transition-fast),
+    color var(--project-editor-transition-fast);
+  font-feature-settings:
+    'liga' 1,
+    'calt' 1;
+  font-variant-ligatures: common-ligatures;
+}
+
+.project-editor__textarea:focus {
+  background-color: var(--bg-secondary);
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+
+.project-editor__textarea::placeholder {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Split mode specific textarea styles */
+.project-editor--split-horizontal .project-editor__textarea,
+.project-editor--split-vertical .project-editor__textarea {
+  border-radius: 0;
+  background-color: var(--bg-secondary);
+}
+
+.project-editor--split-horizontal .project-editor__textarea:focus,
+.project-editor--split-vertical .project-editor__textarea:focus {
+  background-color: var(--bg-primary);
+  box-shadow: inset 0 0 0 2px var(--color-accent);
+}
+
+/* =====================================================
+   PREVIEW CONTAINER
+   ===================================================== */
+
+.project-editor__preview-container {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-tertiary);
+  position: relative;
+}
+
+.project-editor--split-horizontal .project-editor__preview-container {
+  flex: 1;
+}
+
+.project-editor--split-vertical .project-editor__preview-container {
+  /* make preview share available space and be able to shrink */
+  flex: 1 1 50%;
+}
+
+.project-editor__preview-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--project-editor-content-padding);
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-primary);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  font-size: var(--project-editor-caption-size);
+}
+
+.project-editor__preview-icon {
+  color: var(--color-accent);
+  font-size: var(--project-editor-caption-size);
+}
+
+/* =====================================================
+   PREVIEW CONTENT
+   ===================================================== */
+
+.project-editor__preview-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--project-editor-content-padding);
+  line-height: 1.7;
+  color: var(--text-primary);
+  background-color: var(--bg-tertiary);
+
+  /* Custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-secondary) transparent;
+
+  /* Allow long words and narrow containers to wrap sensibly */
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.project-editor__preview-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.project-editor__preview-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.project-editor__preview-content::-webkit-scrollbar-thumb {
+  background-color: var(--border-secondary);
+  border-radius: var(--radius-sm);
+}
+
+.project-editor__preview-content::-webkit-scrollbar-thumb:hover {
+  background-color: var(--border-primary);
+}
+
+/* Preview content typography */
+.project-editor__preview-content h1,
+.project-editor__preview-content h2,
+.project-editor__preview-content h3,
+.project-editor__preview-content h4,
+.project-editor__preview-content h5,
+.project-editor__preview-content h6 {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.3;
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.project-editor__preview-content h1 {
+  font-size: var(--text-2xl);
+  border-bottom: 2px solid var(--border-primary);
+  padding-bottom: var(--space-2);
+}
+
+.project-editor__preview-content h2 {
+  font-size: var(--text-xl);
+}
+
+.project-editor__preview-content h3 {
+  font-size: var(--text-lg);
+}
+
+.project-editor__preview-content p {
+  margin: 1em 0;
+}
+
+.project-editor__preview-content a {
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: color var(--project-editor-transition-fast);
+}
+
+.project-editor__preview-content a:hover {
+  text-decoration: underline;
+  color: var(--color-primary);
+}
+
+.project-editor__preview-content code {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  border: 1px solid var(--border-primary);
+}
+
+.project-editor__preview-content pre {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin: 1em 0;
+  border: 1px solid var(--border-primary);
+}
+
+.project-editor__preview-content pre code {
+  background: none;
+  padding: 0;
+  border: none;
+  font-size: var(--project-editor-caption-size);
+}
+
+.project-editor__preview-content blockquote {
+  border-left: 4px solid var(--color-accent);
+  margin: 1em 0;
+  color: var(--text-secondary);
+  font-style: italic;
+  background-color: var(--bg-secondary);
+  padding: var(--space-3) var(--space-4);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+.project-editor__preview-content ul,
+.project-editor__preview-content ol {
+  margin: 1em 0;
+  padding-left: 2em;
+}
+
+.project-editor__preview-content li {
+  margin: 0.5em 0;
+}
+
+.project-editor__preview-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  margin: 1em 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.project-editor__preview-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.project-editor__preview-content th,
+.project-editor__preview-content td {
+  border: 1px solid var(--border-primary);
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+}
+
+.project-editor__preview-content th {
+  background-color: var(--bg-secondary);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+/* =====================================================
+   PREVIEW PLACEHOLDER
+   ===================================================== */
+
+.project-editor__preview-placeholder {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  text-align: center;
+  padding: var(--space-8);
+  background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
+}
+
+.project-editor__placeholder-icon {
+  font-size: 3rem;
+  margin-bottom: var(--space-4);
+  opacity: 0.5;
+  color: var(--color-accent);
+}
+
+.project-editor__placeholder-text {
+  font-size: var(--project-editor-body-size);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--space-2);
+}
+
+.project-editor__placeholder-hint {
+  font-size: var(--project-editor-caption-size);
+  color: var(--text-muted);
+}
+
+/* =====================================================
+   STATUS BAR
+   ===================================================== */
+
+.project-editor__status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-2) var(--project-editor-content-padding);
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-primary);
+  font-size: var(--project-editor-small-size);
+  color: var(--text-secondary);
+}
+
+.project-editor__status-info {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.project-editor__status-shortcuts {
+  display: flex;
+  gap: var(--space-2);
+  font-style: italic;
+}
+
+/* =====================================================
+   MEDIA LIBRARY LOADING
+   ===================================================== */
+
+.media-library-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  color: var(--text-primary);
+}
+
+.media-library-loading__spinner {
+  font-size: 2rem;
+  margin-bottom: var(--space-4);
+  color: var(--accent-primary);
+}
+
+.media-library-loading p {
+  font-size: var(--text-base);
+  margin: 0;
+}
+
+/* =====================================================
+   FORMAT TOOLBAR
+   ===================================================== */
+
+.project-editor__format-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-2) 0;
+  border-top: 1px solid var(--border-primary);
+  margin-top: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.project-editor__format-toolbar button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: var(--space-1) var(--space-2);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--project-editor-small-size);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+  transition:
+    background-color var(--project-editor-transition-fast),
+    color var(--project-editor-transition-fast),
+    border-color var(--project-editor-transition-fast),
+    transform var(--project-editor-transition-fast);
+  font-family: var(--font-sans);
+}
+
+.project-editor__format-toolbar button:hover {
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border-color: var(--border-accent);
+  transform: translateY(-1px);
+}
+
+.project-editor__format-toolbar button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+.project-editor__format-toolbar button:active {
+  transform: translateY(0);
+}
+
+/* =====================================================
+   EXTERNAL PREVIEW INDICATOR
+   ===================================================== */
+
+.project-editor__external-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--project-editor-small-size);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+  padding: var(--space-1) var(--space-3);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-primary);
+}
+
+.project-editor__external-icon {
+  color: var(--color-success);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* =====================================================
+   ACCESSIBILITY ENHANCEMENTS
+   ===================================================== */
+
+.project-editor *:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .project-editor {
+    border-width: 2px;
+  }
+
+  .project-editor__mode-btn--active {
+    border: 2px solid var(--color-accent);
+  }
+
+  .project-editor__textarea:focus {
+    box-shadow: inset 0 0 0 3px var(--color-accent);
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .project-editor__mode-btn,
+  .project-editor__action-btn,
+  .project-editor__textarea,
+  .project-editor__preview-content a,
+  .project-editor__mode-icon,
+  .project-editor__external-icon {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .project-editor__external-icon {
+    animation: none;
+  }
+}
+
+/* =====================================================
+   RESPONSIVE DESIGN
+   ===================================================== */
+
+@media (max-width: 768px) {
+  .project-editor__toolbar {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    padding: var(--space-2);
+  }
+
+  .project-editor__mode-selector {
+    margin-right: 0;
+    margin-bottom: var(--space-2);
+    width: 100%;
+  }
+
+  .project-editor__mode-btn {
+    flex: 1;
+    justify-content: center;
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--project-editor-small-size);
+  }
+
+  .project-editor__actions {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .project-editor__action-btn {
+    padding: var(--space-2);
+    font-size: var(--project-editor-small-size);
+  }
+
+  /* Force horizontal split on mobile */
+  .project-editor--split-vertical .project-editor__content {
+    flex-direction: column;
+  }
+
+  .project-editor--split-vertical .project-editor__editor-container {
+    flex: 0 0 50%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-primary);
+  }
+
+  .project-editor__textarea {
+    min-height: 300px;
+    padding: var(--space-3);
+  }
+
+  .project-editor__preview-content {
+    padding: var(--space-3);
+  }
+
+  .project-editor__status-bar {
+    flex-direction: column;
+    gap: var(--space-2);
+    align-items: flex-start;
+  }
+
+  .project-editor__status-shortcuts {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .project-editor {
+    margin-bottom: var(--space-4);
+    border-radius: var(--radius-md);
+  }
+
+  .project-editor__toolbar {
+    padding: var(--space-2);
+  }
+
+  .project-editor__mode-btn {
+    padding: var(--space-2);
+    font-size: var(--project-editor-small-size);
+    min-height: 32px;
+  }
+
+  .project-editor__textarea {
+    padding: var(--space-2);
+    font-size: var(--project-editor-caption-size);
+  }
+
+  .project-editor__preview-content {
+    padding: var(--space-2);
+  }
+
+  .project-editor__placeholder-icon {
+    font-size: 2rem;
+  }
+
+  .project-editor__status-info {
+    gap: var(--space-2);
+  }
+}
+
+/* =====================================================
+   DARK THEME OPTIMIZATIONS
+   ===================================================== */
+
+/* Enhanced focus states for dark theme */
+.project-editor__textarea:focus {
+  box-shadow:
+    inset 0 0 0 1px var(--color-accent),
+    0 0 0 3px rgb(var(--color-accent-rgb) / 0.1);
+}
+
+/* Enhanced hover states */
+.project-editor__mode-btn:hover:not(.project-editor__mode-btn--active) {
+  background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-elevated) 100%);
+}
+
+.project-editor__action-btn:hover {
+  background: linear-gradient(135deg, var(--bg-elevated) 0%, var(--bg-tertiary) 100%);
+}
+
+/* Enhanced active states */
+.project-editor__mode-btn--active {
+  background: linear-gradient(135deg, var(--color-accent-button) 0%, var(--color-accent) 100%);
+  box-shadow:
+    0 2px 8px rgb(var(--color-accent-rgb) / 0.25),
+    inset 0 1px 0 rgb(255 255 255 / 0.1);
+}
+
+/* =====================================================
+   PRINT STYLES
+   ===================================================== */
+
+@media print {
+  .project-editor__toolbar,
+  .project-editor__status-bar {
+    display: none;
+  }
+
+  .project-editor {
+    box-shadow: none;
+    border: 1px solid var(--border-primary);
+  }
+
+  .project-editor__preview-content {
+    background: white;
+    color: black;
+  }
+}

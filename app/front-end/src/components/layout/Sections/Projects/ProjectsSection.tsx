@@ -4,19 +4,12 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProjectCard from '@/components/layout/Sections/Projects/components/ProjectCard/ProjectCard';
 import type { Project as UiProject } from '@/components/layout/Sections/Projects/components/ProjectCard/ProjectCard';
-import ProjectModal from '@/features/projects/components/ProjectModal/ProjectModal';
 import { useAuth } from '@/contexts/AuthContext';
 import HeaderSection from '../../HeaderSection/HeaderSection';
 import styles from './ProjectsSection.module.css';
 import Pagination from '@/ui/components/layout/Pagination';
 import { useTranslation } from '@/contexts/TranslationContext';
-import {
-  useProjectsData,
-  usePagination,
-  useProjectsFilter,
-  useProjectMapper,
-  useProjectModal,
-} from '@/hooks';
+import { useProjectsData, usePagination, useProjectsFilter, useProjectMapper } from '@/hooks';
 
 // Definición de tipos y estados
 interface ProjectsSectionProps {
@@ -49,8 +42,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
       initialPage: 1,
     });
 
-  // Set up modal management
-  const { activeProject, openModal, closeModal } = useProjectModal();
+  // Modal removed: no local modal state required here
 
   // Get paginated items for current page
   const paginatedFilteredItems = paginatedItems(filteredProjects);
@@ -147,7 +139,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
   }
 
   return (
-    <div className={`section-cv`} id="projects">
+    <div className={`section-cv`} id="projects" data-section="projects">
       <HeaderSection
         icon="fas fa-code"
         title="Proyectos"
@@ -176,6 +168,18 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
             </div>
           )}
 
+          {/* Paginación superior: mostrar también en la parte superior de la lista */}
+          {totalPages > 1 && (
+            <div className={`${styles.paginationWrapper} ${styles.paginationTop}`}>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                showInfo={true}
+              />
+            </div>
+          )}
+
           <div
             className={`${styles.projectsGrid} ${isChangingPage ? styles.loading : ''}`}
             data-testid="projects-grid"
@@ -186,7 +190,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
                 if (onProjectClick) {
                   onProjectClick(String(item.id));
                 } else {
-                  openModal(projectData);
+                  navigate(`/project/${item.id}`);
                 }
               };
 
@@ -208,18 +212,19 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
                 </div>
               );
             })}
-            {activeProject && <ProjectModal project={activeProject} onClose={closeModal} />}
           </div>
 
           {totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              totalItems={filteredProjects.length}
-              itemsPerPage={articlesPerPage}
-              showInfo={true}
-            />
+            <div className={`${styles.paginationWrapper} ${styles.paginationBottom}`}>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                totalItems={filteredProjects.length}
+                itemsPerPage={articlesPerPage}
+                showInfo={true}
+              />
+            </div>
           )}
         </div>
       </div>

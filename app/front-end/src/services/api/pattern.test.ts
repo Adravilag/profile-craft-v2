@@ -59,10 +59,10 @@ describe('Pattern API', () => {
       (API.get as any).mockResolvedValue(mockResponse);
 
       // Act
-      const result = await getUserPattern('684965a62ebed45b3deabedd');
+      const result = await getUserPattern('68c3fb8a51694161d560442b');
 
       // Assert
-      expect(API.get).toHaveBeenCalledWith('/profile/684965a62ebed45b3deabedd/pattern');
+      expect(API.get).toHaveBeenCalledWith('/profile/68c3fb8a51694161d560442b/pattern');
       expect(result).toBe('1708');
     });
 

@@ -23,6 +23,8 @@ export type { UseProjectsDataReturn } from './useProjectsData';
 export * from './useIntersectionObserver';
 export * from './usePerformanceMonitoring';
 export * from './useSectionsLoading';
+export { useEditorModes } from './useEditorModes';
+export type { UseEditorModesReturn, EditorMode } from './useEditorModes';
 
 // useResponsive may not exist in this project root; if needed, add it later.
 

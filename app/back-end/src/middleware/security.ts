@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-// import { config } from '../config/index.js';
+import { config } from '../config/index.js';
 import { logger } from '../utils/logger.js';
 
 // Rate limiting storage (en producción usar Redis)
@@ -45,6 +45,22 @@ export const securityMiddleware = {
   // Rate limiting avanzado con delays progresivos
   advancedRateLimit: (maxAttempts: number = 5, windowMs: number = 15 * 60 * 1000) => {
     return (req: Request, res: Response, next: NextFunction): void => {
+      // En desarrollo permitimos bypass selectivo para rutas de auth para facilitar testing local
+      // Si se activa DEV_ALLOW_ALL_RATE_LIMIT_BYPASS se desactiva completamente el rate limit en dev
+      if ((config as any).isDevelopment) {
+        const allowAllBypass = process.env.DEV_ALLOW_ALL_RATE_LIMIT_BYPASS === 'true';
+        if (allowAllBypass) return next();
+
+        const devWhitelist = [
+          '/api/auth/login',
+          '/api/auth/request-reset',
+          '/api/auth/register',
+          '/api/auth/confirm-reset',
+        ];
+
+        if (devWhitelist.includes(req.path)) return next();
+        // continue to apply rate limiting for other routes even in dev
+      }
       const clientId = req.ip || req.socket.remoteAddress || 'unknown';
       const now = Date.now();
 

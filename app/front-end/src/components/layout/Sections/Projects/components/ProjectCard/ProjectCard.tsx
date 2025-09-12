@@ -35,15 +35,16 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
   const { t, getText } = useTranslation();
   const navigate = useNavigate();
   const media = project.media;
-  // Función para navegar al artículo del proyecto
-  const handleCardClick = () => {
+  // Función para navegar al artículo del proyecto (se usa en el botón 'Leer artículo')
+  const handleOpenArticle = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation(); // evitar que el padre capture el click
+
     // Validar que el proyecto tenga un ID válido antes de navegar
     if (!project.id || project.id === 'undefined' || project.id === 'null') {
       console.warn('⚠️ Proyecto sin ID válido:', project);
       return;
     }
 
-    // Construir la URL del artículo usando el ID del proyecto
     const articleUrl = `/project/${project.id}`;
     navigate(articleUrl);
   };
@@ -74,13 +75,13 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
     <article
       className={styles.card}
       style={{ ['--project-bg-image' as any]: `url(${bgImage})` }}
-      onClick={handleCardClick}
+      onClick={handleOpenArticle}
       role="button"
       tabIndex={0}
       onKeyDown={e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          handleCardClick();
+          handleOpenArticle();
         }
       }}
       aria-label={`${getText('projects.viewDetails', 'Ver detalles')} ${project.title}`}
@@ -119,9 +120,15 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
         </div>
 
         <div className={styles.ctaRow}>
-          <a className={styles.readMore} role="button" tabIndex={0}>
+          {/* Botón para leer el artículo (detiene la propagación para evitar abrir modal) */}
+          <button
+            className={styles.readMore}
+            onClick={handleOpenArticle}
+            aria-label={getText('projects.readArticleAria', 'Leer artículo')}
+            type="button"
+          >
             {t.projects.readMore}
-          </a>
+          </button>
 
           <div className={styles.iconCtas}>
             {/* Botón de demo si existe */}

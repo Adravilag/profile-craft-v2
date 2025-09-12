@@ -5,4 +5,4 @@ export * from './constants/projectStates';
 
 // Componentes
 export { default as ProjectWidget } from './components/ProjectWidget/ProjectWidget';
-export { default as ProjectModal } from './components/ProjectModal/ProjectModal';
+// ProjectModal removed: preview modal deprecated and removed from public UI

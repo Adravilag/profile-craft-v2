@@ -18,7 +18,7 @@ describe('useUserPattern', () => {
 
   it('should load pattern successfully', async () => {
     // Arrange
-    const mockUserId = '684965a62ebed45b3deabedd';
+    const mockUserId = '68c3fb8a51694161d560442b';
     const mockPattern = '1708';
     (profile.getUserPattern as any).mockResolvedValue(mockPattern);
 

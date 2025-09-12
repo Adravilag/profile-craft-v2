@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 import { User } from '../models/index.js';
 import { config } from '../config/index.js';
 import { securityMiddleware } from '../middleware/security.js';
@@ -136,7 +137,17 @@ export const authController = {
     try {
       const { email, password } = req.body;
 
-      const user = await User.findOne({ email });
+      // Normalizar email para evitar problemas por mayúsculas/espacios
+      const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : email;
+
+      // Log de depuración: muestra el email (normalizado) para ayudar a reproducir "user not found"
+      logger.debug('[authController.login] intent de login para email:', {
+        raw: email,
+        normalized: normalizedEmail,
+        ip: req.ip || req.headers['x-forwarded-for'] || null,
+      });
+
+      const user = await User.findOne({ email: normalizedEmail });
       if (!user) {
         securityMiddleware.logSecurityEvent('LOGIN_FAILED_USER_NOT_FOUND', { email }, req);
         res.status(401).json({ error: 'Credenciales inválidas' });
@@ -156,6 +167,7 @@ export const authController = {
           userId: user._id.toString(),
           email: user.email,
           role: user.role,
+          tokenVersion: (user as any).tokenVersion || 0,
         },
         config.JWT_SECRET,
         { expiresIn: '15m' } // Token corto para cookie HttpOnly (máxima seguridad)
@@ -169,6 +181,7 @@ export const authController = {
           email: user.email,
           role: user.role,
           type: 'persistent', // Marcar como token persistente
+          tokenVersion: (user as any).tokenVersion || 0,
         },
         config.JWT_SECRET,
         { expiresIn: '7d' } // Token largo para persistencia (7 días)
@@ -281,6 +294,151 @@ export const authController = {
     } catch (error: any) {
       logger.error('Error cambiando contraseña:', error);
       res.status(500).json({ error: 'Error al cambiar contraseña' });
+    }
+  },
+
+  // Reset de contraseña por parte de un administrador
+  resetUserPassword: async (req: any, res: any): Promise<void> => {
+    try {
+      const { email, newPassword } = req.body;
+
+      if (!email || !newPassword) {
+        res.status(400).json({ error: 'Se requiere email y newPassword' });
+        return;
+      }
+
+      // Normalizar email
+      const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : email;
+
+      const user = await User.findOne({ email: normalizedEmail });
+      if (!user) {
+        res.status(404).json({ error: 'Usuario no encontrado' });
+        return;
+      }
+
+      const hashed = await bcrypt.hash(newPassword, 10);
+      // Incrementar tokenVersion para invalidar tokens existentes
+      await User.updateOne(
+        { _id: user._id },
+        { $set: { password: hashed }, $inc: { tokenVersion: 1 } }
+      );
+
+      // Opcional: añadir evento de auditoría
+      try {
+        securityMiddleware.logSecurityEvent(
+          'ADMIN_PASSWORD_RESET',
+          { email: normalizedEmail },
+          req
+        );
+      } catch (e) {
+        // no bloquear por fallo en auditoría
+      }
+
+      res.json({ message: 'Contraseña reseteada por administrador' });
+    } catch (error: any) {
+      logger.error('Error en resetUserPassword:', error);
+      res.status(500).json({ error: 'Error reseteando contraseña' });
+    }
+  },
+
+  // Solicitar recuperación de contraseña (se genera token temporal)
+  requestPasswordReset: async (req: any, res: any): Promise<void> => {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        res.status(400).json({ error: 'Email requerido' });
+        return;
+      }
+
+      const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : email;
+      const user = await User.findOne({ email: normalizedEmail });
+      if (!user) {
+        // Para evitar enumeración, responder OK
+        res.json({ message: 'Si el usuario existe, se ha enviado un email con instrucciones' });
+        return;
+      }
+
+      const resetToken = crypto.randomBytes(20).toString('hex');
+      const tokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
+      const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hora
+
+      user.resetPasswordToken = tokenHash;
+      user.resetPasswordExpires = expires;
+      await user.save();
+
+      // En producción aquí deberías enviar el enlace por email con resetToken
+      const resetLink = `${req.protocol}://${req.get('host')}/reset-password?token=${resetToken}&email=${encodeURIComponent(normalizedEmail)}`;
+
+      try {
+        securityMiddleware.logSecurityEvent(
+          'PASSWORD_RESET_REQUEST',
+          { email: normalizedEmail },
+          req
+        );
+      } catch {}
+
+      // En desarrollo devolvemos el token para pruebas; en producción enviar por email
+      if ((config as any).isDevelopment) {
+        // Loggear en consola para facilitar pruebas locales además de devolver en JSON
+        try {
+          logger.info('[DEV] Password reset token generado', {
+            email: normalizedEmail,
+            token: resetToken,
+            resetLink,
+          });
+        } catch (e) {
+          // no bloquear por fallo en logging
+        }
+
+        res.json({ message: 'Token generado (solo en desarrollo)', token: resetToken, resetLink });
+      } else {
+        // TODO: enviar email y no devolver token en respuesta
+        res.json({ message: 'Si el usuario existe, se ha enviado un email con instrucciones' });
+      }
+    } catch (error: any) {
+      logger.error('Error en requestPasswordReset:', error);
+      res.status(500).json({ error: 'Error procesando la solicitud' });
+    }
+  },
+
+  // Confirmar recovery usando token temporal y establecer nueva contraseña
+  confirmPasswordReset: async (req: any, res: any): Promise<void> => {
+    try {
+      const { token, newPassword, email } = req.body;
+      if (!token || !newPassword || !email) {
+        res.status(400).json({ error: 'token, email y newPassword son requeridos' });
+        return;
+      }
+
+      const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : email;
+      const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+      const user = await User.findOne({ email: normalizedEmail, resetPasswordToken: tokenHash });
+      if (!user || !user.resetPasswordExpires || user.resetPasswordExpires.getTime() < Date.now()) {
+        res.status(400).json({ error: 'Token inválido o expirado' });
+        return;
+      }
+
+      const hashed = await bcrypt.hash(newPassword, 10);
+      user.password = hashed;
+      user.resetPasswordToken = null;
+      user.resetPasswordExpires = null;
+      // invalidar tokens previos
+      (user as any).tokenVersion = ((user as any).tokenVersion || 0) + 1;
+      await user.save();
+
+      try {
+        securityMiddleware.logSecurityEvent(
+          'PASSWORD_RESET_CONFIRM',
+          { email: normalizedEmail },
+          req
+        );
+      } catch {}
+
+      res.json({ message: 'Contraseña actualizada correctamente' });
+    } catch (error: any) {
+      logger.error('Error en confirmPasswordReset:', error);
+      res.status(500).json({ error: 'Error al resetear contraseña' });
     }
   },
 };

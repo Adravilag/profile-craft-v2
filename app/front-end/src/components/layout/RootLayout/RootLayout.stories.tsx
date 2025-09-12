@@ -93,6 +93,7 @@ const meta: Meta<typeof RootLayout> = {
   component: RootLayout,
   parameters: {
     layout: 'fullscreen',
+    noMemoryRouter: true,
   },
 };
 export default meta;

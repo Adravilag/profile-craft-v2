@@ -1,424 +1,350 @@
 /**
- * React Hook for Accessibility Features
- * Task 13: Add accessibility improvements
+ * Custom hook for managing accessibility features in the ProjectEditor
+ * Handles focus management, keyboard navigation, and ARIA announcements
  */
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
-  AccessibilityManager,
-  type AccessibilityOptions,
-  type FocusManagementOptions,
-} from '@/utils/accessibilityUtils';
+  announceToScreenReader,
+  getFocusableElements,
+  trapFocus,
+  handleEditorKeyboardShortcut,
+  prefersReducedMotion,
+} from '@utils/accessibilityUtils';
 
-/**
- * Hook for managing accessibility features in React components
- */
-export function useAccessibility(options?: AccessibilityOptions) {
-  const managerRef = useRef<AccessibilityManager | null>(null);
-
-  useEffect(() => {
-    managerRef.current = AccessibilityManager.getInstance(options);
-
-    return () => {
-      // Cleanup is handled by the singleton pattern
-    };
-  }, []);
-
-  const announce = useCallback((message: string, politeness: 'polite' | 'assertive' = 'polite') => {
-    managerRef.current?.announce(message, { politeness });
-  }, []);
-
-  const announceError = useCallback((message: string) => {
-    managerRef.current?.announceError(message);
-  }, []);
-
-  const announceLoading = useCallback((message?: string) => {
-    managerRef.current?.announceLoading(message);
-  }, []);
-
-  const announceComplete = useCallback((message?: string) => {
-    managerRef.current?.announceComplete(message);
-  }, []);
-
-  const focusElement = useCallback((element: HTMLElement, options?: FocusManagementOptions) => {
-    managerRef.current?.focusElement(element, options);
-  }, []);
-
-  const restoreFocus = useCallback(() => {
-    managerRef.current?.restoreFocus();
-  }, []);
-
-  const trapFocus = useCallback((container: HTMLElement) => {
-    return managerRef.current?.trapFocus(container) || (() => {});
-  }, []);
-
-  const enhanceForm = useCallback((form: HTMLFormElement) => {
-    managerRef.current?.enhanceForm(form);
-  }, []);
-
-  const addKeyboardShortcut = useCallback(
-    (key: string, callback: () => void, description: string) => {
-      managerRef.current?.addKeyboardShortcut(key, callback, description);
-    },
-    []
-  );
-
-  const updatePageTitle = useCallback((title: string) => {
-    managerRef.current?.updatePageTitle(title);
-  }, []);
-
-  return {
-    announce,
-    announceError,
-    announceLoading,
-    announceComplete,
-    focusElement,
-    restoreFocus,
-    trapFocus,
-    enhanceForm,
-    addKeyboardShortcut,
-    updatePageTitle,
-    manager: managerRef.current,
-  };
+export interface UseAccessibilityOptions {
+  onModeChange?: (mode: string) => void;
+  onToolbarAction?: (action: string) => void;
+  onMediaLibraryToggle?: (isOpen: boolean) => void;
+  onExternalPreviewToggle?: (isOpen: boolean) => void;
 }
 
-/**
- * Hook for managing focus within a component
- */
-export function useFocusManagement() {
-  const focusStackRef = useRef<HTMLElement[]>([]);
+export interface UseAccessibilityReturn {
+  // Focus management
+  focusEditor: () => void;
+  focusToolbar: () => void;
+  focusFirstToolbarButton: () => void;
+  focusLastToolbarButton: () => void;
 
-  const saveFocus = useCallback(() => {
-    const activeElement = document.activeElement as HTMLElement;
-    if (activeElement && activeElement !== document.body) {
-      focusStackRef.current.push(activeElement);
-    }
-  }, []);
+  // Keyboard navigation
+  handleToolbarKeyDown: (event: KeyboardEvent) => void;
+  handleEditorKeyDown: (event: KeyboardEvent) => void;
+  handleModalKeyDown: (event: KeyboardEvent) => void;
 
-  const restoreFocus = useCallback(() => {
-    const lastFocused = focusStackRef.current.pop();
-    if (lastFocused && document.contains(lastFocused)) {
-      lastFocused.focus();
-    }
-  }, []);
+  // Announcements
+  announceContentChange: (message: string) => void;
+  announceModeChange: (mode: string) => void;
+  announceToolbarAction: (action: string) => void;
 
-  const clearFocusStack = useCallback(() => {
-    focusStackRef.current = [];
-  }, []);
+  // State
+  currentFocusIndex: number;
+  isReducedMotion: boolean;
 
-  return {
-    saveFocus,
-    restoreFocus,
-    clearFocusStack,
-  };
+  // Refs for focus management
+  editorRef: React.RefObject<HTMLTextAreaElement>;
+  toolbarRef: React.RefObject<HTMLDivElement>;
+  modalRef: React.RefObject<HTMLDivElement>;
 }
 
-/**
- * Hook for managing ARIA live regions
- */
-export function useAriaLive() {
-  const liveRegionRef = useRef<HTMLDivElement | null>(null);
+export const useAccessibility = (options: UseAccessibilityOptions = {}): UseAccessibilityReturn => {
+  const { onModeChange, onToolbarAction, onMediaLibraryToggle, onExternalPreviewToggle } = options;
 
-  useEffect(() => {
-    // Create live region if it doesn't exist
-    if (!liveRegionRef.current) {
-      const liveRegion = document.createElement('div');
-      liveRegion.setAttribute('aria-live', 'polite');
-      liveRegion.setAttribute('aria-atomic', 'true');
-      liveRegion.className = 'sr-only';
-      liveRegion.id = 'component-live-region';
-      document.body.appendChild(liveRegion);
-      liveRegionRef.current = liveRegion;
-    }
-
-    return () => {
-      if (liveRegionRef.current && document.contains(liveRegionRef.current)) {
-        document.body.removeChild(liveRegionRef.current);
-      }
-    };
-  }, []);
-
-  const announce = useCallback((message: string, politeness: 'polite' | 'assertive' = 'polite') => {
-    if (liveRegionRef.current) {
-      liveRegionRef.current.setAttribute('aria-live', politeness);
-      liveRegionRef.current.textContent = '';
-
-      // Small delay to ensure screen readers pick up the change
-      setTimeout(() => {
-        if (liveRegionRef.current) {
-          liveRegionRef.current.textContent = message;
-        }
-      }, 100);
-    }
-  }, []);
-
-  return { announce };
-}
-
-/**
- * Hook for keyboard navigation
- */
-export function useKeyboardNavigation() {
-  const isKeyboardUserRef = useRef(false);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Tab') {
-        isKeyboardUserRef.current = true;
-        document.body.classList.add('keyboard-navigation-active');
-      }
-    };
-
-    const handleMouseDown = () => {
-      isKeyboardUserRef.current = false;
-      document.body.classList.remove('keyboard-navigation-active');
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('mousedown', handleMouseDown);
-
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('mousedown', handleMouseDown);
-    };
-  }, []);
-
-  const handleKeyDown = useCallback(
-    (
-      e: React.KeyboardEvent,
-      callbacks: {
-        onEnter?: () => void;
-        onSpace?: () => void;
-        onEscape?: () => void;
-        onArrowUp?: () => void;
-        onArrowDown?: () => void;
-        onArrowLeft?: () => void;
-        onArrowRight?: () => void;
-      }
-    ) => {
-      switch (e.key) {
-        case 'Enter':
-          callbacks.onEnter?.();
-          break;
-        case ' ':
-          e.preventDefault();
-          callbacks.onSpace?.();
-          break;
-        case 'Escape':
-          callbacks.onEscape?.();
-          break;
-        case 'ArrowUp':
-          e.preventDefault();
-          callbacks.onArrowUp?.();
-          break;
-        case 'ArrowDown':
-          e.preventDefault();
-          callbacks.onArrowDown?.();
-          break;
-        case 'ArrowLeft':
-          callbacks.onArrowLeft?.();
-          break;
-        case 'ArrowRight':
-          callbacks.onArrowRight?.();
-          break;
-      }
-    },
-    []
-  );
-
-  return {
-    isKeyboardUser: isKeyboardUserRef.current,
-    handleKeyDown,
-  };
-}
-
-/**
- * Hook for managing reduced motion preferences
- */
-export function useReducedMotion() {
-  const prefersReducedMotionRef = useRef(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-    const handleChange = (e: MediaQueryListEvent | MediaQueryList) => {
-      prefersReducedMotionRef.current = e.matches;
-
-      if (e.matches) {
-        document.body.classList.add('reduced-motion');
-      } else {
-        document.body.classList.remove('reduced-motion');
-      }
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    handleChange(mediaQuery);
-
-    return () => {
-      mediaQuery.removeEventListener('change', handleChange);
-    };
-  }, []);
-
-  return prefersReducedMotionRef.current;
-}
-
-/**
- * Hook for managing high contrast preferences
- */
-export function useHighContrast() {
-  const prefersHighContrastRef = useRef(false);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-contrast: high)');
-
-    const handleChange = (e: MediaQueryListEvent | MediaQueryList) => {
-      prefersHighContrastRef.current = e.matches;
-
-      if (e.matches) {
-        document.body.classList.add('high-contrast');
-      } else {
-        document.body.classList.remove('high-contrast');
-      }
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    handleChange(mediaQuery);
-
-    return () => {
-      mediaQuery.removeEventListener('change', handleChange);
-    };
-  }, []);
-
-  return prefersHighContrastRef.current;
-}
-
-/**
- * Hook for form accessibility enhancements
- */
-export function useFormAccessibility(formRef: React.RefObject<HTMLFormElement>) {
-  const { announce } = useAriaLive();
-
-  useEffect(() => {
-    const form = formRef.current;
-    if (!form) return;
-
-    const handleSubmit = (e: Event) => {
-      const target = e.target as HTMLFormElement;
-      const isValid = target.checkValidity();
-
-      if (!isValid) {
-        announce(
-          'Formulario contiene errores. Por favor, revise los campos marcados.',
-          'assertive'
-        );
-      }
-    };
-
-    const handleInvalid = (e: Event) => {
-      const target = e.target as HTMLInputElement;
-      const label = form.querySelector(`label[for="${target.id}"]`);
-      const fieldName = label?.textContent || target.name || 'Campo';
-
-      announce(`Error en ${fieldName}: ${target.validationMessage}`, 'assertive');
-    };
-
-    form.addEventListener('submit', handleSubmit);
-    form.addEventListener('invalid', handleInvalid, true);
-
-    return () => {
-      form.removeEventListener('submit', handleSubmit);
-      form.removeEventListener('invalid', handleInvalid, true);
-    };
-  }, [announce]);
-
-  const enhanceField = useCallback(
-    (field: HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement) => {
-      // Add required indicator
-      if (field.required) {
-        field.setAttribute('aria-required', 'true');
-
-        const label = document.querySelector(`label[for="${field.id}"]`);
-        if (label && !label.classList.contains('required')) {
-          label.classList.add('required');
-        }
-      }
-
-      // Add describedby for help text
-      const helpText = document.querySelector(`[data-help-for="${field.id}"]`);
-      if (helpText) {
-        const helpId = helpText.id || `${field.id}-help`;
-        helpText.id = helpId;
-        field.setAttribute('aria-describedby', helpId);
-      }
-    },
-    []
-  );
-
-  return { enhanceField };
-}
-
-/**
- * Hook for managing modal accessibility
- */
-export function useModalAccessibility(isOpen: boolean) {
+  // Refs for focus management
+  const editorRef = useRef<HTMLTextAreaElement>(null);
+  const toolbarRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
-  const { saveFocus, restoreFocus } = useFocusManagement();
-  const { announce } = useAriaLive();
 
+  // State
+  const [currentFocusIndex, setCurrentFocusIndex] = useState(0);
+  const [isReducedMotion, setIsReducedMotion] = useState(false);
+
+  // Check for reduced motion preference
   useEffect(() => {
-    if (!isOpen) return;
+    setIsReducedMotion(prefersReducedMotion());
 
-    const modal = modalRef.current;
-    if (!modal) return;
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const handleChange = (e: MediaQueryListEvent) => setIsReducedMotion(e.matches);
 
-    // Save current focus
-    saveFocus();
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, []);
 
-    // Set up focus trap
-    const focusableElements = modal.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    ) as NodeListOf<HTMLElement>;
+  // Focus management functions
+  const focusEditor = useCallback(() => {
+    if (editorRef.current) {
+      editorRef.current.focus();
+      announceToScreenReader('Editor focused');
+    }
+  }, []);
 
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
+  const focusToolbar = useCallback(() => {
+    if (toolbarRef.current) {
+      const focusableElements = getFocusableElements(toolbarRef.current);
+      if (focusableElements.length > 0) {
+        focusableElements[currentFocusIndex]?.focus();
+        announceToScreenReader('Toolbar focused');
+      }
+    }
+  }, [currentFocusIndex]);
 
-    const handleTabKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
+  const focusFirstToolbarButton = useCallback(() => {
+    if (toolbarRef.current) {
+      const focusableElements = getFocusableElements(toolbarRef.current);
+      if (focusableElements.length > 0) {
+        focusableElements[0].focus();
+        setCurrentFocusIndex(0);
+        announceToScreenReader('First toolbar button focused');
+      }
+    }
+  }, []);
 
-      if (e.shiftKey) {
-        if (document.activeElement === firstElement) {
-          e.preventDefault();
-          lastElement?.focus();
-        }
-      } else {
-        if (document.activeElement === lastElement) {
-          e.preventDefault();
-          firstElement?.focus();
+  const focusLastToolbarButton = useCallback(() => {
+    if (toolbarRef.current) {
+      const focusableElements = getFocusableElements(toolbarRef.current);
+      if (focusableElements.length > 0) {
+        const lastIndex = focusableElements.length - 1;
+        focusableElements[lastIndex].focus();
+        setCurrentFocusIndex(lastIndex);
+        announceToScreenReader('Last toolbar button focused');
+      }
+    }
+  }, []);
+
+  // Keyboard navigation handlers
+  const handleToolbarKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (!toolbarRef.current) return;
+
+      const focusableElements = getFocusableElements(toolbarRef.current);
+      if (focusableElements.length === 0) return;
+
+      switch (event.key) {
+        case 'ArrowRight':
+        case 'ArrowDown':
+          event.preventDefault();
+          const nextIndex = (currentFocusIndex + 1) % focusableElements.length;
+          focusableElements[nextIndex].focus();
+          setCurrentFocusIndex(nextIndex);
+          break;
+
+        case 'ArrowLeft':
+        case 'ArrowUp':
+          event.preventDefault();
+          const prevIndex =
+            currentFocusIndex === 0 ? focusableElements.length - 1 : currentFocusIndex - 1;
+          focusableElements[prevIndex].focus();
+          setCurrentFocusIndex(prevIndex);
+          break;
+
+        case 'Home':
+          event.preventDefault();
+          focusFirstToolbarButton();
+          break;
+
+        case 'End':
+          event.preventDefault();
+          focusLastToolbarButton();
+          break;
+
+        case 'Escape':
+          event.preventDefault();
+          focusEditor();
+          break;
+
+        case 'Enter':
+        case ' ':
+          event.preventDefault();
+          const currentElement = focusableElements[currentFocusIndex] as HTMLButtonElement;
+          if (currentElement) {
+            currentElement.click();
+          }
+          break;
+      }
+    },
+    [currentFocusIndex, focusEditor, focusFirstToolbarButton, focusLastToolbarButton]
+  );
+
+  const handleEditorKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      // Handle keyboard shortcuts
+      const shortcuts = {
+        bold: () => {
+          onToolbarAction?.('bold');
+          announceToolbarAction('bold');
+        },
+        italic: () => {
+          onToolbarAction?.('italic');
+          announceToolbarAction('italic');
+        },
+        underline: () => {
+          onToolbarAction?.('underline');
+          announceToolbarAction('underline');
+        },
+        link: () => {
+          onToolbarAction?.('link');
+          announceToolbarAction('link');
+        },
+        h1: () => {
+          onToolbarAction?.('h1');
+          announceToolbarAction('heading 1');
+        },
+        h2: () => {
+          onToolbarAction?.('h2');
+          announceToolbarAction('heading 2');
+        },
+        h3: () => {
+          onToolbarAction?.('h3');
+          announceToolbarAction('heading 3');
+        },
+        h4: () => {
+          onToolbarAction?.('h4');
+          announceToolbarAction('heading 4');
+        },
+        h5: () => {
+          onToolbarAction?.('h5');
+          announceToolbarAction('heading 5');
+        },
+        h6: () => {
+          onToolbarAction?.('h6');
+          announceToolbarAction('heading 6');
+        },
+        quote: () => {
+          onToolbarAction?.('quote');
+          announceToolbarAction('blockquote');
+        },
+        table: () => {
+          onToolbarAction?.('table');
+          announceToolbarAction('table');
+        },
+        'list-ul': () => {
+          onToolbarAction?.('list-ul');
+          announceToolbarAction('unordered list');
+        },
+        'list-ol': () => {
+          onToolbarAction?.('list-ol');
+          announceToolbarAction('ordered list');
+        },
+      };
+
+      const handled = handleEditorKeyboardShortcut(event, shortcuts);
+
+      // Handle special navigation keys
+      if (!handled) {
+        switch (event.key) {
+          case 'F6':
+            event.preventDefault();
+            if (event.shiftKey) {
+              focusEditor();
+            } else {
+              focusFirstToolbarButton();
+            }
+            break;
+
+          case 'Escape':
+            // Close any open modals or return focus to editor
+            if (modalRef.current) {
+              onMediaLibraryToggle?.(false);
+              focusEditor();
+            }
+            break;
         }
       }
-    };
+    },
+    [onToolbarAction, focusEditor, focusFirstToolbarButton, onMediaLibraryToggle]
+  );
 
-    const handleEscapeKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        // This should trigger the modal close handler
-        announce('Modal cerrado');
+  const handleModalKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (!modalRef.current) return;
+
+      switch (event.key) {
+        case 'Escape':
+          event.preventDefault();
+          onMediaLibraryToggle?.(false);
+          focusEditor();
+          break;
+
+        case 'Tab':
+          trapFocus(modalRef.current, event);
+          break;
       }
+    },
+    [onMediaLibraryToggle, focusEditor]
+  );
+
+  // Announcement functions
+  const announceContentChange = useCallback((message: string) => {
+    announceToScreenReader(message, 'polite');
+  }, []);
+
+  const announceModeChange = useCallback(
+    (mode: string) => {
+      const modeNames: Record<string, string> = {
+        html: 'HTML editing mode',
+        markdown: 'Markdown editing mode',
+        preview: 'Preview mode',
+        'split-horizontal': 'Horizontal split view',
+        'split-vertical': 'Vertical split view',
+      };
+
+      const modeName = modeNames[mode] || mode;
+      announceToScreenReader(`Switched to ${modeName}`, 'assertive');
+      onModeChange?.(mode);
+    },
+    [onModeChange]
+  );
+
+  const announceToolbarAction = useCallback((action: string) => {
+    const actionNames: Record<string, string> = {
+      bold: 'Bold formatting applied',
+      italic: 'Italic formatting applied',
+      underline: 'Underline formatting applied',
+      link: 'Link dialog opened',
+      image: 'Image insertion dialog opened',
+      'list-ul': 'Unordered list inserted',
+      'list-ol': 'Ordered list inserted',
+      table: 'Table inserted',
+      code: 'Code formatting applied',
+      quote: 'Blockquote inserted',
+      'heading 1': 'Heading 1 inserted',
+      'heading 2': 'Heading 2 inserted',
+      'heading 3': 'Heading 3 inserted',
+      'heading 4': 'Heading 4 inserted',
+      'heading 5': 'Heading 5 inserted',
+      'heading 6': 'Heading 6 inserted',
+      paragraph: 'Paragraph inserted',
+      'media-library': 'Media library opened',
+      'external-preview': 'External preview window opened',
     };
 
-    // Focus first element
-    firstElement?.focus();
-    announce('Modal abierto');
+    const actionName = actionNames[action] || `${action} action performed`;
+    announceToScreenReader(actionName, 'assertive');
+  }, []);
 
-    // Add event listeners
-    modal.addEventListener('keydown', handleTabKey);
-    document.addEventListener('keydown', handleEscapeKey);
+  return {
+    // Focus management
+    focusEditor,
+    focusToolbar,
+    focusFirstToolbarButton,
+    focusLastToolbarButton,
 
-    return () => {
-      modal.removeEventListener('keydown', handleTabKey);
-      document.removeEventListener('keydown', handleEscapeKey);
-      restoreFocus();
-    };
-  }, [isOpen, saveFocus, restoreFocus, announce]);
+    // Keyboard navigation
+    handleToolbarKeyDown,
+    handleEditorKeyDown,
+    handleModalKeyDown,
 
-  return { modalRef };
-}
+    // Announcements
+    announceContentChange,
+    announceModeChange,
+    announceToolbarAction,
+
+    // State
+    currentFocusIndex,
+    isReducedMotion,
+
+    // Refs
+    editorRef,
+    toolbarRef,
+    modalRef,
+  };
+};

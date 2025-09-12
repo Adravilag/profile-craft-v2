@@ -6,7 +6,8 @@
 
 /* 01 - Foundations (reset, variables, typography) */
 @import url('./01-foundations/reset.css');
-@import url('./variables.css'); /* Enhanced design tokens with terminal improvements */
+@import url('./variables.css');
+/* Enhanced design tokens with terminal improvements */
 @import url('./01-foundations/typography.css');
 
 /* Terminal-specific tokens */
@@ -32,19 +33,27 @@
   --header-h: var(--nav-h, 68px);
 
   /* para glows */
-  --indigo-500: 99, 102, 241; /* #6366f1 */
-  --violet-500: 139, 92, 246; /* #8b5cf6 */
+  --indigo-500: 99, 102, 241;
+  /* #6366f1 */
+  --violet-500: 139, 92, 246;
+  /* #8b5cf6 */
 
   /* ruido sutil embebido */
   --noise-img: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(#n)' opacity='0.04'/></svg>");
 
   /* knobs de calidad */
-  --aurora-blur: 4px; /* antes 8px -> menos velado */
-  --aurora-a: 0.1; /* intensidad aurora indigo */
-  --aurora-b: 0.08; /* intensidad aurora violeta */
-  --vignette: 0.25; /* fuerza de viñeta */
-  --noise-opacity: 0.18; /* antes .45 -> menos “haze” */
-  --grid-opacity: 0.006; /* líneas del grid más sutiles */
+  --aurora-blur: 4px;
+  /* antes 8px -> menos velado */
+  --aurora-a: 0.1;
+  /* intensidad aurora indigo */
+  --aurora-b: 0.08;
+  /* intensidad aurora violeta */
+  --vignette: 0.25;
+  /* fuerza de viñeta */
+  --noise-opacity: 0.18;
+  /* antes .45 -> menos “haze” */
+  --grid-opacity: 0.006;
+  /* líneas del grid más sutiles */
 }
 
 html,
@@ -231,7 +240,8 @@ header#home.vc-header-red {
 /* ===== Secciones + bleed (sin bandas) ===== */
 .section {
   position: relative;
-  overflow: visible; /* no cortar el bleed */
+  overflow: visible;
+  /* no cortar el bleed */
   border: 1px solid rgb(255, 255, 255, 0.02);
   box-shadow: 0 18px 60px -36px var(--ring) inset;
   padding-block: clamp(24px, 4vh, 64px);
@@ -239,7 +249,8 @@ header#home.vc-header-red {
     background 420ms ease,
     box-shadow 420ms ease,
     padding-block 220ms ease;
-  background: transparent; /* la decoración está en el fondo global */
+  background: transparent;
+  /* la decoración está en el fondo global */
 }
 
 /* fade inferior */
