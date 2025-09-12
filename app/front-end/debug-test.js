@@ -2,11 +2,12 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { AboutModal } from './src/components/layout/Sections/About/modals/AboutModal';
 import * as endpoints from './src/services/endpoints';
+import { vi } from 'vitest';
 
 // Mock del endpoint
-jest.mock('./src/services/endpoints', () => ({
+vi.mock('./src/services/endpoints', () => ({
   about: {
-    getAboutSection: jest.fn(),
+    getAboutSection: vi.fn(),
   },
 }));
 
@@ -14,7 +15,7 @@ const mockGetAboutSection = endpoints.about.getAboutSection;
 
 describe('DEBUG AboutModal', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     // Mock exitoso con datos
     mockGetAboutSection.mockResolvedValue({

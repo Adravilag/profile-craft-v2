@@ -14,6 +14,10 @@ let cachedNames: string[] | null = null;
 export const useSkillsIcons = () => {
   const [skillsIcons, setSkillsIcons] = useState<SkillIconData[]>(cachedIcons || []);
   const [skillNames, setSkillNames] = useState<string[]>(cachedNames || []);
+  // Estado para indicar si todavía se están cargando los iconos
+  const [loadingIcons, setLoadingIcons] = useState<boolean>(
+    !(cachedIcons && cachedIcons.length > 0)
+  );
   const [externalData, setExternalData] = useState<Record<string, ExternalSkillData>>({});
   const [loadingExternalData, setLoadingExternalData] = useState<Record<string, boolean>>({});
 
@@ -24,6 +28,7 @@ export const useSkillsIcons = () => {
       debugLog.dataLoading(`[SkillsIcons] Usando caché: ${cachedIcons.length} habilidades`);
       setSkillsIcons(cachedIcons);
       setSkillNames(cachedNames || []);
+      setLoadingIcons(false);
       return;
     }
 
@@ -31,11 +36,14 @@ export const useSkillsIcons = () => {
     const loadSVGIcons = async () => {
       try {
         debugLog.dataLoading('[SkillsIcons] Cargando iconos SVG...');
+        setLoadingIcons(true);
 
         // Usar Vite glob import para cargar todos los SVG
         const svgModules = import.meta.glob('@/assets/svg/*.svg', {
           eager: true,
-          as: 'url',
+          // `as: 'url'` está deprecado; usar `query: '?url'` y `import: 'default'`
+          query: '?url',
+          import: 'default',
         });
 
         const icons: SkillIconData[] = [];
@@ -121,6 +129,7 @@ export const useSkillsIcons = () => {
         // Guardar en la caché global
         cachedIcons = icons;
         cachedNames = icons.map(icon => icon.name);
+        setLoadingIcons(false);
 
         // En desarrollo, ejecutar test de disponibilidad de SVG
         if (import.meta.env.DEV && icons.length > 0) {
@@ -153,6 +162,8 @@ export const useSkillsIcons = () => {
       };
 
       debugLog.dataLoading('[SkillsIcons] Fallback: intentando cargar CSV de iconos...');
+      // Indicar carga mientras intentamos el fallback
+      setLoadingIcons(true);
       fetch(getCSVUrl())
         .then(res => {
           if (!res.ok) {
@@ -172,7 +183,8 @@ export const useSkillsIcons = () => {
         })
         .catch(error => {
           console.error('[SkillsIcons] Error loading CSV (fallback):', error);
-        });
+        })
+        .finally(() => setLoadingIcons(false));
     };
 
     // Iniciar carga de iconos SVG
@@ -393,6 +405,7 @@ export const useSkillsIcons = () => {
     skillNames,
     externalData,
     loadingExternalData,
+    loadingIcons,
 
     // Functions
     enrichSkillWithExternalData,

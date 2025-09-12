@@ -72,6 +72,7 @@ export interface CategoryFiltersProps {
 export interface SkillsGridProps {
   filteredGrouped: Record<string, any[]>;
   skillsIcons: SkillIconData[];
+  iconsLoading?: boolean;
   draggedSkillId: number | null;
   onEdit: (skill: any) => void;
   onDelete: (id: number) => void;

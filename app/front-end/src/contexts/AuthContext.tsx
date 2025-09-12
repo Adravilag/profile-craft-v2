@@ -81,28 +81,19 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
     let mounted = true;
     (async () => {
       try {
-        console.log('[AuthContext] Inicializando contexto de autenticación...');
-
         // Verificar si hay token en localStorage
         const savedToken = localStorage.getItem('portfolio_auth_token');
-        console.log('[AuthContext] Token en localStorage:', {
-          exists: !!savedToken,
-          preview: savedToken ? savedToken.substring(0, 50) + '...' : 'no token',
-        });
 
         // Verificar si el usuario hizo logout explícitamente
         const explicitLogout = localStorage.getItem('explicit_logout');
-        console.log('[AuthContext] Logout explícito previo:', !!explicitLogout);
 
         // Detectar si estamos en modo incógnito
         const isIncognito = await detectIncognitoMode();
-        console.log('[AuthContext] Modo incógnito detectado:', isIncognito);
 
         // En desarrollo, solo auto-loguear si:
         // 1. NO hay logout explícito
         // 2. NO estamos en modo incógnito
         if (import.meta.env.DEV && !explicitLogout && !isIncognito) {
-          console.log('[AuthContext] Intentando auto-login en desarrollo...');
           try {
             // Preferir endpoint dev-login que setea la cookie httpOnly desde el servidor
             try {
@@ -137,19 +128,12 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
 
         // Si hay token en localStorage, configurarlo en axios
         if (savedToken) {
-          console.log('[AuthContext] Configurando token en axios headers...');
           const { setAuthToken } = await import('@/services/http');
           setAuthToken(savedToken);
         }
 
-        console.log('[AuthContext] Verificando sesión existente...');
         const res = await fetch('/api/auth/verify', { method: 'GET', credentials: 'include' });
         if (!mounted) return;
-        console.log('[AuthContext] Resultado de verificación:', {
-          status: res.status,
-          ok: res.ok,
-        });
-
         if (res.ok) {
           const contentType = res.headers.get('content-type') || '';
           if (!contentType.includes('application/json')) {
@@ -162,15 +146,10 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
             setUser(null);
           } else {
             const data = await res.json();
-            console.log('[AuthContext] Datos de verificación:', {
-              valid: data.valid,
-              hasUser: !!data.user,
-            });
             setUser(data.user ?? null);
             // Si hay usuario válido, limpiar flag de logout explícito
             if (data.user) {
               localStorage.removeItem('explicit_logout');
-              console.log('[AuthContext] Sesión restaurada exitosamente');
             }
           }
         } else {
@@ -193,7 +172,6 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
       } finally {
         if (mounted) {
           setLoading(false);
-          console.log('[AuthContext] Inicialización completada');
         }
       }
     })();

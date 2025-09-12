@@ -2,7 +2,7 @@
  * [TEST] SkillCard - Ocultar menu admin según autenticación
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import SkillCard from './SkillCard';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -63,6 +63,76 @@ const mockDrop = vi.fn();
 describe('[TEST] SkillCard - Menú admin según autenticación', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  it('[TEST] no hace fallback si la imagen existe tras verificación diferida', async () => {
+    (useAuth as any).mockReturnValue({ isAuthenticated: false, user: null });
+
+    // Mock global fetch para HEAD -> 200
+    const fetchMock = vi.fn(async (input: any, init: any) => {
+      return { ok: true, status: 200 } as any;
+    });
+    (global as any).fetch = fetchMock;
+
+    render(
+      <SkillCard
+        skill={mockSkill}
+        skillsIcons={mockSkillsIcons}
+        onEdit={mockEditHandler}
+        onDelete={mockDeleteHandler}
+        onDragStart={mockDragStart}
+        onDragOver={mockDragOver}
+        onDrop={mockDrop}
+        isDragging={false}
+        isAdmin={false}
+      />
+    );
+
+    const img = screen.getByTestId('skill-icon') as HTMLImageElement;
+
+    // Trigger onError
+    fireEvent.error(img);
+
+    // Esperar a que la verificación asíncrona termine
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+
+    // Si fetch devolvió ok, no debería cambiar al fallback genérico
+    expect(img.getAttribute('src')).toBe('/mock-icon.svg');
+  });
+
+  it('[TEST] aplica fallback si la imagen NO existe tras verificación', async () => {
+    (useAuth as any).mockReturnValue({ isAuthenticated: false, user: null });
+
+    // Mock global fetch para HEAD -> 404
+    const fetchMock = vi.fn(async (input: any, init: any) => {
+      return { ok: false, status: 404 } as any;
+    });
+    (global as any).fetch = fetchMock;
+
+    render(
+      <SkillCard
+        skill={mockSkill}
+        skillsIcons={mockSkillsIcons}
+        onEdit={mockEditHandler}
+        onDelete={mockDeleteHandler}
+        onDragStart={mockDragStart}
+        onDragOver={mockDragOver}
+        onDrop={mockDrop}
+        isDragging={false}
+        isAdmin={false}
+      />
+    );
+
+    const img = screen.getByTestId('skill-icon') as HTMLImageElement;
+
+    // Trigger onError
+    fireEvent.error(img);
+
+    // Esperar a que la verificación asíncrona termine
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+
+    // Debería haberse llamado fetch y haberse aplicado fallback (src distinto al inicial)
+    expect(img.getAttribute('src')).not.toBe('/mock-icon.svg');
   });
 
   it('[TEST] NO debe mostrar menú de administración cuando el usuario no está autenticado', () => {

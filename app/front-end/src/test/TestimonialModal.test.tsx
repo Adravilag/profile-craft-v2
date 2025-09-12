@@ -3,9 +3,10 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import TestimonialModal from '../components/layout/Sections/Testimonials/modal/TestimonialModal';
 import '@testing-library/jest-dom';
+import { vi } from 'vitest';
 
 describe('TestimonialModal', () => {
-  const mockOnClose = jest.fn();
+  const mockOnClose = vi.fn();
 
   beforeEach(() => {
     mockOnClose.mockClear();
@@ -283,7 +284,7 @@ describe('TestimonialModal', () => {
   });
 
   test('should not trigger auto-focus multiple times', async () => {
-    const focusSpy = jest.spyOn(HTMLElement.prototype, 'focus');
+    const focusSpy = vi.spyOn(HTMLElement.prototype, 'focus');
 
     render(
       <TestimonialModal isOpen={true} onClose={mockOnClose} title="Test Modal">

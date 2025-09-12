@@ -25,7 +25,8 @@ declare var it: any;
 declare var expect: any;
 declare var beforeEach: any;
 declare var afterEach: any;
-declare var jest: any;
+// Use Vitest global `vi` instead of Jest's `jest` when running frontend tests
+declare var vi: any;
 
 declare module '*.svg' {
   const content: any;

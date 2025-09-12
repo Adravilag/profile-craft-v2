@@ -10,21 +10,22 @@ import { BrowserRouter } from 'react-router-dom';
 import SmartNavigation from './SmartNavigation';
 import { SectionsLoadingProvider } from '@/contexts/SectionsLoadingContext';
 import { useSectionsLoadingContext } from '@/contexts/SectionsLoadingContext';
+import { vi } from 'vitest';
 
 // Mock de los hooks requeridos
-jest.mock('@/hooks', () => ({
+vi.mock('@/hooks', () => ({
   useNavigation: () => ({
     currentSection: 'home',
-    navigateToSection: jest.fn(),
+    navigateToSection: vi.fn(),
   }),
   useNotification: () => ({
-    showSuccess: jest.fn(),
-    showError: jest.fn(),
+    showSuccess: vi.fn(),
+    showError: vi.fn(),
   }),
 }));
 
-jest.mock('@/hooks/useInitialScrollToSection', () => ({
-  useInitialScrollToSection: jest.fn(),
+vi.mock('@/hooks/useInitialScrollToSection', () => ({
+  useInitialScrollToSection: vi.fn(),
 }));
 
 // Componente de prueba para controlar el loading
@@ -112,7 +113,7 @@ describe('[TEST] SmartNavigation Loading Integration', () => {
     // [TEST] - Rojo: El loading inicial debe tener prioridad sobre el de datos
 
     // Mock del hook de scroll inicial para simular loading inicial
-    const mockSetIsInitialLoading = jest.fn();
+    const mockSetIsInitialLoading = vi.fn();
 
     const MockedComponent = () => {
       const [isInitialLoading, setIsInitialLoading] = React.useState(true);

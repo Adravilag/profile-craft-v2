@@ -59,10 +59,8 @@ const TestimonialModal: React.FC<TestimonialModalProps> = ({
         const top = Array.isArray(stack) && stack.length ? stack[stack.length - 1] : null;
         const isTop = top && instanceIdRef.current && top.id === instanceIdRef.current;
 
-        if (e.key === 'Escape') {
-          if (isTop) onClose();
-          return;
-        }
+        // NOTE: Escape is handled by the global key handler registered once per page
+        // to avoid duplicate close calls when multiple modal instances exist.
 
         // No interferir con la edición/navegación cuando un input/textarea o
         // elemento contenteditable está activo.

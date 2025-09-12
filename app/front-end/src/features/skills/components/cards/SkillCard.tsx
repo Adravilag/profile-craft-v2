@@ -177,31 +177,76 @@ const SkillCard: React.FC<SkillCardProps> = ({
     (event?: React.SyntheticEvent<HTMLImageElement, Event>) => {
       const imgSrc =
         event?.currentTarget?.src || (event && (event.target as HTMLImageElement).src) || iconSrc;
-      // Log detallado para depuración: skill, origen y URL resuelta
-      debugLog.warn(`❌ Error al cargar icono para ${skill.name}. Usando fallback.`, {
-        originalPath: svgPath,
-        resolved: iconSrc,
-        imgSrc,
-      });
-      // También imprimir en consola para facilitar captura desde DevTools
-      // eslint-disable-next-line no-console
-      console.warn('Icon load failed', { name: skill.name, svgPath, resolved: iconSrc, imgSrc });
 
-      // Intentar resolver mediante el cargador de icons empaquetados antes de usar el fallback genérico
-      try {
-        const { canonical, normalized } = normalizeSkillName(skill.name);
-        const loaderUrl = findSkillIcon(canonical, normalized);
-        if (loaderUrl && loaderUrl !== iconSrc) {
-          setIconSrc(loaderUrl);
-          return;
+      // Diferir la comprobación breve para cubrir el caso de lazy-loading/placeholder
+      // Cuando la imagen aún puede estar en proceso de carga nativa, un error inmediato
+      // puede ser un falso positivo. Esperamos y hacemos un HEAD/GET para validar.
+      const validateAndFallback = async () => {
+        try {
+          // Espera breve para permitir que los loaders nativos continúen
+          await new Promise(res => setTimeout(res, 150));
+
+          // Intentar HEAD primero (menos intrusivo). Si falla por CORS, intentar GET.
+          let ok = false;
+          try {
+            const headRes = await fetch(imgSrc, { method: 'HEAD', cache: 'no-store' });
+            ok = headRes && headRes.ok;
+          } catch (headErr) {
+            // HEAD puede fallar por CORS en algunos servidores; intentar GET ligero
+            try {
+              const getRes = await fetch(imgSrc, { method: 'GET', cache: 'no-store' });
+              ok = getRes && getRes.ok;
+            } catch (getErr) {
+              ok = false;
+            }
+          }
+
+          if (ok) {
+            // El recurso existe; dejar que el navegador reintente o que el desarrollador
+            // inspeccione. No loguear un warning falso.
+            debugLog.dataLoading(`Icon appears available after check for ${skill.name}:`, imgSrc);
+            return;
+          }
+
+          // Si no está disponible, proceder con fallback y log detallado
+          debugLog.warn(`❌ Error al cargar icono para ${skill.name}. Usando fallback.`, {
+            originalPath: svgPath,
+            resolved: iconSrc,
+            imgSrc,
+          });
+          // eslint-disable-next-line no-console
+          console.warn('Icon load failed', {
+            name: skill.name,
+            svgPath,
+            resolved: iconSrc,
+            imgSrc,
+          });
+
+          // Intentar resolver mediante el cargador de icons empaquetados antes de usar el fallback genérico
+          try {
+            const { canonical, normalized } = normalizeSkillName(skill.name);
+            const loaderUrl = findSkillIcon(canonical, normalized);
+            if (loaderUrl && loaderUrl !== iconSrc) {
+              setIconSrc(loaderUrl);
+              return;
+            }
+          } catch (e) {
+            // ignore
+          }
+
+          // Si ya estamos mostrando el fallback, no hacer nada más
+          if (iconSrc === genericIconUrl) return;
+          setIconSrc(genericIconUrl);
+        } catch (error) {
+          // En caso de error en la validación, caer al fallback para no romper UI
+          debugLog.warn(`❌ Error validating icon for ${skill.name}, applying fallback.`, {
+            error,
+          });
+          if (iconSrc !== genericIconUrl) setIconSrc(genericIconUrl);
         }
-      } catch (e) {
-        // ignore
-      }
+      };
 
-      // Si ya estamos mostrando el fallback, no hacer nada más
-      if (iconSrc === genericIconUrl) return;
-      setIconSrc(genericIconUrl);
+      void validateAndFallback();
     },
     [iconSrc, skill.name, svgPath]
   );

@@ -9,6 +9,7 @@ import styles from './SkillsGrid.module.css';
 const SkillsGrid: React.FC<SkillsGridProps> = ({
   filteredGrouped,
   skillsIcons,
+  iconsLoading,
   onEdit,
   onDelete,
   onDragStart,
@@ -27,7 +28,8 @@ const SkillsGrid: React.FC<SkillsGridProps> = ({
   // Verificar que tenemos iconos
   const iconsLoaded = skillsIcons && skillsIcons.length > 0;
 
-  if (!iconsLoaded) {
+  // Mostrar advertencia SOLO si la carga ya terminó y no hay iconos
+  if (typeof iconsLoading !== 'undefined' && iconsLoading === false && !iconsLoaded) {
     console.warn('⚠️ SkillsGrid: No hay iconos cargados');
   }
 

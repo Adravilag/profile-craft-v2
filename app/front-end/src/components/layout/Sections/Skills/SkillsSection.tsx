@@ -69,7 +69,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
     internalSetSelectedCategory;
 
   // Cargar iconos de skills
-  const { skillsIcons } = useSkillsIcons();
+  const { skillsIcons, loadingExternalData, loadingIcons } = useSkillsIcons();
 
   // Estado local para sorting
   const [selectedSort, setSelectedSort] = useState<Record<string, SortOption>>({});
@@ -265,6 +265,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
           <SkillsGrid
             filteredGrouped={sortedFilteredGrouped}
             skillsIcons={skillsIcons}
+            iconsLoading={loadingIcons}
             onEdit={handleEditSkill}
             onDelete={handleDeleteSkill}
             onDragStart={handleDragStart}

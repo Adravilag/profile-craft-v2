@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { FabProvider, useFab } from '@/contexts/FabContext';
+import { ModalProvider } from '@/contexts/ModalContext';
 import FloatingActionButtonGroup from '../ui/components/FloatingActionButtonGroup';
 import type { FABAction } from '../ui/components/FloatingActionButtonGroup';
 import TestimonialsSection from '@/components/layout/Sections/Testimonials/TestimonialsSection';
@@ -31,16 +32,19 @@ describe('FAB integration with TestimonialsSection', () => {
   test('clicking FAB opens TestimonialModal', async () => {
     render(
       <FabProvider>
-        <FabButtonsFromContext />
-        <TestimonialsSection />
+        <ModalProvider>
+          <FabButtonsFromContext />
+          <TestimonialsSection />
+        </ModalProvider>
       </FabProvider>
     );
 
     const addBtn = screen.getByLabelText('Añadir Testimonio');
     fireEvent.click(addBtn);
 
-    await waitFor(() => {
-      expect(screen.getByRole('dialog')).toBeInTheDocument();
-    });
+    // findByRole waits for an element with role "dialog" and accessible name to appear
+    // The page renders multiple dialogs during the test; target the testimonial modal by its title
+    const dialog = await screen.findByRole('dialog', { name: /Añadir Nuevo Testimonio/i });
+    expect(dialog).toBeInTheDocument();
   });
 });

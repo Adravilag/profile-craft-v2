@@ -164,13 +164,15 @@ export const normalizeSvgPath = (path: string): string => {
         return out;
       }
 
-      // Si el glob devuelve una ruta dentro del repo (/src/... o /public/'),
-      // normalizar a /assets/svg/<file> también usando el nombre derivado de la entrada
+      // Si el glob devuelve una ruta dentro del repo (p. ej. '/src/assets/svg/...')
+      // en desarrollo esas rutas son válidas y Vite las sirve directamente.
+      // Devolver la URL tal cual evita 404s en dev cuando se transformaba a
+      // '/assets/svg/...' que no siempre existe en el servidor de desarrollo.
       const matchesDevPath = devPathIndicators.some(p => viaLower.includes(p));
-      if (matchesDevPath || viaLower.includes('/assets/svg/')) {
-        const out = applyBaseUrl(`/assets/svg/${inputFileName}`);
-        debugLog.dataLoading(`🔧 normalizeSvgPath output (vite glob normalized):`, out);
-        return out;
+      if (matchesDevPath || viaLower.includes('/assets/svg/') || viaLower.startsWith('/src/')) {
+        // Preferir la URL dev tal cual (viaGlob) para evitar romper el servidor dev.
+        debugLog.dataLoading(`🔧 normalizeSvgPath output (vite glob dev URL):`, viaGlob);
+        return viaGlob;
       }
 
       // En cualquier otro caso (URLs externas, http, etc.) devolvemos viaGlob
@@ -567,18 +569,12 @@ if (import.meta.env.DEV && typeof window !== 'undefined') {
   (window as any).inspectSkillIcons = () => {
     // Listar todos los elementos img con src que contenga svg
     const svgImages = Array.from(document.querySelectorAll('img[src*="svg"]'));
-    svgImages.forEach((img, index) => {
-      const imgElement = img as HTMLImageElement;
-    });
-
     return {
       totalImages: svgImages.length,
       loadedImages: svgImages.filter(img => (img as HTMLImageElement).naturalWidth > 0).length,
       location: window.location.href,
     };
   };
-  console.log('- debugSvgPaths() - Test common SVG paths');
-  console.log('- inspectSkillIcons() - Inspect current icon state');
 }
 
 // Función para obtener nivel de popularidad
