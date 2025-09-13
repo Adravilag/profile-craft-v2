@@ -6,9 +6,7 @@ import { useExternalPreview } from '@hooks/useExternalPreview';
 import '@styles/04-features/project-editor.css';
 
 // Lazy load MediaLibrary component for better performance
-const MediaLibrary = lazy(
-  () => import('@features/projects/components/ProjectEditor/plugins/MediaLibrary')
-);
+const MediaLibrary = lazy(() => import('./plugins/MediaLibrary'));
 
 interface ProjectEditorProps {
   content: string;

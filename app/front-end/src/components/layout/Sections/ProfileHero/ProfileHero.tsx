@@ -1,8 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef, memo } from 'react';
 import usePDFExport from '@/hooks/usePDFExport';
 import { useAuth } from '@/contexts/AuthContext';
-import PatternLogin from '@/components/Auth/PatternLogin';
-import ProjectWidget from '@/features/projects/components/ProjectWidget/ProjectWidget';
+import PatternLogin from '@/components/auth/PatternLogin.tsx';
 import ContactTooltips from './components/ContactTooltips/ContactTooltips';
 import SkillBadge from '@/components/ui/SkillBadge/SkillBadge';
 

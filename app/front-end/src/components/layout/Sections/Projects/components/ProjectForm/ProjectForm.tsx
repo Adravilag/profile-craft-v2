@@ -4,7 +4,7 @@ import { useProjectForm } from './hooks/useProjectForm';
 import { useProjectData } from './hooks/useProjectData';
 import ProjectFormContainer from '../CreateProject/ProjectFormContainer';
 import styles from '../CreateProject/CreateProjectForm.module.css';
-import ProjectEditor from '../ProjectEditor/ProjectEditor';
+import TextEditor from '@components/common/TextEditor/TextEditor';
 import { useTranslation } from '@/contexts/TranslationContext';
 import type { ProjectFormProps } from './types/ProjectFormTypes';
 
@@ -492,7 +492,7 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                   <i className="fas fa-edit" aria-hidden="true"></i>Contenido del Artículo
                 </h3>
                 <div className={styles.editorContainer}>
-                  <ProjectEditor
+                  <TextEditor
                     content={form.project_content || ''}
                     onChange={(value: string) => handleFormChange('project_content', value)}
                     placeholder="Escribe el contenido detallado de tu proyecto..."
