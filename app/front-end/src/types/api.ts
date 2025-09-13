@@ -191,6 +191,14 @@ export interface Skill {
   order_index?: number;
   created_at?: string;
   updated_at?: string;
+  /**
+   * Comentarios de la skill (localizable). Estructura propuesta:
+   * { en?: string; es?: string }
+   */
+  comment?: {
+    en?: string;
+    es?: string;
+  } | null;
 }
 
 // Backwards compatibility: many files reference a type named `article`.

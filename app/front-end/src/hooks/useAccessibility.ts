@@ -284,7 +284,6 @@ export const useAccessibility = (options: UseAccessibilityOptions = {}): UseAcce
         markdown: 'Markdown editing mode',
         preview: 'Preview mode',
         'split-horizontal': 'Horizontal split view',
-        'split-vertical': 'Vertical split view',
       };
 
       const modeName = modeNames[mode] || mode;

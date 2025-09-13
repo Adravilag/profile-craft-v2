@@ -57,7 +57,6 @@ export const getToolbarButtonAria = (
     'media-library': 'Open media library',
     'external-preview': 'Open external preview window',
     'split-horizontal': 'Split view horizontally',
-    'split-vertical': 'Split view vertically',
     html: 'Switch to HTML mode',
     markdown: 'Switch to Markdown mode',
     preview: 'Switch to preview mode',
@@ -81,7 +80,6 @@ export const getModeButtonAria = (
     markdown: 'Markdown editing mode',
     preview: 'Preview mode',
     'split-horizontal': 'Horizontal split view',
-    'split-vertical': 'Vertical split view',
   };
 
   const label = modeLabels[mode] || mode;

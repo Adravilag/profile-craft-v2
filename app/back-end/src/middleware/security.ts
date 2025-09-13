@@ -6,6 +6,30 @@ import { logger } from '../utils/logger.js';
 const rateLimitStore = new Map<string, { count: number; resetTime: number; lastAttempt: number }>();
 const TOKEN_BLACKLIST = new Set<string>();
 
+// Funciones de utilidad para debugging en desarrollo
+function _clearRateLimitStore() {
+  rateLimitStore.clear();
+}
+
+function _clearTokenBlacklist() {
+  TOKEN_BLACKLIST.clear();
+}
+
+function _getRateLimitSnapshot() {
+  const now = Date.now();
+  const arr: Array<any> = [];
+  for (const [key, v] of rateLimitStore.entries()) {
+    arr.push({
+      clientId: key,
+      count: v.count,
+      resetTime: v.resetTime,
+      lastAttempt: v.lastAttempt,
+      expiresInMs: Math.max(0, v.resetTime - now),
+    });
+  }
+  return arr;
+}
+
 export const securityMiddleware = {
   // Middleware para remover headers que exponen información del servidor
   removeServerHeaders: (req: Request, res: Response, next: NextFunction) => {
@@ -85,6 +109,13 @@ export const securityMiddleware = {
         );
 
         setTimeout(() => {
+          // En desarrollo no devolvemos el cuerpo detallado para evitar bloquear pruebas locales
+          // y para que los clients no muestren mensajes confusos durante el desarrollo.
+          if ((config as any).isDevelopment) {
+            res.status(429).end();
+            return;
+          }
+
           res.status(429).json({
             error: 'Demasiados intentos. Intenta de nuevo más tarde.',
             retryAfter: Math.ceil(delay / 1000),
@@ -284,6 +315,11 @@ export const securityMiddleware = {
   isTokenBlacklisted: (token: string): boolean => {
     return TOKEN_BLACKLIST.has(token);
   },
+
+  // Debug helpers (solo para uso en desarrollo)
+  _clearRateLimitStore,
+  _clearTokenBlacklist,
+  _getRateLimitSnapshot,
 
   // Logging seguro de eventos de seguridad
   logSecurityEvent: (event: string, details: any, req: Request) => {

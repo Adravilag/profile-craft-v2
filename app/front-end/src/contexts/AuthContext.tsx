@@ -132,7 +132,19 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
           setAuthToken(savedToken);
         }
 
-        const res = await fetch('/api/auth/verify', { method: 'GET', credentials: 'include' });
+        // If we have a persistent token in localStorage, also send it in the
+        // Authorization header. The backend's `optionalAuth` middleware will
+        // accept either the cookie (HttpOnly) or the Authorization header.
+        const headers: Record<string, string> = { Accept: 'application/json' };
+        if (savedToken) {
+          headers.Authorization = `Bearer ${savedToken}`;
+        }
+
+        const res = await fetch('/api/auth/verify', {
+          method: 'GET',
+          credentials: 'include',
+          headers,
+        });
         if (!mounted) return;
         if (res.ok) {
           const contentType = res.headers.get('content-type') || '';

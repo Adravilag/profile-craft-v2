@@ -178,25 +178,25 @@
 }
 
 .menuBtn {
-  background: rgb(255, 255, 255, 0.1) !important;
-  border: 1px solid rgb(255, 255, 255, 0.2) !important;
+  background: rgb(255, 255, 255, 0.08) !important;
+  border: 1px solid rgb(255, 255, 255, 0.14) !important;
   padding: 8px !important;
   border-radius: 8px !important;
   cursor: pointer;
-  color: rgb(255, 255, 255, 0.7) !important;
-  transition: opacity 150ms ease !important;
+  color: rgb(255, 255, 255, 0.9) !important;
+  transition:
+    transform 150ms ease,
+    background 120ms ease !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px !important;
-  height: 32px !important;
-  opacity: 0 !important;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 2px 8px rgb(0, 0, 0, 0.1);
+  opacity: 1 !important;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
 }
 
 .skillCard:hover .menuBtn {
-  opacity: 1 !important;
+  transform: scale(1.03);
 }
 
 .menuBtn:hover,
@@ -209,39 +209,28 @@
 
 .dropdownContent {
   position: absolute;
-  top: 100%;
-  right: -2px;
-  background: #1a1d29;
-  border: 1px solid rgb(255, 255, 255, 0.15);
+  /* Place to the right of the trigger */
+  left: calc(100% + 8px);
+  top: 0;
+  right: auto;
+  /* Dark semi-transparent background to ensure contrast over any card */
+  background: rgba(8, 10, 14, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   box-shadow:
-    0 8px 32px rgb(0, 0, 0, 0.4),
-    0 2px 8px rgb(0, 0, 0, 0.1);
-  z-index: 100;
-  min-width: 160px;
+    0 12px 40px rgba(2, 6, 23, 0.6),
+    0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 4000; /* high z-index to avoid clipping */
+  min-width: 180px;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-8px) scale(0.95);
+  transform: translateX(-6px) scale(0.98);
   transition:
     opacity 150ms ease,
     visibility 150ms ease,
     transform 150ms ease;
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(8px);
   overflow: hidden;
-}
-
-.dropdownContent::before {
-  content: '';
-  position: absolute;
-  top: -6px;
-  right: 12px;
-  width: 12px;
-  height: 12px;
-  background: #1a1d29;
-  border: 1px solid rgb(255, 255, 255, 0.15);
-  border-bottom: none;
-  border-right: none;
-  transform: rotate(45deg);
 }
 
 .dropdownContentOpen {
@@ -1740,3 +1729,6 @@
     display: none !important;
   }
 }
+
+/* NOTE: quick-fix for portal-mounted dropdowns removed. Portal content should rely on component styles
+   (SkillMenu.module.css and positioning logic in PortalDropdown) to control visibility and layout. */

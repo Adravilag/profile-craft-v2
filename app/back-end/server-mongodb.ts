@@ -24,6 +24,7 @@ import educationRoutes from './src/routes/education.js';
 import certificationsRoutes from './src/routes/certifications.js';
 import testimonialsRoutes from './src/routes/testimonials.js';
 import aboutRoutes from './src/routes/aboutRoutes.js';
+import debugRoutes from './src/routes/debug.js';
 
 // Servicios
 import { readinessCheck } from './src/controllers/healthController.js';
@@ -227,6 +228,10 @@ app.use('/api/certifications', certificationsRoutes);
 app.use('/api/admin/certifications', certificationsRoutes);
 app.use('/api/testimonials', testimonialsRoutes);
 app.use('/api/about', aboutRoutes);
+// Rutas de depuración (solo en desarrollo)
+if (appConfig.isDevelopment) {
+  app.use('/api/debug', debugRoutes);
+}
 
 // Health check endpoint para el frontend
 app.get('/api/health', (req, res) => {

@@ -56,8 +56,11 @@
 }
 
 .project-editor--split-vertical {
+  /* Vertical split mode deprecated: alias to horizontal to keep compat.
+     Kept for backward compatibility with snapshots/tests that reference
+     the class name. Layout will behave as split-horizontal. */
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 /* =====================================================
@@ -231,7 +234,8 @@
 }
 
 .project-editor--split-vertical .project-editor__content {
-  flex-direction: row;
+  /* Alias to horizontal split behavior (column) */
+  flex-direction: column;
 }
 
 /* =====================================================
@@ -253,9 +257,9 @@
 }
 
 .project-editor--split-vertical .project-editor__editor-container {
-  /* allow the editor to flex and shrink properly alongside the preview */
-  flex: 1 1 50%;
-  border-right: 1px solid var(--border-primary);
+  /* Alias to horizontal split behavior */
+  flex: 0 0 50%;
+  border-bottom: 1px solid var(--border-primary);
 }
 
 /* =====================================================

@@ -1,6 +1,6 @@
 // src/features/skills/components/cards/SkillCard.tsx
 
-import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import type { SkillCardProps } from '../../types/skills';
 import {
   getSkillSvg,
@@ -8,59 +8,18 @@ import {
   getDifficultyStars,
   testSvgAvailability,
 } from '../../utils/skillUtils';
-import styles from '../../styles/SkillsCard.module.css';
+import styles from './SkillsCard.module.css';
+import useDropdown from '../../hooks/useDropdown';
+import SkillMenu from './SkillMenu/SkillMenu';
+import PortalDropdown from './PortalDropdown';
+import SkillCommentModal from '../../components/modal/SkillCommentModal';
+import { updateSkill as updateSkillEndpoint } from '@/services/endpoints/skills';
 import { debugLog } from '@/utils/debugConfig';
 import BlurImage from '@/components/utils/BlurImage';
 // Fallback estable empaquetado por Vite
 import genericIconUrl from '@/assets/svg/generic-code.svg?url';
 import { findSkillIcon } from '@/features/skills/utils/iconLoader';
 import { normalizeSkillName } from '@/features/skills/utils/normalizeSkillName';
-
-// --- Custom Hook para el menú contextual ---
-const useDropdown = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [menuTimeoutId, setMenuTimeoutId] = useState<NodeJS.Timeout | null>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  const handleMenuEnter = useCallback(() => {
-    if (menuTimeoutId) {
-      clearTimeout(menuTimeoutId);
-      setMenuTimeoutId(null);
-    }
-    setIsMenuOpen(true);
-  }, [menuTimeoutId]);
-
-  const handleMenuLeave = useCallback(() => {
-    const timeoutId = setTimeout(() => setIsMenuOpen(false), 300);
-    setMenuTimeoutId(timeoutId);
-  }, []);
-
-  const handleMenuClick = useCallback(() => {
-    setIsMenuOpen(prev => !prev);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsMenuOpen(false);
-      }
-    };
-    if (isMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
-    }
-  }, [isMenuOpen]);
-
-  useEffect(() => {
-    return () => {
-      if (menuTimeoutId) {
-        clearTimeout(menuTimeoutId);
-      }
-    };
-  }, [menuTimeoutId]);
-
-  return { menuRef, isMenuOpen, handleMenuEnter, handleMenuLeave, handleMenuClick, setIsMenuOpen };
-};
 
 const SkillCard: React.FC<SkillCardProps> = ({
   skill,
@@ -73,8 +32,44 @@ const SkillCard: React.FC<SkillCardProps> = ({
   isDragging,
   isAdmin = false,
 }) => {
-  const { menuRef, isMenuOpen, handleMenuEnter, handleMenuLeave, handleMenuClick, setIsMenuOpen } =
-    useDropdown();
+  const [isCommentOpen, setIsCommentOpen] = useState(false);
+  const [savingComment, setSavingComment] = useState(false);
+  const {
+    menuRef,
+    buttonRef,
+    isMenuOpen,
+    handleMenuEnter,
+    handleMenuLeave,
+    handleMenuClick,
+    setIsMenuOpen,
+  } = useDropdown();
+
+  // Ref para toda la card: usaremos esto como anchor para el PortalDropdown que
+  // mostrará el comentario cuando el usuario haga click sobre la card (no en botones)
+  const cardRef = React.useRef<HTMLElement | null>(null);
+  const [isCommentPreviewOpen, setIsCommentPreviewOpen] = React.useState(false);
+
+  // Handler para click en la card: si la skill tiene comentario, abrir portal.
+  const handleCardClick = (ev: React.MouseEvent) => {
+    // Si el click proviene de un control interactivo (botones, enlaces, inputs), no abrir
+    const target = ev.target as HTMLElement | null;
+    if (!target) return;
+
+    // Elements that should not trigger the preview (menu button, links, inputs)
+    const interactiveSelectors = ['button', 'a', 'input', 'textarea', 'select', '[role="button"]'];
+    // climb up to 4 levels to check
+    let el: HTMLElement | null = target;
+    for (let i = 0; i < 6 && el; i++) {
+      if (el.matches && interactiveSelectors.some(s => el!.matches(s))) return;
+      el = el.parentElement;
+    }
+
+    // Only open preview if skill has a non-empty comment
+    const comment = (skill as any).comment;
+    if (comment && String(comment).trim() !== '') {
+      setIsCommentPreviewOpen(prev => !prev);
+    }
+  };
 
   // Memoizar el SVG y el color para evitar recálculos innecesarios
   const { svgPath, skillColor, difficultyStars } = useMemo(() => {
@@ -277,147 +272,179 @@ const SkillCard: React.FC<SkillCardProps> = ({
   };
 
   return (
-    <article
-      className={`${styles.skillCard} ${skillCssClass}${
-        isDragging ? ` ${styles.dragging}` : ''
-      } ${skill.featured ? styles.featuredCard : ''}`}
-      draggable
-      onDragStart={() => onDragStart(skill.id)}
-      onDragOver={onDragOver}
-      onDrop={() => onDrop(skill.id)}
-      style={
-        {
-          '--skill-color': skillColor,
-        } as React.CSSProperties
-      }
-      data-skill={skill.name.toLowerCase().replace(/[^a-z0-9]/g, '')}
-    >
-      {/* Header con icono, nombre y menú */}
-      <header className={styles.skillCardHeader}>
-        <div className={styles.skillIconWrapper}>
-          <BlurImage
-            src={iconSrc}
-            alt={`Icono de ${skill.name}`}
-            className={styles.skillIcon}
-            onError={handleImageError}
-            loading="eager"
-          />
-        </div>
+    <>
+      <article
+        className={`${styles.skillCard} ${skillCssClass}${
+          isDragging ? ` ${styles.dragging}` : ''
+        } ${skill.featured ? styles.featuredCard : ''}`}
+        ref={cardRef}
+        onClick={handleCardClick}
+        draggable
+        onDragStart={() => onDragStart(skill.id)}
+        onDragOver={onDragOver}
+        onDrop={() => onDrop(skill.id)}
+        style={
+          {
+            '--skill-color': skillColor,
+          } as React.CSSProperties
+        }
+        data-skill={skill.name.toLowerCase().replace(/[^a-z0-9]/g, '')}
+      >
+        {/* Header con icono, nombre y menú */}
+        <header className={styles.skillCardHeader}>
+          <div className={styles.skillIconWrapper}>
+            <BlurImage
+              src={iconSrc}
+              alt={`Icono de ${skill.name}`}
+              className={styles.skillIcon}
+              onError={handleImageError}
+              loading="eager"
+            />
+          </div>
 
-        <h3 className={styles.skillName}>{skill.name}</h3>
-        {skill.featured && (
-          <span className={styles.featuredIcon} title="Destacado" aria-label="Habilidad destacada">
-            <i className="fas fa-star"></i>
-          </span>
-        )}
-
-        {/* Menú de tres puntos - solo visible para administradores */}
-        {isAdmin && (
-          <div className={styles.skillActions}>
-            <div
-              className={styles.dropdown}
-              ref={menuRef}
-              onMouseEnter={handleMenuEnter}
-              onMouseLeave={handleMenuLeave}
-              data-menu-open={isMenuOpen}
+          <h3 className={styles.skillName}>{skill.name}</h3>
+          {skill.featured && (
+            <span
+              className={styles.featuredIcon}
+              title="Destacado"
+              aria-label="Habilidad destacada"
             >
-              <button
-                type="button"
-                className={`${styles.menuBtn} ${isMenuOpen ? styles.menuBtnActive : ''}`}
-                aria-label="Opciones"
-                onClick={handleMenuClick}
-              >
-                <i className="fas fa-ellipsis-v"></i>
-              </button>
-              <div
-                className={`${styles.dropdownContent} ${isMenuOpen ? styles.dropdownContentOpen : ''}`}
-              >
+              <i className="fas fa-star"></i>
+            </span>
+          )}
+
+          {/* Menú de tres puntos - solo visible para administradores */}
+          {isAdmin && (
+            <div className={styles.skillActions}>
+              <div className={styles.dropdown} ref={menuRef} data-menu-open={isMenuOpen}>
                 <button
                   type="button"
-                  className={styles.dropdownItem}
-                  onClick={() => {
-                    onEdit(skill);
-                    setIsMenuOpen(false);
-                  }}
+                  ref={buttonRef}
+                  className={`${styles.menuBtn} ${isMenuOpen ? styles.menuBtnActive : ''}`}
+                  aria-label="Opciones"
+                  onClick={handleMenuClick}
                 >
-                  <i className="fas fa-edit"></i>
-                  Editar
+                  <i className="fas fa-ellipsis-v"></i>
                 </button>
-                <button
-                  type="button"
-                  className={`${styles.dropdownItem} ${styles.delete}`}
-                  onClick={() => {
-                    onDelete(skill.id);
-                    setIsMenuOpen(false);
-                  }}
-                >
-                  <i className="fas fa-trash"></i>
-                  Eliminar
-                </button>
+                {
+                  <PortalDropdown
+                    anchorRef={buttonRef}
+                    isOpen={isMenuOpen}
+                    onClose={() => setIsMenuOpen(false)}
+                  >
+                    <SkillMenu
+                      skill={skill}
+                      isOpen={isMenuOpen}
+                      onEdit={onEdit}
+                      onDelete={onDelete}
+                      onOpenComment={() => setIsCommentOpen(true)}
+                      closeMenu={() => setIsMenuOpen(false)}
+                    />
+                  </PortalDropdown>
+                }
               </div>
             </div>
-          </div>
-        )}
-      </header>
+          )}
+        </header>
 
-      {/* Cuerpo principal */}
-      <div className={styles.skillCardContent}>
-        {/* Sección de nivel */}
-        {typeof skill.level === 'number' && (
-          <div className={`${styles.skillLevel} ${styles.levelSection}`}>
-            <div className={styles.levelHeader}>
-              <span className={styles.levelLabel}>
-                Nivel
-                <span className={styles.tooltipHint}>Porcentaje de dominio</span>
-              </span>
-              <span className={styles.levelValue} aria-live="polite">
-                {skill.level}%
-              </span>
-            </div>
-            <div
-              className={styles.levelBar}
-              role="progressbar"
-              aria-valuenow={skill.level}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-label={`Nivel de dominio: ${skill.level}%`}
-            >
-              <div className={styles.levelProgress} style={{ width: `${skill.level}%` }} />
-            </div>
-          </div>
-        )}
-
-        {/* Sección de dificultad */}
-        {difficultyStars > 0 && (
-          <div
-            className={`${styles.skillDifficulty} ${styles.difficultySection}`}
-            style={
-              {
-                '--difficulty-text': `"${getDifficultyText(difficultyStars)}"`,
-              } as React.CSSProperties
-            }
+        {/* Portal preview for comment (opens when clicking on the card body) */}
+        {isCommentPreviewOpen && (
+          <PortalDropdown
+            anchorRef={cardRef}
+            isOpen={isCommentPreviewOpen}
+            onClose={() => setIsCommentPreviewOpen(false)}
           >
-            <span className={styles.difficultyLabel}>
-              Dificultad
-              <span className={styles.tooltipHint}>Percepción de complejidad</span>
-            </span>
             <div
-              className={styles.difficultyStars}
-              role="img"
-              aria-label={`Dificultad: ${difficultyStars} de 5 estrellas`}
+              className={styles.commentContent}
+              role="dialog"
+              aria-label={`Comentario de ${skill.name}`}
             >
-              {Array.from({ length: 5 }).map((_, i) => (
-                <i
-                  key={i}
-                  className={`${styles.star} ${i < difficultyStars ? styles.filled : styles.empty} ${i < difficultyStars ? 'fas fa-star' : 'far fa-star'}`}
-                  aria-hidden="true"
-                ></i>
-              ))}
+              {/* Render comment HTML. IMPORTANT: this assumes comments are sanitized server-side. */}
+              <div dangerouslySetInnerHTML={{ __html: (skill as any).comment || '' }} />
             </div>
-          </div>
+          </PortalDropdown>
         )}
-      </div>
-    </article>
+
+        {/* Cuerpo principal */}
+        <div className={styles.skillCardContent}>
+          {/* Sección de nivel */}
+          {typeof skill.level === 'number' && (
+            <div className={`${styles.skillLevel} ${styles.levelSection}`}>
+              <div className={styles.levelHeader}>
+                <span className={styles.levelLabel}>
+                  Nivel
+                  <span className={styles.tooltipHint}>Porcentaje de dominio</span>
+                </span>
+                <span className={styles.levelValue} aria-live="polite">
+                  {skill.level}%
+                </span>
+              </div>
+              <div
+                className={styles.levelBar}
+                role="progressbar"
+                aria-valuenow={skill.level}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={`Nivel de dominio: ${skill.level}%`}
+              >
+                <div className={styles.levelProgress} style={{ width: `${skill.level}%` }} />
+              </div>
+            </div>
+          )}
+
+          {/* Sección de dificultad */}
+          {difficultyStars > 0 && (
+            <div
+              className={`${styles.skillDifficulty} ${styles.difficultySection}`}
+              style={
+                {
+                  '--difficulty-text': `"${getDifficultyText(difficultyStars)}"`,
+                } as React.CSSProperties
+              }
+            >
+              <span className={styles.difficultyLabel}>
+                Dificultad
+                <span className={styles.tooltipHint}>Percepción de complejidad</span>
+              </span>
+              <div
+                className={styles.difficultyStars}
+                role="img"
+                aria-label={`Dificultad: ${difficultyStars} de 5 estrellas`}
+              >
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <i
+                    key={i}
+                    className={`${styles.star} ${i < difficultyStars ? styles.filled : styles.empty} ${i < difficultyStars ? 'fas fa-star' : 'far fa-star'}`}
+                    aria-hidden="true"
+                  ></i>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </article>
+      {/* Modal para comentario */}
+      <SkillCommentModal
+        isOpen={isCommentOpen}
+        onClose={() => setIsCommentOpen(false)}
+        skillId={skill.id}
+        initialComment={skill.comment ?? null}
+        onSave={async comment => {
+          try {
+            setSavingComment(true);
+            // Llamar al endpoint de actualización con el campo comment
+            await updateSkillEndpoint(Number(skill.id), { comment });
+            // Si hay un manejador de edición en el padre, usarlo para actualizar el UI
+            if (onEdit) onEdit({ ...skill, comment });
+          } catch (err) {
+            // eslint-disable-next-line no-console
+            console.error('Error updating skill comment', err);
+          } finally {
+            setSavingComment(false);
+          }
+        }}
+      />
+    </>
   );
 };
 

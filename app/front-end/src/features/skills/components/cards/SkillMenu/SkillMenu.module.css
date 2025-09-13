@@ -1,0 +1,100 @@
+:root {
+  --menu-bg: #222; /* dark background */
+  --menu-fg: #f5f5f5; /* light text */
+  --menu-border: rgba(255, 255, 255, 0.06);
+  --menu-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --menu-radius: 8px;
+  --menu-z: 9999;
+}
+
+/* Container for the dropdown items. The portal will position this element as fixed. */
+.dropdownContent {
+  background: var(--menu-bg);
+  color: var(--menu-fg);
+  border: 1px solid var(--menu-border);
+  box-shadow: var(--menu-shadow);
+  border-radius: var(--menu-radius);
+  min-width: 220px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: var(--menu-z);
+  outline: none;
+}
+
+/* Position the menu to the right of the trigger. The parent `.dropdown` is position: relative. */
+.dropdownContent {
+  position: relative; /* portal will position wrapper element */
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition: none;
+  pointer-events: auto;
+}
+
+.dropdownItem {
+  background: transparent;
+  color: inherit;
+  border: none;
+  padding: 8px 10px;
+  text-align: left;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.dropdownItem i {
+  width: 18px;
+  text-align: center;
+}
+
+.dropdownItem:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.delete {
+  color: #ff7b7b;
+}
+
+/* Small screens: make the menu slightly wider and touch-friendly */
+@media (max-width: 480px) {
+  .dropdownContent {
+    min-width: 260px;
+    padding: 8px;
+  }
+  .dropdownItem {
+    padding: 12px 14px;
+    font-size: 16px;
+  }
+}
+
+/* Comment preview styles (used by PortalDropdown when showing skill comment) */
+.commentContent {
+  max-width: 360px;
+  min-width: 220px;
+  padding: 12px 14px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+  border-radius: 10px;
+  color: var(--menu-fg);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+  font-size: 14px;
+  line-height: 1.45;
+  z-index: var(--menu-z);
+  overflow: auto;
+  max-height: 48vh;
+}
+.commentContent :global(p) {
+  margin: 0 0 8px 0;
+}
+.commentContent :global(a) {
+  color: #9bd1ff;
+}
+.commentEmpty {
+  opacity: 0.6;
+  font-style: italic;
+}

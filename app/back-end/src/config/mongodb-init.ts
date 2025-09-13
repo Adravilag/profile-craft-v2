@@ -40,6 +40,7 @@ export const initializeMongoDB = async (): Promise<void> => {
           category: 'Frontend',
           level: 90,
           order_index: 1,
+          comment: '',
         },
         {
           user_id: defaultAdmin._id,
@@ -47,6 +48,7 @@ export const initializeMongoDB = async (): Promise<void> => {
           category: 'Frontend',
           level: 85,
           order_index: 2,
+          comment: '',
         },
         {
           user_id: defaultAdmin._id,
@@ -54,6 +56,7 @@ export const initializeMongoDB = async (): Promise<void> => {
           category: 'Frontend',
           level: 90,
           order_index: 3,
+          comment: '',
         },
         {
           user_id: defaultAdmin._id,
@@ -61,6 +64,7 @@ export const initializeMongoDB = async (): Promise<void> => {
           category: 'Backend',
           level: 85,
           order_index: 4,
+          comment: '',
         },
         {
           user_id: defaultAdmin._id,
@@ -68,6 +72,7 @@ export const initializeMongoDB = async (): Promise<void> => {
           category: 'Backend',
           level: 80,
           order_index: 5,
+          comment: '',
         },
         {
           user_id: defaultAdmin._id,
@@ -75,8 +80,16 @@ export const initializeMongoDB = async (): Promise<void> => {
           category: 'Database',
           level: 75,
           order_index: 6,
+          comment: '',
         },
-        { user_id: defaultAdmin._id, name: 'Git', category: 'Tools', level: 85, order_index: 7 },
+        {
+          user_id: defaultAdmin._id,
+          name: 'Git',
+          category: 'Tools',
+          level: 85,
+          order_index: 7,
+          comment: '',
+        },
       ];
 
       await Skill.insertMany(defaultSkills);

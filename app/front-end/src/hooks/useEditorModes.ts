@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 
-export type EditorMode = 'html' | 'markdown' | 'preview' | 'split-horizontal' | 'split-vertical';
+export type EditorMode = 'html' | 'markdown' | 'preview' | 'split-horizontal';
 
 export interface UseEditorModesReturn {
   currentMode: EditorMode;

@@ -218,7 +218,6 @@ export const authController = {
         res.json({ valid: false, user: null });
         return;
       }
-
       const user = await User.findById(req.user.userId).select('-password');
 
       if (!user) {

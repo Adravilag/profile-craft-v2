@@ -7,6 +7,7 @@ export interface ISkill extends Document {
   category: string;
   level: number;
   order_index: number;
+  comment?: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -38,6 +39,11 @@ const SkillSchema: Schema = new Schema(
       default: 50,
       min: 0,
       max: 100,
+    },
+    // Optional HTML comment associated with this skill. Stored as string.
+    comment: {
+      type: String,
+      default: '',
     },
     order_index: {
       type: Number,

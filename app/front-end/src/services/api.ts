@@ -105,6 +105,7 @@ export const getFullUserProfile = async (userId?: string) => {
 // Nueva función para obtener el perfil del usuario autenticado
 export const getAuthenticatedUserProfile = async () => {
   // Validación de dominio en producción
+
   if (isProductionDomain() && !validateRequest()) {
     throw new Error('🚫 Acceso no autorizado desde este dominio');
   }
