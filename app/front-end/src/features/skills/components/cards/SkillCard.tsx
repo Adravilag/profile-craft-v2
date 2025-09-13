@@ -65,8 +65,15 @@ const SkillCard: React.FC<SkillCardProps> = ({
     }
 
     // Only open preview if skill has a non-empty comment
-    const comment = (skill as any).comment;
-    if (comment && String(comment).trim() !== '') {
+    const rawComment = (skill as any).comment;
+    // Normalize legacy string -> en, otherwise prefer en then es
+    const commentHtml =
+      typeof rawComment === 'string'
+        ? rawComment
+        : rawComment && (rawComment.en || rawComment.es)
+          ? rawComment.en || rawComment.es
+          : '';
+    if (commentHtml && String(commentHtml).trim() !== '') {
       setIsCommentPreviewOpen(prev => !prev);
     }
   };
@@ -360,7 +367,15 @@ const SkillCard: React.FC<SkillCardProps> = ({
               aria-label={`Comentario de ${skill.name}`}
             >
               {/* Render comment HTML. IMPORTANT: this assumes comments are sanitized server-side. */}
-              <div dangerouslySetInnerHTML={{ __html: (skill as any).comment || '' }} />
+              {/* Normalize legacy string/comment object */}
+              <div
+                dangerouslySetInnerHTML={{
+                  __html:
+                    typeof (skill as any).comment === 'string'
+                      ? (skill as any).comment
+                      : (skill as any).comment?.en || (skill as any).comment?.es || '',
+                }}
+              />
             </div>
           </PortalDropdown>
         )}
@@ -428,7 +443,11 @@ const SkillCard: React.FC<SkillCardProps> = ({
         isOpen={isCommentOpen}
         onClose={() => setIsCommentOpen(false)}
         skillId={skill.id}
-        initialComment={skill.comment ?? null}
+        initialComment={
+          typeof (skill as any).comment === 'string'
+            ? { en: (skill as any).comment }
+            : (skill.comment ?? null)
+        }
         onSave={async comment => {
           try {
             setSavingComment(true);

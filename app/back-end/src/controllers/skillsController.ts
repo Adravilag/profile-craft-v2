@@ -28,15 +28,7 @@ export const skillsController = {
   // Crear nueva habilidad
   createSkill: async (req: any, res: any): Promise<void> => {
     try {
-      const {
-        user_id,
-        name,
-        category,
-        /* icon_class removed */ level,
-        order_index,
-        featured,
-        comment,
-      } = req.body;
+      const { user_id, name, category, level, order_index, featured, comment } = req.body;
 
       if (!name || !category) {
         res.status(400).json({ error: 'Nombre y categoría son requeridos' });
@@ -50,7 +42,13 @@ export const skillsController = {
         category,
         featured: typeof featured === 'boolean' ? featured : false,
         level: level || 50,
-        comment: comment || '',
+        // Normalizar comment: aceptar string (se asigna a es) o objeto { en, es }
+        comment:
+          typeof comment === 'string'
+            ? { en: comment, es: '' }
+            : comment && typeof comment === 'object'
+              ? { en: comment.en || '', es: comment.es || '' }
+              : { en: '', es: '' },
         order_index: order_index || 1,
       });
 
@@ -87,7 +85,13 @@ export const skillsController = {
           featured: typeof featured === 'boolean' ? featured : undefined,
           level: level || 50,
           order_index: order_index || 1,
-          comment: typeof comment === 'string' ? comment : undefined,
+          // Normalizar comment para actualizar: si string, guardarlo en 'es'; si objeto, usar sus propiedades
+          comment:
+            typeof comment === 'string'
+              ? { en: comment, es: '' }
+              : comment && typeof comment === 'object'
+                ? { en: comment.en || '', es: comment.es || '' }
+                : undefined,
           updated_at: new Date(),
         },
         { new: true, lean: true }

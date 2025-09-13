@@ -7,7 +7,10 @@ export interface ISkill extends Document {
   category: string;
   level: number;
   order_index: number;
-  comment?: string;
+  comment?: {
+    en: string;
+    es: string;
+  };
   created_at: Date;
   updated_at: Date;
 }
@@ -40,10 +43,13 @@ const SkillSchema: Schema = new Schema(
       min: 0,
       max: 100,
     },
-    // Optional HTML comment associated with this skill. Stored as string.
+    // Optional HTML comment associated with this skill. Stored as object with language keys.
     comment: {
-      type: String,
-      default: '',
+      type: {
+        en: { type: String, default: '' },
+        es: { type: String, default: '' },
+      },
+      default: { en: '', es: '' },
     },
     order_index: {
       type: Number,

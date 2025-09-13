@@ -1,8 +1,8 @@
-import express from 'express';
+import express, { Router } from 'express';
 import { certificationsController } from '../controllers/certificationsController.js';
 import { authenticateAdmin } from '../middleware/auth.js';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // Rutas públicas
 router.get('/', certificationsController.getCertifications);

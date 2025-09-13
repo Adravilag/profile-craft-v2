@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Router } from 'express';
 import { body } from 'express-validator';
 import {
   getAboutSection,
@@ -9,7 +9,7 @@ import {
 } from '../controllers/aboutController.js';
 import { authenticate } from '../middleware/auth.js';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 /**
  * @route GET /api/about

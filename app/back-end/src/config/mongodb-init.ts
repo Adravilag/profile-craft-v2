@@ -40,7 +40,7 @@ export const initializeMongoDB = async (): Promise<void> => {
           category: 'Frontend',
           level: 90,
           order_index: 1,
-          comment: '',
+          comment: { en: '', es: '' },
         },
         {
           user_id: defaultAdmin._id,
@@ -48,7 +48,7 @@ export const initializeMongoDB = async (): Promise<void> => {
           category: 'Frontend',
           level: 85,
           order_index: 2,
-          comment: '',
+          comment: { en: '', es: '' },
         },
         {
           user_id: defaultAdmin._id,
@@ -56,7 +56,7 @@ export const initializeMongoDB = async (): Promise<void> => {
           category: 'Frontend',
           level: 90,
           order_index: 3,
-          comment: '',
+          comment: { en: '', es: '' },
         },
         {
           user_id: defaultAdmin._id,
@@ -64,7 +64,7 @@ export const initializeMongoDB = async (): Promise<void> => {
           category: 'Backend',
           level: 85,
           order_index: 4,
-          comment: '',
+          comment: { en: '', es: '' },
         },
         {
           user_id: defaultAdmin._id,
@@ -72,7 +72,7 @@ export const initializeMongoDB = async (): Promise<void> => {
           category: 'Backend',
           level: 80,
           order_index: 5,
-          comment: '',
+          comment: { en: '', es: '' },
         },
         {
           user_id: defaultAdmin._id,
@@ -80,7 +80,7 @@ export const initializeMongoDB = async (): Promise<void> => {
           category: 'Database',
           level: 75,
           order_index: 6,
-          comment: '',
+          comment: { en: '', es: '' },
         },
         {
           user_id: defaultAdmin._id,
@@ -88,7 +88,7 @@ export const initializeMongoDB = async (): Promise<void> => {
           category: 'Tools',
           level: 85,
           order_index: 7,
-          comment: '',
+          comment: { en: '', es: '' },
         },
       ];
 

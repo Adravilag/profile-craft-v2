@@ -1,9 +1,9 @@
-import express from 'express';
+import express, { Router } from 'express';
 import { mediaController } from '../controllers/mediaController.js';
 import { authenticateAdmin } from '../middleware/auth.js';
 import { upload } from '../config/multer.js';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // Todas las rutas de media requieren autenticación de admin
 router.use(authenticateAdmin);

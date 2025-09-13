@@ -1,11 +1,11 @@
-import express from 'express';
+import express, { Router } from 'express';
 import { body } from 'express-validator';
 import { authController } from '../controllers/authController.js';
 import { profileController } from '../controllers/profileController.js';
 import { authenticate, optionalAuth, authenticateAdmin } from '../middleware/auth.js';
 import { securityMiddleware, authSecurityMiddleware } from '../middleware/security.js';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // Middleware de seguridad para todas las rutas de auth
 import { config as appConfig } from '../config/index.js';

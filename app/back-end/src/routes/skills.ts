@@ -1,9 +1,9 @@
-import express from 'express';
+import express, { Router } from 'express';
 import { skillsController } from '../controllers/skillsController.js';
 import { authenticateAdmin } from '../middleware/auth.js';
 import { publicIdMiddleware } from '../middleware/publicId.js';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // Rutas públicas
 router.get('/', publicIdMiddleware.resolveUserIdQuery, skillsController.getSkills);

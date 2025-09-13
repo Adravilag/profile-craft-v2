@@ -1,9 +1,9 @@
-import express from 'express';
+import express, { Router } from 'express';
 import { testimonialsController } from '../controllers/testimonialsController.js';
 import { authenticateAdmin } from '../middleware/auth.js';
 import { publicIdMiddleware } from '../middleware/publicId.js';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // Rutas públicas (montadas en /api/testimonials)
 router.get('/', publicIdMiddleware.resolveUserIdQuery, testimonialsController.getTestimonials);

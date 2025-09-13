@@ -1,10 +1,10 @@
-import express from 'express';
+import express, { Router } from 'express';
 import { profileController } from '../controllers/profileController.js';
 import { authenticateAdmin } from '../middleware/auth.js';
 import { securityMiddleware } from '../middleware/security.js';
 import { publicIdMiddleware } from '../middleware/publicId.js';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // Middleware de seguridad para orígenes permitidos
 const allowedOrigins = [

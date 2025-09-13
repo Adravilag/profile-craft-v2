@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -70,7 +70,7 @@ process.on('unhandledRejection', reason => {
   process.exit(1);
 });
 
-const app = express();
+const app: Application = express();
 
 // Configurar CORS de forma robusta
 const allowedOrigins = appConfig.ALLOWED_ORIGINS;

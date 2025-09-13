@@ -1,8 +1,8 @@
-import express from 'express';
+import express, { Router } from 'express';
 import { projectsController } from '../controllers/projectsController.js';
 import { authenticateAdmin } from '../middleware/auth.js';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // Rutas públicas de proyectos (sin duplicar /projects ya que el router se monta en /api/projects)
 router.get('/', projectsController.getProjects);

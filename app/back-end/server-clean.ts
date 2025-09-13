@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -34,7 +34,7 @@ const __dirname = path.dirname(__filename);
 // Cargar variables de entorno ANTES de importar otros módulos
 config({ path: path.join(__dirname, '.env') });
 
-const app = express();
+const app: Application = express();
 
 // Configurar CORS de forma segura
 const corsOptions = {
