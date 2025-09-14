@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import profileHero from '@assets/img/profilehero-background.png';
+import { buildCloudinaryUrl, getCloudinarySrcSet } from '@/utils/imageAssets';
 import ModalShell from '@/components/ui/Modal/ModalShell';
 import styles from './PatternLogin.module.css';
 import { useAuth } from '@/contexts';
@@ -14,6 +14,7 @@ export function PatternLogin({
   alt,
   className,
   requiredCode,
+  imgAttrs,
   allowBackspace = true,
   timeoutMs = 3000,
   devSound = false,
@@ -23,6 +24,7 @@ export function PatternLogin({
   alt?: string;
   className?: string;
   requiredCode?: string; // si se pasa, requiere exactamente este código
+  imgAttrs?: React.ImgHTMLAttributes<HTMLImageElement>;
   allowBackspace?: boolean;
   timeoutMs?: number;
   devSound?: boolean;
@@ -296,12 +298,52 @@ export function PatternLogin({
             transform: active ? 'scale(1.06)' : 'scale(1)',
           }}
         >
-          <img
-            src={src ?? profileHero}
-            alt={alt ?? 'avatar'}
-            className={className}
-            style={{ display: 'block', objectFit: 'cover', width: '100%', height: '100%' }}
-          />
+          {src ? (
+            <img
+              src={buildCloudinaryUrl(src, {
+                width: (imgAttrs && (imgAttrs.width as number)) || 200,
+                crop: 'fill',
+                gravity: 'face',
+                quality: 'auto',
+                format: 'auto',
+              })}
+              srcSet={getCloudinarySrcSet(src, [120, 200, 400, 800], {
+                crop: 'fill',
+                gravity: 'face',
+                quality: 'auto',
+                format: 'auto',
+              })}
+              sizes="(max-width: 480px) 120px, (max-width: 1024px) 200px, 400px"
+              alt={alt ?? 'avatar'}
+              className={className}
+              style={{ display: 'block', objectFit: 'cover', width: '100%', height: '100%' }}
+              {...(imgAttrs || {})}
+            />
+          ) : (
+            // Decorative inline avatar to avoid any external network request when no src
+            <svg
+              viewBox="0 0 100 100"
+              role="img"
+              aria-label={alt ?? 'avatar'}
+              className={className}
+              style={{ display: 'block', width: '100%', height: '100%' }}
+            >
+              <defs>
+                <linearGradient id="pl-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#7b61ff" />
+                  <stop offset="100%" stopColor="#00d4ff" />
+                </linearGradient>
+                <clipPath id="pl-circle">
+                  <circle cx="50" cy="50" r="50" />
+                </clipPath>
+              </defs>
+              <rect width="100" height="100" fill="url(#pl-grad)" clipPath="url(#pl-circle)" />
+              <g clipPath="url(#pl-circle)" transform="translate(0,0)">
+                <circle cx="50" cy="36" r="18" fill="rgba(255,255,255,0.9)" />
+                <rect x="20" y="62" width="60" height="22" rx="6" fill="rgba(255,255,255,0.92)" />
+              </g>
+            </svg>
+          )}
           <svg
             viewBox="0 0 100 100"
             style={{

@@ -252,6 +252,13 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
                 setShowLogoutMenu(v => !v);
               }}
               requiredCode={userPattern || undefined}
+              imgAttrs={{
+                fetchPriority: 'high' as any,
+                width: 200,
+                height: 200,
+                decoding: 'async',
+                loading: 'eager',
+              }}
             />
 
             {isAuthenticated && showLogoutMenu && (
