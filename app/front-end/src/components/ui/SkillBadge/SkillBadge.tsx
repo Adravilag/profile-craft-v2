@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 // Asegura que las reglas de color de skills estén disponibles globalmente
 import '@/styles/04-features/skills-colors.css';
 import type { Skill } from '@/types/api';
-import { findSkillIcon } from '@/features/skills/utils/iconLoader';
+import { findSkillIcon, findIconForSeedEntry } from '@/features/skills/utils/iconLoader';
 import styles from './SkillBadge.module.css';
 import { normalizeSkillName } from '@/features/skills/utils/normalizeSkillName';
 
@@ -24,7 +24,10 @@ const SkillBadge: React.FC<SkillBadgeProps> = ({
   const name = String(skill?.name ?? rawName ?? '');
   const lvl = (skill as any)?.level ?? level;
   const { canonical, normalized, original } = normalizeSkillName(name);
-  const svg = (skill as any)?.svg_path || findSkillIcon(canonical, normalized);
+  const svg =
+    (skill as any)?.svg_path ||
+    findIconForSeedEntry({ svg: (skill as any)?.svg, slug: (skill as any)?.slug, name }) ||
+    findSkillIcon(canonical, normalized);
 
   return (
     <div

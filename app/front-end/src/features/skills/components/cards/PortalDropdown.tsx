@@ -5,6 +5,8 @@ type PortalDropdownProps = {
   anchorRef: React.RefObject<HTMLElement | null>;
   isOpen: boolean;
   onClose: () => void;
+  /** Optional mouse Y coordinate to position the portal vertically around the pointer */
+  mouseY?: number | null;
   children: React.ReactNode;
 };
 
@@ -28,10 +30,12 @@ const PortalDropdown: React.FC<PortalDropdownProps> = ({
   anchorRef,
   isOpen,
   onClose,
+  mouseY = null,
   children,
 }) => {
   const portalRootRef = useRef<HTMLDivElement | null>(null);
   const portalContentRef = useRef<HTMLDivElement | null>(null);
+  const isHoveringRef = useRef(false);
 
   // Crear y limpiar el nodo del portal en el DOM
   useEffect(() => {
@@ -55,6 +59,8 @@ const PortalDropdown: React.FC<PortalDropdownProps> = ({
   // Lógica de posicionamiento
   const position = useCallback(() => {
     if (!isOpen || !portalRootRef.current || !anchorRef.current) return;
+    // If user is hovering the portal content, do not reposition to avoid jumping
+    if (isHoveringRef.current) return;
 
     const anchorRect = anchorRef.current.getBoundingClientRect();
     const portalEl = portalRootRef.current;
@@ -70,24 +76,49 @@ const PortalDropdown: React.FC<PortalDropdownProps> = ({
       left = Math.max(8, anchorRect.left - menuW - 8);
     }
 
-    const yOffset = 60;
-    let top = anchorRect.top + anchorRect.height / 2 - menuH / 2 + yOffset;
+    let top: number;
+    if (typeof mouseY === 'number' && Number.isFinite(mouseY)) {
+      // Position centered on mouse Y (within viewport bounds)
+      top = mouseY - menuH / 2;
+    } else {
+      const yOffset = 60;
+      top = anchorRect.top + anchorRect.height / 2 - menuH / 2 + yOffset;
+    }
     top = Math.max(8, Math.min(top, window.innerHeight - menuH - 8));
 
     portalEl.style.left = `${Math.round(left)}px`;
     portalEl.style.top = `${Math.round(top)}px`;
-  }, [isOpen, anchorRef]);
+  }, [isOpen, anchorRef, mouseY]);
 
   // Observar el contenido para posicionar
   useLayoutEffect(() => {
     if (!isOpen || !portalContentRef.current) return;
 
-    const observer = new MutationObserver(position);
+    const observer = new MutationObserver(() => {
+      // Only trigger position when not hovering
+      if (!isHoveringRef.current) position();
+    });
     observer.observe(portalContentRef.current, { childList: true, subtree: true });
+
+    // Attach hover listeners to avoid repositioning while interacting
+    const el = portalContentRef.current;
+    const handleMouseEnter = () => {
+      isHoveringRef.current = true;
+    };
+    const handleMouseLeave = () => {
+      isHoveringRef.current = false;
+      position();
+    };
+    el.addEventListener('mouseenter', handleMouseEnter);
+    el.addEventListener('mouseleave', handleMouseLeave);
 
     position();
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      el.removeEventListener('mouseenter', handleMouseEnter);
+      el.removeEventListener('mouseleave', handleMouseLeave);
+    };
   }, [isOpen, position]);
 
   // Escuchar eventos de redimensionamiento y scroll

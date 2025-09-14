@@ -5,12 +5,11 @@
    =========================================== */
 
 .testimonialsAdminContentArea {
-  /* Scroll personalizado para mejor UX */
-  max-height: 70vh;
+  /* Área de contenido: una sola región con scroll dentro del modal */
+  /* Now delegate scrolling to ModalShell (.modalContent) to avoid double scroll */
   overflow-y: auto;
+  position: relative;
   overflow-x: hidden;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-primary) transparent;
 }
 
 .testimonialsAdminContentArea::-webkit-scrollbar {
@@ -53,27 +52,26 @@
   margin-bottom: var(--space-6);
 }
 
-.adminHeader h2 {
-  /* Título principal con icono */
-  font-family: var(--font-sans);
-  font-size: var(--text-xl);
-  font-weight: var(--font-weight-semibold);
-  color: var(--text-primary);
-  margin: 0;
+.adminFilters {
+  /* Contenedor de filtros (fuera del área scrolleable) */
+  position: relative;
+  z-index: 10;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid var(--border-primary);
+  padding: var(--space-4) 0 var(--space-4) 0;
+  margin-bottom: var(--space-6);
 
-  /* Layout del título */
+  /* Glassmorphism en filtros */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  /* Layout de filtros */
   display: flex;
-  align-items: center;
   gap: var(--space-2);
-  flex-wrap: wrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
-
-.adminHeader h2 i {
-  /* Icono del título */
-  color: var(--color-accent);
-  font-size: var(--text-lg);
-}
-
 .pendingBadge {
   /* Badge de pendientes */
   background: linear-gradient(135deg, var(--color-warning-button) 0%, #f39c12 100%);
@@ -121,18 +119,17 @@
    =========================================== */
 
 .adminFilters {
-  /* Contenedor de filtros sticky */
-  position: sticky;
-  top: 0;
-  z-index: 5;
-  background: var(--bg-elevated);
-  border-bottom: 1px solid var(--border-primary);
-  padding: var(--space-4) 0 var(--space-4) 0;
-  margin-bottom: var(--space-6);
+  /* Contenedor de filtros dentro del header toolbar (no sticky) */
+  position: relative;
+  z-index: 10;
+  background: transparent;
+  border-bottom: none;
+  padding: var(--space-2) 0 var(--space-2) 0;
+  margin-bottom: 0;
 
-  /* Glassmorphism en filtros */
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  /* Subtle backdrop to match modal header */
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 
   /* Layout de filtros */
   display: flex;
@@ -163,6 +160,10 @@
   white-space: nowrap;
   cursor: pointer;
 
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+
   /* Interactividad */
   transition: all var(--duration-fast) var(--ease-out);
 
@@ -180,6 +181,18 @@
   &:active {
     transform: var(--press-transform);
   }
+}
+
+.filterCount {
+  /* pequeño badge para mostrar el número de items en cada filtro */
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: var(--font-weight-semibold);
+  min-width: 22px;
+  text-align: center;
 }
 
 .filterBtn.active {
@@ -200,13 +213,13 @@
    =========================================== */
 
 .adminContent {
-  /* Área scrolleable del contenido */
+  /* Área de contenido: ahora el scroll principal se aplica a .testimonialsAdminContentArea
+     para que el sticky en .adminFilters funcione correctamente dentro del mismo contenedor */
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: visible;
 
-  /* Scroll personalizado */
+  /* Mantener estilos de scrollbar para elementos internos si es necesario */
   scrollbar-width: thin;
   scrollbar-color: var(--border-primary) transparent;
 }

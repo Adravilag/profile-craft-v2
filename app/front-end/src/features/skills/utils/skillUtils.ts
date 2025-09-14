@@ -165,14 +165,23 @@ export const normalizeSvgPath = (path: string): string => {
       }
 
       // Si el glob devuelve una ruta dentro del repo (p. ej. '/src/assets/svg/...')
-      // en desarrollo esas rutas son válidas y Vite las sirve directamente.
-      // Devolver la URL tal cual evita 404s en dev cuando se transformaba a
-      // '/assets/svg/...' que no siempre existe en el servidor de desarrollo.
+      // o una ruta tipo '/assets/svg/...' normalizar a la forma canónica '/assets/svg/<file>'
+      // para mantener consistencia entre entornos (dev/build/tests).
       const matchesDevPath = devPathIndicators.some(p => viaLower.includes(p));
       if (matchesDevPath || viaLower.includes('/assets/svg/') || viaLower.startsWith('/src/')) {
-        // Preferir la URL dev tal cual (viaGlob) para evitar romper el servidor dev.
-        debugLog.dataLoading(`🔧 normalizeSvgPath output (vite glob dev URL):`, viaGlob);
-        return viaGlob;
+        // Intentar derivar el nombre de fichero y devolver la ruta canónica
+        try {
+          const fileName = inputFileName || viaLower.split('/').pop() || '';
+          const canonical = applyBaseUrl(`/assets/svg/${fileName}`);
+          debugLog.dataLoading(
+            `🔧 normalizeSvgPath output (vite glob normalized to canonical):`,
+            canonical
+          );
+          return canonical;
+        } catch (e) {
+          debugLog.warn('normalizeSvgPath: error deriving canonical path from viaGlob', e);
+          return viaGlob;
+        }
       }
 
       // En cualquier otro caso (URLs externas, http, etc.) devolvemos viaGlob

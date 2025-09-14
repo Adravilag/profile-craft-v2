@@ -184,18 +184,58 @@ export const updateExperience = (id: string, experience: Partial<Experience>) =>
 export const deleteExperience = (id: string) => API.delete(`/admin/experiences/${id}`);
 
 // Projects list (public)
-export const getProjects = async () => {
+export const getProjects = async (options?: { signal?: AbortSignal }) => {
   const userId = await getDynamicUserId();
   secureApiLogger.info('🔄 Obteniendo proyectos');
-  return API.get<Project[]>(`/projects?userId=${userId}`).then(r => r.data);
+  try {
+    return (await API.get<Project[]>(`/projects?userId=${userId}`, { signal: options?.signal }))
+      .data;
+  } catch (err) {
+    const url = `${API_BASE_URL}/api/projects?userId=${userId}`;
+    const resp = await fetch(url, { signal: options?.signal });
+    if (!resp.ok) throw new Error(`Failed fetching projects: ${resp.status}`);
+    return (await resp.json()) as Project[];
+  }
 };
 
 // Skill type imported desde src/types/api
 
-export const getSkills = async () => {
+export const getSkills = async (options?: { signal?: AbortSignal }) => {
   const userId = await getDynamicUserId();
   debugLog.api('🔄 Obteniendo habilidades para usuario:', userId);
-  return API.get<Skill[]>(`/skills?userId=${userId}`).then(r => r.data);
+  try {
+    return (await API.get<Skill[]>(`/skills?userId=${userId}`, { signal: options?.signal })).data;
+  } catch (err) {
+    const url = `${API_BASE_URL}/api/skills?userId=${userId}`;
+    const resp = await fetch(url, { signal: options?.signal });
+    if (!resp.ok) throw new Error(`Failed fetching skills: ${resp.status}`);
+    return (await resp.json()) as Skill[];
+  }
+};
+
+/**
+ * Obtiene una habilidad por su id.
+ * Útil para obtener el comentario al vuelo.
+ */
+export const getSkill = async (id: number | string, options?: { signal?: AbortSignal }) => {
+  debugLog.api('🔄 Obteniendo habilidad por id:', id);
+  try {
+    // Axios supports AbortSignal via the `signal` option in modern versions.
+    // If unavailable, fall back to a manual fetch as a last resort.
+    if ((API as any).get.length >= 2) {
+      // prefer to pass config with signal
+      const res = await API.get<Skill>(`/skills/${id}`, { signal: options?.signal });
+      return res.data;
+    }
+
+    // Fallback using fetch when axios doesn't accept signal in this env
+    const resp = await fetch(`/api/skills/${id}`, { signal: options?.signal });
+    if (!resp.ok) throw new Error(`Failed fetching skill: ${resp.status}`);
+    return (await resp.json()) as Skill;
+  } catch (err) {
+    debugLog.warn('Error fetching single skill', err);
+    throw err;
+  }
 };
 
 export const createSkill = async (skill: Omit<Skill, 'id'>) => {
@@ -217,7 +257,7 @@ export const createSkill = async (skill: Omit<Skill, 'id'>) => {
   return API.post<Skill>(`/skills`, skillWithUserId).then(r => r.data);
 };
 
-export const updateSkill = (id: number, skill: Partial<Skill>) => {
+export const updateSkill = (id: number | string, skill: Partial<Skill>) => {
   // Validar que al menos uno de los campos obligatorios esté presente si se está actualizando
   if (skill.name !== undefined && (!skill.name || skill.name.trim() === '')) {
     debugLog.error('❌ Error: El nombre de la habilidad no puede estar vacío');
@@ -233,7 +273,7 @@ export const updateSkill = (id: number, skill: Partial<Skill>) => {
   return API.put<Skill>(`/skills/${id}`, skill).then(r => r.data);
 };
 
-export const deleteSkill = (id: number) => API.delete(`/skills/${id}`);
+export const deleteSkill = (id: number | string) => API.delete(`/skills/${id}`);
 
 // Testimonial, Project y otros tipos importados desde src/types/api
 

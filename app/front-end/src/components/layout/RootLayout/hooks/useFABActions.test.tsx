@@ -63,7 +63,7 @@ describe('useFABActions', () => {
       const { result } = renderHook(() =>
         useFABActions({
           currentSection: 'testimonials',
-          isAuthenticated: false,
+          isAuthenticated: true,
         })
       );
 
@@ -106,7 +106,7 @@ describe('useFABActions', () => {
       const { result } = renderHook(() =>
         useFABActions({
           currentSection: 'testimonials',
-          isAuthenticated: false,
+          isAuthenticated: true,
         })
       );
 

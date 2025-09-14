@@ -50,6 +50,13 @@
   box-shadow: 0 10px 24px rgb(0 0 0 / 35%);
 }
 
+/* Cuando el comentario en portal está abierto, ocultar los hints inline para evitar duplicidad */
+.previewOpen .tooltipHint {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
 /* Hover mantiene el gradiente sin distraer */
 
 .skillCard:focus-within {

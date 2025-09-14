@@ -64,6 +64,7 @@ describe('skillsController - comment normalization', () => {
     const req: any = {
       params: { id: 'id' },
       body: { name: 'N', category: 'C', comment: 'New string' },
+      headers: { 'content-type': 'application/json' },
     };
     const res = mockRes();
 
@@ -72,5 +73,93 @@ describe('skillsController - comment normalization', () => {
     expect(mockFind).toHaveBeenCalled();
     const updateArg = mockFind.mock.calls[0][1];
     expect(updateArg.comment).toEqual({ en: 'New string', es: '' });
+  });
+
+  it('updateSkill should allow comment-only updates without name and category', async () => {
+    const mockFind = vi
+      .fn()
+      .mockResolvedValue({
+        _id: 'id',
+        name: 'Existing Name',
+        category: 'Existing Category',
+        comment: { en: 'Updated comment', es: '' },
+      });
+    (Skill as any).findByIdAndUpdate = mockFind;
+
+    const req: any = {
+      params: { id: 'id' },
+      body: { comment: 'Updated comment' },
+      headers: { 'content-type': 'application/json' },
+    };
+    const res = mockRes();
+
+    await skillsController.updateSkill(req, res);
+
+    expect(mockFind).toHaveBeenCalled();
+    const updateArg = mockFind.mock.calls[0][1];
+    expect(updateArg.comment).toEqual({ en: 'Updated comment', es: '' });
+    expect(updateArg.name).toBeUndefined(); // Should not include name in update
+    expect(updateArg.category).toBeUndefined(); // Should not include category in update
+    expect(res.json).toHaveBeenCalled();
+  });
+
+  it('updateSkill should reject updates with no valid fields', async () => {
+    const req: any = {
+      params: { id: 'id' },
+      body: {},
+      headers: { 'content-type': 'application/json' },
+    };
+    const res = mockRes();
+
+    await skillsController.updateSkill(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        error: 'Al menos un campo debe ser proporcionado para actualizar',
+        code: 'VALIDATION_ERROR',
+      })
+    );
+  });
+
+  it('updateSkill should require name and category for non-comment-only updates', async () => {
+    const req: any = {
+      params: { id: 'id' },
+      body: { level: 75 }, // Trying to update level without name/category
+      headers: { 'content-type': 'application/json' },
+    };
+    const res = mockRes();
+
+    await skillsController.updateSkill(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        error: 'Nombre y categoría son requeridos para actualizaciones completas',
+        code: 'VALIDATION_ERROR',
+      })
+    );
+  });
+
+  it('updateSkill should handle skill not found', async () => {
+    const mockFind = vi.fn().mockResolvedValue(null);
+    (Skill as any).findByIdAndUpdate = mockFind;
+
+    const req: any = {
+      params: { id: 'nonexistent-id' },
+      body: { comment: 'Test comment' },
+      headers: { 'content-type': 'application/json' },
+    };
+    const res = mockRes();
+
+    await skillsController.updateSkill(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        error: 'Habilidad no encontrada',
+        code: 'NOT_FOUND',
+      })
+    );
   });
 });

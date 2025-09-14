@@ -9,17 +9,24 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import SkillsSection from './SkillsSection';
+import seed from '@/config/skill_setings.json';
 
-// Mock data que simula cambios en los skills
-let mockSkills = [
-  { id: 1, name: 'React', level: 90, category: 'Frontend', featured: true },
-  { id: 2, name: 'JavaScript', level: 85, category: 'Frontend', featured: false },
-];
+// Helper para obtener nombre por slug desde la semilla (fallback a slug si no existe)
+const nameBySlug = (slug: string) => seed.find(s => s.slug === slug)?.name || slug;
 
-let mockSkillsIcons = [
-  { name: 'react', svg_path: 'react.svg', difficulty_level: '3' },
-  { name: 'javascript', svg_path: 'javascript.svg', difficulty_level: '2' },
-];
+// Mock data que simula cambios en los skills — inicializado desde la semilla
+let mockSkills = seed
+  .slice(0, 2)
+  .map((s, i) => ({
+    id: i + 1,
+    name: s.name,
+    level: 90 - i * 5,
+    category: s.category || 'Frontend',
+    featured: i === 0,
+  }));
+let mockSkillsIcons = seed
+  .slice(0, 2)
+  .map(s => ({ name: s.name.toLowerCase(), svg_path: s.svg, difficulty_level: '3' }));
 
 // Contador de renders para verificar reactividad
 let renderCount = 0;
@@ -100,15 +107,20 @@ describe('[TEST] SkillsSection - Reactivity Verification', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     renderCount = 0;
-    // Reset inicial
-    mockSkills = [
-      { id: 1, name: 'React', level: 90, category: 'Frontend', featured: true },
-      { id: 2, name: 'JavaScript', level: 85, category: 'Frontend', featured: false },
-    ];
-    mockSkillsIcons = [
-      { name: 'react', svg_path: 'react.svg', difficulty_level: '3' },
-      { name: 'javascript', svg_path: 'javascript.svg', difficulty_level: '2' },
-    ];
+    // Reset inicial: derive los mocks desde la semilla para evitar datos hardcodeados
+    const base = seed.slice(0, 2);
+    mockSkills = base.map((s, i) => ({
+      id: i + 1,
+      name: s.name,
+      level: 90 - i * 5,
+      category: s.category || 'Frontend',
+      featured: i === 0,
+    }));
+    mockSkillsIcons = base.map(s => ({
+      name: s.name.toLowerCase(),
+      svg_path: s.svg || `${s.slug || s.name.toLowerCase()}.svg`,
+      difficulty_level: '3',
+    }));
   });
 
   it('✅ should pass: component has reactive dependencies on skills state', () => {
@@ -126,7 +138,7 @@ describe('[TEST] SkillsSection - Reactivity Verification', () => {
     // Simular cambio en mockSkills (como lo haría handleAddSkill internamente)
     mockSkills = [
       ...mockSkills,
-      { id: 3, name: 'Vue', level: 75, category: 'Frontend', featured: false },
+      { id: 3, name: nameBySlug('vue'), level: 75, category: 'Frontend', featured: false },
     ];
 
     // Re-render para simular el cambio de estado
@@ -152,9 +164,9 @@ describe('[TEST] SkillsSection - Reactivity Verification', () => {
 
     // Cambiar los skills
     mockSkills = [
-      { id: 1, name: 'React', level: 95, category: 'Frontend', featured: true }, // Cambio nivel
-      { id: 2, name: 'JavaScript', level: 85, category: 'Frontend', featured: false },
-      { id: 4, name: 'Angular', level: 70, category: 'Frontend', featured: false }, // Nuevo skill
+      { id: 1, name: nameBySlug('react'), level: 95, category: 'Frontend', featured: true }, // Cambio nivel
+      { id: 2, name: nameBySlug('javascript'), level: 85, category: 'Frontend', featured: false },
+      { id: 4, name: nameBySlug('angular'), level: 70, category: 'Frontend', featured: false }, // Nuevo skill
     ];
 
     // Re-render
@@ -182,7 +194,13 @@ describe('[TEST] SkillsSection - Reactivity Verification', () => {
     // Simular múltiples cambios como los que harían las operaciones CRUD
 
     // 1. Añadir skill
-    mockSkills.push({ id: 5, name: 'TypeScript', level: 88, category: 'Frontend', featured: true });
+    mockSkills.push({
+      id: 5,
+      name: nameBySlug('typescript'),
+      level: 88,
+      category: 'Frontend',
+      featured: true,
+    });
     rerender(<SkillsSection showAdminFAB={false} />);
 
     expect(screen.getByTestId('skill-TypeScript')).toBeInTheDocument();
@@ -198,7 +216,7 @@ describe('[TEST] SkillsSection - Reactivity Verification', () => {
 
     // 3. Eliminar skill
     const beforeDeleteRenderCount = renderCount;
-    mockSkills = mockSkills.filter(s => s.name !== 'JavaScript');
+    mockSkills = mockSkills.filter(s => s.name !== nameBySlug('javascript'));
     rerender(<SkillsSection showAdminFAB={false} />);
 
     expect(screen.queryByTestId('skill-JavaScript')).not.toBeInTheDocument();

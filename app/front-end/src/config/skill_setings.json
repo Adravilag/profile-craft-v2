@@ -1,0 +1,303 @@
+[
+  {
+    "name": "JavaScript",
+    "slug": "javascript",
+    "category": "language",
+    "color": "#F7DF1E",
+    "svg": "javascript.svg"
+  },
+  {
+    "name": "TypeScript",
+    "slug": "typescript",
+    "category": "language",
+    "color": "#3178C6",
+    "svg": "typescript.svg"
+  },
+  {
+    "name": "React",
+    "slug": "react",
+    "category": "framework",
+    "color": "#61DAFB",
+    "svg": "react.svg"
+  },
+  {
+    "name": "Vue.js",
+    "slug": "vue",
+    "category": "framework",
+    "color": "#4FC08D",
+    "svg": "vue-js.svg"
+  },
+  {
+    "name": "Angular",
+    "slug": "angular",
+    "category": "framework",
+    "color": "#DD0031",
+    "svg": "angular.svg"
+  },
+  {
+    "name": "Node.js",
+    "slug": "nodejs",
+    "category": "runtime",
+    "color": "#43853d",
+    "svg": "node-js.svg"
+  },
+  {
+    "name": "Express",
+    "slug": "express",
+    "category": "framework",
+    "color": "#000000",
+    "svg": "express.svg"
+  },
+  {
+    "name": "HTML5",
+    "slug": "html5",
+    "category": "language",
+    "color": "#E34F26",
+    "svg": "html5.svg"
+  },
+  {
+    "name": "CSS3",
+    "slug": "css3",
+    "category": "style",
+    "color": "#1572B6",
+    "svg": "css3.svg"
+  },
+  {
+    "name": "Sass",
+    "slug": "sass",
+    "category": "style",
+    "color": "#CF649A",
+    "svg": "sass.svg"
+  },
+  {
+    "name": "Tailwind CSS",
+    "slug": "tailwind",
+    "category": "style",
+    "color": "#06B6D4",
+    "svg": "tailwind-css.svg"
+  },
+  {
+    "name": "Bootstrap",
+    "slug": "bootstrap",
+    "category": "style",
+    "color": "#7B14FF",
+    "svg": "bootstrap.svg"
+  },
+  {
+    "name": "Webpack",
+    "slug": "webpack",
+    "category": "tool",
+    "color": "#8ED6FB",
+    "svg": "webpack.svg"
+  },
+  {
+    "name": "Vite",
+    "slug": "vite",
+    "category": "tool",
+    "color": "#646CFF",
+    "svg": "vite.svg"
+  },
+  {
+    "name": "Git",
+    "slug": "git",
+    "category": "tool",
+    "color": "#F05033",
+    "svg": "git.svg"
+  },
+  {
+    "name": "GitHub",
+    "slug": "github",
+    "category": "platform",
+    "color": "#181717",
+    "svg": "github-actions.svg"
+  },
+  {
+    "name": "Docker",
+    "slug": "docker",
+    "category": "platform",
+    "color": "#2995dd",
+    "svg": "docker.svg"
+  },
+  {
+    "name": "Kubernetes",
+    "slug": "kubernetes",
+    "category": "platform",
+    "color": "#326CE5",
+    "svg": "kubernetes.svg"
+  },
+  {
+    "name": "AWS",
+    "slug": "aws",
+    "category": "cloud",
+    "color": "#FF9900",
+    "svg": "amazonwebservices.svg"
+  },
+  {
+    "name": "Azure",
+    "slug": "azure",
+    "category": "cloud",
+    "color": "#0078D7",
+    "svg": "azure.svg"
+  },
+  {
+    "name": "PostgreSQL",
+    "slug": "postgresql",
+    "category": "database",
+    "color": "#326791",
+    "svg": "postgresql.svg"
+  },
+  {
+    "name": "MySQL",
+    "slug": "mysql",
+    "category": "database",
+    "color": "#00758F",
+    "svg": "mysql.svg"
+  },
+  {
+    "name": "MongoDB",
+    "slug": "mongodb",
+    "category": "database",
+    "color": "#47A248",
+    "svg": "mongodb.svg"
+  },
+  {
+    "name": "Redis",
+    "slug": "redis",
+    "category": "database",
+    "color": "#DC362F",
+    "svg": "redis.svg"
+  },
+  {
+    "name": "Python",
+    "slug": "python",
+    "category": "language",
+    "color": "#3776AB",
+    "svg": "python.svg"
+  },
+  {
+    "name": "Java",
+    "slug": "java",
+    "category": "language",
+    "color": "#ED7524",
+    "svg": "java.svg"
+  },
+  {
+    "name": "Go",
+    "slug": "go",
+    "category": "language",
+    "color": "#00ADB5",
+    "svg": "go.svg"
+  },
+  {
+    "name": "Rust",
+    "slug": "rust",
+    "category": "language",
+    "color": "#DEA584",
+    "svg": "rust.svg"
+  },
+  {
+    "name": "PHP",
+    "slug": "php",
+    "category": "language",
+    "color": "#777BB3",
+    "svg": "php.svg"
+  },
+  {
+    "name": "Docker Compose",
+    "slug": "docker-compose",
+    "category": "tool",
+    "color": "#2496ED",
+    "svg": "docker.svg"
+  },
+  {
+    "name": "Jest",
+    "slug": "jest",
+    "category": "testing",
+    "color": "#C21325",
+    "svg": "jest.svg"
+  },
+  {
+    "name": "Cypress",
+    "slug": "cypress",
+    "category": "testing",
+    "color": "#17241A",
+    "svg": "cypress.svg"
+  },
+  {
+    "name": "Jenkins",
+    "slug": "jenkins",
+    "category": "ci",
+    "color": "#D55036",
+    "svg": "jenkins.svg"
+  },
+  {
+    "name": "Terraform",
+    "slug": "terraform",
+    "category": "infra",
+    "color": "#6246ED",
+    "svg": "terraform.svg"
+  },
+  {
+    "name": "Ansible",
+    "slug": "ansible",
+    "category": "infra",
+    "color": "#EE2B33",
+    "svg": "ansible.svg"
+  },
+  {
+    "name": "Dockerfile",
+    "slug": "dockerfile",
+    "category": "tool",
+    "color": "#2496ED",
+    "svg": "docker.svg"
+  },
+  {
+    "name": "GraphQL",
+    "slug": "graphql",
+    "category": "api",
+    "color": "#E535AB",
+    "svg": "graphql.svg"
+  },
+  {
+    "name": "REST",
+    "slug": "rest",
+    "category": "api",
+    "color": "#6B7280",
+    "svg": "restapi.svg"
+  },
+  {
+    "name": "Docker Swarm",
+    "slug": "docker-swarm",
+    "category": "platform",
+    "color": "#2496ED",
+    "svg": "docker.svg"
+  },
+  {
+    "name": "Figma",
+    "slug": "figma",
+    "category": "design",
+    "color": "#F24E1E",
+    "svg": "figma.svg"
+  },
+  {
+    "name": "Adobe XD",
+    "slug": "adobexd",
+    "category": "design",
+    "color": "#FF61DA",
+    "svg": "adobexd.svg"
+  },
+  {
+    "name": "Photoshop",
+    "slug": "photoshop",
+    "category": "design",
+    "color": "#31A8FF",
+    "svg": "photoshop.svg"
+  },
+  {
+    "name": "Sketch",
+    "slug": "sketch",
+    "category": "design",
+    "color": "#F7B500",
+    "svg": "sketch.svg"
+  }
+]

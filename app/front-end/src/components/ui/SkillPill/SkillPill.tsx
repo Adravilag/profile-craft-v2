@@ -2,7 +2,7 @@ import React from 'react';
 // Import global skill color rules so colors apply wherever se use el componente
 import '@/styles/04-features/skills-colors.css';
 import { normalizeSkillName } from '@/features/skills/utils/normalizeSkillName';
-import { findSkillIcon } from '@/features/skills/utils/iconLoader';
+import { findSkillIcon, findIconForSeedEntry } from '@/features/skills/utils/iconLoader';
 
 interface SkillPillProps {
   name: string;
@@ -34,7 +34,9 @@ const SkillPill: React.FC<SkillPillProps> = ({
   const { normalized, canonical, original } = normalize(name);
 
   const renderIcon = () => {
-    const iconUrl = findSkillIcon(canonical, normalized);
+    const iconUrl =
+      findIconForSeedEntry({ svg: undefined, slug: canonical, name }) ||
+      findSkillIcon(canonical, normalized);
 
     if (iconUrl) {
       return (

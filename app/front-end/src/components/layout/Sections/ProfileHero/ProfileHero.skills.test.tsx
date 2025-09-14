@@ -140,7 +140,7 @@ vi.mock('@/components/ui/SkillBadge/SkillBadge', () => ({
   ),
 }));
 
-vi.mock('@/components/Auth/PatternLogin', () => ({
+vi.mock('@/components/auth/PatternLogin', () => ({
   default: ({ alt }: { alt: string }) => <img data-testid="pattern-login" alt={alt} />,
 }));
 

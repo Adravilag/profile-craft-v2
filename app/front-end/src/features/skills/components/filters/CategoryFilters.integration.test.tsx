@@ -6,6 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import CategoryFilters from './CategoryFilters';
 import { NavigationProvider } from '@/contexts/NavigationContext';
 import { SkillsFilterProvider } from '../../contexts/SkillsFilterContext';
+import seed from '@/config/skill_setings.json';
 
 // Mock hooks
 vi.mock('@/hooks/useIsOnSkillsPage', () => ({
@@ -41,18 +42,19 @@ const renderWithProviders = (component: React.ReactElement) => {
 };
 
 describe('[TEST] CategoryFilters Integration - Filtro de habilidades', () => {
-  const mockSkillsGrouped = {
-    Frontend: [
-      { id: 1, name: 'React', category: 'Frontend', level: 90 },
-      { id: 2, name: 'Vue', category: 'Frontend', level: 80 },
-    ],
-    Backend: [
-      { id: 3, name: 'Node.js', category: 'Backend', level: 85 },
-      { id: 4, name: 'Python', category: 'Backend', level: 75 },
-    ],
-  };
+  // derive grouped skills and categories from seed for deterministic tests
+  const grouped = seed.reduce(
+    (acc: Record<string, any[]>, s) => {
+      const cat = s.category || 'Uncategorized';
+      if (!acc[cat]) acc[cat] = [];
+      acc[cat].push({ id: acc[cat].length + 1, name: s.name, category: cat, level: 50 });
+      return acc;
+    },
+    {} as Record<string, any[]>
+  );
 
-  const mockCategories = ['All', 'Frontend', 'Backend'];
+  const mockSkillsGrouped = grouped;
+  const mockCategories = ['All', ...Object.keys(grouped)];
   let mockOnCategoryChange: any;
   let currentSelectedCategory = 'All';
 

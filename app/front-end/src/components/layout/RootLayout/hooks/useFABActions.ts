@@ -46,6 +46,10 @@ export const useFABActions = ({
 
   // Acciones del FAB para la sección de testimonios
   const testimonialsFABActions = useMemo<LocalFABAction[]>(() => {
+    // Mostrar acciones de testimonios solo para usuarios autenticados.
+    // El botón "Añadir Testimonio" ahora es exclusivo para usuarios autenticados.
+    if (!isAuthenticated) return [];
+
     const actions: LocalFABAction[] = [
       {
         id: 'add-testimonial',
@@ -101,21 +105,20 @@ export const useFABActions = ({
       },
     ];
 
-    if (isAuthenticated) {
-      actions.unshift({
-        id: 'admin-testimonials',
-        onClick: () => {
-          try {
-            openTestimonialsAdmin();
-          } catch (err) {
-            console.error('No se pudo abrir admin de testimonios:', err);
-          }
-        },
-        icon: 'fas fa-comments',
-        label: 'Gestionar Testimonios',
-        color: 'primary',
-      });
-    }
+    // Acción administrativa (solo para autenticados) - aparece antes
+    actions.unshift({
+      id: 'admin-testimonials',
+      onClick: () => {
+        try {
+          openTestimonialsAdmin();
+        } catch (err) {
+          console.error('No se pudo abrir admin de testimonios:', err);
+        }
+      },
+      icon: 'fas fa-comments',
+      label: 'Gestionar Testimonios',
+      color: 'primary',
+    });
 
     return actions;
   }, [isAuthenticated, openModal, closeModal, openTestimonialsAdmin]);

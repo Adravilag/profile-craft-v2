@@ -40,12 +40,29 @@
 }
 
 .modalHeader {
+  /* Stack header rows vertically: title row first, toolbar row below */
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: stretch;
   padding: 20px 28px 14px 28px;
   border-bottom: 1px solid var(--md-sys-color-outline-variant, #444);
   background: var(--md-sys-color-surface, #1e1e1e);
+}
+
+.modalHeaderTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.modalHeaderToolbar {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  justify-content: flex-start;
 }
 
 /* Estilos para la barra de progreso */
@@ -241,11 +258,10 @@
 
 .modalContent {
   padding: 22px 28px 28px 28px;
-  overflow-y: auto;
+  /* Let internal panels manage scrolling (avoid modal-level scrollbar) */
+  overflow: visible;
   flex: 1 1 auto;
   overscroll-behavior: contain;
-  scrollbar-width: thin;
-  scrollbar-color: var(--md-sys-color-outline, #666) transparent;
   /* ensure content doesn't collapse when min-width changes */
   min-width: 0;
 }

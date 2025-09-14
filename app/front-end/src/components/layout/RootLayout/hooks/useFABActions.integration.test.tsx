@@ -54,7 +54,7 @@ describe('[INTEGRATION] useFABActions - Testimonial Submission', () => {
 
     // Renderizar el hook con providers
     const { result } = renderHook(
-      () => useFABActions({ currentSection: 'testimonials', isAuthenticated: false }),
+      () => useFABActions({ currentSection: 'testimonials', isAuthenticated: true }),
       { wrapper: AllProvidersWrapper }
     );
 

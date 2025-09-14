@@ -77,6 +77,18 @@ export const debugLog = {
     }
   },
 
+  // Información general (mapeada a console.info cuando está habilitado)
+  info: (...args: any[]) => {
+    if (DEBUG_CONFIG.ENABLED) {
+      // Use console.info if disponible, otherwise fallback a console.log
+      if (typeof console.info === 'function') {
+        console.info(...args);
+      } else {
+        console.log(...args);
+      }
+    }
+  },
+
   // Los errores siempre se muestran (importantes para debugging en producción)
   error: (...args: any[]) => {
     console.error(...args);

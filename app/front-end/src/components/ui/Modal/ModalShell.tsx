@@ -24,6 +24,8 @@ interface ModalShellProps {
   onClose?: () => void;
   /** custom actions node placed in the header (overrides actionButtons if provided) */
   actions?: ReactNode;
+  /** custom actions node placed in the header (rendered next to the title) */
+  headerActions?: ReactNode;
   /** simple declarative action buttons shown in the header (ignored when `actions` is provided) */
   actionButtons?: Array<{
     key?: string;
@@ -75,6 +77,7 @@ const ModalShell: FC<ModalShellProps> = ({
   formData,
   validationErrors = {},
   selectedTechnologies = [],
+  headerActions,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
@@ -299,27 +302,30 @@ const ModalShell: FC<ModalShellProps> = ({
     >
       <div className={styles.modalContainer} role="document" tabIndex={-1} style={containerStyle}>
         <div className={styles.modalHeader}>
-          <h3 id="modal-title" className={styles.modalTitle}>
-            {title ?? 'Modal'}
-          </h3>
-          <button
-            aria-label="Cerrar"
-            className={styles.closeButton}
-            onClick={() => {
-              try {
-                if (typeof onClose === 'function') onClose();
-              } catch (err) {
-                /* noop */
-              }
-              try {
-                document.body.classList.remove('modal-open');
-              } catch (err) {
-                /* noop */
-              }
-            }}
-          >
-            ✕
-          </button>
+          <div className={styles.modalHeaderTop}>
+            <h3 id="modal-title" className={styles.modalTitle}>
+              {title ?? 'Modal'}
+            </h3>
+            <button
+              aria-label="Cerrar"
+              className={styles.closeButton}
+              onClick={() => {
+                try {
+                  if (typeof onClose === 'function') onClose();
+                } catch (err) {
+                  /* noop */
+                }
+                try {
+                  document.body.classList.remove('modal-open');
+                } catch (err) {
+                  /* noop */
+                }
+              }}
+            >
+              ✕
+            </button>
+          </div>
+          {headerActions && <div className={styles.modalHeaderToolbar}>{headerActions}</div>}
         </div>
 
         {/* Barra de progreso del formulario */}

@@ -155,8 +155,29 @@ export const testimonialsController = {
       const { userId, status } = req.query;
       logger.debug('💬 Obteniendo testimonios admin para usuario:', userId, 'status:', status);
 
-      const query: any = { user_id: userId };
+      // userId is required for this admin endpoint. Resolve sentinels like 'admin' or 'dynamic-admin-id'
+      if (!userId) {
+        res.status(400).json({ error: 'userId query parameter is required' });
+        return;
+      }
 
+      let resolvedUserId = String(userId);
+      if (resolvedUserId === 'admin' || resolvedUserId === 'dynamic-admin-id') {
+        try {
+          resolvedUserId = await resolveUserId(resolvedUserId);
+        } catch (e) {
+          logger.warn('⚠️ No se pudo resolver sentinel userId en getAdminTestimonials:', userId, e);
+        }
+      }
+
+      // Validate ObjectId format before querying to avoid CastError
+      if (!/^[0-9a-fA-F]{24}$/.test(resolvedUserId)) {
+        logger.warn('⚠️ userId inválido para consultas admin (no es ObjectId):', resolvedUserId);
+        res.status(400).json({ error: 'userId inválido para consultas admin' });
+        return;
+      }
+
+      const query: any = { user_id: resolvedUserId };
       // Filtrar por estado si se proporciona
       if (status && status !== 'all') {
         query.status = status;

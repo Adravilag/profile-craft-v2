@@ -1,12 +1,14 @@
 // Barrel exports para el feature skills
 
 // Utils
-export { normalizeSkillName, generateSkillVariants } from './utils/normalizeSkillName';
-export { findSkillIcon, svgMap, TECH_ALIASES, getIconLoaderStats } from './utils/iconLoader';
+export {
+  findSkillIcon,
+  svgMap,
+  getIconLoaderStats,
+  findIconForSeedEntry,
+  mapSeedToSvg,
+} from './utils/iconLoader';
 export * from './utils/skillUtils';
-
-// Data
-export * from './data/skillResources';
 
 // Types
 export * from './types/skills';

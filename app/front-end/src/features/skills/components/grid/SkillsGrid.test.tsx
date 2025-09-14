@@ -4,28 +4,43 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import SkillsGrid from './SkillsGrid';
 import type { SkillsGridProps } from '../../types/skills';
+// Use seed JSON to build predictable test data
+import seed from '@/config/skill_setings.json';
 
 describe('[TEST] SkillsGrid - Funcionalidad "Mostrar más"', () => {
-  const mockSkillsIcons = [
-    { name: 'react', svg: '<svg>React</svg>', svg_path: '/react.svg' },
-    { name: 'vue', svg: '<svg>Vue</svg>', svg_path: '/vue.svg' },
-    { name: 'angular', svg: '<svg>Angular</svg>', svg_path: '/angular.svg' },
-  ];
+  // Build a small deterministic subset from seed for test
+  const firstThree = seed.slice(0, 6);
+  const mockSkillsIcons = firstThree.map(s => ({
+    name: s.name,
+    svg: `<svg>${s.name}</svg>`,
+    svg_path: `/${s.svg || ''}`,
+  }));
 
   const mockFilteredGrouped = {
     Destacados: [
-      { id: 1, name: 'React', category: 'Frontend', level: 95, featured: true },
-      { id: 2, name: 'Node.js', category: 'Backend', level: 90, featured: true },
+      { id: 1, name: firstThree[0].name, category: 'Frontend', level: 95, featured: true },
+      { id: 2, name: firstThree[1].name, category: 'Backend', level: 90, featured: true },
     ],
     Frontend: [
-      { id: 1, name: 'React', category: 'Frontend', level: 95, featured: true },
-      { id: 3, name: 'Vue', category: 'Frontend', level: 85 },
-      { id: 4, name: 'Angular', category: 'Frontend', level: 80 },
+      { id: 1, name: firstThree[0].name, category: 'Frontend', level: 95, featured: true },
+      { id: 3, name: firstThree[2].name, category: 'Frontend', level: 85 },
+      { id: 4, name: firstThree[3]?.name || 'Angular', category: 'Frontend', level: 80 },
     ],
     Backend: [
-      { id: 2, name: 'Node.js', category: 'Backend', level: 90, featured: true },
-      { id: 5, name: 'Python', category: 'Backend', level: 85 },
-      { id: 6, name: 'Java', category: 'Backend', level: 75 },
+      { id: 2, name: firstThree[1].name, category: 'Backend', level: 90, featured: true },
+      // Use further entries from the seed for backend examples when available
+      {
+        id: 5,
+        name: seed.find(s => s.category === 'Backend')?.name || 'Python',
+        category: 'Backend',
+        level: 85,
+      },
+      {
+        id: 6,
+        name: seed.find(s => s.slug === 'java')?.name || 'Java',
+        category: 'Backend',
+        level: 75,
+      },
     ],
   };
 

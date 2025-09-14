@@ -2,6 +2,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { vi, describe, test, expect, beforeEach } from 'vitest';
 import { useSkills } from './useSkills';
 import type { Skill } from '@/types/api';
+import seed from '@/config/skill_setings.json';
 
 // Mock del servicio API
 vi.mock('../../../../../services/api', () => ({
@@ -11,43 +12,17 @@ vi.mock('../../../../../services/api', () => ({
 const mockGetSkills = vi.mocked(await import('../../../../../services/api')).getSkills;
 
 describe('useSkills - ProfileHero', () => {
-  const mockSkills: Skill[] = [
-    {
-      id: 1,
-      name: 'React',
-      category: 'Frontend',
-      level: 95,
-      featured: true,
-    },
-    {
-      id: 2,
-      name: 'TypeScript',
-      category: 'Frontend',
-      level: 85,
-      featured: true,
-    },
-    {
-      id: 3,
-      name: 'Node.js',
-      category: 'Backend',
-      level: 90,
-      featured: true,
-    },
-    {
-      id: 4,
-      name: 'HTML',
-      category: 'Frontend',
-      level: 100,
-      featured: true,
-    },
-    {
-      id: 5,
-      name: 'Python',
-      category: 'Backend',
-      level: 75,
-      featured: false,
-    },
-  ];
+  // Derive deterministic mock data from the canonical seed to avoid duplication
+  const mockSkills: Skill[] = seed.slice(0, 5).map(
+    (s, i) =>
+      ({
+        id: i + 1,
+        name: s.name,
+        category: s.category || (i % 2 === 0 ? 'Frontend' : 'Backend'),
+        level: [95, 85, 90, 100, 75][i] || 50,
+        featured: i < 4, // first 4 are featured similar to previous expectations
+      }) as Skill
+  );
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -82,9 +57,9 @@ describe('useSkills - ProfileHero', () => {
   test('[TEST] - Hook debe manejar skills sin nivel definido', async () => {
     // Arrange
     const skillsWithUndefinedLevel: Skill[] = [
-      { id: 1, name: 'React', featured: true, level: 95 },
-      { id: 2, name: 'Vue', featured: true }, // Sin level
-      { id: 3, name: 'Angular', featured: true, level: 80 },
+      { id: 1, name: seed[0].name, featured: true, level: 95 },
+      { id: 2, name: seed[1].name, featured: true }, // Sin level
+      { id: 3, name: seed[2].name, featured: true, level: 80 },
     ];
 
     mockGetSkills.mockResolvedValue(skillsWithUndefinedLevel);
@@ -106,16 +81,17 @@ describe('useSkills - ProfileHero', () => {
 
   test('[TEST] - Hook debe proporcionar método para limitar skills destacados', async () => {
     // Arrange
-    const manyFeaturedSkills: Skill[] = [
-      { id: 1, name: 'React', featured: true, level: 95 },
-      { id: 2, name: 'TypeScript', featured: true, level: 90 },
-      { id: 3, name: 'Node.js', featured: true, level: 85 },
-      { id: 4, name: 'HTML', featured: true, level: 100 },
-      { id: 5, name: 'CSS', featured: true, level: 88 },
-      { id: 6, name: 'JavaScript', featured: true, level: 92 },
-      { id: 7, name: 'Vue', featured: true, level: 75 },
-      { id: 8, name: 'Angular', featured: true, level: 80 },
-    ];
+    const manyFeaturedSkills: Skill[] = seed
+      .slice(0, 8)
+      .map(
+        (s, i) =>
+          ({
+            id: i + 1,
+            name: s.name,
+            featured: true,
+            level: [95, 90, 85, 100, 88, 92, 75, 80][i] || 80,
+          }) as Skill
+      );
 
     mockGetSkills.mockResolvedValue(manyFeaturedSkills);
 

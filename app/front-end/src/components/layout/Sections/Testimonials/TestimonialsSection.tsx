@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { useFab } from '@/contexts/FabContext';
 import { useModal } from '@/contexts/ModalContext';
 import TestimonialModal from '@/components/layout/Sections/Testimonials/modal/TestimonialModal';
@@ -75,6 +76,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   // Fab context (moved out of effects to obey Rules of Hooks)
   const { onOpenTestimonialModal, onOpenTestimonialsAdmin } = useFab();
   const { openModal, closeModal } = useModal();
+  const { isAuthenticated } = useAuth();
 
   const needsReadMore = (text: string) => text.length > 300;
   const getTruncatedText = (text: string, isExpanded: boolean) => {
@@ -353,20 +355,17 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
 
       {/* Modal is handled via ModalContext; modal content is rendered through openModal */}
 
-      {/* Botón persistente para añadir testimonio (visible para usuarios no admin) */}
-      {!isAdminMode && (
-        <div className={styles.persistentCta}>
-          <button
-            className={styles.emptyCtaBtn}
-            onClick={() => handleOpenAddModalWithSubmit()}
-            aria-label="Añadir testimonio"
-            title="Añadir mi testimonio"
-          >
-            <i className="fas fa-plus-circle" />
-            Añadir mi testimonio
-          </button>
-        </div>
-      )}
+      <div className={styles.persistentCta}>
+        <button
+          className={styles.emptyCtaBtn}
+          onClick={() => handleOpenAddModalWithSubmit()}
+          aria-label="Añadir testimonio"
+          title="Añadir mi testimonio"
+        >
+          <i className="fas fa-plus-circle" />
+          Añadir mi testimonio
+        </button>
+      </div>
 
       {isAdminMode && (
         <form

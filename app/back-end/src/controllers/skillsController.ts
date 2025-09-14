@@ -68,37 +68,97 @@ export const skillsController = {
   // Actualizar habilidad
   updateSkill: async (req: any, res: any): Promise<void> => {
     try {
-      const { name, category, /* icon_class removed */ level, order_index, featured, comment } =
-        req.body;
+      logger.debug('🔄 Skills Controller - updateSkill request:', {
+        id: req.params.id,
+        body: req.body,
+        contentType: req.headers?.['content-type'] || 'unknown',
+      });
 
-      if (!name || !category) {
-        res.status(400).json({ error: 'Nombre y categoría son requeridos' });
+      const { name, category, level, order_index, featured, comment } = req.body;
+
+      // Validate that at least one field is provided for update
+      const hasValidFields =
+        name ||
+        category ||
+        level !== undefined ||
+        order_index !== undefined ||
+        featured !== undefined ||
+        comment !== undefined;
+
+      if (!hasValidFields) {
+        logger.warn('❌ Skills Controller - No valid fields provided for update');
+        res.status(400).json({
+          error: 'Al menos un campo debe ser proporcionado para actualizar',
+          code: 'VALIDATION_ERROR',
+          details: {
+            message:
+              'Debe proporcionar al menos uno de los siguientes campos: name, category, level, order_index, featured, comment',
+          },
+        });
         return;
       }
 
+      // Check if this is a comment-only update
+      const isCommentOnlyUpdate =
+        comment !== undefined &&
+        !name &&
+        !category &&
+        level === undefined &&
+        order_index === undefined &&
+        featured === undefined;
+
+      // For non-comment-only updates, require name and category
+      if (!isCommentOnlyUpdate && (!name || !category)) {
+        logger.warn('❌ Skills Controller - Name and category required for full updates');
+        res.status(400).json({
+          error: 'Nombre y categoría son requeridos para actualizaciones completas',
+          code: 'VALIDATION_ERROR',
+          details: {
+            message:
+              'Para actualizaciones que no sean solo comentarios, name y category son obligatorios',
+          },
+        });
+        return;
+      }
+
+      // Build update object with only provided fields
+      const updateData: any = {
+        updated_at: new Date(),
+      };
+
+      if (name) updateData.name = name;
+      if (category) updateData.category = category;
+      if (typeof featured === 'boolean') updateData.featured = featured;
+      if (level !== undefined) updateData.level = level;
+      if (order_index !== undefined) updateData.order_index = order_index;
+
+      // Handle comment normalization
+      if (comment !== undefined) {
+        updateData.comment =
+          typeof comment === 'string'
+            ? { en: comment, es: '' }
+            : comment && typeof comment === 'object'
+              ? { en: comment.en || '', es: comment.es || '' }
+              : { en: '', es: '' };
+      }
+
+      logger.debug('🔄 Skills Controller - Update data prepared:', updateData);
+
       // MongoDB-only implementation
-      const skill = await Skill.findByIdAndUpdate(
-        req.params.id,
-        {
-          name,
-          category,
-          featured: typeof featured === 'boolean' ? featured : undefined,
-          level: level || 50,
-          order_index: order_index || 1,
-          // Normalizar comment para actualizar: si string, guardarlo en 'es'; si objeto, usar sus propiedades
-          comment:
-            typeof comment === 'string'
-              ? { en: comment, es: '' }
-              : comment && typeof comment === 'object'
-                ? { en: comment.en || '', es: comment.es || '' }
-                : undefined,
-          updated_at: new Date(),
-        },
-        { new: true, lean: true }
-      );
+      const skill = await Skill.findByIdAndUpdate(req.params.id, updateData, {
+        new: true,
+        lean: true,
+      });
 
       if (!skill) {
-        res.status(404).json({ error: 'Habilidad no encontrada' });
+        logger.warn('❌ Skills Controller - Skill not found:', req.params.id);
+        res.status(404).json({
+          error: 'Habilidad no encontrada',
+          code: 'NOT_FOUND',
+          details: {
+            skillId: req.params.id,
+          },
+        });
         return;
       }
 
@@ -108,8 +168,29 @@ export const skillsController = {
         id: skill._id,
       });
     } catch (error: any) {
-      logger.error('Error al actualizar skill:', error);
-      res.status(500).json({ error: 'Error al actualizar la habilidad' });
+      logger.error('❌ Skills Controller - Error al actualizar skill:', {
+        error: error.message,
+        stack: error.stack,
+        skillId: req.params.id,
+        body: req.body,
+      });
+
+      // Handle specific MongoDB errors
+      if (error.name === 'CastError') {
+        res.status(400).json({
+          error: 'ID de habilidad inválido',
+          code: 'VALIDATION_ERROR',
+          details: {
+            message: 'El ID proporcionado no es válido',
+          },
+        });
+        return;
+      }
+
+      res.status(500).json({
+        error: 'Error al actualizar la habilidad',
+        code: 'SERVER_ERROR',
+      });
     }
   },
 

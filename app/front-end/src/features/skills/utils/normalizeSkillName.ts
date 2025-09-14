@@ -1,6 +1,5 @@
 /**
- * Normaliza nombres de skills para búsqueda consistente de iconos y recursos
- * Unifica la lógica de normalización entre SkillPill y skillResources
+ * Normaliza nombres de skills para búsqueda consistente de iconos
  */
 
 export interface NormalizedSkill {

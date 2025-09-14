@@ -18,8 +18,9 @@ import { debugLog } from '@/utils/debugConfig';
 import BlurImage from '@/components/utils/BlurImage';
 // Fallback estable empaquetado por Vite
 import genericIconUrl from '@/assets/svg/generic-code.svg?url';
-import { findSkillIcon } from '@/features/skills/utils/iconLoader';
+import { findSkillIcon, findIconForSeedEntry } from '@/features/skills/utils/iconLoader';
 import { normalizeSkillName } from '@/features/skills/utils/normalizeSkillName';
+import { CommentTooltip } from '@/components/ui/CommentTooltip/CommentTooltip';
 
 const SkillCard: React.FC<SkillCardProps> = ({
   skill,
@@ -48,6 +49,20 @@ const SkillCard: React.FC<SkillCardProps> = ({
   // mostrará el comentario cuando el usuario haga click sobre la card (no en botones)
   const cardRef = React.useRef<HTMLElement | null>(null);
   const [isCommentPreviewOpen, setIsCommentPreviewOpen] = React.useState(false);
+  const [mouseY, setMouseY] = React.useState<number | null>(null);
+  const [isPortalPresent, setIsPortalPresent] = React.useState(false);
+
+  // Detectar si el portal está presente en el DOM (útil para tests que mockean PortalDropdown)
+  useEffect(() => {
+    const check = () => {
+      const portal = document.querySelector('.pc-skill-portal, [data-testid="portal"]');
+      setIsPortalPresent(Boolean(portal));
+    };
+    check();
+    const obs = new MutationObserver(check);
+    obs.observe(document.body, { childList: true, subtree: true });
+    return () => obs.disconnect();
+  }, []);
 
   // Handler para click en la card: si la skill tiene comentario, abrir portal.
   const handleCardClick = (ev: React.MouseEvent) => {
@@ -86,10 +101,16 @@ const SkillCard: React.FC<SkillCardProps> = ({
     );
 
     // Determinar SVG usando la función utilitaria
-    // Prefer `svg_path` on the skill if present (new approach).
-    // We no longer rely on legacy `icon_class` here; any remaining legacy data
-    // should be normalized earlier in the pipeline (useSkillsIcons / API layer).
-    const path = getSkillSvg(skill.name, (skill as any).svg_path, skillsIcons);
+    // Prefer `svg_path` or explicit `svg` on the skill if present (new approach).
+    // First try the centralized loader (it will check entry.svg, slug, name)
+    const loaderResolved = findIconForSeedEntry({
+      svg: (skill as any).svg_path || (skill as any).svg,
+      slug: (skill as any).slug,
+      name: skill.name,
+    });
+
+    // Fall back to existing CSV mapping or getSkillSvg helper
+    const path = loaderResolved || getSkillSvg(skill.name, (skill as any).svg_path, skillsIcons);
 
     // Determinar color desde CSV o mapa de marca
     const brandColorMap: Record<string, string> = {
@@ -149,7 +170,6 @@ const SkillCard: React.FC<SkillCardProps> = ({
     }
   }, []);
 
-  // Estado para el icono de la habilidad (maneja fallbacks)
   const [iconSrc, setIconSrc] = useState(() => resolveIconUrl(svgPath));
 
   // Re-evaluar el icono si svgPath cambia
@@ -157,11 +177,14 @@ const SkillCard: React.FC<SkillCardProps> = ({
     (async () => {
       const resolved = resolveIconUrl(svgPath);
 
-      // Si la resolución devolvió el fallback genérico, intentar resolver usando el cargador central (findSkillIcon)
+      // Si la resolución devolvió el fallback genérico, intentar resolver usando el cargador central
       if (!resolved || resolved === genericIconUrl) {
         try {
-          const { canonical, normalized } = normalizeSkillName(skill.name);
-          const loaderUrl = findSkillIcon(canonical, normalized);
+          const loaderUrl = findIconForSeedEntry({
+            svg: (skill as any).svg_path || (skill as any).svg,
+            slug: (skill as any).slug,
+            name: skill.name,
+          });
           if (loaderUrl) {
             setIconSrc(loaderUrl);
             return;
@@ -176,6 +199,60 @@ const SkillCard: React.FC<SkillCardProps> = ({
       setIconSrc(resolved);
     })();
   }, [svgPath, resolveIconUrl]);
+
+  // Cerrar el preview de comentario al hacer click fuera de la card o al presionar Escape
+  useEffect(() => {
+    if (!isCommentPreviewOpen) return undefined;
+
+    const onDocumentClick = (ev: MouseEvent) => {
+      const target = ev.target as HTMLElement | null;
+      if (!target) return;
+
+      // Si el click ocurre dentro del card, no cerrar
+      if (cardRef.current && cardRef.current.contains(target)) return;
+
+      // Si el click ocurre dentro del menú o el botón del menú, no cerrar
+      if (menuRef.current && menuRef.current.contains(target)) return;
+      if (
+        buttonRef &&
+        'current' in buttonRef &&
+        buttonRef.current &&
+        buttonRef.current.contains(target)
+      )
+        return;
+
+      setIsCommentPreviewOpen(false);
+    };
+
+    const onKeyDown = (ev: KeyboardEvent) => {
+      if (ev.key === 'Escape' || ev.key === 'Esc') {
+        setIsCommentPreviewOpen(false);
+      }
+    };
+
+    document.addEventListener('click', onDocumentClick, true);
+    document.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.removeEventListener('click', onDocumentClick, true);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [isCommentPreviewOpen, menuRef, buttonRef]);
+
+  // Cerrar el preview de comentario cuando el usuario haga scroll en la página
+  useEffect(() => {
+    if (!isCommentPreviewOpen) return undefined;
+
+    const onScroll = () => {
+      setIsCommentPreviewOpen(false);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, [isCommentPreviewOpen]);
 
   // Manejador de errores para la imagen
   const handleImageError = useCallback(
@@ -229,10 +306,20 @@ const SkillCard: React.FC<SkillCardProps> = ({
 
           // Intentar resolver mediante el cargador de icons empaquetados antes de usar el fallback genérico
           try {
-            const { canonical, normalized } = normalizeSkillName(skill.name);
-            const loaderUrl = findSkillIcon(canonical, normalized);
+            const loaderUrl = findIconForSeedEntry({
+              svg: (skill as any).svg_path || (skill as any).svg,
+              slug: (skill as any).slug,
+              name: skill.name,
+            });
             if (loaderUrl && loaderUrl !== iconSrc) {
               setIconSrc(loaderUrl);
+              return;
+            }
+            // Fallback leve a la antigua búsqueda por variantes si hace falta
+            const { canonical, normalized } = normalizeSkillName(skill.name);
+            const loaderUrl2 = findSkillIcon(canonical, normalized);
+            if (loaderUrl2 && loaderUrl2 !== iconSrc) {
+              setIconSrc(loaderUrl2);
               return;
             }
           } catch (e) {
@@ -283,9 +370,23 @@ const SkillCard: React.FC<SkillCardProps> = ({
       <article
         className={`${styles.skillCard} ${skillCssClass}${
           isDragging ? ` ${styles.dragging}` : ''
-        } ${skill.featured ? styles.featuredCard : ''}`}
+        } ${skill.featured ? styles.featuredCard : ''} ${isCommentPreviewOpen ? styles.previewOpen : ''}`}
         ref={cardRef}
         onClick={handleCardClick}
+        onMouseEnter={() => {
+          // Abrir preview al hacer hover si existe comentario
+          const rawComment = (skill as any).comment;
+          const commentHtml =
+            typeof rawComment === 'string'
+              ? rawComment
+              : rawComment && (rawComment.en || rawComment.es)
+                ? rawComment.en || rawComment.es
+                : '';
+          if (commentHtml && String(commentHtml).trim() !== '') {
+            setIsCommentPreviewOpen(true);
+          }
+        }}
+        onMouseMove={ev => setMouseY(ev.clientY)}
         draggable
         onDragStart={() => onDragStart(skill.id)}
         onDragOver={onDragOver}
@@ -355,30 +456,26 @@ const SkillCard: React.FC<SkillCardProps> = ({
         </header>
 
         {/* Portal preview for comment (opens when clicking on the card body) */}
-        {isCommentPreviewOpen && (
-          <PortalDropdown
-            anchorRef={cardRef}
-            isOpen={isCommentPreviewOpen}
+        <PortalDropdown
+          anchorRef={cardRef}
+          isOpen={isCommentPreviewOpen}
+          onClose={() => setIsCommentPreviewOpen(false)}
+          mouseY={mouseY}
+        >
+          {/* añadir aqui el contenido del comentario */}
+          <CommentTooltip
+            loading={savingComment}
+            comment={
+              typeof (skill as any).comment === 'string'
+                ? (skill as any).comment
+                : (skill.comment ?? null)
+            }
+            title={`Comentario de ${skill.name}`}
+            visible={isCommentPreviewOpen}
             onClose={() => setIsCommentPreviewOpen(false)}
-          >
-            <div
-              className={styles.commentContent}
-              role="dialog"
-              aria-label={`Comentario de ${skill.name}`}
-            >
-              {/* Render comment HTML. IMPORTANT: this assumes comments are sanitized server-side. */}
-              {/* Normalize legacy string/comment object */}
-              <div
-                dangerouslySetInnerHTML={{
-                  __html:
-                    typeof (skill as any).comment === 'string'
-                      ? (skill as any).comment
-                      : (skill as any).comment?.en || (skill as any).comment?.es || '',
-                }}
-              />
-            </div>
-          </PortalDropdown>
-        )}
+            allowHtml={true}
+          />
+        </PortalDropdown>
 
         {/* Cuerpo principal */}
         <div className={styles.skillCardContent}>
@@ -388,7 +485,14 @@ const SkillCard: React.FC<SkillCardProps> = ({
               <div className={styles.levelHeader}>
                 <span className={styles.levelLabel}>
                   Nivel
-                  <span className={styles.tooltipHint}>Porcentaje de dominio</span>
+                  <span
+                    className={styles.tooltipHint}
+                    style={
+                      isCommentPreviewOpen || isPortalPresent ? { display: 'none' } : undefined
+                    }
+                  >
+                    Porcentaje de dominio
+                  </span>
                 </span>
                 <span className={styles.levelValue} aria-live="polite">
                   {skill.level}%
@@ -419,7 +523,12 @@ const SkillCard: React.FC<SkillCardProps> = ({
             >
               <span className={styles.difficultyLabel}>
                 Dificultad
-                <span className={styles.tooltipHint}>Percepción de complejidad</span>
+                <span
+                  className={styles.tooltipHint}
+                  style={isCommentPreviewOpen || isPortalPresent ? { display: 'none' } : undefined}
+                >
+                  Percepción de complejidad
+                </span>
               </span>
               <div
                 className={styles.difficultyStars}
@@ -452,7 +561,8 @@ const SkillCard: React.FC<SkillCardProps> = ({
           try {
             setSavingComment(true);
             // Llamar al endpoint de actualización con el campo comment
-            await updateSkillEndpoint(Number(skill.id), { comment });
+            // No forzamos Number(skill.id) porque en MongoDB los ids son strings (ObjectId)
+            await updateSkillEndpoint(skill.id as any, { comment });
             // Si hay un manejador de edición en el padre, usarlo para actualizar el UI
             if (onEdit) onEdit({ ...skill, comment });
           } catch (err) {

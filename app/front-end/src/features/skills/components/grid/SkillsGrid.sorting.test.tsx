@@ -3,49 +3,23 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 import SkillsGrid from './SkillsGrid';
 import type { SkillIconData, SortOption } from '../../types/skills';
 import styles from './SkillsGrid.module.css';
+import seed from '@/config/skill_setings.json';
 
-const mockSkillsIcons: SkillIconData[] = [
-  {
-    name: 'react',
-    svg_path: 'react.svg',
-  },
-  {
-    name: 'typescript',
-    svg_path: 'typescript.svg',
-  },
-  {
-    name: 'javascript',
-    svg_path: 'javascript.svg',
-  },
-];
-
-const mockSkills = [
-  {
-    id: 1,
-    name: 'React',
-    level: 80,
-    difficulty_level: 3,
+// derive small deterministic sets from seed
+const seedSubset = seed.slice(0, 6);
+const mockSkillsIcons: SkillIconData[] = seedSubset.map(
+  s => ({ name: s.name.toLowerCase(), svg_path: s.svg }) as any
+);
+const mockSkills = seedSubset
+  .slice(0, 3)
+  .map((s, idx) => ({
+    id: idx + 1,
+    name: s.name,
+    level: 50 + idx * 20,
+    difficulty_level: 3 - idx,
     category: 'Frontend',
-  },
-  {
-    id: 2,
-    name: 'Angular',
-    level: 40,
-    difficulty_level: 4,
-    category: 'Frontend',
-  },
-  {
-    id: 3,
-    name: 'Vue',
-    level: 90,
-    difficulty_level: 2,
-    category: 'Frontend',
-  },
-];
-
-const mockFilteredGrouped = {
-  Frontend: mockSkills,
-};
+  }));
+const mockFilteredGrouped = { Frontend: mockSkills };
 
 describe('[TEST] SkillsGrid - Sorting Buttons', () => {
   const mockOnSortToggle = vi.fn();
