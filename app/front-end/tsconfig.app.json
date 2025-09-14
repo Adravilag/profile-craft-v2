@@ -39,6 +39,6 @@
       "@locales/*": ["public/locales/*"]
     }
   },
-  "include": ["src", "vite.config.ts", "types"],
+  "include": ["src", "src/types", "vite.config.ts", "types"],
   "exclude": ["**/*.stories.ts", "**/*.stories.tsx", "src/utils/testAboutAPI.ts"]
 }
