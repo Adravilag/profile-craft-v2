@@ -18,7 +18,7 @@ interface TestimonialsAdminProps {
 
 type FilterStatus = 'all' | 'pending' | 'approved' | 'rejected';
 
-const TestimonialsAdminContent: React.FC<TestimonialsAdminProps> = ({
+export const TestimonialsAdminContent: React.FC<TestimonialsAdminProps> = ({
   onClose,
   onTestimonialsChange,
   filter,
