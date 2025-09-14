@@ -299,5 +299,40 @@
     "category": "design",
     "color": "#F7B500",
     "svg": "sketch.svg"
+  },
+  {
+    "name": "Microsoft Excel",
+    "slug": "microsoft-excel",
+    "category": "tool",
+    "color": "#217346",
+    "svg": "microsoft-excel.svg"
+  },
+  {
+    "name": ".NET",
+    "slug": "dotnet",
+    "category": "framework",
+    "color": "#512BD4",
+    "svg": "dotnet.svg"
+  },
+  {
+    "name": "JPA",
+    "slug": "jpa",
+    "category": "library",
+    "color": "#6DB33F",
+    "svg": "jpa.svg"
+  },
+  {
+    "name": "CSS",
+    "slug": "css",
+    "category": "style",
+    "color": "#1572B6",
+    "svg": "css3.svg"
+  },
+  {
+    "name": "Microsoft Access",
+    "slug": "microsoft-access",
+    "category": "database",
+    "color": "#A4373A",
+    "svg": "microsoft-access.svg"
   }
 ]
