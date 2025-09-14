@@ -70,9 +70,9 @@ jobs:
         path: ./app/front-end/dist
 
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    # Omitting explicit `environment` to avoid invalid environment name errors
+    # GitHub Pages deployment does not require a named environment here.
+    # The `deploy-pages` action will still produce `page_url` in the deployment step outputs.
     runs-on: ubuntu-latest
     needs: build
     steps:

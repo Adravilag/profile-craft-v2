@@ -15,7 +15,22 @@
     "sourceMap": true,
     "downlevelIteration": true,
     "allowImportingTsExtensions": false,
-    "noEmit": false
+    "noEmit": false,
+    "paths": {
+      "@/*": ["app/front-end/src/*"],
+      "@app/*": ["app/front-end/src/app/*"],
+      "@components/*": ["app/front-end/src/components/*"],
+      "@features/*": ["app/front-end/src/features/*"],
+      "@hooks/*": ["app/front-end/src/hooks/*"],
+      "@pages/*": ["app/front-end/src/pages/*"],
+      "@services/*": ["app/front-end/src/services/*"],
+      "@store/*": ["app/front-end/src/store/*"],
+      "@styles/*": ["app/front-end/src/styles/*"],
+      "@utils/*": ["app/front-end/src/utils/*"],
+      "@types/*": ["app/front-end/src/types/*"],
+      "@assets/*": ["app/front-end/src/assets/*"],
+      "@locales/*": ["app/front-end/public/locales/*"]
+    }
   },
   "include": [],
   "exclude": ["node_modules", "dist", "dist-server", "build"]
