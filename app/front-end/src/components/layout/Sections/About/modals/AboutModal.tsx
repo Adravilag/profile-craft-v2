@@ -5,6 +5,8 @@ import * as endpoints from '@/services/endpoints';
 interface AboutModalProps {
   isOpen: boolean;
   onClose: () => void;
+  /** Optional initial tab for testing or controlled opens */
+  initialTab?: TabType;
 }
 
 interface AboutHighlight {
@@ -32,8 +34,8 @@ interface AboutData {
 
 type TabType = 'about' | 'highlights' | 'collaboration';
 
-export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
-  const [activeTab, setActiveTab] = useState<TabType>('about');
+export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, initialTab }) => {
+  const [activeTab, setActiveTab] = useState<TabType>(() => initialTab ?? 'about');
   const [aboutData, setAboutData] = useState<AboutData>({
     aboutText: '',
     highlights: [],
@@ -449,6 +451,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
                     <input
                       id="collab-title"
                       type="text"
+                      data-testid="collaboration-title-input"
                       value={aboutData.collaborationNote.title}
                       onChange={e => handleCollaborationChange('title', e.target.value)}
                       className="about-modal__input"
@@ -469,6 +472,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
                       <input
                         id="collab-icon"
                         type="text"
+                        data-testid="collaboration-icon-input"
                         value={aboutData.collaborationNote.icon}
                         onChange={e => handleCollaborationChange('icon', e.target.value)}
                         className="about-modal__input"
@@ -496,6 +500,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose }) => {
                   </label>
                   <textarea
                     id="collab-description"
+                    data-testid="collaboration-description-input"
                     value={aboutData.collaborationNote.description}
                     onChange={e => handleCollaborationChange('description', e.target.value)}
                     className="about-modal__textarea"

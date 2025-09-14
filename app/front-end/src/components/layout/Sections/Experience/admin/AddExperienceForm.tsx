@@ -543,6 +543,8 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
                   }
                   placeholderText="DD-MM-YYYY"
                   className={styles.input}
+                  id="start_date"
+                  name="start_date"
                 />
                 {touchedFields.start_date && validationErrors.start_date && (
                   <div className={styles.errorText}>{validationErrors.start_date}</div>
@@ -571,6 +573,8 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
                   disabled={formData.is_current}
                   placeholderText="DD-MM-YYYY"
                   className={styles.input}
+                  id="end_date"
+                  name="end_date"
                 />
                 {touchedFields.end_date && validationErrors.end_date && (
                   <div className={styles.errorText}>{validationErrors.end_date}</div>

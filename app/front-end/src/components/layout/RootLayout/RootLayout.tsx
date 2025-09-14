@@ -100,7 +100,7 @@ const RootLayoutContent: FC<RootLayoutProps> = ({ initialSection }) => {
           <ProfileHero darkMode={true} />
           <SmartNavigation navItems={navItems} />
           <main className="sections-container">
-            <Suspense fallback={<div>Cargando...</div>}>
+            <Suspense>
               <div id="about">
                 <AboutSection />
               </div>

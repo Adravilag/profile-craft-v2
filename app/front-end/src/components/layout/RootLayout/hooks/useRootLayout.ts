@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, type FormEvent } from 'react';
+import { useLocation } from 'react-router-dom';
 
 // Tipos y Servicios
 import type { UserProfile } from '@/types/api';
@@ -76,10 +77,30 @@ export const useRootLayout = ({
 }: UseRootLayoutProps): UseRootLayoutReturn => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isCheckingUsers, setIsCheckingUsers] = useState(true);
+  const location = useLocation();
 
   // Usar hooks especializados
   useAutoNavigation(initialSection, currentSection, navigateToSection);
-  useAppLoadingState(isCheckingUsers);
+
+  // Evitamos activar el loading global (atributo data-app-loading) en la
+  // carga inicial cuando el usuario entra en la raíz `/` y no hay
+  // `initialSection` especificada. Esto permite que la primera sección
+  // se muestre sin el spinner global en `http://localhost:5173`.
+  const shouldUseGlobalLoading = (() => {
+    try {
+      // Si hay una sección inicial explícita o no estamos en la ruta raíz,
+      // respetamos el estado de carga.
+      if (initialSection) return true;
+      if (location && location.pathname && location.pathname !== '/') return true;
+      // Si estamos exactamente en `/` y no hay initialSection, no usar loading global.
+      return false;
+    } catch (err) {
+      // En caso de error, caemos a la opción conservadora y mostramos el loading.
+      return true;
+    }
+  })();
+
+  useAppLoadingState(shouldUseGlobalLoading ? isCheckingUsers : false);
 
   const { navItems } = useNavItems({ isCheckingUsers });
   const { handleContactSubmit } = useContactForm();

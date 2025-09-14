@@ -12,6 +12,8 @@ interface CalendarProps {
   className?: string;
   showMonthYearPicker?: boolean;
   disabled?: boolean;
+  id?: string;
+  name?: string;
 }
 
 const Calendar: React.FC<CalendarProps> = ({
@@ -22,6 +24,8 @@ const Calendar: React.FC<CalendarProps> = ({
   className = '',
   showMonthYearPicker = false,
   disabled = false,
+  id,
+  name,
 }) => {
   const parseDateSafe = (value: Date | string | null): Date | null => {
     if (value === null || value === undefined || value === '') return null;
@@ -71,6 +75,8 @@ const Calendar: React.FC<CalendarProps> = ({
         showMonthYearPicker={showMonthYearPicker}
         className={styles.datePickerInput}
         disabled={Boolean(disabled)}
+        id={id}
+        name={name}
       />
     </div>
   );

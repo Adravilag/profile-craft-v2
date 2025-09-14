@@ -81,17 +81,15 @@ describe('useSkills - ProfileHero', () => {
 
   test('[TEST] - Hook debe proporcionar método para limitar skills destacados', async () => {
     // Arrange
-    const manyFeaturedSkills: Skill[] = seed
-      .slice(0, 8)
-      .map(
-        (s, i) =>
-          ({
-            id: i + 1,
-            name: s.name,
-            featured: true,
-            level: [95, 90, 85, 100, 88, 92, 75, 80][i] || 80,
-          }) as Skill
-      );
+    const manyFeaturedSkills: Skill[] = seed.slice(0, 8).map(
+      (s, i) =>
+        ({
+          id: i + 1,
+          name: s.name,
+          featured: true,
+          level: [95, 90, 85, 100, 88, 92, 75, 80][i] || 80,
+        }) as Skill
+    );
 
     mockGetSkills.mockResolvedValue(manyFeaturedSkills);
 
@@ -111,8 +109,16 @@ describe('useSkills - ProfileHero', () => {
     expect(topSkills).toHaveLength(6);
 
     // Verificar que están ordenados por nivel y son los 6 mejores
-    const expectedOrder = ['HTML', 'React', 'JavaScript', 'TypeScript', 'CSS', 'Node.js'];
     const actualNames = topSkills.map(skill => skill.name);
+
+    // Compute expected order from the mock input so the test doesn't rely on
+    // specific names in the external seed file.
+    const expectedOrder = manyFeaturedSkills
+      .slice()
+      .sort((a, b) => (b.level || 0) - (a.level || 0))
+      .slice(0, 6)
+      .map(s => s.name);
+
     expect(actualNames).toEqual(expectedOrder);
   });
 });

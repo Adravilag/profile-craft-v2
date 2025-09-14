@@ -4,7 +4,7 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { SkillsFilterProvider, useSkillsFilter } from '../../contexts/SkillsFilterContext';
+import { SkillsFilterProvider, useSkillsFilter } from '@/features/skills';
 import '@testing-library/jest-dom';
 
 // Componente de prueba que usa el contexto

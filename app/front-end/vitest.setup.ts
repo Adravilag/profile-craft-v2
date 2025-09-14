@@ -108,155 +108,48 @@ console.info = (...args: any[]) => {
   _info.apply(console, args);
 };
 
-// Global lightweight mocks to make tests more stable. Individual tests can still
-// override these using vi.mock(...) inside the test file.
-try {
-  // vitest globals are available in setup files
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const _vi = (global as any).vi as any;
-  if (_vi) {
-    // Match real hook shape: named exports and default
-    _vi.mock('@/hooks/useNotification', () => {
-      const make = () => ({ showSuccess: _vi.fn(), showError: _vi.fn(), showInfo: _vi.fn() });
-      return {
-        useNotificationContext: make,
-        useNotification: make,
-        default: make,
-      };
-    });
+// NOTE: Global mocks removed — tests should define their own `vi.mock(...)`
+// when they require module-level overrides. The setup keeps only polyfills,
+// minimal helpers and non-mockable shims (matchMedia, localStorage, timers).
 
-    // Mock the hooks barrel so imports from '@/hooks' resolve to safe functions
-    _vi.mock('@/hooks', () => {
-      const makeNotif = () => ({ showSuccess: _vi.fn(), showError: _vi.fn(), showInfo: _vi.fn() });
-      const useNavigation = () => ({ currentSection: '', navigateToSection: _vi.fn() });
-      const useUnifiedTheme = () => ({
-        theme: 'dark',
-        setTheme: _vi.fn(),
-        preferences: { globalTheme: 'dark' },
-        currentGlobalTheme: 'dark',
-        setGlobalTheme: _vi.fn(),
-      });
-      return {
-        useNavigation,
-        useNotification: makeNotif,
-        useNotificationContext: makeNotif,
-        useUnifiedTheme,
-        // minimal placeholders for hooks that may be imported from the barrel
-        useTestimonials: () => ({ loading: false, testimonials: [] }),
-        useExperience: () => ({ items: [] }),
-        useEducation: () => ({ items: [] }),
-        useExperienceSection: () => ({ loading: false, data: null }),
-      };
-    });
+// ---- Test environment cleanup helpers ----
+// Track timeouts/intervals created by components so they can be cleared
+const _createdTimers: number[] = [];
+const _origSetTimeout = (global as any).setTimeout;
+const _origSetInterval = (global as any).setInterval;
 
-    // Provide a minimal contexts module to satisfy imports from '@/contexts'
-    _vi.mock('@/contexts', () => {
-      // Minimal useAuth implementation used across many components
-      const useAuth = () => ({
-        user: null,
-        loading: false,
-        isAuthenticated: false,
-        login: _vi.fn(),
-        logout: _vi.fn(),
-      });
+(global as any).setTimeout = (fn: (...args: any[]) => void, ms?: number, ...args: any[]) => {
+  const id = _origSetTimeout(fn, ms, ...args) as unknown as number;
+  _createdTimers.push(id);
+  return id as unknown as any;
+};
 
-      // Notification context hook
-      const useNotificationContext = () => ({
-        showSuccess: _vi.fn(),
-        showError: _vi.fn(),
-        showInfo: _vi.fn(),
-      });
+(global as any).setInterval = (fn: (...args: any[]) => void, ms?: number, ...args: any[]) => {
+  const id = _origSetInterval(fn, ms, ...args) as unknown as number;
+  _createdTimers.push(id);
+  return id as unknown as any;
+};
 
-      // UnifiedThemeProvider and hook
-      const UnifiedThemeProvider = ({ children }: any) => children;
-      const useUnifiedTheme = () => ({
-        theme: 'dark',
-        setTheme: _vi.fn(),
-        preferences: { globalTheme: 'dark' },
-        currentGlobalTheme: 'dark',
-        setGlobalTheme: _vi.fn(),
-      });
-
-      // Fab context
-      const FabProvider = ({ children }: any) => children;
-      const useFab = () => ({
-        openTestimonialModal: _vi.fn(),
-        openTestimonialsAdmin: _vi.fn(),
-        openSkillModal: _vi.fn(),
-        onOpenExperienceModal: _vi.fn(),
-        openAboutModal: _vi.fn(),
-        onOpenSkillModal: _vi.fn(),
-      });
-
-      // SectionsLoading context
-      const SectionsLoadingProvider = ({ children }: any) => children;
-      const useSectionsLoadingContext = () => ({
-        isLoading: _vi.fn().mockReturnValue(false),
-        setLoading: _vi.fn(),
-        isAnyLoading: _vi.fn().mockReturnValue(false),
-        getLoadingSections: _vi.fn().mockReturnValue([]),
-        resetAllLoading: _vi.fn(),
-        setMultipleLoading: _vi.fn(),
-        getLoadingState: _vi.fn().mockReturnValue({}),
-      });
-
-      return {
-        useAuth,
-        useNotificationContext,
-        UnifiedThemeProvider,
-        useUnifiedTheme,
-        FabProvider,
-        useFab,
-        SectionsLoadingProvider,
-        useSectionsLoadingContext,
-      };
-    });
-
-    // Hook that exports default boolean fn - ensure both named and default exports
-    _vi.mock('@/hooks/useIsOnSkillsPage', () => {
-      const hook = () => true;
-      return {
-        default: hook,
-        useIsOnSkillsPage: hook,
-      };
-    });
-
-    // Mock UnifiedThemeContext specifically to avoid matchMedia issues
-    _vi.mock('@/contexts/UnifiedThemeContext', () => {
-      const UnifiedThemeProvider = ({ children }: any) => children;
-      const useUnifiedTheme = () => ({
-        theme: 'dark',
-        setTheme: _vi.fn(),
-        preferences: { globalTheme: 'dark' },
-        currentGlobalTheme: 'dark',
-        setGlobalTheme: _vi.fn(),
-      });
-      return {
-        UnifiedThemeProvider,
-        useUnifiedTheme,
-        default: UnifiedThemeProvider,
-      };
-    });
-
-    // Mock SectionsLoadingContext
-    _vi.mock('@/contexts/SectionsLoadingContext', () => {
-      const SectionsLoadingProvider = ({ children }: any) => children;
-      const useSectionsLoadingContext = () => ({
-        isLoading: _vi.fn().mockReturnValue(false),
-        setLoading: _vi.fn(),
-        isAnyLoading: _vi.fn().mockReturnValue(false),
-        getLoadingSections: _vi.fn().mockReturnValue([]),
-        resetAllLoading: _vi.fn(),
-        setMultipleLoading: _vi.fn(),
-        getLoadingState: _vi.fn().mockReturnValue({}),
-      });
-      return {
-        SectionsLoadingProvider,
-        useSectionsLoadingContext,
-        default: SectionsLoadingProvider,
-      };
-    });
+// Ensure timers are cleared between tests to avoid callbacks running after teardown
+afterEach(() => {
+  // clear timers
+  while (_createdTimers.length) {
+    const id = _createdTimers.pop();
+    try {
+      clearTimeout(id as any);
+      clearInterval(id as any);
+    } catch (e) {
+      // ignore
+    }
   }
-} catch (e) {
-  // ignore if vi not present
-}
+
+  // restore mocks between tests
+  try {
+    // vitest global
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const _vi = (global as any).vi;
+    if (_vi) _vi.clearAllMocks();
+  } catch (e) {
+    // ignore
+  }
+});

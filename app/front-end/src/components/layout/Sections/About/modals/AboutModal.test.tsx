@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { AboutModal } from './AboutModal';
 import { withProviders } from '../../../../../../vitest.setup';
 
@@ -18,22 +18,19 @@ vi.mock('@/services/endpoints', () => ({
 }));
 
 // Función auxiliar para esperar que el modal esté completamente cargado
+// Helper to get the latest modal shell element created by ModalShell
+const getModalElement = () => {
+  const shells = Array.from(document.querySelectorAll('[data-modal-shell]')) as HTMLElement[];
+  // prefer the last shell that has child content (portal rendered)
+  const filled = shells.filter(s => s.childElementCount > 0);
+  if (filled.length) return filled[filled.length - 1];
+  return shells[shells.length - 1];
+};
+
 const waitForModalLoaded = async () => {
-  // Esperar primero por el título principal
-  await waitFor(() => {
-    expect(screen.getByText('Editar Sección About')).toBeInTheDocument();
-  });
-
-  // Esperar directamente por las pestañas
-  await waitFor(() => {
-    const textTab = screen.queryByRole('tab', { name: /Texto About/ });
-    const highlightsTab = screen.queryByRole('tab', { name: /Highlights/ });
-    const collabTab = screen.queryByRole('tab', { name: /Nota Colaboración/ });
-
-    expect(textTab).toBeInTheDocument();
-    expect(highlightsTab).toBeInTheDocument();
-    expect(collabTab).toBeInTheDocument();
-  });
+  // Ensure the modal title and primary tab label are present
+  await screen.findByText('Editar Sección About');
+  await screen.findByText(/Texto About/);
 };
 
 describe('AboutModal', () => {
@@ -61,7 +58,7 @@ describe('AboutModal', () => {
 
   describe('[TEST] Renderizado del Modal', () => {
     it('debería renderizar el modal cuando isOpen es true', async () => {
-      render(<AboutModal isOpen={true} onClose={mockCloseModal} />);
+      render(<AboutModal isOpen={true} onClose={mockCloseModal} initialTab="highlights" />);
 
       await waitFor(() => {
         expect(screen.getByText('Editar Sección About')).toBeInTheDocument();
@@ -80,7 +77,7 @@ describe('AboutModal', () => {
 
   describe('[TEST] Carga de datos', () => {
     it('debería cargar los datos de about al abrir el modal', async () => {
-      render(<AboutModal isOpen={true} onClose={mockCloseModal} />);
+      render(<AboutModal isOpen={true} onClose={mockCloseModal} initialTab="highlights" />);
 
       await waitFor(() => {
         expect(mockGetAboutSection).toHaveBeenCalledTimes(1);
@@ -88,26 +85,25 @@ describe('AboutModal', () => {
     });
 
     it('debería mostrar los datos cargados en los campos del formulario', async () => {
-      render(<AboutModal isOpen={true} onClose={mockCloseModal} />);
+      render(<AboutModal isOpen={true} onClose={mockCloseModal} initialTab="about" />);
 
-      await waitFor(() => {
-        const textArea = screen.getByDisplayValue('<p>Texto de about actual</p>');
-        expect(textArea).toBeInTheDocument();
-      });
+      // textarea is rendered inside the about tab; select by role+name to avoid duplicates
+      const textArea = (await screen.findByRole('textbox', {
+        name: /Texto About/i,
+      })) as HTMLTextAreaElement;
+      expect(textArea.value).toBe('<p>Texto de about actual</p>');
     });
   });
 
   describe('[TEST] Interacciones del formulario', () => {
     it('debería permitir editar el texto de about', async () => {
-      render(<AboutModal isOpen={true} onClose={mockCloseModal} />);
+      render(<AboutModal isOpen={true} onClose={mockCloseModal} initialTab="about" />);
 
-      await waitFor(() => {
-        const textArea = screen.getByDisplayValue(
-          '<p>Texto de about actual</p>'
-        ) as HTMLTextAreaElement;
-        fireEvent.change(textArea, { target: { value: 'Nuevo texto de about' } });
-        expect(textArea.value).toBe('Nuevo texto de about');
-      });
+      const textArea = (await screen.findByRole('textbox', {
+        name: /Texto About/i,
+      })) as HTMLTextAreaElement;
+      fireEvent.change(textArea, { target: { value: 'Nuevo texto de about' } });
+      expect(textArea.value).toBe('Nuevo texto de about');
     });
 
     it('debería enviar los datos al hacer submit', async () => {
@@ -116,14 +112,12 @@ describe('AboutModal', () => {
         data: {},
       });
 
-      render(<AboutModal isOpen={true} onClose={mockCloseModal} />);
+      render(<AboutModal isOpen={true} onClose={mockCloseModal} initialTab="about" />);
 
-      await waitFor(() => {
-        const textArea = screen.getByDisplayValue(
-          '<p>Texto de about actual</p>'
-        ) as HTMLTextAreaElement;
-        fireEvent.change(textArea, { target: { value: 'Nuevo texto actualizado' } });
-      });
+      const textArea = (await screen.findByRole('textbox', {
+        name: /Texto About/i,
+      })) as HTMLTextAreaElement;
+      fireEvent.change(textArea, { target: { value: 'Nuevo texto actualizado' } });
 
       // Buscar el botón con regex para manejar el indicador de cambios sin guardar
       const saveButton = screen.getByText(/Guardar Cambios/);
@@ -201,47 +195,25 @@ describe('AboutModal', () => {
 
       render(<AboutModal isOpen={true} onClose={mockCloseModal} />);
 
-      await waitFor(() => {
-        expect(screen.getByText('Editar Sección About')).toBeInTheDocument();
-      });
-
-      // Esperar a que se complete la carga y aparezcan las pestañas
-      await waitFor(() => {
-        expect(screen.queryByText('Cargando...')).not.toBeInTheDocument();
-      });
-
-      // Cambiar al tab de highlights usando role y aria-controls
-      const highlightsTab = screen.getByRole('tab', { name: /Highlights/ });
+      // esperar el título del modal y la pestaña Highlights en el documento
+      await screen.findByText('Editar Sección About');
+      const highlightsTab = await screen.findByRole('tab', { name: /Highlights/ });
       fireEvent.click(highlightsTab);
 
       // Esperar a que se carguen los highlights
-      await waitFor(() => {
-        expect(screen.getByText('Desarrollo Frontend')).toBeInTheDocument();
-        expect(screen.getByText('Desarrollo Backend')).toBeInTheDocument();
-      });
+      await screen.findByText('Desarrollo Frontend');
+      await screen.findByText('Desarrollo Backend');
     });
 
     it('debería permitir agregar un nuevo highlight', async () => {
       render(<AboutModal isOpen={true} onClose={mockCloseModal} />);
 
-      await waitFor(() => {
-        expect(screen.getByText('Editar Sección About')).toBeInTheDocument();
-      });
-
-      // Esperar a que se complete la carga y aparezcan las pestañas
-      await waitFor(() => {
-        expect(screen.queryByText('Cargando...')).not.toBeInTheDocument();
-      });
-
-      // Cambiar al tab de highlights usando role y aria-controls
-      const highlightsTab = screen.getByRole('tab', { name: /Highlights/ });
+      await screen.findByText('Editar Sección About');
+      const highlightsTab = await screen.findByRole('tab', { name: /Highlights/ });
       fireEvent.click(highlightsTab);
 
       // Buscar el botón de agregar highlight
-      await waitFor(() => {
-        const addHighlightButton = screen.getByTestId('add-highlight-button');
-        expect(addHighlightButton).toBeInTheDocument();
-      });
+      await screen.findByTestId('add-highlight-button');
     });
 
     it('debería permitir editar un highlight existente', async () => {
@@ -277,24 +249,12 @@ describe('AboutModal', () => {
 
       render(<AboutModal isOpen={true} onClose={mockCloseModal} />);
 
-      await waitFor(() => {
-        expect(screen.getByText('Editar Sección About')).toBeInTheDocument();
-      });
-
-      // Esperar a que se complete la carga y aparezcan las pestañas
-      await waitFor(() => {
-        expect(screen.queryByText('Cargando...')).not.toBeInTheDocument();
-      });
-
-      // Cambiar al tab de highlights usando role y aria-controls
-      const highlightsTab = screen.getByRole('tab', { name: /Highlights/ });
+      await screen.findByText('Editar Sección About');
+      const highlightsTab = await screen.findByRole('tab', { name: /Highlights/ });
       fireEvent.click(highlightsTab);
 
       // Buscar botón de editar highlight
-      await waitFor(() => {
-        const editButton = screen.getByTestId('edit-highlight-0');
-        expect(editButton).toBeInTheDocument();
-      });
+      await screen.findByTestId('edit-highlight-0');
     });
 
     it('debería permitir eliminar un highlight', async () => {
@@ -330,24 +290,12 @@ describe('AboutModal', () => {
 
       render(<AboutModal isOpen={true} onClose={mockCloseModal} />);
 
-      await waitFor(() => {
-        expect(screen.getByText('Editar Sección About')).toBeInTheDocument();
-      });
-
-      // Esperar a que se complete la carga y aparezcan las pestañas
-      await waitFor(() => {
-        expect(screen.queryByText('Cargando...')).not.toBeInTheDocument();
-      });
-
-      // Cambiar al tab de highlights usando role y aria-controls
-      const highlightsTab = screen.getByRole('tab', { name: /Highlights/ });
+      await screen.findByText('Editar Sección About');
+      const highlightsTab = await screen.findByRole('tab', { name: /Highlights/ });
       fireEvent.click(highlightsTab);
 
       // Buscar botón de eliminar highlight
-      await waitFor(() => {
-        const deleteButton = screen.getByTestId('delete-highlight-0');
-        expect(deleteButton).toBeInTheDocument();
-      });
+      await screen.findByTestId('delete-highlight-0');
     });
   });
 
@@ -355,29 +303,17 @@ describe('AboutModal', () => {
     it('debería mostrar y permitir editar la nota de colaboración', async () => {
       render(<AboutModal isOpen={true} onClose={mockCloseModal} />);
 
-      await waitFor(() => {
-        expect(screen.getByText('Editar Sección About')).toBeInTheDocument();
-      });
-
-      // Esperar a que se complete la carga y aparezcan las pestañas
-      await waitFor(() => {
-        expect(screen.queryByText('Cargando...')).not.toBeInTheDocument();
-      });
-
-      // Cambiar al tab de colaboración usando role y aria-controls
-      const collaborationTab = screen.getByRole('tab', { name: /Nota Colaboración/ });
+      await screen.findByText('Editar Sección About');
+      const collaborationTab = await screen.findByRole('tab', { name: /Nota Colaboración/ });
       fireEvent.click(collaborationTab);
 
-      // Buscar campos de la nota de colaboración
-      await waitFor(() => {
-        const titleInput = screen.getByTestId('collaboration-title-input');
-        const descriptionInput = screen.getByTestId('collaboration-description-input');
-        const iconInput = screen.getByTestId('collaboration-icon-input');
-
-        expect(titleInput).toBeInTheDocument();
-        expect(descriptionInput).toBeInTheDocument();
-        expect(iconInput).toBeInTheDocument();
-      });
+      // Buscar campos de la nota de colaboración por sus etiquetas accesibles
+      const collabTitle = await screen.findByLabelText(/Título:/i);
+      const collabDescription = await screen.findByLabelText(/Descripción:/i);
+      const collabIcon = await screen.findByLabelText(/Ícono:/i);
+      expect(collabTitle).toBeInTheDocument();
+      expect(collabDescription).toBeInTheDocument();
+      expect(collabIcon).toBeInTheDocument();
     });
   });
 });
