@@ -1,9 +1,13 @@
-// Idempotent script to patch lint-staged bin for chalk CommonJS compatibility
+// Idempotent ESM script to patch lint-staged bin for chalk CommonJS compatibility
 // It will replace `import { supportsColor } from 'chalk'` with
 // `import chalkPkg from 'chalk'; const { supportsColor } = chalkPkg;`
 
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const target = path.resolve(
   __dirname,
@@ -32,6 +36,6 @@ try {
     console.log('No patch needed for lint-staged bin');
   }
 } catch (e) {
-  console.error('Failed to apply lint-staged patch:', e.message || e);
+  console.error('Failed to apply lint-staged patch:', e && e.message ? e.message : e);
   process.exit(1);
 }
