@@ -1,6 +1,5 @@
 import { normalizeSkillName, generateSkillVariants } from '../normalizeSkillName';
-import { describe, it } from 'node:test';
-import { expect } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 describe('normalizeSkillName', () => {
   it('should normalize basic skill names', () => {

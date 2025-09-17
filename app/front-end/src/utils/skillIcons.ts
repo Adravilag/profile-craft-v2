@@ -1,13 +1,10 @@
 // Utilidades para resolver íconos de skills mediante SVG locales o fallback a clases de iconos
 // Carga todos los SVG de src/assets/svg y construye un mapa de búsqueda robusto
 
-// Nota: ruta relativa desde src/utils a src/assets
-const svgModules =
-  (import.meta.glob('../assets/svg/*.svg', {
-    eager: true,
-    query: '?url',
-    import: 'default',
-  }) as Record<string, string>) || {};
+// Lightweight skillIcons helper that avoids eager glob to prevent bundling all SVGs.
+// It uses the centralized `svgMap` exported by the feature loader (which is a
+// placeholder map of available keys) and provides the same normalization helpers.
+import { getIconMap } from '@/features/skills/utils/iconLoader';
 
 // normaliza un nombre a minúsculas y variantes útiles
 const normalize = (name: string) =>
@@ -21,28 +18,11 @@ const normalize = (name: string) =>
 export const toDataTech = (name: string) =>
   normalize(name).replace(/js$/, 'dotjs').replace(/[._-]/g, '');
 
-// Construir mapa key -> url con variantes para facilitar el lookup
-const svgMap: Record<string, string> = Object.entries(svgModules).reduce(
-  (acc, [path, url]) => {
-    const m = path.match(/([^/]+)\.svg$/i);
-    if (!m) return acc;
-    const base = m[1].toLowerCase();
-    const variants = new Set<string>([
-      base,
-      base.replace(/[-_.]/g, ''),
-      base.replace(/-/g, ''),
-      base.replace(/\./g, ''),
-      base.replace(/js$/, 'dotjs'),
-    ]);
-    for (const k of variants) acc[k] = url;
-    return acc;
-  },
-  {} as Record<string, string>
-);
-
-// Devuelve la URL del SVG si existe para el nombre dado, si no null
+// Devuelve la URL pública normalizada del SVG si existe en el mapa de iconos
 export function findSvgForName(name: string): string | null {
   if (!name) return null;
+  const map = getIconMap();
+  if (!map) return null;
   const normalized = normalize(String(name));
   const candidates = [
     normalized,
@@ -52,8 +32,11 @@ export function findSvgForName(name: string): string | null {
     `${normalized}js`,
   ];
   for (const key of candidates) {
-    const hit = svgMap[key];
-    if (hit) return hit;
+    const hit = map.get(key);
+    if (hit) {
+      // ensure leading slash for public consumption
+      return hit.startsWith('/') ? hit : `/${hit}`;
+    }
   }
   return null;
 }

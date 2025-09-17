@@ -1,0 +1,48 @@
+:root {
+  --picker-input-padding: 8px 10px;
+  --picker-input-font-size: 0.9rem;
+  --picker-cell-size: 28px;
+}
+
+.pickerWrapper {
+  display: inline-block;
+}
+
+.pickerInput {
+  padding: var(--picker-input-padding);
+  font-size: var(--picker-input-font-size);
+  border-radius: 8px;
+  border: 1px solid var(--md-sys-color-outline, #3a3a3a);
+  background: var(--md-sys-color-surface, #1f1f1f);
+  color: var(--md-sys-color-on-surface, #fff);
+  width: 160px;
+}
+
+/* Global overrides for react-datepicker when calendarClassName='calendar-compact' */
+:global(.calendar-compact) .react-datepicker {
+  font-size: 13px;
+  padding: 6px;
+  border-radius: 8px;
+}
+
+:global(.calendar-compact) .react-datepicker__day-name {
+  flex: 0 0 var(--picker-cell-size);
+  width: var(--picker-cell-size);
+  font-size: 11px;
+}
+
+:global(.calendar-compact) .react-datepicker__day {
+  flex: 0 0 var(--picker-cell-size);
+  width: var(--picker-cell-size);
+  height: var(--picker-cell-size);
+  font-size: 12px;
+}
+
+:global(.calendar-compact) .react-datepicker__navigation {
+  width: 30px;
+  height: 30px;
+}
+
+:global(.calendar-compact) .react-datepicker__current-month {
+  font-size: 13px;
+}

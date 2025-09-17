@@ -51,6 +51,22 @@
   line-height: 0; /* remove descender gaps */
 }
 
+/* Compact variant: reduce hit-area and icon/text sizes for denser UI rows */
+.stackIcon--small {
+  border-radius: 6px;
+  min-width: 28px;
+  min-height: 28px;
+  padding: 4px;
+}
+.stackIcon--small img {
+  width: 25px;
+  height: 25px;
+}
+.stackIcon--small > .skillLabel {
+  margin-left: 6px;
+  font-size: 12px;
+}
+
 /* Small spacing rule: cuando el componente muestra la etiqueta textual
    junto al icono (variant `colored` / `.skillLabel`), aseguramos una
    separación cómoda entre el icono y el texto. */

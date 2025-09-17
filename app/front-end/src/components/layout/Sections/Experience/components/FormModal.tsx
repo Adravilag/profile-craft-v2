@@ -64,6 +64,7 @@ const FormModal: React.FC<FormModalProps> = ({
     >
       {formType === 'experience' ? (
         <AddExperienceForm
+          editingExperience={initialData}
           formType={formType}
           initialData={initialData}
           isEditing={isEditing}

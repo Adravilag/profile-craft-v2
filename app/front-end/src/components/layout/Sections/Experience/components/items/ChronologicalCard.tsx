@@ -1,7 +1,8 @@
-import React from 'react';
-import type { Experience } from '@/types/api';
+import React, { useEffect, useState } from 'react';
 import { formatDateRange, calculateDuration } from '@/utils/dateUtils';
 import SkillPill from '@/components/ui/SkillPill/SkillPill';
+import { resolvePillFromTech } from '@/features/skills/utils/pillUtils';
+import { useSkillSuggestions } from '@/features/skills/hooks/useSkillSuggestions';
 import { findImageForName } from '@/utils/imageLookup';
 import cardStyles from './ChronologicalCard.module.css';
 import chronologicalStyles from './ChronologicalItem.module.css';
@@ -39,6 +40,9 @@ const ChronologicalCard: React.FC<ChronologicalCardProps> = ({
   const { t } = useTranslation();
   const { isAuthenticated } = useAuth();
   const imgCandidate = findImageForName(item.company ?? item.institution);
+
+  // Suggestions loaded from public/skill_settings.json to allow resolving svg/color
+  const technologySuggestions = useSkillSuggestions();
 
   const styles = context === 'chronological' ? chronologicalStyles : cardStyles;
 
@@ -137,9 +141,19 @@ const ChronologicalCard: React.FC<ChronologicalCardProps> = ({
               <span>{t.forms.experience.technologies}:</span>
             </div>
             <div className={styles.skillsTags}>
-              {item.technologies.map((tech: string, idx: number) => (
-                <SkillPill key={idx} name={tech} colored={true} />
-              ))}
+              {item.technologies.map((tech: string, idx: number) => {
+                const pill = resolvePillFromTech(tech, technologySuggestions, idx);
+                return (
+                  <SkillPill
+                    key={pill.slug || idx}
+                    slug={pill.slug}
+                    svg={pill.svg}
+                    name={pill.name}
+                    colored={true}
+                    color={pill.color}
+                  />
+                );
+              })}
             </div>
           </div>
         )}

@@ -1,6 +1,6 @@
 // src/components/sections/projects/ProjectsSection.tsx
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProjectCard from '@/components/layout/Sections/Projects/components/ProjectCard/ProjectCard';
 import type { Project as UiProject } from '@/components/layout/Sections/Projects/components/ProjectCard/ProjectCard';
@@ -33,19 +33,30 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
     },
   });
 
-  // Set up pagination
+  // Ordenar proyectos por fecha descendente (más reciente primero)
+  const sortedFilteredProjects = useMemo(() => {
+    if (!filteredProjects || filteredProjects.length === 0) return [] as typeof filteredProjects;
+
+    return [...filteredProjects].sort((a: any, b: any) => {
+      const aDate = a?.published_at ?? a?.created_at ?? null;
+      const bDate = b?.published_at ?? b?.created_at ?? null;
+      const ta = aDate ? new Date(aDate).getTime() : 0;
+      const tb = bDate ? new Date(bDate).getTime() : 0;
+      return tb - ta; // descendente: más reciente primero
+    });
+  }, [filteredProjects]);
+
+  // Set up pagination (use sorted list length)
   const articlesPerPage = 3;
   const { currentPage, totalPages, paginatedItems, handlePageChange, isChangingPage } =
     usePagination({
-      totalItems: filteredProjects.length,
+      totalItems: sortedFilteredProjects.length,
       itemsPerPage: articlesPerPage,
       initialPage: 1,
     });
 
-  // Modal removed: no local modal state required here
-
-  // Get paginated items for current page
-  const paginatedFilteredItems = paginatedItems(filteredProjects);
+  // Get paginated items for current page from sorted list
+  const paginatedFilteredItems = paginatedItems(sortedFilteredProjects);
 
   // Handle filter changes with pagination reset
   const handleFilterChange = (filter: 'all' | 'projects') => {

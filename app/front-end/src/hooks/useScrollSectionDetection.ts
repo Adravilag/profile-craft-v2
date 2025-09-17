@@ -56,6 +56,7 @@ export const useScrollSectionDetection = (config: SectionDetectionConfig = {}) =
    * Detecta qué sección está más visible en el viewport
    */
   const detectVisibleSection = useCallback((): string | null => {
+    // Batch DOM reads to avoid forced reflows: read scroll/viewport once
     const scrollY = window.scrollY;
     const viewportHeight = window.innerHeight;
     const viewportCenter = scrollY + viewportHeight / 2;
@@ -69,52 +70,56 @@ export const useScrollSectionDetection = (config: SectionDetectionConfig = {}) =
     let visibleSection: string | null = null;
     let maxVisibleArea = 0;
 
+    // First, collect all existing section elements and their rects in one pass
+    const elements: Array<{
+      id: string;
+      el: HTMLElement;
+      rect: DOMRect;
+      top: number;
+      bottom: number;
+      height: number;
+    }> = [];
+
     for (const sectionId of sections) {
       const sectionElement =
-        document.getElementById(sectionId) ||
-        document.querySelector(`[data-section="${sectionId}"]`);
+        (document.getElementById(sectionId) as HTMLElement) ||
+        (document.querySelector(`[data-section="${sectionId}"]`) as HTMLElement | null);
 
       if (!sectionElement) continue;
 
+      // Read bounding rect once per element (batched reads)
       const rect = sectionElement.getBoundingClientRect();
-      const sectionTop = rect.top + scrollY;
-      const sectionBottom = sectionTop + rect.height;
+      const top = rect.top + scrollY;
+      const height = rect.height;
+      const bottom = top + height;
 
-      // Ajustar por el nav sticky
-      const adjustedViewportTop = scrollY + navHeight;
-      const adjustedViewportBottom = scrollY + viewportHeight;
+      elements.push({ id: sectionId, el: sectionElement, rect, top, bottom, height });
+    }
 
-      // Calcular intersección
-      const intersectionTop = Math.max(sectionTop, adjustedViewportTop);
-      const intersectionBottom = Math.min(sectionBottom, adjustedViewportBottom);
+    // Ajustar por el nav sticky
+    const adjustedViewportTop = scrollY + navHeight;
+    const adjustedViewportBottom = scrollY + viewportHeight;
+
+    // Main detection loop using cached rects
+    for (const item of elements) {
+      const intersectionTop = Math.max(item.top, adjustedViewportTop);
+      const intersectionBottom = Math.min(item.bottom, adjustedViewportBottom);
       const intersectionHeight = Math.max(0, intersectionBottom - intersectionTop);
 
-      // Calcular porcentaje de visibilidad
       const visibilityRatio =
-        intersectionHeight / Math.min(rect.height, viewportHeight - navHeight);
+        intersectionHeight / Math.min(item.height, viewportHeight - navHeight);
 
-      // Si esta sección tiene más área visible y supera el umbral
       if (visibilityRatio > threshold && intersectionHeight > maxVisibleArea) {
         maxVisibleArea = intersectionHeight;
-        visibleSection = sectionId;
+        visibleSection = item.id;
       }
     }
 
-    // Fallback: detectar por posición del centro del viewport
+    // Fallback: detect by viewport center using same cached rects
     if (!visibleSection) {
-      for (const sectionId of sections) {
-        const sectionElement =
-          document.getElementById(sectionId) ||
-          document.querySelector(`[data-section="${sectionId}"]`);
-
-        if (!sectionElement) continue;
-
-        const rect = sectionElement.getBoundingClientRect();
-        const sectionTop = rect.top + scrollY;
-        const sectionBottom = sectionTop + rect.height;
-
-        if (viewportCenter >= sectionTop && viewportCenter <= sectionBottom) {
-          visibleSection = sectionId;
+      for (const item of elements) {
+        if (viewportCenter >= item.top && viewportCenter <= item.bottom) {
+          visibleSection = item.id;
           break;
         }
       }

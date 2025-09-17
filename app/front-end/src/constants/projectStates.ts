@@ -25,11 +25,6 @@ export const STATE_MIGRATION_MAP: Record<string, ProjectState> = {
   'En desarrollo': PROJECT_STATES.IN_PROGRESS,
   Borrador: PROJECT_STATES.DRAFT,
 
-  // Valores de SkillPreviewModal
-  completado: PROJECT_STATES.COMPLETED,
-  'en-progreso': PROJECT_STATES.IN_PROGRESS,
-  pausado: PROJECT_STATES.PAUSED,
-
   // Valores de CreateProject
   'En progreso': PROJECT_STATES.IN_PROGRESS,
   Pausado: PROJECT_STATES.PAUSED,

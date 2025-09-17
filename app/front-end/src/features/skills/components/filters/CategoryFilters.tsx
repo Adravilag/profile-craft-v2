@@ -156,10 +156,14 @@ const CategoryFilters: React.FC<CategoryFiltersProps> = ({
   };
 
   const getTotalSkillsCount = () => {
-    const seen = new Set<string | number>();
+    // Use a combined key of id+name to avoid collisions when test fixtures
+    // generate per-category numeric ids (e.g. 1,2 repeated per category).
+    const seen = new Set<string>();
     Object.values(skillsGrouped).forEach(list => {
       list.forEach((s: any) => {
-        const key = s?.id ?? s?.name ?? JSON.stringify(s);
+        const idPart = s?.id !== undefined && s?.id !== null ? String(s.id) : '';
+        const namePart = s?.name ?? JSON.stringify(s);
+        const key = `${idPart}::${namePart}`;
         seen.add(key);
       });
     });

@@ -1,5 +1,5 @@
 // ProjectForm component - Refactored from CreateProject to support both create and edit modes
-import React, { useEffect, useCallback, memo } from 'react';
+import React, { useEffect, useCallback, memo, useState, useRef } from 'react';
 import { useProjectForm } from './hooks/useProjectForm';
 import { useProjectData } from './hooks/useProjectData';
 import ProjectFormContainer from '../CreateProject/ProjectFormContainer';
@@ -7,6 +7,8 @@ import styles from '../CreateProject/CreateProjectForm.module.css';
 import TextEditor from '@components/common/TextEditor/TextEditor';
 import { useTranslation } from '@/contexts/TranslationContext';
 import type { ProjectFormProps } from './types/ProjectFormTypes';
+import SkillPill from '@/components/ui/SkillPill/SkillPill';
+import { resolvePillFromTech } from '@/features/skills/utils/pillUtils';
 
 /**
  * ProjectForm - A comprehensive form component for creating and editing projects
@@ -111,15 +113,7 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
       }
     }, [project, mode, setForm]);
 
-    const handleKeyDown = useCallback(
-      (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter' && techInput.trim()) {
-          e.preventDefault();
-          handleAddTechnology();
-        }
-      },
-      [techInput, handleAddTechnology]
-    );
+    // Note: handleKeyDown will be declared below after suggestion helpers so it can access them
 
     // Handle keyboard navigation for tabs
     const handleTabKeyDown = useCallback(
@@ -154,6 +148,112 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
         }
       },
       [activeTab, setActiveTab]
+    );
+
+    // --- Technology suggestions and SkillPill integration (similar to AddExperienceForm)
+    type SuggestionItem = {
+      name: string;
+      slug: string;
+      svg?: string;
+      color?: string;
+      category?: string;
+    };
+    const [technologySuggestions, setTechnologySuggestions] = useState<SuggestionItem[]>([]);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
+    const techInputRef = useRef<HTMLInputElement | null>(null);
+
+    useEffect(() => {
+      let mounted = true;
+      const loadSuggestions = async () => {
+        try {
+          const res = await fetch('/skill_settings.json');
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+          if (!mounted) return;
+          if (Array.isArray(data)) {
+            const items: SuggestionItem[] = data
+              .map((item: any) => ({
+                name: item?.name ? String(item.name) : '',
+                slug: item?.slug ? String(item.slug) : String(item?.name || ''),
+                category: item?.category ? String(item.category) : undefined,
+                color: item?.color ? String(item.color) : undefined,
+                svg: item?.svg ? String(item.svg) : undefined,
+              }))
+              .filter(i => i.name)
+              .reduce((acc: SuggestionItem[], it) => {
+                if (!acc.find(a => a.name === it.name)) acc.push(it);
+                return acc;
+              }, [] as SuggestionItem[])
+              .sort((a, b) => a.name.localeCompare(b.name));
+
+            setTechnologySuggestions(items);
+          }
+        } catch (e) {
+          if (process.env.NODE_ENV === 'development')
+            console.warn(
+              'No se pudieron cargar las sugerencias de tecnologías desde /skill_settings.json:',
+              e
+            );
+        }
+      };
+
+      loadSuggestions();
+      return () => {
+        mounted = false;
+      };
+    }, []);
+
+    const getFilteredSuggestions = () => {
+      const q = techInput.trim().toLowerCase();
+      return technologySuggestions
+        .filter(item => {
+          if (!item) return false;
+          // Excluir ya seleccionadas
+          if (form.technologies && form.technologies.includes(item.name)) return false;
+          if (!q) return true;
+          return (
+            item.name.toLowerCase().includes(q) ||
+            (item.slug && item.slug.toLowerCase().includes(q))
+          );
+        })
+        .slice(0, 8);
+    };
+
+    const addTechnologyFromSuggestion = (item: SuggestionItem | string) => {
+      const name = typeof item === 'string' ? item.trim() : (item.name || '').trim();
+      if (!name) return;
+      // Evitar duplicados
+      if (form.technologies && form.technologies.includes(name)) return;
+      setForm(prev => ({ ...prev, technologies: [...(prev.technologies || []), name] }));
+      setTechInput('');
+      setDropdownOpen(false);
+      setHighlightedIndex(-1);
+      if (techInputRef.current) techInputRef.current.focus();
+    };
+
+    const handleKeyDown = useCallback(
+      (e: React.KeyboardEvent<HTMLInputElement>) => {
+        const suggestions = getFilteredSuggestions();
+        if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          setHighlightedIndex(prev => Math.min(prev + 1, suggestions.length - 1));
+          setDropdownOpen(true);
+        } else if (e.key === 'ArrowUp') {
+          e.preventDefault();
+          setHighlightedIndex(prev => Math.max(prev - 1, 0));
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          if (highlightedIndex >= 0 && suggestions[highlightedIndex]) {
+            addTechnologyFromSuggestion(suggestions[highlightedIndex]);
+          } else if (techInput.trim()) {
+            handleAddTechnology();
+          }
+        } else if (e.key === 'Escape') {
+          setDropdownOpen(false);
+        }
+      },
+      [getFilteredSuggestions, highlightedIndex, techInput, handleAddTechnology]
     );
 
     // Show loading state when loading project data
@@ -260,6 +360,7 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                 <h3>
                   <i className="fas fa-info-circle" aria-hidden="true"></i>Información Básica
                 </h3>
+                {/* Technology suggestions and SkillPill integration handled in component body */}
 
                 <div className={styles.formColumns}>
                   <div className={styles.formColumn}>
@@ -354,13 +455,19 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                           </span>
                         )}
                       </label>
-                      <div className={styles.techInputContainer}>
+                      <div className={styles.techInputContainer} style={{ position: 'relative' }}>
                         <input
                           id="tech-input"
+                          ref={techInputRef}
                           type="text"
                           value={techInput}
-                          onChange={e => setTechInput(e.target.value)}
+                          onChange={e => {
+                            setTechInput(e.target.value);
+                            setDropdownOpen(true);
+                          }}
                           onKeyDown={handleKeyDown}
+                          onFocus={() => setDropdownOpen(true)}
+                          onBlur={() => setTimeout(() => setDropdownOpen(false), 150)}
                           placeholder="Ej: React, TypeScript, Node.js"
                           className={validationErrors.technologies ? styles.error : ''}
                           aria-describedby="tech-help"
@@ -368,13 +475,47 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                         />
                         <button
                           type="button"
-                          onClick={handleAddTechnology}
+                          onClick={() => {
+                            if (techInput.trim()) handleAddTechnology();
+                          }}
                           disabled={!techInput.trim()}
                           title="Agregar tecnología"
                           aria-label="Agregar tecnología a la lista"
                         >
                           <i className="fas fa-plus" aria-hidden="true"></i>
                         </button>
+
+                        {dropdownOpen && getFilteredSuggestions().length > 0 && (
+                          <div className={styles.suggestionsDropdown} role="listbox">
+                            {getFilteredSuggestions().map((sug, idx) => {
+                              const isHighlighted = idx === highlightedIndex;
+                              return (
+                                <div
+                                  key={sug.slug || sug.name}
+                                  role="option"
+                                  aria-selected={isHighlighted}
+                                  className={`${styles.suggestionItem} ${isHighlighted ? styles.highlighted : ''}`}
+                                  onMouseDown={() => addTechnologyFromSuggestion(sug)}
+                                  onMouseEnter={() => setHighlightedIndex(idx)}
+                                >
+                                  {sug.svg ? (
+                                    <img
+                                      src={`/assets/svg/${sug.svg}`}
+                                      alt={`${sug.name} icon`}
+                                      className={styles.icon}
+                                    />
+                                  ) : (
+                                    <span
+                                      className={styles.colorDot}
+                                      style={{ backgroundColor: sug.color || '#ddd' }}
+                                    />
+                                  )}
+                                  <span className={styles.suggestionName}>{sug.name}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
                       <small id="tech-help">
                         Presiona Enter o haz clic en + para agregar una tecnología
@@ -386,19 +527,22 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                           role="list"
                           aria-label="Tecnologías seleccionadas"
                         >
-                          {form.technologies.map((tech, index) => (
-                            <span key={index} className={styles.techTag} role="listitem">
-                              {tech}
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveTechnology(index)}
-                                aria-label={`Remover ${tech} de la lista de tecnologías`}
-                                title={`Remover ${tech}`}
-                              >
-                                <i className="fas fa-times" aria-hidden="true"></i>
-                              </button>
-                            </span>
-                          ))}
+                          {form.technologies.map((tech, index) => {
+                            const pill = resolvePillFromTech(tech, technologySuggestions, index);
+                            return (
+                              <SkillPill
+                                key={pill.slug || index}
+                                slug={pill.slug}
+                                svg={pill.svg}
+                                name={pill.name}
+                                colored={true}
+                                closable={true}
+                                onClose={() => handleRemoveTechnology(index)}
+                                className={styles.skillChip}
+                                color={pill.color}
+                              />
+                            );
+                          })}
                         </div>
                       )}
                     </div>

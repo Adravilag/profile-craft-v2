@@ -89,7 +89,12 @@ export const ModalProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, []);
 
   return (
-    <ModalContext.Provider value={{ openModal, closeModal, activeModal }}>
+    <ModalContext.Provider
+      value={React.useMemo(
+        () => ({ openModal, closeModal, activeModal }),
+        [openModal, closeModal, activeModal]
+      )}
+    >
       {children}
       <ModalHost modal={activeModal} onClose={() => closeModal()} />
     </ModalContext.Provider>

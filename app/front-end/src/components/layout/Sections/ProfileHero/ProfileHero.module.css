@@ -140,6 +140,8 @@ code {
   z-index: 0;
   pointer-events: none;
   background-image: url('../../../../assets/img/profilehero-background.webp');
+  /* Usar imagen alojada en Cloudinary para mayor rendimiento y cache */
+  background-image: url('https://res.cloudinary.com/dtdnfd2ku/image/upload/v1757850417/profilehero-background_mwwicj.webp');
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -384,6 +386,14 @@ code {
   margin-bottom: var(--spacing-xs);
   text-transform: none;
   text-shadow: 0 3px 10px rgb(0, 0, 0, 0.55);
+  /* Reserve space to avoid layout shifts when fonts load or text changes */
+  display: inline-block;
+  min-width: 14ch; /* conservative width to avoid early layout shift for most names */
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  will-change: transform, opacity;
 }
 
 .headerTagline {
@@ -402,25 +412,32 @@ code {
   color: #fff;
 }
 
+.typingRotator {
+  display: inline-block; /* measurable width to reduce jumps while typing */
+  min-width: 10ch; /* prevents width collapse while rotating */
+}
+
 .cursor {
   display: inline-block;
   margin-left: 6px;
   opacity: 0.9;
-  animation: cursorBlink 1.2s ease-in-out infinite;
+  /* Use opacity-only animation to avoid layout/paint churn */
+  animation: cursorFade 1.2s steps(2, end) infinite;
+  will-change: opacity, transform;
 }
 
-@keyframes cursorBlink {
+@keyframes cursorFade {
   0% {
     opacity: 1;
+    transform: translateY(0);
   }
-  45% {
-    opacity: 1;
-  }
-  55% {
+  50% {
     opacity: 0.1;
+    transform: translateY(0);
   }
   100% {
-    opacity: 0.1;
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

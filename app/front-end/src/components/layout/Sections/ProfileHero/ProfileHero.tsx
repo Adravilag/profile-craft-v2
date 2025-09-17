@@ -3,7 +3,9 @@ import usePDFExport from '@/hooks/usePDFExport';
 import { useAuth } from '@/contexts/AuthContext';
 import PatternLogin from '@/components/Auth/PatternLogin.tsx';
 import ContactTooltips from './components/ContactTooltips/ContactTooltips';
-import SkillBadge from '@/components/ui/SkillBadge/SkillBadge';
+import SkillPill from '@/components/ui/SkillPill/SkillPill';
+import { resolvePillFromTech } from '@/features/skills/utils/pillUtils';
+import { useSkillSuggestions } from '@/features/skills/hooks/useSkillSuggestions';
 
 // Importaciones de hooks y componentes especializados
 import {
@@ -52,6 +54,7 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
   const { showPatternAuth, setShowPatternAuth, setPatternError } = useAuthState();
   const { currentLanguage, changeLanguage, t } = useLanguage();
   const { skills, getTopFeaturedSkills } = useSkills();
+  const skillSuggestions = useSkillSuggestions();
   const { isAuthenticated, logout } = useAuth();
 
   // Hook para cargar el patrón por separado
@@ -411,13 +414,26 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
               className={`${styles.stackRow} animate-slide-in-left delay-700`}
               aria-hidden="false"
             >
-              {featuredSkills.map((s, idx) => (
-                <SkillBadge
-                  key={`${s.name}-${idx}`}
-                  skill={s}
-                  className={`${styles.stackIcon} transition-transform hover:scale-110 hover:-translate-y-1`}
-                />
-              ))}
+              {featuredSkills.map((s, idx) => {
+                // Use the central suggestions JSON + resolver to obtain slug/svg/name/color
+                const pill = resolvePillFromTech(s, skillSuggestions, idx);
+                const level = (s as any).level ?? (s as any).years_experience ?? null;
+                return (
+                  <SkillPill
+                    color={pill.color}
+                    slug={pill.slug}
+                    svg={pill.svg}
+                    name={pill.name}
+                    size={22}
+                    compact
+                    tooltipPosition="down"
+                    colored
+                    level={level}
+                    key={`${pill.slug}-${idx}`}
+                    className={`${styles.stackIcon} transition-transform hover:scale-110 hover:-translate-y-1 stackIcon--small`}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>

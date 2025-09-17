@@ -1,8 +1,15 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import { vi, describe, test, expect, beforeEach } from 'vitest';
+import fs from 'fs';
+import path from 'path';
 import { useSkills } from './useSkills';
 import type { Skill } from '@/types/api';
-import seed from '@/config/skill_setings.json';
+
+const rawSeed = fs.readFileSync(
+  path.join(__dirname, '..', '..', '..', '..', 'public', 'skill_settings.json'),
+  'utf-8'
+);
+const seed = JSON.parse(rawSeed) as any[];
 
 // Mock del servicio API
 vi.mock('../../../../../services/api', () => ({

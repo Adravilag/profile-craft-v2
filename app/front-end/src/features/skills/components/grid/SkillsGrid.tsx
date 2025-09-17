@@ -1,10 +1,28 @@
 // src/components/sections/skills/components/SkillsGrid.tsx
 
 import React from 'react';
+import useRenderCount from '@/utils/useRenderCount';
 import SkillCard from '../cards/SkillCard';
 import type { SkillsGridProps } from '../../types/skills';
 import { debugLog } from '@/utils/debugConfig';
 import styles from './SkillsGrid.module.css';
+
+// Move static mapping outside component to avoid recreating on every render
+const CATEGORY_ICONS: Record<string, string> = {
+  All: 'fas fa-th',
+  Destacados: 'fas fa-star',
+  Frontend: 'fas fa-paint-brush',
+  Backend: 'fas fa-server',
+  'DevOps & Tools': 'fas fa-tools',
+  'Data Science': 'fas fa-chart-line',
+  Mobile: 'fas fa-mobile-alt',
+  Cloud: 'fas fa-cloud',
+  Testing: 'fas fa-vial',
+  'UI/UX': 'fas fa-pencil-ruler',
+  Security: 'fas fa-shield-alt',
+  MCP: 'fas fa-robot',
+  Other: 'fas fa-cogs',
+};
 
 const SkillsGrid: React.FC<SkillsGridProps> = ({
   filteredGrouped,
@@ -24,6 +42,9 @@ const SkillsGrid: React.FC<SkillsGridProps> = ({
 }) => {
   // Estado para controlar la expansión de categorías
   const [isExpanded, setIsExpanded] = React.useState(false);
+
+  // Dev instrumentation: count renders
+  useRenderCount && useRenderCount('SkillsGrid', true);
 
   // Verificar que tenemos iconos
   const iconsLoaded = skillsIcons && skillsIcons.length > 0;
@@ -54,27 +75,36 @@ const SkillsGrid: React.FC<SkillsGridProps> = ({
   };
 
   // Función para obtener el sort actual de una categoría
-  const getCategorySort = (category: string) => {
-    return selectedSort[category] || 'alphabetical';
-  };
+  const getCategorySort = React.useCallback(
+    (category: string) => {
+      return selectedSort[category] || 'alphabetical';
+    },
+    [selectedSort]
+  );
 
   // Función para determinar si un botón está activo
-  const isButtonActive = (category: string, sortType: string) => {
-    const currentSort = getCategorySort(category);
-    return currentSort.startsWith(sortType);
-  };
+  const isButtonActive = React.useCallback(
+    (category: string, sortType: string) => {
+      const currentSort = getCategorySort(category);
+      return currentSort.startsWith(sortType);
+    },
+    [getCategorySort]
+  );
 
   // Función para obtener el icono de dirección
-  const getDirectionIcon = (category: string, sortType: string) => {
-    const currentSort = getCategorySort(category);
-    const isDesc = currentSort.endsWith('_desc');
+  const getDirectionIcon = React.useCallback(
+    (category: string, sortType: string) => {
+      const currentSort = getCategorySort(category);
+      const isDesc = currentSort.endsWith('_desc');
 
-    if (isButtonActive(category, sortType)) {
-      return isDesc ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
-    }
+      if (isButtonActive(category, sortType)) {
+        return isDesc ? 'fas fa-chevron-down' : 'fas fa-chevron-up';
+      }
 
-    return null;
-  };
+      return null;
+    },
+    [getCategorySort, isButtonActive]
+  );
 
   // Determinar qué categorías mostrar según el estado
   const getCategoriesToShow = React.useMemo(() => {
@@ -144,8 +174,8 @@ const SkillsGrid: React.FC<SkillsGridProps> = ({
           <div key={category} className={styles.skillsCategory}>
             <div className={styles.categoryHeader}>
               <h3 className={styles.categoryTitle}>
-                {categoryIcons[category] && (
-                  <i className={`${styles.categoryIcon} ${categoryIcons[category]}`}></i>
+                {CATEGORY_ICONS[category] && (
+                  <i className={`${styles.categoryIcon} ${CATEGORY_ICONS[category]}`}></i>
                 )}
                 {category === 'Destacados' && (
                   <span className={styles.featuredBadge}>Destacados</span>
@@ -231,4 +261,4 @@ const SkillsGrid: React.FC<SkillsGridProps> = ({
   );
 };
 
-export default SkillsGrid;
+export default React.memo(SkillsGrid);

@@ -126,10 +126,20 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
           } catch {}
         }
 
-        // Si hay token en localStorage, configurarlo en axios
+        // Si hay token en localStorage, configúralo en el storage helper.
+        // La instancia axios leerá el token desde storage al hacer peticiones
+        // (el interceptor en services/http lee localStorage). Evitamos import dinámico
+        // de '@/services/http' para no causar mezcla de importaciones.
         if (savedToken) {
-          const { setAuthToken } = await import('@/services/http');
-          setAuthToken(savedToken);
+          try {
+            const { setToken } = await import('@/services/tokenStorage');
+            setToken(savedToken);
+          } catch (e) {
+            // fallback directo
+            try {
+              localStorage.setItem('portfolio_auth_token', savedToken);
+            } catch {}
+          }
         }
 
         // If we have a persistent token in localStorage, also send it in the
@@ -223,9 +233,14 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
     // Guardar token JWT si viene en la respuesta
     if (data.token) {
       console.log('[AuthContext] Guardando token en localStorage...');
-      // Importar dinámicamente para evitar ciclo
-      const { setAuthToken } = await import('@/services/http');
-      setAuthToken(data.token);
+      try {
+        const { setToken } = await import('@/services/tokenStorage');
+        setToken(data.token);
+      } catch (e) {
+        try {
+          localStorage.setItem('portfolio_auth_token', data.token);
+        } catch {}
+      }
       console.log('[AuthContext] Token guardado exitosamente');
 
       // Verificar que se guardó correctamente

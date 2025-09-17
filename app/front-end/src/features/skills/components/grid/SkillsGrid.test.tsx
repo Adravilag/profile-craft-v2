@@ -2,10 +2,17 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import fs from 'fs';
+import path from 'path';
 import SkillsGrid from './SkillsGrid';
 import type { SkillsGridProps } from '../../types/skills';
-// Use seed JSON to build predictable test data
-import seed from '@/config/skill_setings.json';
+
+// Load seed JSON from public at test runtime to avoid bundler path issues
+const rawSeed = fs.readFileSync(
+  path.join(__dirname, '..', '..', '..', '..', 'public', 'skill_settings.json'),
+  'utf-8'
+);
+const seed = JSON.parse(rawSeed) as any[];
 
 describe('[TEST] SkillsGrid - Funcionalidad "Mostrar más"', () => {
   // Build a small deterministic subset from seed for test

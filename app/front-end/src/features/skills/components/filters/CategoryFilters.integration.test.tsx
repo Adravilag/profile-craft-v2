@@ -3,10 +3,17 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import fs from 'fs';
+import path from 'path';
 import CategoryFilters from './CategoryFilters';
 import { NavigationProvider } from '@/contexts/NavigationContext';
 import { SkillsFilterProvider } from '../../contexts/SkillsFilterContext';
-import seed from '@/config/skill_setings.json';
+
+const rawSeed = fs.readFileSync(
+  path.join(__dirname, '..', '..', '..', '..', 'public', 'skill_settings.json'),
+  'utf-8'
+);
+const seed = JSON.parse(rawSeed) as any[];
 
 // Mock hooks
 vi.mock('@/hooks/useIsOnSkillsPage', () => ({

@@ -69,19 +69,29 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
     internalSetSelectedCategory;
 
   // Cargar iconos de skills
-  const { skillsIcons, loadingExternalData, loadingIcons } = useSkillsIcons();
+  const { skillsIcons: rawSkillsIcons, loadingExternalData, loadingIcons } = useSkillsIcons();
+  // Memoize skillsIcons to avoid identity changes
+  const skillsIcons = React.useMemo(() => rawSkillsIcons, [rawSkillsIcons]);
 
   // Estado local para sorting
   const [selectedSort, setSelectedSort] = useState<Record<string, SortOption>>({});
   const [sortingClass, setSortingClass] = useState('');
 
   // Conectar el FAB con el modal
+  // Memoize handler and register FAB listener only when admin and callback available
+  const handleFabOpen = useCallback(() => {
+    handleOpenModal();
+  }, [handleOpenModal]);
+
   useEffect(() => {
-    const cleanup = onOpenSkillModal(() => {
-      handleOpenModal();
-    });
-    return cleanup;
-  }, [onOpenSkillModal, handleOpenModal]);
+    if (!isAdmin) return;
+    if (typeof onOpenSkillModal !== 'function') return;
+
+    const unregister = onOpenSkillModal(handleFabOpen);
+    return () => {
+      if (typeof unregister === 'function') unregister();
+    };
+  }, [isAdmin, onOpenSkillModal, handleFabOpen]);
 
   // Handler para la expansión de categorías
   const handleCategoryExpansion = useCallback(
@@ -201,25 +211,17 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
     [handleAddSkill, skillsIcons]
   );
 
-  const getDynamicTitle = () => {
-    return 'Habilidades';
-  };
-
-  const getDynamicIcon = () => {
-    return 'fas fa-tools';
-  };
-
-  const getDynamicSubtitle = () => {
-    return 'Competencias técnicas y conocimientos';
-  };
+  const getDynamicTitle = React.useMemo(() => 'Habilidades', []);
+  const getDynamicIcon = React.useMemo(() => 'fas fa-tools', []);
+  const getDynamicSubtitle = React.useMemo(() => 'Competencias técnicas y conocimientos', []);
 
   if (loading) {
     return (
       <div className={`section-cv`} id="skills">
         <HeaderSection
-          icon={getDynamicIcon()}
-          title={getDynamicTitle()}
-          subtitle={getDynamicSubtitle()}
+          icon={getDynamicIcon}
+          title={getDynamicTitle}
+          subtitle={getDynamicSubtitle}
           className="projects"
         />
         <div className="section-container">
@@ -254,9 +256,9 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
   return (
     <div className={`section-cv`} id="skills">
       <HeaderSection
-        icon={getDynamicIcon()}
-        title={getDynamicTitle()}
-        subtitle={getDynamicSubtitle()}
+        icon={getDynamicIcon}
+        title={getDynamicTitle}
+        subtitle={getDynamicSubtitle}
         className="projects"
       />
       <div className="section-container">
@@ -266,11 +268,14 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
             filteredGrouped={sortedFilteredGrouped}
             skillsIcons={skillsIcons}
             iconsLoading={loadingIcons}
-            onEdit={handleEditSkill}
-            onDelete={handleDeleteSkill}
-            onDragStart={handleDragStart}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
+            onEdit={React.useCallback((s: any) => handleEditSkill(s), [handleEditSkill])}
+            onDelete={React.useCallback((id: any) => handleDeleteSkill(id), [handleDeleteSkill])}
+            onDragStart={React.useCallback((id: any) => handleDragStart(id), [handleDragStart])}
+            onDragOver={React.useCallback(
+              (e: React.DragEvent<HTMLDivElement>) => handleDragOver(e),
+              [handleDragOver]
+            )}
+            onDrop={React.useCallback((id: any) => handleDrop(id), [handleDrop])}
             draggedSkillId={draggedSkillId as number | null}
             selectedSort={selectedSort}
             sortingClass={sortingClass}

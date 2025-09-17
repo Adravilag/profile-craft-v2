@@ -1,24 +1,29 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+import fs from 'fs';
+import path from 'path';
 import SkillsGrid from './SkillsGrid';
 import type { SkillIconData, SortOption } from '../../types/skills';
 import styles from './SkillsGrid.module.css';
-import seed from '@/config/skill_setings.json';
+
+const rawSeed = fs.readFileSync(
+  path.join(__dirname, '..', '..', '..', '..', 'public', 'skill_settings.json'),
+  'utf-8'
+);
+const seed = JSON.parse(rawSeed) as any[];
 
 // derive small deterministic sets from seed
 const seedSubset = seed.slice(0, 6);
 const mockSkillsIcons: SkillIconData[] = seedSubset.map(
   s => ({ name: s.name.toLowerCase(), svg_path: s.svg }) as any
 );
-const mockSkills = seedSubset
-  .slice(0, 3)
-  .map((s, idx) => ({
-    id: idx + 1,
-    name: s.name,
-    level: 50 + idx * 20,
-    difficulty_level: 3 - idx,
-    category: 'Frontend',
-  }));
+const mockSkills = seedSubset.slice(0, 3).map((s, idx) => ({
+  id: idx + 1,
+  name: s.name,
+  level: 50 + idx * 20,
+  difficulty_level: 3 - idx,
+  category: 'Frontend',
+}));
 const mockFilteredGrouped = { Frontend: mockSkills };
 
 describe('[TEST] SkillsGrid - Sorting Buttons', () => {

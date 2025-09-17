@@ -6,12 +6,12 @@ const meta: Meta<typeof SkillPill> = {
   component: SkillPill,
   tags: ['autodocs'],
   args: {
-    name: 'TypeScript',
+    slug: 'TypeScript',
     colored: false,
     forceActive: false,
   },
   argTypes: {
-    name: { control: 'text' },
+    slug: { control: 'text' },
     level: { control: { type: 'number', min: 0, max: 100, step: 1 } },
     colored: { control: 'boolean' },
     forceActive: { control: 'boolean' },
@@ -30,14 +30,14 @@ export const Default: Story = {
 
 export const Colored: Story = {
   args: {
-    name: 'React',
+    slug: 'React',
     colored: true,
   },
 };
 
 export const WithLevel: Story = {
   args: {
-    name: 'Node.js',
+    slug: 'Node.js',
     level: 76,
     colored: true,
   },
@@ -45,7 +45,7 @@ export const WithLevel: Story = {
 
 export const Closable: Story = {
   args: {
-    name: 'Vue.js',
+    slug: 'Vue.js',
     level: 78,
     colored: true,
     closable: true,
@@ -55,7 +55,7 @@ export const Closable: Story = {
 
 export const ClosableWithoutLevel: Story = {
   args: {
-    name: 'Angular',
+    slug: 'Angular',
     colored: true,
     closable: true,
     onClose: (skillName: string) => console.log('Cerrar skill:', skillName),
@@ -64,7 +64,7 @@ export const ClosableWithoutLevel: Story = {
 
 export const HoverOnly: Story = {
   args: {
-    name: 'Docker',
+    slug: 'Docker',
     colored: false,
   },
 };
@@ -72,11 +72,11 @@ export const HoverOnly: Story = {
 export const Multiple: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-      <SkillPill name="TypeScript" colored />
-      <SkillPill name="React" colored closable onClose={name => console.log('Cerrar:', name)} />
-      <SkillPill name="Node.js" level={70} />
-      <SkillPill name="GraphQL" />
-      <SkillPill name="Docker" colored forceActive />
+      <SkillPill slug="TypeScript" colored />
+      <SkillPill slug="React" colored closable onClose={name => console.log('Cerrar:', name)} />
+      <SkillPill slug="Node.js" level={70} />
+      <SkillPill slug="GraphQL" />
+      <SkillPill slug="Docker" colored forceActive />
     </div>
   ),
 };
@@ -84,16 +84,18 @@ export const Multiple: Story = {
 export const ClosableGroup: Story = {
   render: () => (
     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-      <SkillPill name="React" colored closable onClose={name => console.log('Cerrar:', name)} />
+      <SkillPill slug="React" colored closable onClose={name => console.log('Cerrar:', name)} />
       <SkillPill
+        slug="Vue.js"
         name="Vue.js"
         level={85}
         colored
         closable
         onClose={name => console.log('Cerrar:', name)}
       />
-      <SkillPill name="Angular" colored closable onClose={name => console.log('Cerrar:', name)} />
+      <SkillPill slug="Angular" colored closable onClose={name => console.log('Cerrar:', name)} />
       <SkillPill
+        slug="Svelte"
         name="Svelte"
         level={70}
         colored

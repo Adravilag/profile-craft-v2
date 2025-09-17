@@ -4,28 +4,32 @@
     "slug": "javascript",
     "category": "language",
     "color": "#F7DF1E",
-    "svg": "javascript.svg"
+    "svg": "javascript.svg",
+    "aliases": ["js", "ecmascript"]
   },
   {
     "name": "TypeScript",
     "slug": "typescript",
     "category": "language",
-    "color": "#3178C6",
-    "svg": "typescript.svg"
+    "color": "#588DCC",
+    "svg": "typescript.svg",
+    "aliases": ["ts"]
   },
   {
     "name": "React",
     "slug": "react",
     "category": "framework",
     "color": "#61DAFB",
-    "svg": "react.svg"
+    "svg": "react.svg",
+    "aliases": ["reactjs", "react.js"]
   },
   {
     "name": "Vue.js",
     "slug": "vue",
     "category": "framework",
     "color": "#4FC08D",
-    "svg": "vue-js.svg"
+    "svg": "vue-js.svg",
+    "aliases": ["vuejs", "vue.js"]
   },
   {
     "name": "Angular",
@@ -38,14 +42,15 @@
     "name": "Node.js",
     "slug": "nodejs",
     "category": "runtime",
-    "color": "#43853d",
-    "svg": "node-js.svg"
+    "color": "#69AC65",
+    "svg": "node-js.svg",
+    "aliases": ["node", "node.js"]
   },
   {
     "name": "Express",
     "slug": "express",
     "category": "framework",
-    "color": "#000000",
+    "color": "#DCDCDC",
     "svg": "express.svg"
   },
   {
@@ -53,14 +58,16 @@
     "slug": "html5",
     "category": "language",
     "color": "#E34F26",
-    "svg": "html5.svg"
+    "svg": "html5.svg",
+    "aliases": ["html"]
   },
   {
     "name": "CSS3",
     "slug": "css3",
     "category": "style",
     "color": "#1572B6",
-    "svg": "css3.svg"
+    "svg": "css3.svg",
+    "aliases": ["css"]
   },
   {
     "name": "Sass",
@@ -74,7 +81,8 @@
     "slug": "tailwind",
     "category": "style",
     "color": "#06B6D4",
-    "svg": "tailwind-css.svg"
+    "svg": "tailwind-css.svg",
+    "aliases": ["tailwindcss", "tailwind"]
   },
   {
     "name": "Bootstrap",
@@ -108,7 +116,7 @@
     "name": "GitHub",
     "slug": "github",
     "category": "platform",
-    "color": "#181717",
+    "color": "#C9D1D9",
     "svg": "github-actions.svg"
   },
   {
@@ -130,7 +138,8 @@
     "slug": "aws",
     "category": "cloud",
     "color": "#FF9900",
-    "svg": "amazonwebservices.svg"
+    "svg": "amazonwebservices.svg",
+    "aliases": ["amazonwebservices", "amazon web services"]
   },
   {
     "name": "Azure",
@@ -144,21 +153,24 @@
     "slug": "postgresql",
     "category": "database",
     "color": "#326791",
-    "svg": "postgresql.svg"
+    "svg": "postgresql.svg",
+    "aliases": ["postgres", "postgres-db"]
   },
   {
     "name": "MySQL",
     "slug": "mysql",
     "category": "database",
     "color": "#00758F",
-    "svg": "mysql.svg"
+    "svg": "mysql.svg",
+    "aliases": ["mysql"]
   },
   {
     "name": "MongoDB",
     "slug": "mongodb",
     "category": "database",
     "color": "#47A248",
-    "svg": "mongodb.svg"
+    "svg": "mongodb.svg",
+    "aliases": ["mongo", "mongodb"]
   },
   {
     "name": "Redis",
@@ -172,7 +184,8 @@
     "slug": "python",
     "category": "language",
     "color": "#3776AB",
-    "svg": "python.svg"
+    "svg": "python.svg",
+    "aliases": ["py"]
   },
   {
     "name": "Java",
@@ -192,7 +205,7 @@
     "name": "Rust",
     "slug": "rust",
     "category": "language",
-    "color": "#DEA584",
+    "color": "#C38C60",
     "svg": "rust.svg"
   },
   {
@@ -220,7 +233,7 @@
     "name": "Cypress",
     "slug": "cypress",
     "category": "testing",
-    "color": "#17241A",
+    "color": "#638A6A",
     "svg": "cypress.svg"
   },
   {
@@ -256,13 +269,14 @@
     "slug": "graphql",
     "category": "api",
     "color": "#E535AB",
-    "svg": "graphql.svg"
+    "svg": "graphql.svg",
+    "aliases": ["graphql"]
   },
   {
     "name": "REST",
     "slug": "rest",
     "category": "api",
-    "color": "#6B7280",
+    "color": "#AAB0B8",
     "svg": "restapi.svg"
   },
   {
@@ -278,13 +292,6 @@
     "category": "design",
     "color": "#F24E1E",
     "svg": "figma.svg"
-  },
-  {
-    "name": "Adobe XD",
-    "slug": "adobexd",
-    "category": "design",
-    "color": "#FF61DA",
-    "svg": "adobexd.svg"
   },
   {
     "name": "Photoshop",
@@ -305,7 +312,7 @@
     "slug": "microsoft-excel",
     "category": "tool",
     "color": "#217346",
-    "svg": "microsoft-excel.svg"
+    "svg": "excel.svg"
   },
   {
     "name": ".NET",
@@ -333,6 +340,80 @@
     "slug": "microsoft-access",
     "category": "database",
     "color": "#A4373A",
-    "svg": "microsoft-access.svg"
+    "svg": "access.svg"
+  },
+  {
+    "name": "SQLite",
+    "slug": "sqlite",
+    "category": "database",
+    "color": "#003B57",
+    "svg": "sqlite.svg"
+  },
+  {
+    "name": "Next JS",
+    "slug": "nextjs",
+    "category": "framework",
+    "color": "#C9D1D9",
+    "svg": "next-js.svg",
+    "aliases": ["next", "next.js"]
+  },
+  {
+    "name": "Spring Boot",
+    "slug": "spring-boot",
+    "category": "framework",
+    "color": "#6DB33F",
+    "svg": "springboot.svg",
+    "aliases": ["spring", "springboot"]
+  },
+  {
+    "name": "C#",
+    "slug": "csharp",
+    "category": "language",
+    "color": "#239120",
+    "svg": "csharp.svg",
+    "aliases": ["c#"]
+  },
+  {
+    "name": "Team City",
+    "slug": "team-city",
+    "category": "ci",
+    "color": "#DCDCDC",
+    "svg": "teamcity.svg",
+    "aliases": ["teamcity", "team city", "team-city"]
+  },
+  {
+    "name": "JavaServer Pages",
+    "slug": "jsp",
+    "category": "language",
+    "color": "#F7DB3A",
+    "svg": "jsp.svg"
+  },
+  {
+    "name": "TortoiseSVN",
+    "slug": "tortoisesvn",
+    "category": "tool",
+    "color": "#809CC9",
+    "svg": "svn.svg"
+  },
+  {
+    "name": "Lerna",
+    "slug": "lerna",
+    "category": "tool",
+    "color": "#CFB87C",
+    "svg": "lerna.svg"
+  },
+  {
+    "name": "WebSocket.io",
+    "slug": "websocket-io",
+    "category": "library",
+    "color": "#010101",
+    "svg": "socket-io.svg"
+  },
+  {
+    "name": "JQuery",
+    "slug": "jquery",
+    "category": "library",
+    "color": "#0769AD",
+    "svg": "jquery.svg"
   }
 ]

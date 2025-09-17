@@ -47,7 +47,7 @@ describe('Card - ChronologicalItem Example', () => {
 
         <Card.Tags>
           {mockItem.technologies.map((tech, idx) => (
-            <SkillPill key={idx} name={tech} colored={true} />
+            <SkillPill key={idx} slug={tech} name={tech} colored={true} />
           ))}
         </Card.Tags>
       </Card>

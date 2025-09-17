@@ -59,6 +59,7 @@ const InteractiveTerminalContent: React.FC = () => {
   const audioContextRef = useRef<AudioContext | null>(null);
   const activeTimeoutsRef = useRef<NodeJS.Timeout[]>([]);
   const activeOscillatorsRef = useRef<OscillatorNode[]>([]);
+  const mountedRef = useRef(true);
 
   // Función para crear sonidos de tecleo con variedad (incluyendo estilo Undertale)
   const playKeySound = (
@@ -140,6 +141,20 @@ const InteractiveTerminalContent: React.FC = () => {
 
       // CRÍTICO: Registrar oscilador para poder cancelarlo con stopAllSounds()
       activeOscillatorsRef.current.push(oscillator);
+      // Al terminar, quitar la referencia para permitir GC
+      try {
+        // @ts-ignore - algunos navegadores no exponen onended en todos los tipos
+        oscillator.onended = () => {
+          activeOscillatorsRef.current = activeOscillatorsRef.current.filter(o => o !== oscillator);
+          try {
+            oscillator.disconnect();
+          } catch (e) {
+            // ignore
+          }
+        };
+      } catch (e) {
+        // ignore
+      }
     } catch (e) {
       // Silently fail if audio doesn't work
     }
@@ -196,17 +211,26 @@ const InteractiveTerminalContent: React.FC = () => {
 
   // Detectar scroll manual del usuario
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      if (outputRef.current) {
-        const element = outputRef.current;
-        const isNearBottom = element.scrollTop + element.clientHeight >= element.scrollHeight - 50;
-        setUserScrolling(!isNearBottom);
-      }
+      if (!outputRef.current) return;
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        try {
+          const element = outputRef.current!;
+          const isNearBottom =
+            element.scrollTop + element.clientHeight >= element.scrollHeight - 50;
+          setUserScrolling(!isNearBottom);
+        } finally {
+          ticking = false;
+        }
+      });
     };
 
     const outputElement = outputRef.current;
     if (outputElement) {
-      outputElement.addEventListener('scroll', handleScroll);
+      outputElement.addEventListener('scroll', handleScroll, { passive: true });
       return () => outputElement.removeEventListener('scroll', handleScroll);
     }
   }, []);
@@ -488,6 +512,9 @@ const InteractiveTerminalContent: React.FC = () => {
           // Ejecutar comando (ahora async)
           const result: CommandResult = await runCommand(inputValue, currentLanguage);
 
+          // Si el componente ya fue desmontado, cancelar cualquier actualización
+          if (!mountedRef.current) return;
+
           // Detectar comandos especiales para efectos
           if (inputValue.toLowerCase() === 'hack') {
             setSpecialEffect('hack');
@@ -759,6 +786,17 @@ const InteractiveTerminalContent: React.FC = () => {
 
         // Registrar oscilador para poder cancelarlo
         activeOscillatorsRef.current.push(oscillator);
+        try {
+          // @ts-ignore
+          oscillator.onended = () => {
+            activeOscillatorsRef.current = activeOscillatorsRef.current.filter(
+              o => o !== oscillator
+            );
+            try {
+              oscillator.disconnect();
+            } catch (e) {}
+          };
+        } catch (e) {}
         oscillators.push(oscillator);
         gainNodes.push(gainNode);
       }
@@ -785,6 +823,16 @@ const InteractiveTerminalContent: React.FC = () => {
 
           // Registrar oscilador para poder cancelarlo
           activeOscillatorsRef.current.push(impactOscillator);
+          try {
+            impactOscillator.onended = () => {
+              activeOscillatorsRef.current = activeOscillatorsRef.current.filter(
+                o => o !== impactOscillator
+              );
+              try {
+                impactOscillator.disconnect();
+              } catch (e) {}
+            };
+          } catch (e) {}
         }, 50);
 
         // Registrar timeout para poder cancelarlo
@@ -813,6 +861,16 @@ const InteractiveTerminalContent: React.FC = () => {
 
           // Registrar oscilador para poder cancelarlo
           activeOscillatorsRef.current.push(glitchOscillator);
+          try {
+            glitchOscillator.onended = () => {
+              activeOscillatorsRef.current = activeOscillatorsRef.current.filter(
+                o => o !== glitchOscillator
+              );
+              try {
+                glitchOscillator.disconnect();
+              } catch (e) {}
+            };
+          } catch (e) {}
         }, 120);
 
         // Registrar timeout para poder cancelarlo
@@ -860,6 +918,14 @@ const InteractiveTerminalContent: React.FC = () => {
 
         // Registrar oscilador para poder cancelarlo
         activeOscillatorsRef.current.push(alarmOsc);
+        try {
+          alarmOsc.onended = () => {
+            activeOscillatorsRef.current = activeOscillatorsRef.current.filter(o => o !== alarmOsc);
+            try {
+              alarmOsc.disconnect();
+            } catch (e) {}
+          };
+        } catch (e) {}
       }, 100);
 
       // Registrar timeout para poder cancelarlo
@@ -898,6 +964,16 @@ const InteractiveTerminalContent: React.FC = () => {
 
         // Registrar oscilador para poder cancelarlo
         activeOscillatorsRef.current.push(accessOsc);
+        try {
+          accessOsc.onended = () => {
+            activeOscillatorsRef.current = activeOscillatorsRef.current.filter(
+              o => o !== accessOsc
+            );
+            try {
+              accessOsc.disconnect();
+            } catch (e) {}
+          };
+        } catch (e) {}
       }, 700);
 
       // Registrar timeout para poder cancelarlo
@@ -954,6 +1030,21 @@ const InteractiveTerminalContent: React.FC = () => {
       audioContextRef.current = null;
     }
   };
+
+  // Cleanup global: asegurar que al desmontar limpiamos todos los timeouts, osciladores
+  // y cerramos el AudioContext para evitar fugas de memoria y callbacks residuales.
+  useEffect(() => {
+    return () => {
+      // Marcar desmontado para que callbacks asíncronos puedan evitar actualizar estado
+      mountedRef.current = false;
+
+      try {
+        stopAllSounds();
+      } catch (e) {
+        // ignore
+      }
+    };
+  }, []);
 
   // Función para activar tema hack específico
   const activateHackTheme = () => {

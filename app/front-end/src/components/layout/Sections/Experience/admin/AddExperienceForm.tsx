@@ -6,7 +6,8 @@ import { experiences as experiencesApi } from '@/services/endpoints';
 import { useNotification } from '@/hooks/useNotification';
 import { useTranslation } from '@/contexts/TranslationContext';
 import SkillPill from '@/components/ui/SkillPill/SkillPill';
-import Calendar from '@/ui/components/Calendar';
+import { resolvePillFromTech } from '@/features/skills/utils/pillUtils';
+import CalendarPicker from '@/components/ui/Calendar/CalendarPicker';
 import styles from './AddExperienceForm.module.css';
 
 interface FormData {
@@ -15,7 +16,7 @@ interface FormData {
   start_date: string;
   end_date: string;
   description: string;
-  technologies?: string;
+  technologies?: string | string[];
   order_index: number;
   is_current?: boolean;
 }
@@ -41,59 +42,15 @@ interface AddExperienceFormProps {
   onSelectedTechnologiesChange?: (technologies: string[]) => void;
 }
 
-// Sugerencias de tecnologías
-const TECHNOLOGY_SUGGESTIONS = [
-  'React',
-  'Vue.js',
-  'Angular',
-  'JavaScript',
-  'TypeScript',
-  'Node.js',
-  'Express.js',
-  'Python',
-  'Django',
-  'Flask',
-  'Java',
-  'Spring Boot',
-  'C#',
-  '.NET',
-  'PHP',
-  'Laravel',
-  'HTML5',
-  'CSS3',
-  'SASS',
-  'SCSS',
-  'Tailwind CSS',
-  'Bootstrap',
-  'Material-UI',
-  'MongoDB',
-  'PostgreSQL',
-  'MySQL',
-  'Redis',
-  'Docker',
-  'Kubernetes',
-  'AWS',
-  'Azure',
-  'Git',
-  'GitHub',
-  'GitLab',
-  'Jenkins',
-  'Jest',
-  'Cypress',
-  'Webpack',
-  'Vite',
-];
+// (La carga de sugerencias se realiza dentro del componente más abajo.)
 
 const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
   editingExperience,
   onSave,
   onCancel,
-  formType = 'experience', // Siempre será 'experience', deprecar en futuras versiones
   initialData = {},
-  isEditing = !!editingExperience,
   onSubmit,
   formRef: externalFormRef,
-  useExternalFooter = false,
   useModalShell = false,
   onFormDataChange,
   onValidationErrorsChange,
@@ -101,39 +58,102 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
 }) => {
   const { showSuccess, showError } = useNotification();
   const { t } = useTranslation();
-  const [isLoading, setIsLoading] = useState(false);
 
-  // Estados del formulario - Simplificado para experiencia únicamente
-  const [formData, setFormData] = useState<FormData>(() => {
-    // Helper para normalizar technologies a string
-    const normalizeTechnologies = (tech: any): string => {
-      if (!tech) return '';
-      if (Array.isArray(tech)) return tech.join(', ');
-      if (typeof tech === 'string') return tech;
-      return '';
+  // Sugerencias de tecnologías cargadas desde el JSON público
+  type SkillItem = { name: string; slug: string; category?: string; color?: string; svg?: string };
+  const [technologySuggestions, setTechnologySuggestions] = useState<SkillItem[]>([]);
+
+  // Cargar sugerencias desde `/skill_settings.json` al montar el componente
+  useEffect(() => {
+    let mounted = true;
+
+    const loadSuggestions = async () => {
+      try {
+        const res = await fetch('/skill_settings.json');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (!mounted) return;
+        if (Array.isArray(data)) {
+          // Mapear a SkillItem y eliminar duplicados por nombre
+          const items: SkillItem[] = data
+            .map((item: any) => ({
+              name: item?.name ? String(item.name) : '',
+              slug: item?.slug ? String(item.slug) : String(item?.name || ''),
+              category: item?.category ? String(item.category) : undefined,
+              color: item?.color ? String(item.color) : undefined,
+              svg: item?.svg ? String(item.svg) : undefined,
+            }))
+            .filter(i => i.name)
+            .reduce((acc: SkillItem[], it) => {
+              if (!acc.find(a => a.name === it.name)) acc.push(it);
+              return acc;
+            }, [] as SkillItem[])
+            .sort((a, b) => a.name.localeCompare(b.name));
+
+          setTechnologySuggestions(items);
+
+          // Extraer categorías
+          const cats = Array.from(new Set(items.map(i => i.category).filter(Boolean))) as string[];
+          cats.sort();
+          setCategories(['all', ...cats]);
+        }
+      } catch (e) {
+        // Si falla la carga, dejar el array vacío (sin fallback hardcodeado)
+        // eslint-disable-next-line no-console
+        if (process.env.NODE_ENV === 'development')
+          console.warn(
+            'No se pudieron cargar las sugerencias de tecnologías desde /skill_settings.json:',
+            e
+          );
+      }
     };
 
-    return {
+    loadSuggestions();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // Estados del formulario - Simplificado para experiencia únicamente
+  const [formData, setFormData] = useState<FormData>(() => ({
+    title: editingExperience?.position || initialData.title || '',
+    company: editingExperience?.company || initialData.company || '',
+    start_date: editingExperience?.start_date || initialData.start_date || '',
+    end_date: editingExperience?.end_date || initialData.end_date || '',
+    description: editingExperience?.description || initialData.description || '',
+    // No normalizamos aquí: mantenemos el valor tal cual viene (string o array)
+    technologies: editingExperience?.technologies ?? initialData.technologies ?? '',
+    order_index: editingExperience?.order_index || initialData.order_index || 0,
+    is_current: initialData.is_current || false,
+  }));
+
+  // Si cambia `editingExperience` o `initialData` (por ejemplo al abrir el modal para editar),
+  // re-inicializar el state del formulario para reflejar los nuevos datos.
+  useEffect(() => {
+    setFormData({
       title: editingExperience?.position || initialData.title || '',
       company: editingExperience?.company || initialData.company || '',
       start_date: editingExperience?.start_date || initialData.start_date || '',
       end_date: editingExperience?.end_date || initialData.end_date || '',
       description: editingExperience?.description || initialData.description || '',
-      technologies:
-        normalizeTechnologies(editingExperience?.technologies) ||
-        normalizeTechnologies(initialData.technologies),
+      // Mantener el tipo original (string o array) proveniente del editingExperience o initialData
+      technologies: editingExperience?.technologies ?? initialData.technologies ?? '',
       order_index: editingExperience?.order_index || initialData.order_index || 0,
       is_current: initialData.is_current || false,
-    };
-  });
+    });
+  }, [editingExperience, initialData]);
 
   // Estados de validación y UX - Sin barra de progreso (delegada a ModalShell)
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   const [touchedFields, setTouchedFields] = useState<{ [key: string]: boolean }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [technologyInput, setTechnologyInput] = useState('');
-  const [selectedTechnologies, setSelectedTechnologies] = useState<string[]>([]);
-  const [showTechSuggestions, setShowTechSuggestions] = useState(false);
+  // Dropdown / búsqueda de tecnologías
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedTechnologies, setSelectedTechnologies] = useState<SkillItem[]>([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
 
   // Referencias
   const localFormRef = useRef<HTMLFormElement | null>(null);
@@ -142,24 +162,68 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
 
   // Inicializar tecnologías seleccionadas
   useEffect(() => {
-    if (formData.technologies) {
-      // Manejar tanto arrays como strings para technologies
+    // Cuando formData.technologies cambia, lo inicializamos como objetos SkillItem
+    const buildSelected = () => {
+      if (!formData.technologies) return [] as SkillItem[];
       let techArray: string[] = [];
-
-      if (Array.isArray(formData.technologies)) {
-        // Si ya es un array, usarlo directamente
-        techArray = formData.technologies.filter(Boolean);
-      } else if (typeof formData.technologies === 'string') {
-        // Si es string, dividirlo por comas
+      if (Array.isArray(formData.technologies)) techArray = formData.technologies.filter(Boolean);
+      else if (typeof formData.technologies === 'string')
         techArray = formData.technologies
           .split(',')
-          .map(tech => tech.trim())
+          .map(t => t.trim())
           .filter(Boolean);
-      }
 
-      setSelectedTechnologies(techArray);
-    }
+      // Mapear nombres a objetos disponibles en technologySuggestions por name o slug
+      const mapped: SkillItem[] = techArray.map(name => {
+        const found = technologySuggestions.find(
+          i =>
+            i.name.toLowerCase() === name.toLowerCase() ||
+            i.slug.toLowerCase() === name.toLowerCase()
+        );
+        if (found) return found;
+        // Fallback: crear objeto con slug simple
+        return {
+          name,
+          slug: name.toLowerCase().replace(/\s+/g, '-'),
+          category: undefined,
+          color: undefined,
+        };
+      });
+      setSelectedTechnologies(mapped.filter(Boolean));
+    };
+
+    buildSelected();
   }, [formData.technologies]);
+
+  // Cuando cambian las sugerencias (carga del JSON) intentar reconciliar technologies existentes
+  useEffect(() => {
+    if (!technologySuggestions || technologySuggestions.length === 0) return;
+    if (!formData.technologies) return;
+    // Re-run mapping to pick up slugs/colors
+    let techArray: string[] = [];
+    if (typeof formData.technologies === 'string') {
+      techArray = formData.technologies
+        .split(',')
+        .map(t => t.trim())
+        .filter(Boolean);
+    } else if (Array.isArray(formData.technologies)) {
+      techArray = (formData.technologies as unknown as string[]).filter(Boolean);
+    }
+    const mapped = techArray.map(name => {
+      const found = technologySuggestions.find(
+        i =>
+          i.name.toLowerCase() === name.toLowerCase() || i.slug.toLowerCase() === name.toLowerCase()
+      );
+      if (found) return found;
+      return {
+        name,
+        slug: name.toLowerCase().replace(/\s+/g, '-'),
+        category: undefined,
+        color: undefined,
+      };
+    });
+    setSelectedTechnologies(mapped.filter(Boolean));
+  }, [technologySuggestions]);
 
   // Notificar cambios al ModalShell cuando se está usando dentro de uno
   useEffect(() => {
@@ -176,7 +240,9 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
 
   useEffect(() => {
     if (useModalShell && onSelectedTechnologiesChange) {
-      onSelectedTechnologiesChange(selectedTechnologies);
+      // Notificar solo slugs para compatibilidad con consumidores que esperan strings
+      const slugs = selectedTechnologies.map(s => s.slug || s.name);
+      onSelectedTechnologiesChange(slugs);
     }
   }, [useModalShell, onSelectedTechnologiesChange, selectedTechnologies]);
 
@@ -195,12 +261,17 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
         break;
       case 'start_date':
         if (!value) return t.forms.validation.startDateRequired;
-        if (!/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/.test(value))
+        // Accept both DD-MM-YYYY and YYYY-MM (month picker)
+        if (!/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/.test(value) && !/^\d{4}-\d{2}$/.test(value))
           return t.forms.validation.invalidDateFormat;
         break;
       case 'end_date':
         if (!value && !formData.is_current) return t.forms.validation.endDateRequired;
-        if (value && !/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/.test(value))
+        if (
+          value &&
+          !/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/.test(value) &&
+          !/^\d{4}-\d{2}$/.test(value)
+        )
           return t.forms.validation.invalidDateFormat;
         break;
       case 'description':
@@ -247,42 +318,97 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
   };
 
   // Manejar tecnologías
-  const handleTechnologyAdd = (tech: string) => {
-    if (tech.trim() && !selectedTechnologies.includes(tech.trim())) {
-      const newTechnologies = [...selectedTechnologies, tech.trim()];
-      setSelectedTechnologies(newTechnologies);
-      setFormData(prev => ({ ...prev, technologies: newTechnologies.join(', ') }));
-      setTechnologyInput('');
-      setShowTechSuggestions(false);
+  const handleTechnologyAdd = (input: SkillItem | string) => {
+    // Normalize to SkillItem
+    let item: SkillItem | undefined;
+    if (typeof input === 'string') {
+      const name = input.trim();
+      if (!name) return;
+      item = technologySuggestions.find(
+        i =>
+          i.name.toLowerCase() === name.toLowerCase() || i.slug.toLowerCase() === name.toLowerCase()
+      );
+      if (!item)
+        item = {
+          name,
+          slug: name.toLowerCase().replace(/\s+/g, '-'),
+          category: undefined,
+          color: undefined,
+        };
+    } else {
+      item = input;
     }
+
+    if (!item) return;
+    if (selectedTechnologies.find(s => s.slug === item!.slug)) return;
+
+    const newTechnologies = [...selectedTechnologies, item];
+    setSelectedTechnologies(newTechnologies);
+    setFormData(prev => ({ ...prev, technologies: newTechnologies.map(n => n.slug).join(', ') }));
+    setSearchTerm('');
+    setDropdownOpen(false);
+    setHighlightedIndex(-1);
   };
 
   const handleTechnologyRemove = (index: number) => {
-    setSelectedTechnologies(prev => prev.filter((_, i) => i !== index));
+    const newSel = selectedTechnologies.filter((_, i) => i !== index);
+    setSelectedTechnologies(newSel);
+    setFormData(prev => ({ ...prev, technologies: newSel.map(n => n.slug).join(', ') }));
   };
 
-  const handleTechnologyRemoveByName = (techName: string) => {
-    setSelectedTechnologies(prev => prev.filter(tech => tech !== techName));
-  };
-  const handleTechnologyInputChange = (value: string) => {
-    setTechnologyInput(value);
-    setShowTechSuggestions(value.length > 0);
+  const handleTechnologyRemoveBySlug = (slug: string) => {
+    const newSel = selectedTechnologies.filter(tech => tech.slug !== slug);
+    setSelectedTechnologies(newSel);
+    setFormData(prev => ({ ...prev, technologies: newSel.map(n => n.slug).join(', ') }));
   };
 
-  const handleTechnologyKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && technologyInput.trim()) {
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    setDropdownOpen(value.length > 0 || true);
+    setHighlightedIndex(-1);
+  };
+
+  const handleDropdownKeyDown = (e: React.KeyboardEvent) => {
+    const suggestions = getFilteredSuggestions();
+    if (e.key === 'ArrowDown') {
       e.preventDefault();
-      handleTechnologyAdd(technologyInput);
+      setHighlightedIndex(prev => Math.min(prev + 1, suggestions.length - 1));
+      setDropdownOpen(true);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setHighlightedIndex(prev => Math.max(prev - 1, 0));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (highlightedIndex >= 0 && suggestions[highlightedIndex]) {
+        handleTechnologyAdd(suggestions[highlightedIndex]);
+      } else if (searchTerm.trim()) {
+        // If user typed a custom string, create a simple SkillItem
+        handleTechnologyAdd(searchTerm.trim());
+      }
+    } else if (e.key === 'Escape') {
+      setDropdownOpen(false);
     }
   };
 
   // Filtrar sugerencias
-  const getFilteredSuggestions = () => {
-    return TECHNOLOGY_SUGGESTIONS.filter(
-      tech =>
-        tech.toLowerCase().includes(technologyInput.toLowerCase()) &&
-        !selectedTechnologies.includes(tech)
-    ).slice(0, 8);
+  const getFilteredSuggestions = (): SkillItem[] => {
+    const q = searchTerm.trim().toLowerCase();
+    return (
+      technologySuggestions
+        .filter(item => {
+          if (!item) return false;
+          if (selectedCategory !== 'all' && item.category !== selectedCategory) return false;
+          if (selectedTechnologies.some(s => s.name === item.name || s.slug === item.slug))
+            return false;
+          if (!q) return true;
+          return (
+            item.name.toLowerCase().includes(q) ||
+            (item.slug && item.slug.toLowerCase().includes(q))
+          );
+        })
+        // Si no hay búsqueda y estamos en 'all', mostrar todo (o un número alto)
+        .slice(0, selectedCategory === 'all' && !q ? 200 : 8)
+    );
   };
 
   // Validar todo el formulario
@@ -312,14 +438,24 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
       const endDateError = validateField('end_date', formData.end_date);
       if (endDateError) errors.end_date = endDateError;
       if (formData.start_date && formData.end_date) {
-        const parse = (s: string) => {
+        const parseFlexible = (s: string) => {
+          // Accept 'DD-MM-YYYY' or 'YYYY-MM' or ISO-like
+          if (/^\d{4}-\d{2}$/.test(s)) {
+            const [y, m] = s.split('-');
+            return new Date(Number(y), Number(m) - 1, 1);
+          }
           const clean = s.replace(/\//g, '-');
-          const [d, m, y] = clean.split('-');
-          return new Date(Number(y), Number(m) - 1, Number(d));
+          const parts = clean.split('-');
+          if (parts.length === 3) {
+            const [d, m, y] = parts;
+            return new Date(Number(y), Number(m) - 1, Number(d));
+          }
+          // Fallback to Date constructor
+          return new Date(s);
         };
         try {
-          const sd = parse(formData.start_date);
-          const ed = parse(formData.end_date);
+          const sd = parseFlexible(formData.start_date);
+          const ed = parseFlexible(formData.end_date);
           if (ed < sd) {
             errors.end_date = t.forms.validation.endDateMustBeAfterStart;
           }
@@ -368,12 +504,11 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
           start_date: startIso,
           end_date: endIso,
           description: formData.description,
-          technologies: formData.technologies
-            ? formData.technologies
-                .split(',')
-                .map(tech => tech.trim())
-                .filter(tech => tech)
-            : [],
+          // Enviar slugs de tecnologías seleccionadas
+          technologies:
+            selectedTechnologies && selectedTechnologies.length > 0
+              ? selectedTechnologies.map(t => t.slug)
+              : [],
           is_current: formData.is_current || endIso === '' || /presente/i.test(endIso),
           order_index: formData.order_index,
           user_id: '1', // Por ahora fijo
@@ -527,21 +662,10 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
                   <i className="fas fa-calendar-alt"></i>
                   {t.forms.experience.startDate} *
                 </label>
-                <Calendar
-                  selectedDate={
-                    formData.start_date
-                      ? new Date(formData.start_date.split('-').reverse().join('-'))
-                      : null
-                  }
-                  onChange={date =>
-                    handleFieldChange(
-                      'start_date',
-                      date
-                        ? `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`
-                        : ''
-                    )
-                  }
-                  placeholderText="DD-MM-YYYY"
+                <CalendarPicker
+                  initial={formData.start_date ? new Date(formData.start_date) : null}
+                  onSelect={ym => handleFieldChange('start_date', ym ? String(ym) : '')}
+                  placeholder="DD-MM-YYYY"
                   className={styles.input}
                   id="start_date"
                   name="start_date"
@@ -556,22 +680,11 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
                   <i className="fas fa-calendar-alt"></i>
                   {t.forms.experience.endDate}
                 </label>
-                <Calendar
-                  selectedDate={
-                    formData.end_date
-                      ? new Date(formData.end_date.split('-').reverse().join('-'))
-                      : null
-                  }
-                  onChange={date =>
-                    handleFieldChange(
-                      'end_date',
-                      date
-                        ? `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getFullYear()}`
-                        : ''
-                    )
-                  }
+                <CalendarPicker
+                  initial={formData.end_date ? new Date(formData.end_date) : null}
+                  onSelect={ym => handleFieldChange('end_date', ym ? String(ym) : '')}
                   disabled={formData.is_current}
-                  placeholderText="DD-MM-YYYY"
+                  placeholder="DD-MM-YYYY"
                   className={styles.input}
                   id="end_date"
                   name="end_date"
@@ -612,47 +725,90 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
               </label>
 
               <div className={styles.technologyContainer} style={{ position: 'relative' }}>
-                <input
-                  name="technologies_input"
-                  id="technologies_input"
-                  ref={techInputRef}
-                  type="text"
-                  value={technologyInput}
-                  onChange={e => handleTechnologyInputChange(e.target.value)}
-                  onKeyDown={handleTechnologyKeyDown}
-                  onFocus={() => setShowTechSuggestions(technologyInput.length > 0)}
-                  onBlur={() => setTimeout(() => setShowTechSuggestions(false), 200)}
-                  className={styles.technologyInput}
-                  placeholder={t.forms.experience.technologiesPlaceholder}
-                />
-
-                {showTechSuggestions && getFilteredSuggestions().length > 0 && (
-                  <div className={styles.suggestions}>
-                    {getFilteredSuggestions().map(tech => (
-                      <div
-                        key={tech}
-                        className={styles.suggestionItem}
-                        onClick={() => handleTechnologyAdd(tech)}
-                      >
-                        {tech}
-                      </div>
+                <div className={styles.dropdownHeader}>
+                  <select
+                    aria-label={'Categoría'}
+                    value={selectedCategory}
+                    onChange={e => setSelectedCategory(e.target.value)}
+                    className={styles.categorySelect}
+                  >
+                    {categories.map(cat => (
+                      <option key={cat} value={cat}>
+                        {cat === 'all' ? 'Todas' : cat}
+                      </option>
                     ))}
-                  </div>
-                )}
+                  </select>
+                  <input
+                    name="technologies_input"
+                    id="technologies_input"
+                    ref={techInputRef}
+                    type="text"
+                    value={searchTerm}
+                    onChange={e => handleSearchChange(e.target.value)}
+                    onKeyDown={handleDropdownKeyDown}
+                    onFocus={() => setDropdownOpen(true)}
+                    onBlur={() => setTimeout(() => setDropdownOpen(false), 200)}
+                    className={styles.technologyInput}
+                    placeholder={t.forms.experience.technologiesPlaceholder}
+                    aria-expanded={dropdownOpen}
+                    aria-controls="tech-suggestions-list"
+                  />
+
+                  {dropdownOpen && getFilteredSuggestions().length > 0 && (
+                    <div className={styles.suggestions} role="listbox" id="tech-suggestions-list">
+                      {getFilteredSuggestions().map((tech, idx) => (
+                        <div
+                          key={tech.slug || tech.name}
+                          role="option"
+                          aria-selected={highlightedIndex === idx}
+                          className={`${styles.suggestionItem} ${highlightedIndex === idx ? styles.highlighted : ''}`}
+                          onMouseDown={() => handleTechnologyAdd(tech)}
+                          onMouseEnter={() => setHighlightedIndex(idx)}
+                        >
+                          {tech.svg ? (
+                            <img
+                              src={`/assets/svg/${tech.svg}`}
+                              alt={`${tech.name} icon`}
+                              className={styles.icon}
+                              onError={(e: any) => {
+                                // fallback to public root if asset not found
+                                e.currentTarget.src = `/${tech.svg}`;
+                              }}
+                            />
+                          ) : (
+                            <span
+                              className={styles.colorDot}
+                              style={{ backgroundColor: tech.color || '#ddd' }}
+                            />
+                          )}
+                          <span className={styles.suggestionName}>{tech.name}</span>
+                          <span className={styles.suggestionCategory}>{tech.category}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {selectedTechnologies.length > 0 && (
                 <div className={styles.technologyChips}>
-                  {selectedTechnologies.map((tech, index) => (
-                    <SkillPill
-                      key={index}
-                      name={tech}
-                      colored={true}
-                      closable={true}
-                      onClose={handleTechnologyRemoveByName}
-                      className={styles.skillChip}
-                    />
-                  ))}
+                  {selectedTechnologies.map((tech, index) => {
+                    const pill = resolvePillFromTech(tech, technologySuggestions, index);
+
+                    return (
+                      <SkillPill
+                        key={pill.slug || index}
+                        slug={pill.slug}
+                        svg={pill.svg}
+                        name={pill.name}
+                        colored={true}
+                        closable={true}
+                        onClose={handleTechnologyRemoveBySlug}
+                        className={styles.skillChip}
+                        color={pill.color}
+                      />
+                    );
+                  })}
                 </div>
               )}
 

@@ -38,9 +38,11 @@ export const Dropdown = ({ children }: DropdownProps) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const providerValue = React.useMemo(() => ({ isOpen, setIsOpen }), [isOpen]);
+
   return (
     <div className="relative inline-block" ref={dropdownRef}>
-      <DropdownContext.Provider value={{ isOpen, setIsOpen }}>{children}</DropdownContext.Provider>
+      <DropdownContext.Provider value={providerValue}>{children}</DropdownContext.Provider>
     </div>
   );
 };

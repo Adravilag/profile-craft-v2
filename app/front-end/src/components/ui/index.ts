@@ -11,7 +11,6 @@ export { TechnologyInput } from './TechnologyInput/TechnologyInput';
 export { LoadingSpinner } from './LoadingSpinner/LoadingSpinner';
 
 // Re-exports for components that might use default exports
-export { default as SkillBadge } from './SkillBadge/SkillBadge';
 export { default as DateInput } from './DateInput/DateInput';
 export { default as HighlightCard } from './HighlightCard/HighlightCard';
 export { default as FloatingActionButtonGroup } from './FloatingActionButtonGroup/FloatingActionButtonGroup';

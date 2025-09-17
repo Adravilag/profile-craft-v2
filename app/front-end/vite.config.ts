@@ -59,6 +59,9 @@ const config: any = {
       '@types': path.resolve(currentDir, 'src/types'),
       '@assets': path.resolve(currentDir, 'src/assets'),
       '@locales': path.resolve(currentDir, 'src/locales'),
+      // Force resolution of react/react-dom to the workspace root copy to avoid multiple instances
+      react: path.resolve(process.cwd(), '..', '..', 'node_modules', 'react'),
+      'react-dom': path.resolve(process.cwd(), '..', '..', 'node_modules', 'react-dom'),
     },
     // Evitar que Vite resuelva varias copias de React (causa frecuente de "Invalid hook call")
     dedupe: ['react', 'react-dom'],

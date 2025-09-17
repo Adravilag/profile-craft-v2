@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useFab } from '@/contexts/FabContext';
 import { useModal } from '@/contexts/ModalContext';
 
-// Local FAB action shape matching the FloatingActionButtonGroup implementation
 type LocalFABAction = {
   id: string;
   onClick: () => void | Promise<void>;
@@ -26,366 +25,214 @@ interface UseFABActionsReturn {
   certificationsFABActions: LocalFABAction[];
 }
 
-/**
- * Hook que centraliza las acciones de FAB simples (sin JSX) para diferentes secciones.
- * Para acciones que requieren JSX (como experiencias), se mantienen en el componente principal.
- */
 export const useFABActions = ({
   currentSection,
   isAuthenticated,
 }: UseFABActionsProps): UseFABActionsReturn => {
-  const {
-    openTestimonialModal,
-    openTestimonialsAdmin,
-    openSkillModal,
-    onOpenExperienceModal,
-    openAboutModal,
-  } = useFab();
+  const { openTestimonialModal, openTestimonialsAdmin, openSkillModal } = useFab();
   const { openModal, closeModal } = useModal();
   const navigate = useNavigate();
 
-  // Acciones del FAB para la sección de testimonios
-  const testimonialsFABActions = useMemo<LocalFABAction[]>(() => {
-    // Mostrar acciones de testimonios solo para usuarios autenticados.
-    // El botón "Añadir Testimonio" ahora es exclusivo para usuarios autenticados.
-    if (!isAuthenticated) return [];
-
-    const actions: LocalFABAction[] = [
-      {
-        id: 'add-testimonial',
-        onClick: () => {
-          try {
-            // Importar dinámicamente el formulario de testimonio y abrir el modal
-            import('@/components/layout/Sections/Testimonials/forms/TestimonialsFormModal').then(
-              mod => {
-                const TestimonialsFormModal = mod.default;
-                const modalContent = React.createElement(TestimonialsFormModal, {
-                  isOpen: true,
-                  onClose: () => closeModal('testimonial-add'),
-                  onSubmit: async (data: any) => {
-                    try {
-                      // Implementar lógica de envío de testimonio
-                      const { testimonials } = await import('@/services/endpoints');
-                      await testimonials.createTestimonial(data);
-
-                      // Mostrar mensaje de éxito
-                      const { useNotification } = await import('@hooks/useNotification');
-                      const { showSuccess } = useNotification();
-                      showSuccess(
-                        'Testimonio enviado',
-                        'Gracias por compartir tu experiencia. Tu testimonio será revisado.'
-                      );
-
-                      // Cerrar modal
-                      closeModal('testimonial-add');
-
-                      // Disparar evento para refrescar la lista si es necesario
-                      window.dispatchEvent(new CustomEvent('testimonial-submitted'));
-                    } catch (error) {
-                      console.error('Error enviando testimonio:', error);
-                      const { useNotification } = await import('@hooks/useNotification');
-                      const { showError } = useNotification();
-                      showError('Error', 'No se pudo enviar el testimonio. Inténtalo de nuevo.');
-                    }
-                  },
-                });
-                openModal('testimonial-add', modalContent, {
-                  title: 'Añadir Testimonio',
-                  disableAutoFocus: true,
-                });
-              }
-            );
-          } catch (err) {
-            console.error('No se pudo abrir modal de testimonial:', err);
-          }
-        },
-        icon: 'fas fa-comment-dots',
-        label: 'Añadir Testimonio',
-        color: 'success',
-      },
-    ];
-
-    // Acción administrativa (solo para autenticados) - aparece antes
-    actions.unshift({
-      id: 'admin-testimonials',
-      onClick: () => {
-        try {
-          openTestimonialsAdmin();
-        } catch (err) {
-          console.error('No se pudo abrir admin de testimonios:', err);
-        }
-      },
-      icon: 'fas fa-comments',
-      label: 'Gestionar Testimonios',
-      color: 'primary',
-    });
-
-    return actions;
-  }, [isAuthenticated, openModal, closeModal, openTestimonialsAdmin]);
-
-  // Acciones del FAB para la sección de skills
-  const skillsFABActions = useMemo<LocalFABAction[]>(() => {
-    // Solo mostrar acciones de skills para usuarios autenticados
-    if (!isAuthenticated) {
-      return [];
+  // Helper para abrir un modal dinámico
+  const openDynamicModal = async (
+    importPath: string,
+    modalId: string,
+    title: string,
+    props: Record<string, any> = {}
+  ) => {
+    try {
+      const mod = await import(importPath);
+      const Comp = mod.default || mod[Object.keys(mod)[0]]; // Soporte default o named export
+      const modalContent = React.createElement(Comp, {
+        isOpen: true,
+        onClose: () => closeModal(modalId),
+        ...props,
+      });
+      openModal(modalId, modalContent, { title, disableAutoFocus: true });
+    } catch (err) {
+      console.error(`No se pudo abrir modal ${title}:`, err);
     }
+  };
+
+  const testimonialsFABActions = useMemo<LocalFABAction[]>(() => {
+    if (!isAuthenticated) return [];
 
     return [
       {
+        id: 'admin-testimonials',
+        icon: 'fas fa-comments',
+        label: 'Gestionar Testimonios',
+        color: 'primary',
+        onClick: () => openTestimonialsAdmin(),
+      },
+      {
+        id: 'add-testimonial',
+        icon: 'fas fa-comment-dots',
+        label: 'Añadir Testimonio',
+        color: 'success',
+        onClick: async () =>
+          openDynamicModal(
+            '@/components/layout/Sections/Testimonials/forms/TestimonialsFormModal',
+            'testimonial-add',
+            'Añadir Testimonio',
+            {
+              onSubmit: async (data: any) => {
+                try {
+                  const { testimonials } = await import('@/services/endpoints');
+                  await testimonials.createTestimonial(data);
+                  const { useNotification } = await import('@hooks/useNotification');
+                  const { showSuccess } = useNotification();
+                  showSuccess(
+                    'Testimonio enviado',
+                    'Gracias por compartir tu experiencia. Tu testimonio será revisado.'
+                  );
+                  closeModal('testimonial-add');
+                  window.dispatchEvent(new CustomEvent('testimonial-submitted'));
+                } catch (err) {
+                  console.error(err);
+                  const { useNotification } = await import('@hooks/useNotification');
+                  useNotification().showError('Error', 'No se pudo enviar el testimonio.');
+                }
+              },
+            }
+          ),
+      },
+    ];
+  }, [isAuthenticated, openModal, closeModal, openTestimonialsAdmin]);
+
+  const skillsFABActions = useMemo<LocalFABAction[]>(() => {
+    if (!isAuthenticated) return [];
+    return [
+      {
         id: 'add-skill',
-        onClick: () => openSkillModal(),
         icon: 'fas fa-star-of-life',
         label: 'Añadir Habilidad',
         color: 'success',
+        onClick: () => openSkillModal(),
       },
     ];
   }, [isAuthenticated, openSkillModal]);
 
-  // Acciones del FAB para la sección de proyectos
   const projectsFABActions = useMemo<LocalFABAction[]>(() => {
-    const base: LocalFABAction[] = [];
-
-    // Solo mostrar acciones de proyectos para usuarios autenticados
-    if (isAuthenticated) {
-      base.push({
+    if (!isAuthenticated) return [];
+    return [
+      {
         id: 'admin-projects',
-        onClick: async () => {
-          try {
-            // Navegar a la página de administración
-            navigate('/projects/admin');
-          } catch (err) {
-            console.error('No se pudo navegar a admin de proyectos:', err);
-          }
-        },
         icon: 'fas fa-folder-open',
         label: 'Gestionar Proyectos',
         color: 'primary',
-      });
-
-      base.push({
+        onClick: () => navigate('/projects/admin'),
+      },
+      {
         id: 'add-project',
-        onClick: async () => {
-          try {
-            // Navegar a la página de creación de proyecto
-            window.location.href = '/projects/new';
-          } catch (err) {
-            console.error('No se pudo navegar a crear proyecto:', err);
-          }
-        },
         icon: 'fas fa-folder-plus',
         label: 'Añadir Proyecto',
         color: 'success',
-      });
-    }
-
-    return base;
+        onClick: () => {
+          window.location.href = '/projects/new';
+        },
+      },
+    ];
   }, [isAuthenticated, navigate]);
 
-  // Acciones del FAB para la sección de experiencias (con soporte JSX completo)
   const experienceFABActions = useMemo<LocalFABAction[]>(() => {
-    const base: LocalFABAction[] = [];
+    if (!isAuthenticated) return [];
 
-    // Solo agregar acciones administrativas si el usuario está autenticado
-    if (isAuthenticated) {
-      base.push({
-        id: 'add-experience',
-        onClick: async () => {
-          try {
-            const mod = await import(
-              '@/components/layout/Sections/Experience/components/FormModal'
-            );
-            const FormModalComp = mod.default;
-
-            const modalContent = React.createElement(FormModalComp, {
-              isOpen: true,
-              onClose: () => closeModal('experience-add'),
-              formType: 'experience',
-              initialData: {},
-              isEditing: false,
-              onSubmit: async (data: any) => {
-                try {
-                  const { convertSpanishDateToISO } = await import('@/utils/dateUtils');
-                  const endpoints = await import('@/services/endpoints');
-
-                  const startIso = convertSpanishDateToISO(data.start_date || data.startDate || '');
-                  const endIso = data.end_date ? convertSpanishDateToISO(data.end_date) : '';
-
-                  const technologies = Array.isArray(data.technologies)
+    const createExperienceAction = (modalId: string, title: string, initialData: any = {}) => ({
+      id: modalId,
+      icon: modalId === 'add-company' ? 'fas fa-building' : 'fas fa-briefcase',
+      label: modalId === 'add-company' ? 'Añadir Empresa' : 'Añadir Experiencia',
+      color: 'success' as const,
+      onClick: () =>
+        openDynamicModal(
+          '@/components/layout/Sections/Experience/components/FormModal',
+          modalId,
+          title,
+          {
+            formType: 'experience',
+            initialData,
+            isEditing: false,
+            onSubmit: async (data: any) => {
+              try {
+                const { convertSpanishDateToISO } = await import('@/utils/dateUtils');
+                const endpoints = await import('@/services/endpoints');
+                const startIso = convertSpanishDateToISO(data.start_date || data.startDate || '');
+                const endIso = data.end_date ? convertSpanishDateToISO(data.end_date) : '';
+                const technologies = Array.isArray(data.technologies)
+                  ? data.technologies
+                  : typeof data.technologies === 'string'
                     ? data.technologies
-                    : typeof data.technologies === 'string'
-                      ? data.technologies
-                          .split(',')
-                          .map((t: string) => t.trim())
-                          .filter(Boolean)
-                      : [];
-
-                  const payload = {
-                    position: data.title || data.position || '',
-                    company: data.company || '',
-                    start_date: startIso,
-                    end_date: endIso,
-                    description: data.description || '',
-                    technologies,
-                    is_current: !!data.is_current,
-                    order_index: data.order_index || 0,
-                  };
-
-                  const created = await endpoints.experiences.createExperience(payload as any);
-                  try {
-                    window.dispatchEvent(
-                      new CustomEvent('experience-changed', { detail: created })
-                    );
-                  } catch (e) {}
-                  closeModal('experience-add');
-                } catch (err) {
-                  console.error('Error creando experiencia desde FAB:', err);
-                  throw err;
-                }
-              },
-            });
-
-            openModal('experience-add', modalContent, {
-              title: 'Nueva Experiencia',
-              disableAutoFocus: true,
-            });
-          } catch (err) {
-            console.error('No se pudo abrir modal de añadir experiencia:', err);
+                        .split(',')
+                        .map(t => t.trim())
+                        .filter(Boolean)
+                    : [];
+                const payload = {
+                  position: data.title || data.position || '',
+                  company: data.company || '',
+                  start_date: startIso,
+                  end_date: endIso,
+                  description: data.description || '',
+                  technologies,
+                  is_current: !!data.is_current,
+                  order_index: data.order_index || 0,
+                };
+                const created = await endpoints.experiences.createExperience(payload as any);
+                window.dispatchEvent(
+                  new CustomEvent(
+                    modalId === 'add-company' ? 'company-changed' : 'experience-changed',
+                    {
+                      detail: created,
+                    }
+                  )
+                );
+                closeModal(modalId);
+              } catch (err) {
+                console.error(err);
+                throw err;
+              }
+            },
           }
-        },
-        icon: 'fas fa-briefcase',
-        label: 'Añadir Experiencia',
-        color: 'success',
-      });
+        ),
+    });
 
-      // Acción para añadir una *compañía* — reutilizamos el modal de experiencia
-      // y dejamos el campo `company` accesible; no existe un endpoint `companies`
-      // en este repo, así que la intención es abrir el formulario de experiencia
-      // para crear una nueva entrada con la compañía.
-      base.push({
-        id: 'add-company',
-        onClick: async () => {
-          try {
-            const mod = await import(
-              '@/components/layout/Sections/Experience/components/FormModal'
-            );
-            const FormModalComp = mod.default;
-
-            const modalContent = React.createElement(FormModalComp, {
-              isOpen: true,
-              onClose: () => closeModal('company-add'),
-              formType: 'experience',
-              // Preconfiguramos initialData para enfocar el formulario en company
-              initialData: { company: '' },
-              isEditing: false,
-              onSubmit: async (data: any) => {
-                try {
-                  const { convertSpanishDateToISO } = await import('@/utils/dateUtils');
-                  const endpoints = await import('@/services/endpoints');
-
-                  const startIso = convertSpanishDateToISO(data.start_date || data.startDate || '');
-                  const endIso = data.end_date ? convertSpanishDateToISO(data.end_date) : '';
-
-                  const technologies = Array.isArray(data.technologies)
-                    ? data.technologies
-                    : typeof data.technologies === 'string'
-                      ? data.technologies
-                          .split(',')
-                          .map((t: string) => t.trim())
-                          .filter(Boolean)
-                      : [];
-
-                  const payload = {
-                    position: data.title || data.position || '',
-                    company: data.company || '',
-                    start_date: startIso,
-                    end_date: endIso,
-                    description: data.description || '',
-                    technologies,
-                    is_current: !!data.is_current,
-                    order_index: data.order_index || 0,
-                  };
-
-                  const created = await endpoints.experiences.createExperience(payload as any);
-                  try {
-                    window.dispatchEvent(new CustomEvent('company-changed', { detail: created }));
-                  } catch (e) {}
-                  closeModal('company-add');
-                } catch (err) {
-                  console.error('Error creando empresa desde FAB:', err);
-                  throw err;
-                }
-              },
-            });
-
-            openModal('company-add', modalContent, {
-              title: 'Nueva Empresa',
-              disableAutoFocus: true,
-            });
-          } catch (err) {
-            console.error('No se pudo abrir modal de añadir empresa:', err);
-          }
-        },
-        icon: 'fas fa-building',
-        label: 'Añadir Empresa',
-        color: 'success',
-      });
-    }
-
-    return base;
+    return [
+      createExperienceAction('add-experience', 'Nueva Experiencia'),
+      createExperienceAction('add-company', 'Nueva Empresa', { company: '' }),
+    ];
   }, [isAuthenticated, openModal, closeModal]);
 
-  // Acciones del FAB para la sección About
   const aboutFABActions = useMemo<LocalFABAction[]>(() => {
-    if (!isAuthenticated) {
-      return [];
-    }
-
+    if (!isAuthenticated) return [];
     return [
       {
         id: 'edit-about',
-        onClick: async () => {
-          try {
-            // Importar dinámicamente el componente AboutModal
-            const mod = await import('@/components/layout/Sections/About/modals/AboutModal');
-            const AboutModalComp = mod.AboutModal;
-
-            const modalContent = React.createElement(AboutModalComp, {
-              isOpen: true,
-              onClose: () => closeModal('about-edit'),
-            });
-
-            openModal('about-edit', modalContent, {
-              title: 'Editar Sección About',
-              disableAutoFocus: true,
-            });
-          } catch (err) {
-            console.error('No se pudo abrir modal de edición de About:', err);
-          }
-        },
         icon: 'fas fa-user-edit',
         label: 'Editar Acerca de',
         color: 'primary',
+        onClick: () =>
+          openDynamicModal(
+            '@/components/layout/Sections/About/modals/AboutModal',
+            'about-edit',
+            'Editar Sección About'
+          ),
       },
     ];
   }, [isAuthenticated, openModal, closeModal]);
 
-  // Acciones del FAB para la sección de certificaciones
-  const certificationsFABActions = useMemo<LocalFABAction[]>(() => {
-    const actions: LocalFABAction[] = [
+  const certificationsFABActions = useMemo<LocalFABAction[]>(
+    () => [
       {
         id: 'add-certification',
-        onClick: () => {
-          // Disparar evento para abrir el modal de certificación
-          window.dispatchEvent(new CustomEvent('certification-add-requested'));
-        },
         icon: 'fas fa-certificate',
         label: 'Añadir Certificación',
         color: 'success',
+        onClick: () => {
+          window.dispatchEvent(new CustomEvent('certification-add-requested'));
+        },
       },
-    ];
-
-    return actions;
-  }, []);
+    ],
+    []
+  );
 
   return {
     testimonialsFABActions,

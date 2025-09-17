@@ -1,55 +1,47 @@
-/**
- * Normaliza nombres de skills para búsqueda consistente de iconos
- */
+// Utilities to normalize skill names for lookup and generate variants
+export function normalizeSkillName(input: string | null) {
+  const original = input === null ? null : String(input);
+  if (input === null) return { original: null } as any;
 
-export interface NormalizedSkill {
-  /** Nombre normalizado con guiones, sin espacios ni caracteres especiales */
-  normalized: string;
-  /** Versión canónica sin separadores para matching de iconos */
-  canonical: string;
-  /** Nombre original sin modificar */
-  original: string;
+  const trimmed = original.trim();
+  if (trimmed === '') return { original, normalized: '', canonical: '' };
+
+  const lower = trimmed.toLowerCase();
+
+  // Build normalized version: keep dots (for .js), convert spaces to '-', convert + to '-', remove #
+  // IMPORTANT: do NOT collapse or trim repeated hyphens introduced by consecutive '+' characters
+  let normalized = lower
+    .replace(/#/g, '') // remove hash sign
+    .replace(/\+/g, '-') // plus -> hyphen (keep duplicates)
+    .replace(/\s+/g, '-') // spaces -> hyphen
+    // Replace other punctuation (except dot and hyphen) with hyphen
+    .replace(/[^a-z0-9.\-]/g, '-')
+    // trim leading/trailing dots but keep hyphens produced by pluses (so C++ -> c--)
+    .replace(/^\.+|\.+$/g, '');
+
+  // canonical: remove hyphens, convert dots to 'dot', and strip any non-alphanum
+  const canonical = normalized
+    // convert dot to word but then strip non-alphanum so 'c--' -> 'c'
+    .replace(/\./g, 'dot')
+    .replace(/[-_]/g, '')
+    .replace(/[^a-z0-9]/g, '');
+
+  return { original, normalized, canonical };
 }
 
-/**
- * Normaliza un nombre de skill para búsqueda consistente
- * @param raw - Nombre original del skill
- * @returns Objeto con versiones normalizadas del nombre
- */
-export const normalizeSkillName = (raw: string): NormalizedSkill => {
-  const name = (raw || '').toString().trim().toLowerCase();
+export function generateSkillVariants(normalizedName: string) {
+  if (!normalizedName) return [];
+  const variants = new Set<string>();
 
-  // Normalizar: espacios y + a guiones, quitar caracteres no válidos
-  const normalized = name.replace(/\s|\+/g, '-').replace(/[^a-z0-9.-]/g, '');
-
-  // Canónico: sin separadores, manejo especial para .js
-  const canonical = normalized.replace(/js$/, 'dotjs').replace(/[._-]/g, '');
-
-  return {
-    normalized,
-    canonical,
-    original: raw,
-  };
-};
-
-/**
- * Genera variantes de un nombre normalizado para búsqueda de iconos
- * @param normalized - Nombre normalizado
- * @returns Array de variantes para buscar
- */
-export const generateSkillVariants = (normalized: string): string[] => {
-  const variants = new Set<string>([
-    normalized,
-    // sin separadores
-    normalized.replace(/[-_.]/g, ''),
-    // sin guiones
-    normalized.replace(/-/g, ''),
-    // sin puntos
-    normalized.replace(/\./g, ''),
-    // lowercase original
-    normalized.toLowerCase(),
-    normalized.toLowerCase().replace(/\s+/g, ''),
-  ]);
+  variants.add(normalizedName);
+  // without hyphens
+  variants.add(normalizedName.replace(/-/g, ''));
+  // dot -> dot word
+  variants.add(normalizedName.replace(/\./g, 'dot'));
+  // remove dots
+  variants.add(normalizedName.replace(/\./g, ''));
 
   return Array.from(variants).filter(Boolean);
-};
+}
+
+export default normalizeSkillName;

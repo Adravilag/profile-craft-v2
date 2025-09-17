@@ -186,7 +186,7 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                     <div className={styles.certDetails}>
                       <div className={styles.certDate}>
                         <i className="fas fa-calendar-alt"></i>
-                        <span>{cert.date}</span>
+                        <span>{new Date(cert.date).toLocaleDateString('es-ES')}</span>
                       </div>
                       {cert.credentialId && (
                         <div className={styles.certId}>

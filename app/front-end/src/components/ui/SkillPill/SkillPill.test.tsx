@@ -7,7 +7,7 @@ describe('[TEST] SkillPill - Funcionalidad de cerrar', () => {
   it('debe mostrar botón de cerrar cuando onClose es proporcionado', () => {
     const mockOnClose = vi.fn();
 
-    render(<SkillPill name="React" colored={true} onClose={mockOnClose} closable={true} />);
+    render(<SkillPill slug="React" colored={true} onClose={mockOnClose} closable={true} />);
 
     // Debe mostrar el botón de cerrar
     const closeButton = screen.getByRole('button', { name: /eliminar react/i });
@@ -18,7 +18,7 @@ describe('[TEST] SkillPill - Funcionalidad de cerrar', () => {
   it('debe llamar onClose cuando se hace clic en el botón de cerrar', () => {
     const mockOnClose = vi.fn();
 
-    render(<SkillPill name="TypeScript" colored={true} onClose={mockOnClose} closable={true} />);
+    render(<SkillPill slug="TypeScript" colored={true} onClose={mockOnClose} closable={true} />);
 
     const closeButton = screen.getByRole('button', { name: /eliminar typescript/i });
     fireEvent.click(closeButton);
@@ -30,7 +30,7 @@ describe('[TEST] SkillPill - Funcionalidad de cerrar', () => {
   it('no debe mostrar botón de cerrar cuando closable es false', () => {
     const mockOnClose = vi.fn();
 
-    render(<SkillPill name="Vue.js" colored={true} onClose={mockOnClose} closable={false} />);
+    render(<SkillPill slug="Vue.js" colored={true} onClose={mockOnClose} closable={false} />);
 
     // No debe mostrar el botón de cerrar
     const closeButton = screen.queryByRole('button', { name: /eliminar/i });
@@ -38,7 +38,7 @@ describe('[TEST] SkillPill - Funcionalidad de cerrar', () => {
   });
 
   it('no debe mostrar botón de cerrar cuando onClose no es proporcionado', () => {
-    render(<SkillPill name="Angular" colored={true} />);
+    render(<SkillPill slug="Angular" colored={true} />);
 
     // No debe mostrar el botón de cerrar
     const closeButton = screen.queryByRole('button', { name: /eliminar/i });
@@ -48,7 +48,7 @@ describe('[TEST] SkillPill - Funcionalidad de cerrar', () => {
   it('debe soportar atajos de teclado para cerrar', () => {
     const mockOnClose = vi.fn();
 
-    render(<SkillPill name="Node.js" colored={true} onClose={mockOnClose} closable={true} />);
+    render(<SkillPill slug="Node.js" colored={true} onClose={mockOnClose} closable={true} />);
 
     const closeButton = screen.getByRole('button', { name: /eliminar node\.js/i });
 

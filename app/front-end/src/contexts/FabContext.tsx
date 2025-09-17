@@ -153,20 +153,36 @@ export const FabProvider: React.FC<{ children?: React.ReactNode }> = ({ children
 
   return (
     <FabContext.Provider
-      value={{
-        openTestimonialModal,
-        openTestimonialsAdmin,
-        openSkillModal,
-        openExperienceModal,
-        openExperienceAdmin,
-        openAboutModal,
-        onOpenTestimonialModal,
-        onOpenTestimonialsAdmin,
-        onOpenSkillModal,
-        onOpenExperienceModal,
-        onOpenExperienceAdmin,
-        onOpenAboutModal,
-      }}
+      value={React.useMemo(
+        () => ({
+          openTestimonialModal,
+          openTestimonialsAdmin,
+          openSkillModal,
+          openExperienceModal,
+          openExperienceAdmin,
+          openAboutModal,
+          onOpenTestimonialModal,
+          onOpenTestimonialsAdmin,
+          onOpenSkillModal,
+          onOpenExperienceModal,
+          onOpenExperienceAdmin,
+          onOpenAboutModal,
+        }),
+        [
+          openTestimonialModal,
+          openTestimonialsAdmin,
+          openSkillModal,
+          openExperienceModal,
+          openExperienceAdmin,
+          openAboutModal,
+          onOpenTestimonialModal,
+          onOpenTestimonialsAdmin,
+          onOpenSkillModal,
+          onOpenExperienceModal,
+          onOpenExperienceAdmin,
+          onOpenAboutModal,
+        ]
+      )}
     >
       {children}
     </FabContext.Provider>

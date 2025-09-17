@@ -93,7 +93,9 @@ export function convertSpanishDateToISO(spanish: string) {
   if (/^(presente|actualmente|actual|ahora|now)$/i.test(s)) return s;
 
   // Already ISO-like (YYYY-MM-DD)
+  // Already ISO-like (YYYY-MM-DD) or year-month (YYYY-MM)
   if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  if (/^\d{4}-\d{2}$/.test(s)) return s;
 
   // Match dd-mm-yyyy or dd/mm/yyyy
   const m = s.match(/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/);

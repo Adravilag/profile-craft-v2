@@ -152,16 +152,34 @@ export const useInitialScrollToSection = ({
     // Helper: realiza el scroll a la sección usando el util compartido
     const scrollToSection = async (el: HTMLElement) => {
       try {
-        // Leer navHeight para pasarlo como offset
-        const navHeightVar = getComputedStyle(document.documentElement).getPropertyValue(
-          '--header-nav-height'
-        );
-        const navHeightFromVar = Number((navHeightVar || '').replace('px', '')) || 0;
-        const headerEl = document.querySelector('.header-curriculum') as HTMLElement | null;
-        const headerHeight = headerEl ? Math.round(headerEl.getBoundingClientRect().height) : 0;
-        const navHeight = Math.max(0, Math.max(navHeightFromVar, headerHeight));
-        // For initial navigation we force an instant jump
-        await scrollToElement(el, { offset: navHeight + 8, instant: true });
+        // Leer navHeight para pasarlo como offset. Hacemos la lectura de layout
+        // dentro de requestAnimationFrame para evitar forzar reflows durante el render.
+        await new Promise<void>(resolve => {
+          requestAnimationFrame(() => {
+            try {
+              const navHeightVar = getComputedStyle(document.documentElement).getPropertyValue(
+                '--header-nav-height'
+              );
+              const navHeightFromVar = Number((navHeightVar || '').replace('px', '')) || 0;
+              const headerEl = document.querySelector('.header-curriculum') as HTMLElement | null;
+              const headerHeight = headerEl
+                ? Math.round(headerEl.getBoundingClientRect().height)
+                : 0;
+              const navHeight = Math.max(0, Math.max(navHeightFromVar, headerHeight));
+              // For initial navigation we force an instant jump
+              // Wrap the call with Promise.resolve to be resilient against
+              // mocks or implementations that might return a non-thenable value.
+              Promise.resolve(scrollToElement(el, { offset: navHeight + 8, instant: true })).then(
+                () => resolve()
+              );
+            } catch (e) {
+              // Fallback inmediato
+              Promise.resolve(scrollToElement(el, { offset: 8, instant: true })).then(() =>
+                resolve()
+              );
+            }
+          });
+        });
       } catch (err) {
         debugLog.error('Error scrolling to section:', err);
       }

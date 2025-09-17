@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useId, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import type { SkillModalProps } from '../../types/skills';
-import { searchLogoHub } from '../../utils/skillUtils';
 import type { LogoHubResult } from '../../types/skills';
+import { loadJson } from '@/features/skills/utils/iconLoader';
+import { normalizeSvgPath } from '@/features/skills/utils/skillUtils';
 import { debugLog } from '@/utils/debugConfig';
 import styles from './SkillModal.module.css';
 
@@ -88,23 +89,87 @@ const SkillModal: React.FC<SkillModalProps> = ({
     }
   }, [formData.name, skillsIcons]);
 
-  // Function to search LogoHub API
+  // Local search: use skillsIcons and local seed JSON (public) to provide suggestions
+  let cachedSeed: any[] | null = null;
   const searchLogoHubFunction = async (query: string) => {
-    if (!query.trim() || query.length < 2) {
+    const q = (query || '').toLowerCase().trim();
+    if (!q || q.length < 2) {
       setLogoHubResults([]);
       setShowLogoHubSuggestions(false);
+      setLogoHubLoading(false);
       return;
     }
 
     setLogoHubLoading(true);
     try {
-      // Usar la nueva función de búsqueda avanzada
-      const results = await searchLogoHub(query, 8);
+      const results: LogoHubResult[] = [];
+
+      // Search in provided skillsIcons first
+      for (const icon of skillsIcons || []) {
+        const name = (icon.name || '').toString();
+        const slug = (icon as any).slug ? String((icon as any).slug) : '';
+        if (
+          name.toLowerCase().includes(q) ||
+          slug.toLowerCase().includes(q) ||
+          (icon.category || '').toLowerCase().includes(q)
+        ) {
+          results.push({
+            id: slug || name.replace(/\s+/g, '-').toLowerCase(),
+            name,
+            description: icon.category || undefined,
+            category: icon.category || undefined,
+            tags: [],
+            colors: { primary: (icon as any).color || '#000000' },
+            files: {
+              svg: normalizeSvgPath(
+                (icon as any).svg_path ||
+                  (icon as any).svg ||
+                  `/assets/svg/${name.toLowerCase().replace(/[^a-z0-9]/g, '-')}.svg`
+              ),
+            },
+            slug: slug || undefined,
+          } as LogoHubResult);
+        }
+        if (results.length >= 8) break;
+      }
+
+      // If not enough results, search in local seed JSON (public/skill_settings.json)
+      if (results.length < 8) {
+        try {
+          if (!cachedSeed) {
+            const loaded = await loadJson<any[]>('/skill_settings.json');
+            cachedSeed = Array.isArray(loaded) ? loaded : [];
+          }
+        } catch (e) {
+          cachedSeed = [];
+        }
+
+        if (Array.isArray(cachedSeed)) {
+          for (const s of cachedSeed as any[]) {
+            const name = String(s.name || '');
+            const slug = String(s.slug || name.replace(/\s+/g, '-').toLowerCase());
+            if (results.find(r => r.id === slug)) continue;
+            if (name.toLowerCase().includes(q) || slug.toLowerCase().includes(q)) {
+              results.push({
+                id: slug,
+                name,
+                description: s.category || undefined,
+                category: s.category || undefined,
+                tags: [],
+                colors: { primary: s.color || '#000000' },
+                files: { svg: normalizeSvgPath(s.svg || `/assets/svg/${slug}.svg`) },
+                slug,
+              } as LogoHubResult);
+            }
+            if (results.length >= 8) break;
+          }
+        }
+      }
 
       setLogoHubResults(results);
       setShowLogoHubSuggestions(results.length > 0);
-    } catch (error) {
-      console.error('❌ [SkillModal] Error en búsqueda LogoHub:', error);
+    } catch (err) {
+      console.error('❌ [SkillModal] local search failed', err);
       setLogoHubResults([]);
       setShowLogoHubSuggestions(false);
     } finally {
@@ -112,22 +177,17 @@ const SkillModal: React.FC<SkillModalProps> = ({
     }
   };
 
-  // Handle search input with debouncing
+  // Handle search input: clear external suggestions (external searches disabled)
   const handleNameInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
     onFormChange(e);
-
-    // Clear previous timeout
+    // Ensure no external suggestions are shown
     if (searchTimeout) {
       clearTimeout(searchTimeout);
+      setSearchTimeout(null);
     }
-
-    // Set new timeout for LogoHub search
-    const newTimeout = setTimeout(() => {
-      searchLogoHubFunction(value);
-    }, 500); // Wait 500ms before searching
-
-    setSearchTimeout(newTimeout);
+    setLogoHubResults([]);
+    setShowLogoHubSuggestions(false);
+    setLogoHubLoading(false);
   };
 
   // Handle LogoHub result selection
@@ -345,7 +405,7 @@ const SkillModal: React.FC<SkillModalProps> = ({
                   <div className={styles.suggestionsDropdown}>
                     <div className={styles.suggestionsHeader}>
                       <i className="fas fa-search"></i>
-                      Sugerencias desde LogoHub:
+                      Sugerencias:
                     </div>
                     {logoHubResults.map(result => (
                       <button

@@ -28,6 +28,7 @@ import { debugLog } from '../utils/debugConfig';
 import { createSecureLogger } from '../utils/secureLogging';
 import { validateRequest, isProductionDomain } from '../utils/domainSecurity';
 import { getDynamicUserId } from '@/features/users/services/userId';
+import { getFirstAdminUsername } from '@/features/users/services/userApi';
 import { getUserId } from '@/features/users/utils/userConfig';
 
 // Logger seguro para evitar exposición de datos sensibles
@@ -83,7 +84,6 @@ API.interceptors.response.use(
 
 export const getUserProfile = async () => {
   // Importar la nueva función de username
-  const { getFirstAdminUsername } = await import('@/features/users/services/userApi');
   const username = await getFirstAdminUsername();
   secureApiLogger.info('🔄 Obteniendo perfil por username:', { username });
   return API.get<UserProfile>(`/profile/public/username/${username}`).then(r => r.data);

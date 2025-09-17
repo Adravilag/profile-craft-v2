@@ -1,0 +1,124 @@
+/* src/components/Calendar.css */
+
+.calendar-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 450px;
+  margin: 2em auto;
+  padding: 1.5em;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5em;
+}
+
+.calendar-header h2 {
+  margin: 0;
+  font-size: 1.75em;
+  color: #333;
+  text-transform: capitalize;
+  font-weight: 500;
+}
+
+.calendar-header button {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 1.5em;
+  cursor: pointer;
+  padding: 0.5em;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.calendar-header button:hover {
+  color: #007bff;
+  background-color: #f0f8ff;
+}
+
+.calendar-header button:active {
+  transform: scale(0.95);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5em;
+  text-align: center;
+}
+
+.calendar-day-name,
+.calendar-day {
+  padding: 0.8em;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.calendar-day-name {
+  font-weight: bold;
+  font-size: 0.9em;
+  color: #777;
+  text-transform: uppercase;
+}
+
+.calendar-day {
+  background-color: #f9f9f9;
+  border: 1px solid #eee;
+  font-size: 1em;
+  color: #444;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
+}
+
+.calendar-day.empty {
+  background-color: transparent;
+  border: 1px solid transparent;
+  cursor: default;
+}
+
+.calendar-day:not(.empty):hover {
+  background-color: #e9e9e9;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Estilo para el día actual */
+.calendar-day.today {
+  background-color: #007bff;
+  color: #ffffff;
+  font-weight: bold;
+  border: 1px solid #007bff;
+}
+
+.calendar-day.today:hover {
+  background-color: #0056b3;
+}
+
+/* Si quieres añadir un estilo para un día seleccionado */
+.calendar-day.selected {
+  background-color: #28a745;
+  color: #ffffff;
+  font-weight: bold;
+  border: 1px solid #28a745;
+}
+
+.calendar-day.selected:hover {
+  background-color: #218838;
+}

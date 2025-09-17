@@ -59,35 +59,44 @@ const PortalDropdown: React.FC<PortalDropdownProps> = ({
   // Lógica de posicionamiento
   const position = useCallback(() => {
     if (!isOpen || !portalRootRef.current || !anchorRef.current) return;
-    // If user is hovering the portal content, do not reposition to avoid jumping
     if (isHoveringRef.current) return;
 
-    const anchorRect = anchorRef.current.getBoundingClientRect();
-    const portalEl = portalRootRef.current;
-    const menuEl = portalContentRef.current;
+    // Throttle layout reads with rAF
+    let ticking = (position as any).__ticking as boolean | undefined;
+    if (ticking) return;
+    (position as any).__ticking = true;
 
-    if (!menuEl) return;
+    requestAnimationFrame(() => {
+      try {
+        const anchorRect = anchorRef.current!.getBoundingClientRect();
+        const portalEl = portalRootRef.current!;
+        const menuEl = portalContentRef.current;
 
-    const menuW = menuEl.offsetWidth;
-    const menuH = menuEl.offsetHeight;
+        if (!menuEl) return;
 
-    let left = anchorRect.right + 8;
-    if (left + menuW + 8 > window.innerWidth) {
-      left = Math.max(8, anchorRect.left - menuW - 8);
-    }
+        const menuW = menuEl.offsetWidth;
+        const menuH = menuEl.offsetHeight;
 
-    let top: number;
-    if (typeof mouseY === 'number' && Number.isFinite(mouseY)) {
-      // Position centered on mouse Y (within viewport bounds)
-      top = mouseY - menuH / 2;
-    } else {
-      const yOffset = 60;
-      top = anchorRect.top + anchorRect.height / 2 - menuH / 2 + yOffset;
-    }
-    top = Math.max(8, Math.min(top, window.innerHeight - menuH - 8));
+        let left = anchorRect.right + 8;
+        if (left + menuW + 8 > window.innerWidth) {
+          left = Math.max(8, anchorRect.left - menuW - 8);
+        }
 
-    portalEl.style.left = `${Math.round(left)}px`;
-    portalEl.style.top = `${Math.round(top)}px`;
+        let top: number;
+        if (typeof mouseY === 'number' && Number.isFinite(mouseY)) {
+          top = mouseY - menuH / 2;
+        } else {
+          const yOffset = 60;
+          top = anchorRect.top + anchorRect.height / 2 - menuH / 2 + yOffset;
+        }
+        top = Math.max(8, Math.min(top, window.innerHeight - menuH - 8));
+
+        portalEl.style.left = `${Math.round(left)}px`;
+        portalEl.style.top = `${Math.round(top)}px`;
+      } finally {
+        (position as any).__ticking = false;
+      }
+    });
   }, [isOpen, anchorRef, mouseY]);
 
   // Observar el contenido para posicionar
@@ -125,8 +134,8 @@ const PortalDropdown: React.FC<PortalDropdownProps> = ({
   useLayoutEffect(() => {
     if (!isOpen) return;
 
-    window.addEventListener('resize', position);
-    window.addEventListener('scroll', position, true);
+    window.addEventListener('resize', position, { passive: true });
+    window.addEventListener('scroll', position, { passive: true, capture: true });
 
     return () => {
       window.removeEventListener('resize', position);

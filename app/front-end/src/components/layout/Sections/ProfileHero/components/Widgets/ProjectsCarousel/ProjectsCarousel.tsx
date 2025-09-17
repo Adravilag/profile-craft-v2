@@ -6,6 +6,8 @@ import type { Project } from '@/types/api';
 import type { MappedProject } from '@/services/mappers/projects';
 import { mapApiToUi } from '@/services/mappers/projects';
 import SkillPill from '@/components/ui/SkillPill/SkillPill';
+import { useSkillSuggestions } from '@/features/skills/hooks/useSkillSuggestions';
+import { resolvePillFromTech } from '@/features/skills/utils/pillUtils';
 import { useTranslation } from '@/contexts/TranslationContext';
 
 // Helper para generar una ID única
@@ -17,9 +19,21 @@ interface Props {
 
 const ProjectsCarousel: React.FC<Props> = ({ projects: initialProjects }) => {
   const { t } = useTranslation();
-  const [projects, setProjects] = useState<MappedProject[] | null>(
-    initialProjects?.length ? initialProjects.map(mapApiToUi) : null
-  );
+  const [projects, setProjects] = useState<MappedProject[] | null>(() => {
+    if (initialProjects && initialProjects.length) {
+      // Map and pick the 3 más recientes (orden descendente por published_at/created_at)
+      const mapped = initialProjects.map(mapApiToUi);
+      const sorted = [...mapped].sort((a, b) => {
+        const aDate = a.published_at ?? null;
+        const bDate = b.published_at ?? null;
+        const ta = aDate ? new Date(aDate).getTime() : 0;
+        const tb = bDate ? new Date(bDate).getTime() : 0;
+        return tb - ta;
+      });
+      return sorted.slice(0, 3);
+    }
+    return null;
+  });
   const [loading, setLoading] = useState(!initialProjects || !initialProjects.length);
   const [loadedMap, setLoadedMap] = useState<Record<string, boolean>>({});
   const [inViewMap, setInViewMap] = useState<Record<string, boolean>>({});
@@ -57,7 +71,15 @@ const ProjectsCarousel: React.FC<Props> = ({ projects: initialProjects }) => {
       const data = await endpointsProjects.getProjects();
       if (!mountedRef.current) return;
       const mapped = (data || []).map(mapApiToUi);
-      setProjects(mapped);
+      // Ordenar por fecha descendente y tomar los 3 más recientes para el widget
+      const sorted = [...mapped].sort((a, b) => {
+        const aDate = a.published_at ?? null;
+        const bDate = b.published_at ?? null;
+        const ta = aDate ? new Date(aDate).getTime() : 0;
+        const tb = bDate ? new Date(bDate).getTime() : 0;
+        return tb - ta;
+      });
+      setProjects(sorted.slice(0, 3));
       setIndex(0);
     } catch (err) {
       if (!mountedRef.current) return;
@@ -228,6 +250,7 @@ const ProjectsCarousel: React.FC<Props> = ({ projects: initialProjects }) => {
       ? current.tags
       : ((current as any).technologies ?? [])
     : [];
+  const skillSuggestions = useSkillSuggestions();
 
   const footerEl =
     typeof document !== 'undefined' ? document.getElementById('header-terminal-footer') : null;
@@ -499,9 +522,20 @@ const ProjectsCarousel: React.FC<Props> = ({ projects: initialProjects }) => {
               </div>
               <p className={styles.projectDesc}>{current.description}</p>
               <div className={styles.chips}>
-                {chipList.slice(0, 6).map((t: string, idx: number) => (
-                  <SkillPill key={`${t}-${idx}`} name={t} colored className={styles.chipPill} />
-                ))}
+                {chipList.slice(0, 6).map((t: string, idx: number) => {
+                  const pill = resolvePillFromTech(t, skillSuggestions, idx);
+                  return (
+                    <SkillPill
+                      key={`${pill.slug || t}-${idx}`}
+                      slug={pill.slug}
+                      svg={pill.svg}
+                      name={pill.name}
+                      colored
+                      className={styles.chipPill}
+                      color={pill.color}
+                    />
+                  );
+                })}
               </div>
               <div className={styles.projectLinks}>
                 {current.github_url && (
@@ -572,9 +606,20 @@ const ProjectsCarousel: React.FC<Props> = ({ projects: initialProjects }) => {
           </div>
           {current?.description && <p className={styles.projectDesc}>{current.description}</p>}
           <div className={styles.chips}>
-            {chipList.slice(0, 6).map((t: string, idx: number) => (
-              <SkillPill key={`${t}-${idx}`} name={t} colored className={styles.chipPill} />
-            ))}
+            {chipList.slice(0, 6).map((t: string, idx: number) => {
+              const pill = resolvePillFromTech(t, skillSuggestions, idx);
+              return (
+                <SkillPill
+                  key={`${pill.slug || t}-${idx}`}
+                  slug={pill.slug}
+                  svg={pill.svg}
+                  name={pill.name}
+                  colored
+                  className={styles.chipPill}
+                  color={pill.color}
+                />
+              );
+            })}
           </div>
           <div className={styles.projectLinks}>
             {current?.github_url && (

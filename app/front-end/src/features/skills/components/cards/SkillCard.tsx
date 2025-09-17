@@ -8,6 +8,10 @@ import {
   getDifficultyStars,
   testSvgAvailability,
 } from '../../utils/skillUtils';
+// Import lazy icon loader to resolve actual module URLs for SVGs in /src/assets/svg
+import { findSkillIcon, getSkillIconEntry } from '@/features/skills/utils/iconLoader';
+import { getIconUrl, resolveIconCandidates } from '@/features/skills/utils/iconResolve';
+import { normalizeSvgPath } from '@/features/skills/utils/skillUtils';
 import styles from './SkillsCard.module.css';
 import useDropdown from '../../hooks/useDropdown';
 import SkillMenu from './SkillMenu/SkillMenu';
@@ -16,10 +20,8 @@ import SkillCommentModal from '../../components/modal/SkillCommentModal';
 import { updateSkill as updateSkillEndpoint } from '@/services/endpoints/skills';
 import { debugLog } from '@/utils/debugConfig';
 import BlurImage from '@/components/utils/BlurImage';
-// Fallback estable empaquetado por Vite
-import genericIconUrl from '@/assets/svg/generic-code.svg?url';
-import { findSkillIcon, findIconForSeedEntry } from '@/features/skills/utils/iconLoader';
-import { normalizeSkillName } from '@/features/skills/utils/normalizeSkillName';
+// Use the shared canonical generic icon URL (avoids static ?url import)
+import { GENERIC_ICON_URL } from '../../utils/skillUtils';
 import { CommentTooltip } from '@/components/ui/CommentTooltip/CommentTooltip';
 
 const SkillCard: React.FC<SkillCardProps> = ({
@@ -102,15 +104,9 @@ const SkillCard: React.FC<SkillCardProps> = ({
 
     // Determinar SVG usando la función utilitaria
     // Prefer `svg_path` or explicit `svg` on the skill if present (new approach).
-    // First try the centralized loader (it will check entry.svg, slug, name)
-    const loaderResolved = findIconForSeedEntry({
-      svg: (skill as any).svg_path || (skill as any).svg,
-      slug: (skill as any).slug,
-      name: skill.name,
-    });
-
-    // Fall back to existing CSV mapping or getSkillSvg helper
-    const path = loaderResolved || getSkillSvg(skill.name, (skill as any).svg_path, skillsIcons);
+    // Fall back to existing CSV mapping or getSkillSvg helper. We avoid calling
+    // the global eager icon loader here to prevent bundling all SVGs.
+    const path = getSkillSvg(skill.name, (skill as any).svg_path, skillsIcons);
 
     // Determinar color desde CSV o mapa de marca
     const brandColorMap: Record<string, string> = {
@@ -143,7 +139,7 @@ const SkillCard: React.FC<SkillCardProps> = ({
 
   // Resolver rutas de icono: respetar URLs absolutas (http(s)://, //, data:, blob:)
   const resolveIconUrl = useCallback((path?: string | null) => {
-    if (!path) return genericIconUrl;
+    if (!path) return GENERIC_ICON_URL;
     const trimmed = path.trim();
     // Si comienza por '/' lo consideramos ruta desde la raíz del sitio.
     // Si la app tiene un BASE_URL distinto de '/', prefijarla para respetar el basename
@@ -171,34 +167,181 @@ const SkillCard: React.FC<SkillCardProps> = ({
   }, []);
 
   const [iconSrc, setIconSrc] = useState(() => resolveIconUrl(svgPath));
+  // Keep a ref of the current iconSrc so effects can compare without forcing
+  // themselves to depend on `iconSrc` (which would cause re-runs when we set it).
+  const iconSrcRef = React.useRef<string>(iconSrc);
+  React.useEffect(() => {
+    iconSrcRef.current = iconSrc;
+  }, [iconSrc]);
+
+  // Track which candidates we've already attempted for the current svgPath to
+  // avoid repeated resolution attempts that could flip iconSrc back and forth.
+  const triedCandidatesRef = React.useRef<Set<string>>(new Set());
+  const lastSvgPathRef = React.useRef<string | null>(null);
+
+  // Stable derived values for effect dependencies (avoid passing whole `skill`)
+  const skillSlug = (skill as any)?.slug ? String((skill as any).slug) : '';
+  const skillName = skill.name;
 
   // Re-evaluar el icono si svgPath cambia
   useEffect(() => {
-    (async () => {
-      const resolved = resolveIconUrl(svgPath);
+    const resolved = resolveIconUrl(svgPath);
+    setIconSrc(resolved || GENERIC_ICON_URL);
+  }, [svgPath, resolveIconUrl]);
 
-      // Si la resolución devolvió el fallback genérico, intentar resolver usando el cargador central
-      if (!resolved || resolved === genericIconUrl) {
-        try {
-          const loaderUrl = findIconForSeedEntry({
-            svg: (skill as any).svg_path || (skill as any).svg,
-            slug: (skill as any).slug,
-            name: skill.name,
+  // If svgPath is a canonical local asset (/assets/svg/<file>.svg), try to
+  // resolve the real hashed URL via the lazy icon loader. This ensures we
+  // don't rely on the canonical path which may 404 in production builds.
+  useEffect(() => {
+    let mounted = true;
+    const tryResolveHashed = async () => {
+      try {
+        if (!svgPath) return;
+        // only attempt for local asset-like paths
+        if (!svgPath.includes('.svg')) return;
+        // derive filename without extension
+        const file = svgPath.split('/').pop() || svgPath;
+        const base = file.replace(/\.svg$/i, '').replace(/^\//, '');
+        if (!base) return;
+        // If svgPath changed, reset tried candidates set
+        if (lastSvgPathRef.current !== svgPath) {
+          triedCandidatesRef.current.clear();
+          lastSvgPathRef.current = svgPath || null;
+        }
+
+        // First try direct base
+        if (import.meta.env.MODE === 'development') {
+          // eslint-disable-next-line no-console
+          console.debug('[SkillCard] trying hashed resolution for', {
+            base,
+            candidates: [base, (skill as any).slug, skill.name],
           });
-          if (loaderUrl) {
-            setIconSrc(loaderUrl);
-            return;
+        }
+        let url = await getIconUrl(base);
+        if (!mounted) return;
+        if (url && url !== iconSrcRef.current && !triedCandidatesRef.current.has(url)) {
+          if (import.meta.env.MODE === 'development') {
+            // eslint-disable-next-line no-console
+            console.debug('[SkillCard] getIconUrl direct hit', { base, url });
+          }
+          setIconSrc(url);
+          triedCandidatesRef.current.add(url);
+          return;
+        }
+
+        // If not found, try more aggressive candidate resolution
+        const candidates = [base, (skill as any).slug || '', skill.name || ''].filter(Boolean);
+        if (import.meta.env.MODE === 'development') {
+          // eslint-disable-next-line no-console
+          console.debug('[SkillCard] resolveIconCandidates with', { candidates });
+        }
+        url = await resolveIconCandidates(candidates as string[]);
+        if (!mounted) return;
+        if (url && url !== iconSrcRef.current && !triedCandidatesRef.current.has(url)) {
+          if (import.meta.env.MODE === 'development') {
+            // eslint-disable-next-line no-console
+            console.debug('[SkillCard] resolveIconCandidates hit', { candidates, url });
+          }
+          setIconSrc(url);
+          triedCandidatesRef.current.add(url);
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+
+    void tryResolveHashed();
+
+    return () => {
+      mounted = false;
+    };
+    // depend on identifying info only; do NOT include `iconSrc` which would
+    // re-trigger when we update it and can cause loops
+  }, [svgPath, skillSlug, skillName]);
+
+  // Lazy-load assets from `src/assets/svg` using import.meta.glob only when the
+  // component is mounted. Prefer the centralized icon map (findSkillIcon) first
+  // — this reduces reliance on filename-based resolution and uses the slug as
+  // canonical lookup key. Keep import.meta.glob as a last-resort fallback.
+  useEffect(() => {
+    let mounted = true;
+
+    const tryResolve = async () => {
+      try {
+        // 1) Prefer centralized map via findSkillIcon (slug-first)
+        try {
+          const lookupKeys = [] as string[];
+          if ((skill as any).slug) lookupKeys.push((skill as any).slug.toString());
+          if (skill.name) lookupKeys.push(skill.name.toString());
+          // normalize keys to lower-case dashed form used by the map
+          const normalizeKey = (s: string) =>
+            s
+              .toString()
+              .trim()
+              .toLowerCase()
+              .replace(/\s+/g, '-')
+              .replace(/[^a-z0-9-.]/g, '');
+
+          for (const k of lookupKeys) {
+            const normalized = normalizeKey(k);
+            const candidate = findSkillIcon(normalized);
+            if (candidate && typeof candidate === 'string') {
+              if (!mounted) return;
+              if (candidate !== iconSrcRef.current && !triedCandidatesRef.current.has(candidate)) {
+                setIconSrc(candidate);
+                triedCandidatesRef.current.add(candidate);
+              }
+              return;
+            }
+            // If the map returned an object with svg_path or svg, prefer svg_path
+            if (candidate && typeof candidate === 'object') {
+              const path = (candidate as any).svg_path || (candidate as any).svg;
+              if (path) {
+                if (!mounted) return;
+                if (path !== iconSrcRef.current && !triedCandidatesRef.current.has(path)) {
+                  setIconSrc(path);
+                  triedCandidatesRef.current.add(path);
+                }
+                return;
+              }
+            }
           }
         } catch (e) {
-          // ignore and fall back below
+          // swallow and continue to fallback resolution
         }
-        setIconSrc(genericIconUrl);
-        return;
-      }
 
-      setIconSrc(resolved);
-    })();
-  }, [svgPath, resolveIconUrl]);
+        // 2) Last-resort: ask the centralized resolver for candidate names
+        try {
+          const candidates: string[] = [];
+          const explicit = ((skill as any).svg_path || (skill as any).svg || '').toString().trim();
+          if (explicit) {
+            const base = explicit.replace(/^\/+/, '').replace(/.*\//, '');
+            candidates.push(base.replace(/\.svg$/i, ''));
+          }
+          if ((skill as any).slug) candidates.push((skill as any).slug.toString());
+          if (skill.name) candidates.push(skill.name.toString());
+
+          const url = await resolveIconCandidates(candidates as string[]);
+          if (!mounted) return;
+          if (url && url !== iconSrcRef.current && !triedCandidatesRef.current.has(url)) {
+            setIconSrc(url);
+            triedCandidatesRef.current.add(url);
+          }
+        } catch (e) {
+          // ignore non-fatal
+        }
+      } catch (err) {
+        // Non-fatal; keep generic fallback
+      }
+    };
+
+    void tryResolve();
+
+    return () => {
+      mounted = false;
+    };
+    // depend on stable identifiers only; avoid `iconSrc` here for the same reason
+  }, [skillSlug, skillName, svgPath]);
 
   // Cerrar el preview de comentario al hacer click fuera de la card o al presionar Escape
   useEffect(() => {
@@ -304,37 +447,85 @@ const SkillCard: React.FC<SkillCardProps> = ({
             imgSrc,
           });
 
-          // Intentar resolver mediante el cargador de icons empaquetados antes de usar el fallback genérico
+          // Intentar cargar de forma lazy un SVG público que coincida con la skill
           try {
-            const loaderUrl = findIconForSeedEntry({
-              svg: (skill as any).svg_path || (skill as any).svg,
-              slug: (skill as any).slug,
-              name: skill.name,
-            });
-            if (loaderUrl && loaderUrl !== iconSrc) {
-              setIconSrc(loaderUrl);
-              return;
+            const candidates: string[] = [];
+            const explicit = ((skill as any).svg_path || (skill as any).svg || '')
+              .toString()
+              .trim();
+            if (explicit) {
+              const base = explicit.replace(/^\/+/, '').replace(/.*\//, '');
+              candidates.push(base.replace(/\.svg$/i, ''));
             }
-            // Fallback leve a la antigua búsqueda por variantes si hace falta
-            const { canonical, normalized } = normalizeSkillName(skill.name);
-            const loaderUrl2 = findSkillIcon(canonical, normalized);
-            if (loaderUrl2 && loaderUrl2 !== iconSrc) {
-              setIconSrc(loaderUrl2);
-              return;
+            if ((skill as any).slug) candidates.push((skill as any).slug.toString());
+            if (skill.name) candidates.push(skill.name.toString());
+
+            const normalize = (s: string) =>
+              s
+                .toString()
+                .trim()
+                .toLowerCase()
+                .replace(/\s+/g, '-')
+                .replace(/[^a-z0-9-.]/g, '');
+
+            const normalized = candidates.map(c => normalize(c));
+
+            // Intentar fetch HEAD/GET a ruta pública basada en el manifest (prefiere svg_path)
+            for (const n of normalized) {
+              // If the manifest entry exists for this normalized key, prefer its svg_path
+              let publicPath = undefined;
+              try {
+                const entry = getSkillIconEntry(n);
+                if (entry && (entry as any).svg_path)
+                  publicPath = normalizeSvgPath((entry as any).svg_path);
+                else if (entry && entry.svg) publicPath = normalizeSvgPath(entry.svg);
+              } catch (e) {
+                // ignore
+              }
+              if (!publicPath) publicPath = resolveIconUrl(`/assets/svg/${n}.svg`);
+              try {
+                const res = await fetch(publicPath, { method: 'HEAD', cache: 'no-store' });
+                if (res && res.ok) {
+                  if (
+                    publicPath !== iconSrcRef.current &&
+                    !triedCandidatesRef.current.has(publicPath)
+                  ) {
+                    setIconSrc(publicPath);
+                    triedCandidatesRef.current.add(publicPath);
+                    return;
+                  }
+                }
+              } catch (headErr) {
+                try {
+                  const getRes = await fetch(publicPath, { method: 'GET', cache: 'no-store' });
+                  if (getRes && getRes.ok) {
+                    if (
+                      publicPath !== iconSrcRef.current &&
+                      !triedCandidatesRef.current.has(publicPath)
+                    ) {
+                      setIconSrc(publicPath);
+                      triedCandidatesRef.current.add(publicPath);
+                      return;
+                    }
+                  }
+                } catch (getErr) {
+                  // ignore and continue
+                }
+              }
             }
           } catch (e) {
-            // ignore
+            // ignore non-fatal
           }
 
           // Si ya estamos mostrando el fallback, no hacer nada más
-          if (iconSrc === genericIconUrl) return;
-          setIconSrc(genericIconUrl);
+          if (iconSrc === GENERIC_ICON_URL) return;
+          setIconSrc(GENERIC_ICON_URL);
         } catch (error) {
           // En caso de error en la validación, caer al fallback para no romper UI
           debugLog.warn(`❌ Error validating icon for ${skill.name}, applying fallback.`, {
             error,
           });
-          if (iconSrc !== genericIconUrl) setIconSrc(genericIconUrl);
+          if (iconSrc !== GENERIC_ICON_URL) setIconSrc(GENERIC_ICON_URL);
         }
       };
 

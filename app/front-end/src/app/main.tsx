@@ -2,6 +2,7 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { AppProviders } from './providers/providers';
+import { ensureImageMap } from '@/utils/imageLookup';
 import { NORMALIZED_BASE } from '@/config/basePath';
 const App = React.lazy(() => import('./App').then(m => ({ default: m.App })));
 
@@ -119,21 +120,34 @@ if (typeof window !== 'undefined') {
   }
 }
 // Si estamos en modo preview (definido por VITE_PREVIEW), arrancar MSW antes de montar la app
-if (typeof window !== 'undefined' && import.meta.env.VITE_PREVIEW === 'true') {
-  // arrancar worker en modo cliente
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  import('../mocks/browser')
-    .then(({ worker }) => {
-      return worker.start({
-        onUnhandledRequest: 'warn',
-      });
-    })
-    .then(() => {})
-    .catch(error => {
-      console.error('❌ [MSW] Error iniciando worker:', error);
-      // si falla, seguimos montando la app sin mocks
-    })
-    .finally(() => {
+// Asegurarnos de poblar el image map antes de montar para evitar flashes en UI
+const mountApp = async () => {
+  try {
+    await ensureImageMap();
+  } catch (e) {
+    // no bloquear el arranque si falla la carga de imágenes
+    // console.warn('ensureImageMap failed', e);
+  }
+
+  if (typeof window !== 'undefined' && import.meta.env.VITE_PREVIEW === 'true') {
+    // Evitar arrancar MSW en Microsoft Edge porque en algunos entornos
+    // la comunicación del service worker añade latencia perceptible.
+    // Detectamos Edge de forma conservadora por userAgent.
+    const isEdge = (() => {
+      try {
+        const ua = navigator.userAgent || '';
+        // 'Edg' es el token moderno para Chromium-based Edge, 'Edge' para legacy
+        return ua.includes('Edg') || ua.includes('Edge');
+      } catch (e) {
+        return false;
+      }
+    })();
+
+    if (isEdge) {
+      // No arrancar worker en Edge: montar app inmediatamente
+      if (import.meta.env.DEV && typeof console !== 'undefined') {
+        console.info('[MSW] Worker skipped on Edge to avoid potential performance issues');
+      }
       ReactDOM.createRoot(root).render(
         <React.StrictMode>
           <Suspense fallback={<div aria-hidden="true" id="app-loading" />}>
@@ -141,16 +155,43 @@ if (typeof window !== 'undefined' && import.meta.env.VITE_PREVIEW === 'true') {
           </Suspense>
         </React.StrictMode>
       );
-    });
-} else {
-  ReactDOM.createRoot(root).render(
-    <React.StrictMode>
-      <Suspense fallback={<div aria-hidden="true" id="app-loading" />}>
-        <App />
-      </Suspense>
-    </React.StrictMode>
-  );
-}
+    } else {
+      // arrancar worker en modo cliente
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      import('../mocks/browser')
+        .then(({ worker }) => {
+          return worker.start({
+            onUnhandledRequest: 'warn',
+          });
+        })
+        .then(() => {})
+        .catch(error => {
+          console.error('❌ [MSW] Error iniciando worker:', error);
+          // si falla, seguimos montando la app sin mocks
+        })
+        .finally(() => {
+          ReactDOM.createRoot(root).render(
+            <React.StrictMode>
+              <Suspense fallback={<div aria-hidden="true" id="app-loading" />}>
+                <App />
+              </Suspense>
+            </React.StrictMode>
+          );
+        });
+    }
+  } else {
+    ReactDOM.createRoot(root).render(
+      <React.StrictMode>
+        <Suspense fallback={<div aria-hidden="true" id="app-loading" />}>
+          <App />
+        </Suspense>
+      </React.StrictMode>
+    );
+  }
+};
+
+// Kick off mounting sequence
+void mountApp();
 
 // Web Vitals: sólo en navegador y en producción
 if (typeof window !== 'undefined' && import.meta.env.PROD) {

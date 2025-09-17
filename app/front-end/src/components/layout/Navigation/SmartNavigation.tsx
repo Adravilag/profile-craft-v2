@@ -130,11 +130,13 @@ const SmartNavigation: React.FC<SmartNavigationProps> = ({ navItems }) => {
   // Establecer altura del nav como variable CSS al montar
   useEffect(() => {
     const setNavHeightVariable = () => {
-      const navElement = document.querySelector(`.${styles.headerPortfolioNav}`) as HTMLElement;
-      if (navElement) {
-        const navHeight = navElement.offsetHeight;
-        document.documentElement.style.setProperty('--header-nav-height', `${navHeight}px`);
-      }
+      requestAnimationFrame(() => {
+        const navElement = document.querySelector(`.${styles.headerPortfolioNav}`) as HTMLElement;
+        if (navElement) {
+          const navHeight = navElement.offsetHeight;
+          document.documentElement.style.setProperty('--header-nav-height', `${navHeight}px`);
+        }
+      });
     };
     setNavHeightVariable();
     const timeout = setTimeout(setNavHeightVariable, 100);
@@ -143,19 +145,28 @@ const SmartNavigation: React.FC<SmartNavigationProps> = ({ navItems }) => {
 
   // Detectar cuando el nav debe estar sticky
   useEffect(() => {
+    let ticking = false;
     const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const headerElement = document.querySelector('.header-curriculum') as HTMLElement;
-      const headerHeight = headerElement?.offsetHeight || 400;
-      const navSticky = scrollY >= headerHeight - 80;
-      setIsNavSticky(navSticky);
-      const progress = Math.min(scrollY / headerHeight, 1);
-      setScrollProgress(progress);
-      const navElement = document.querySelector(`.${styles.headerPortfolioNav}`) as HTMLElement;
-      if (navElement) {
-        const navHeight = navElement.offsetHeight;
-        document.documentElement.style.setProperty('--header-nav-height', `${navHeight}px`);
-      }
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        try {
+          const scrollY = window.scrollY;
+          const headerElement = document.querySelector('.header-curriculum') as HTMLElement;
+          const headerHeight = headerElement?.offsetHeight || 400;
+          const navSticky = scrollY >= headerHeight - 80;
+          setIsNavSticky(navSticky);
+          const progress = Math.min(scrollY / headerHeight, 1);
+          setScrollProgress(progress);
+          const navElement = document.querySelector(`.${styles.headerPortfolioNav}`) as HTMLElement;
+          if (navElement) {
+            const navHeight = navElement.offsetHeight;
+            document.documentElement.style.setProperty('--header-nav-height', `${navHeight}px`);
+          }
+        } finally {
+          ticking = false;
+        }
+      });
     };
     handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });

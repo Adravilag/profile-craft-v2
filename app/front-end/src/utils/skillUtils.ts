@@ -1,6 +1,7 @@
 // utils/skillUtils.ts
 import type { SkillIconData } from '../features/skills/types/skills';
 import { debugLog } from '@/utils/debugConfig';
+import { findSvgForName } from '@/utils/skillIcons';
 
 // Función para convertir nombre de skill a clase CSS válida
 export const getSkillCssClass = (skillName: string): string => {
@@ -27,16 +28,9 @@ export const getSkillSvg = (
     return '/assets/svg/generic-code.svg';
   }
 
-  // Función auxiliar para validar URLs SVG
-  const isValidSvgPath = (path: string): boolean => {
-    if (!path) return false;
-    return (
-      path.includes('.svg') &&
-      !path.includes('fa-') &&
-      !path.includes('fas ') &&
-      !path.includes('fab ')
-    );
-  };
+  // Función auxiliar para validar URLs SVG mínimamente
+  const isValidSvgPath = (path: string): boolean =>
+    !!path && typeof path === 'string' && path.includes('.svg');
 
   // Primero buscar en el CSV por nombre exacto (prioridad alta)
   const csvIconExact = skillsIcons.find(
@@ -56,10 +50,15 @@ export const getSkillSvg = (
     }
 
     // Normalizar rutas relativas a /assets/svg/
-    if (!finalPath.startsWith('/assets/svg/')) {
+    if (
+      !finalPath.startsWith('/assets/svg/') &&
+      !finalPath.startsWith('http') &&
+      !finalPath.startsWith('data:') &&
+      !finalPath.startsWith('blob:')
+    ) {
       if (finalPath.startsWith('/src/assets/svg/')) {
         finalPath = finalPath.replace('/src/assets/svg/', '/assets/svg/');
-      } else if (!finalPath.startsWith('/') && !finalPath.startsWith('http')) {
+      } else if (!finalPath.startsWith('/')) {
         finalPath = `/assets/svg/${finalPath}`;
       }
     }
@@ -94,10 +93,15 @@ export const getSkillSvg = (
     }
 
     // Normalizar rutas relativas a /assets/svg/
-    if (!finalPath.startsWith('/assets/svg/')) {
+    if (
+      !finalPath.startsWith('/assets/svg/') &&
+      !finalPath.startsWith('http') &&
+      !finalPath.startsWith('data:') &&
+      !finalPath.startsWith('blob:')
+    ) {
       if (finalPath.startsWith('/src/assets/svg/')) {
         finalPath = finalPath.replace('/src/assets/svg/', '/assets/svg/');
-      } else if (!finalPath.startsWith('/') && !finalPath.startsWith('http')) {
+      } else if (!finalPath.startsWith('/')) {
         finalPath = `/assets/svg/${finalPath}`;
       }
     }
@@ -109,7 +113,7 @@ export const getSkillSvg = (
   // Si ya tiene un SVG válido (no FontAwesome), usarlo
   if (existingSvg && existingSvg.trim() !== '' && isValidSvgPath(existingSvg)) {
     debugLog.dataLoading(`✅ Using existing SVG for "${skillName}":`, existingSvg);
-    return existingSvg;
+    return existingSvg.startsWith('/') ? existingSvg : `/${existingSvg}`;
   }
 
   // Fallback: generar ruta basada en el nombre de la skill
@@ -118,6 +122,10 @@ export const getSkillSvg = (
     .replace(/[^a-z0-9]/g, '-')
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '');
+
+  // Try findSvgForName from central map first
+  const fromMap = findSvgForName(skillName);
+  if (fromMap) return fromMap;
 
   const fallbackPath = `/assets/svg/${cleanSkillName}.svg`;
   debugLog.dataLoading(`🔧 Generated fallback path for "${skillName}":`, fallbackPath);

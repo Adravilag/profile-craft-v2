@@ -2,6 +2,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './projectCard.module.css';
 import SkillPill from '@/components/ui/SkillPill/SkillPill';
+import { useSkillSuggestions } from '@/features/skills/hooks/useSkillSuggestions';
+import { resolvePillFromTech } from '@/features/skills/utils/pillUtils';
 import { useTranslation } from '@/contexts/TranslationContext';
 
 type Media = { type: 'image' | 'gif' | 'video'; src: string; poster?: string };
@@ -71,6 +73,8 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
       ? (project as any).tags
       : (project.technologies ?? []);
 
+  const skillSuggestions = useSkillSuggestions();
+
   return (
     <article
       className={styles.card}
@@ -114,9 +118,20 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
         </p>
 
         <div className={styles.techRow}>
-          {technologies.slice(0, 6).map((tech: string, index: number) => (
-            <SkillPill key={`${tech}-${index}`} name={tech} colored className={styles.chipPill} />
-          ))}
+          {technologies.slice(0, 6).map((tech: string, index: number) => {
+            const pill = resolvePillFromTech(tech, skillSuggestions, index);
+            return (
+              <SkillPill
+                key={`${pill.slug || tech}-${index}`}
+                slug={pill.slug}
+                svg={pill.svg}
+                name={pill.name}
+                colored
+                className={styles.chipPill}
+                color={pill.color}
+              />
+            );
+          })}
         </div>
 
         <div className={styles.ctaRow}>

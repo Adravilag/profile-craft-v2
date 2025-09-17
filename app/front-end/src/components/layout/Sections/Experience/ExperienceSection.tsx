@@ -112,9 +112,36 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
         isEditing: true,
         initialData: experience,
         onSubmit: async (data: any) => {
-          // Aquí iría la lógica de actualización
-          closeModal('edit-experience');
-          refreshAll();
+          try {
+            // Normalizar payload y delegar al hook updateExperience
+            const payload = {
+              position: data.title || data.position || '',
+              company: data.company || '',
+              start_date: convertSpanishDateToISO(data.start_date || ''),
+              end_date: data.end_date ? convertSpanishDateToISO(data.end_date) : '',
+              description: data.description || '',
+              technologies: data.technologies
+                ? Array.isArray(data.technologies)
+                  ? data.technologies
+                  : String(data.technologies)
+                      .split(',')
+                      .map((s: string) => s.trim())
+                      .filter(Boolean)
+                : [],
+              is_current:
+                !!data.is_current || data.end_date === '' || /presente/i.test(data.end_date || ''),
+              order_index: data.order_index || 0,
+            };
+            if (experience._id) {
+              await updateExperience(experience._id, payload as any);
+            }
+            closeModal('edit-experience');
+            refreshAll();
+          } catch (err) {
+            console.error('Error actualizando experiencia desde modal:', err);
+            // dejar que el formulario muestre su propio error si corresponde
+            throw err;
+          }
         },
       });
       openModal('edit-experience', modalContent, {
@@ -142,9 +169,25 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
         isEditing: true,
         initialData: edu,
         onSubmit: async (data: any) => {
-          // Aquí iría la lógica de actualización
-          closeModal('edit-education');
-          refreshAll();
+          try {
+            const payload = {
+              title: data.title || '',
+              institution: data.institution || '',
+              start_date: convertSpanishDateToISO(data.start_date || ''),
+              end_date: data.end_date ? convertSpanishDateToISO(data.end_date) : '',
+              description: data.description || '',
+              grade: data.grade || '',
+              order_index: data.order_index || 0,
+            };
+            if (edu._id) {
+              await updateEducation(parseInt(String(edu._id)), payload as any);
+            }
+            closeModal('edit-education');
+            refreshAll();
+          } catch (err) {
+            console.error('Error actualizando educación desde modal:', err);
+            throw err;
+          }
         },
       });
       openModal('edit-education', modalContent, {
@@ -171,9 +214,23 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
         formType: 'education',
         isEditing: false,
         onSubmit: async (data: any) => {
-          // Aquí iría la lógica de creación
-          closeModal('add-education');
-          refreshAll();
+          try {
+            const payload = {
+              title: data.title || '',
+              institution: data.institution || '',
+              start_date: convertSpanishDateToISO(data.start_date || ''),
+              end_date: data.end_date ? convertSpanishDateToISO(data.end_date) : '',
+              description: data.description || '',
+              grade: data.grade || '',
+              order_index: data.order_index || 0,
+            };
+            await createEducation(payload as any);
+            closeModal('add-education');
+            refreshAll();
+          } catch (err) {
+            console.error('Error creando educación desde modal:', err);
+            throw err;
+          }
         },
       });
       openModal('add-education', modalContent, {
@@ -200,9 +257,33 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
         formType: 'experience',
         isEditing: false,
         onSubmit: async (data: any) => {
-          // Aquí iría la lógica de creación
-          closeModal('add-experience');
-          refreshAll();
+          try {
+            const payload = {
+              position: data.title || data.position || '',
+              company: data.company || '',
+              start_date: convertSpanishDateToISO(data.start_date || ''),
+              end_date: data.end_date ? convertSpanishDateToISO(data.end_date) : '',
+              description: data.description || '',
+              technologies: data.technologies
+                ? Array.isArray(data.technologies)
+                  ? data.technologies
+                  : String(data.technologies)
+                      .split(',')
+                      .map((s: string) => s.trim())
+                      .filter(Boolean)
+                : [],
+              is_current:
+                !!data.is_current || data.end_date === '' || /presente/i.test(data.end_date || ''),
+              order_index: data.order_index || 0,
+              user_id: '1',
+            };
+            await createExperience(payload as any);
+            closeModal('add-experience');
+            refreshAll();
+          } catch (err) {
+            console.error('Error creando experiencia desde modal:', err);
+            throw err;
+          }
         },
       });
       openModal('add-experience', modalContent, {

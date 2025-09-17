@@ -4,7 +4,7 @@ import { useNotification } from '@/hooks/useNotification';
 import { useTranslation } from '@/contexts/TranslationContext';
 import type { Education } from '@/types/api';
 import styles from './AddExperienceForm.module.css';
-import Calendar from '@/ui/components/Calendar';
+import CalendarPicker from '@/components/ui/Calendar/CalendarPicker';
 
 interface FormData {
   title: string;
@@ -344,10 +344,10 @@ const AddEducationForm: React.FC<AddEducationFormProps> = ({
               <i className="fas fa-calendar-alt"></i>
               Fecha de Inicio *
             </label>
-            <Calendar
-              selectedDate={formData.start_date ? new Date(formData.start_date) : null}
-              onChange={date => {
-                const dateStr = date ? date.toISOString().split('T')[0] : '';
+            <CalendarPicker
+              initial={formData.start_date ? new Date(formData.start_date) : null}
+              onSelect={ym => {
+                const dateStr = ym ? String(ym) : '';
                 handleFieldChange('start_date', dateStr);
               }}
               className={`${styles.input} ${validationErrors.start_date ? styles.invalid : ''}`}
@@ -362,10 +362,10 @@ const AddEducationForm: React.FC<AddEducationFormProps> = ({
               <i className="fas fa-calendar-check"></i>
               Fecha de fin
             </label>
-            <Calendar
-              selectedDate={formData.end_date ? new Date(formData.end_date) : null}
-              onChange={date => {
-                const dateStr = date ? date.toISOString().split('T')[0] : '';
+            <CalendarPicker
+              initial={formData.end_date ? new Date(formData.end_date) : null}
+              onSelect={ym => {
+                const dateStr = ym ? String(ym) : '';
                 handleFieldChange('end_date', dateStr);
               }}
               className={`${styles.input} ${validationErrors.end_date ? styles.invalid : ''}`}

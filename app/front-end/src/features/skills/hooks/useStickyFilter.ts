@@ -70,97 +70,111 @@ export const useStickyFilter = ({
     // }
   }, [currentSection, sectionId, debug]);
 
-  // Función para calcular los rectángulos de los elementos
+  // Cache local para rectángulos — evitamos setState por cada lectura frecuente
+  const rectsRef = useRef<{
+    section?: DOMRect | null;
+    container?: DOMRect | null;
+    panel?: DOMRect | null;
+  }>({});
+
+  // Función para calcular los rectángulos de los elementos (lecturas agrupadas)
   const updateRects = () => {
-    const sectionElement = document.getElementById(sectionId);
+    requestAnimationFrame(() => {
+      const sectionElement = document.getElementById(sectionId);
 
-    if (sectionElement) {
-      setSectionRect(sectionElement.getBoundingClientRect());
-    }
+      rectsRef.current.section = sectionElement ? sectionElement.getBoundingClientRect() : null;
+      rectsRef.current.container = containerRef.current
+        ? containerRef.current.getBoundingClientRect()
+        : null;
+      rectsRef.current.panel = panelRef.current ? panelRef.current.getBoundingClientRect() : null;
 
-    if (containerRef.current) {
-      setContainerRect(containerRef.current.getBoundingClientRect());
-    }
-
-    if (panelRef.current) {
-      setPanelRect(panelRef.current.getBoundingClientRect());
-    }
+      // Actualizamos estados solo cuando sea necesario — por ejemplo al inicializar o resize
+      // Esto evita múltiples re-renders durante scroll rápido.
+      setSectionRect(rectsRef.current.section ?? null);
+      setContainerRect(rectsRef.current.container ?? null);
+      setPanelRect(rectsRef.current.panel ?? null);
+    });
   };
 
   // Función para actualizar el estado sticky según la posición de scroll
   const updateStickyState = () => {
     if (!isInSection) return;
 
-    // Medir rects en tiempo real para mayor precisión durante el scroll
-    const sectionEl = document.getElementById(sectionId);
-    const containerEl = containerRef.current;
-    const panelEl = panelRef.current;
+    // Throttle via rAF with a ticking flag attached to the ref to avoid re-creating closures
+    const tickingKey = '__ticking_updateStickyState';
+    if ((updateStickyState as any)[tickingKey]) return;
+    (updateStickyState as any)[tickingKey] = true;
 
-    if (!sectionEl || !containerEl || !panelEl) return;
+    requestAnimationFrame(() => {
+      try {
+        const sectionRectNow =
+          rectsRef.current.section ??
+          document.getElementById(sectionId)?.getBoundingClientRect() ??
+          null;
+        const containerRectNow =
+          rectsRef.current.container ?? containerRef.current?.getBoundingClientRect() ?? null;
+        const panelRectNow =
+          rectsRef.current.panel ?? panelRef.current?.getBoundingClientRect() ?? null;
 
-    const sectionRectNow = sectionEl.getBoundingClientRect();
-    const containerRectNow = containerEl.getBoundingClientRect();
-    // Forzar medición del panel
-    const panelRectNow = panelEl.getBoundingClientRect();
+        if (!sectionRectNow || !containerRectNow || !panelRectNow) return;
 
-    const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    const sectionTop = scrollTop + sectionRectNow.top;
-    const sectionBottom = sectionTop + sectionRectNow.height;
+        // Usar scrollY para cálculos basados en documento
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const sectionTop = scrollTop + sectionRectNow.top;
+        const sectionBottom = sectionTop + sectionRectNow.height;
 
-    // Leer offset desde CSS para alinear cálculos
-    const computedOffset = getComputedStyle(document.documentElement)
-      .getPropertyValue('--skills-filter-offset-top')
-      .trim();
-    const topPx =
-      computedOffset && computedOffset.endsWith('px') ? parseInt(computedOffset, 10) : offsetTop;
+        const computedOffset = getComputedStyle(document.documentElement)
+          .getPropertyValue('--skills-filter-offset-top')
+          .trim();
+        const topPx =
+          computedOffset && computedOffset.endsWith('px')
+            ? parseInt(computedOffset, 10)
+            : offsetTop;
 
-    const panelHeight = panelRectNow.height;
+        const panelHeight = panelRectNow.height;
 
-    // Condición de activación: cuando el top del contenedor alcanza la barra superior (offset)
-    // Esto simula el "choca con el nav"
-    const reachedTopBar = containerRectNow.top <= topPx + 1;
-    // Condición de límite inferior: el fondo del panel no debe superar el final de la sección
-    const panelBottomDoc = scrollTop + topPx + panelHeight;
-    const withinBottomBound = panelBottomDoc < sectionBottom - 8;
+        const reachedTopBar = containerRectNow.top <= topPx + 1;
+        const panelBottomDoc = scrollTop + topPx + panelHeight;
+        const withinBottomBound = panelBottomDoc < sectionBottom - 8;
 
-    // Si no pudimos medir el contenedor por alguna razón, caemos al comportamiento por umbral
-    const passedThreshold = scrollTop > sectionTop + threshold;
-    const shouldBeSticky = (reachedTopBar || passedThreshold) && withinBottomBound;
+        const passedThreshold = scrollTop > sectionTop + threshold;
+        const shouldBeSticky = (reachedTopBar || passedThreshold) && withinBottomBound;
 
-    if (shouldBeSticky !== isSticky) {
-      setIsSticky(shouldBeSticky);
-      if (debug) {
-        console.log('Sticky state changed:', shouldBeSticky);
+        if (shouldBeSticky !== isSticky) {
+          setIsSticky(shouldBeSticky);
+          if (debug) {
+            console.log('Sticky state changed:', shouldBeSticky);
+          }
+        }
+
+        // Solo actualizar estilos cuando cambie el estado sticky o en resize
+        setStyles(prev => {
+          const newStyles = { container: { ...prev.container }, panel: { ...prev.panel } };
+          if (shouldBeSticky) {
+            newStyles.panel = {
+              position: 'fixed',
+              top: `${topPx}px`,
+              left: `${Math.max(0, containerRectNow.left)}px`,
+              width: `${containerRectNow.width}px`,
+              maxHeight: `calc(100vh - ${topPx * 2}px)`,
+              overflowY: 'auto',
+            };
+          } else {
+            newStyles.panel = {
+              position: 'relative',
+              top: 'auto',
+              left: 'auto',
+              width: '100%',
+              maxHeight: 'none',
+              overflowY: 'visible',
+            };
+          }
+          return newStyles;
+        });
+      } finally {
+        (updateStickyState as any)[tickingKey] = false;
       }
-    }
-
-    // Actualizar estilos según el estado usando las medidas actuales
-    const newStyles = {
-      container: { ...styles.container },
-      panel: { ...styles.panel },
-    };
-
-    if (shouldBeSticky) {
-      newStyles.panel = {
-        position: 'fixed',
-        top: `${topPx}px`,
-        left: `${Math.max(0, containerRectNow.left)}px`,
-        width: `${containerRectNow.width}px`,
-        maxHeight: `calc(100vh - ${topPx * 2}px)`,
-        overflowY: 'auto',
-      };
-    } else {
-      newStyles.panel = {
-        position: 'relative',
-        top: 'auto',
-        left: 'auto',
-        width: '100%',
-        maxHeight: 'none',
-        overflowY: 'visible',
-      };
-    }
-
-    setStyles(newStyles);
+    });
   };
 
   // (updateStyles integrado dentro de updateStickyState para usar medidas actuales)
@@ -171,7 +185,7 @@ export const useStickyFilter = ({
 
     // Actualizar rectángulos inicialmente y configurar observadores
     updateRects();
-    window.addEventListener('scroll', updateStickyState);
+    window.addEventListener('scroll', updateStickyState, { passive: true });
     const resizeHandler = () => {
       updateRects();
       updateStickyState();

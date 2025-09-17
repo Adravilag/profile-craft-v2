@@ -3,7 +3,7 @@ import { getProjects, getExperiences, getCertifications } from '@/services/api';
 import type { UserProfile } from '@/types/api';
 import { debugLog } from '@/utils/debugConfig';
 import { useTranslation } from '@/contexts/TranslationContext';
-import { normalizeState, PROJECT_STATES } from '@/features/projects/constants/projectStates';
+import { normalizeState, PROJECT_STATES } from '@/constants/projectStates';
 import { useSectionsLoadingContext } from '@/contexts/SectionsLoadingContext';
 
 interface UseProfileStatsReturn {

@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import { pathStartsWithBase, stripBaseFromPath } from '@/config/basePath';
 import type { ReactNode, Dispatch, SetStateAction } from 'react';
 
@@ -39,7 +39,9 @@ export const NavigationProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   return (
-    <NavigationContext.Provider value={{ activeLink, setActiveLink }}>
+    <NavigationContext.Provider
+      value={React.useMemo(() => ({ activeLink, setActiveLink }), [activeLink, setActiveLink])}
+    >
       {children}
     </NavigationContext.Provider>
   );

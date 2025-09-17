@@ -105,15 +105,6 @@ export interface SkillModalProps {
   maxHeight?: string | number;
 }
 
-export interface SkillPreviewModalProps {
-  isOpen: boolean;
-  skill: any | null;
-  skillsIcons: SkillIconData[];
-  externalData: Record<string, ExternalSkillData>;
-  loadingExternalData: Record<string, boolean>;
-  onClose: () => void;
-}
-
 // Tipo para resultados de LogoHub API (basado en documentación oficial)
 export interface LogoHubResult {
   id: string;

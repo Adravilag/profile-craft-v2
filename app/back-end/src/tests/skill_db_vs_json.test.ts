@@ -41,9 +41,9 @@ describe('DB vs skill_setings.json', () => {
       return;
     }
 
-    // Read JSON
+    // Read JSON from front-end's public folder (canonical skill_settings.json)
     const raw = fs.readFileSync(
-      path.join(__dirname, '..', '..', 'front-end', 'src', 'config', 'skill_setings.json'),
+      path.join(__dirname, '..', '..', 'front-end', 'public', 'skill_settings.json'),
       'utf-8'
     );
     const seed: Array<any> = JSON.parse(raw);

@@ -5,7 +5,7 @@ import { skills as skillsEndpoints } from '@/services/endpoints';
 const { getSkills, createSkill, updateSkill, deleteSkill } = skillsEndpoints;
 import type { Skill } from '@/types/api';
 import type { SkillFormData } from '../types/skills';
-import { getSkillSvg, fetchLogoHubSvg, GENERIC_ICON_URL } from '../utils/skillUtils';
+import { getSkillSvg, GENERIC_ICON_URL } from '../utils/skillUtils';
 import { useSectionsLoadingContext } from '@/contexts/SectionsLoadingContext';
 
 const defaultNewSkill: SkillFormData = {
@@ -142,18 +142,7 @@ export const useSkills = () => {
       svg_path = getSkillSvg(newSkill.name, undefined, skillsIcons);
     }
 
-    // Si aún no se encontró nada local y el resultado es el icono genérico, intentar LogoHub como último recurso
-    if (!svg_path || svg_path === GENERIC_ICON_URL) {
-      try {
-        const lh = await fetchLogoHubSvg(newSkill.name);
-        if (lh) {
-          svg_path = lh;
-        }
-      } catch (e) {
-        console.warn('❌ Error en LogoHub fallback:', e);
-        // mantener svg_path como está (posiblemente genérico)
-      }
-    }
+    // If no local svg_path found, keep the generic icon. External fallbacks are disabled.
 
     try {
       // Nota: El backend ya no almacena icon_class/svg_path. Enviar sólo campos de dominio.
