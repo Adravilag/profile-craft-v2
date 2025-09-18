@@ -11,7 +11,8 @@ export interface BackendStatus {
   retryCount: number;
 }
 
-const API_BASE_URL = import.meta.env?.VITE_API_URL || 'http://localhost:3000/api';
+const API_BASE_URL =
+  import.meta.env?.VITE_API_URL || 'https://profile-craft-v2-backend.onrender.com/api';
 const HEALTH_CHECK_URL = `${API_BASE_URL}/health`;
 const CHECK_INTERVAL = 30000; // 30 segundos
 const MAX_RETRIES = 5; // Aumentar a 5 para Render

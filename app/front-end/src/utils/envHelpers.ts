@@ -26,7 +26,7 @@ export const getApiUrl = (): string => {
   if (apiUrl) {
     return apiUrl.replace(/\/?api\/?$/, '');
   }
-  return isDevelopment() ? '' : 'http://localhost:3000';
+  return isDevelopment() ? '' : 'https://profile-craft-v2-backend.onrender.com';
 };
 
 export const getBaseUrl = (): string => {

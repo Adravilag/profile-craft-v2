@@ -87,7 +87,11 @@ export function validateRequest(): boolean {
 export function createSecureApiClient(baseURL?: string) {
   const viteApiUrl = import.meta.env?.VITE_API_URL;
   const client = axios.create({
-    baseURL: baseURL || (typeof viteApiUrl === 'string' ? viteApiUrl : 'http://localhost:3000/api'),
+    baseURL:
+      baseURL ||
+      (typeof viteApiUrl === 'string'
+        ? viteApiUrl
+        : 'https://profile-craft-v2-backend.onrender.com/api'),
     timeout: 10000,
     headers: {
       'Content-Type': 'application/json',

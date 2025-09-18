@@ -37,9 +37,10 @@ const secureApiLogger = createSecureLogger('API');
 // If using Vite, use import.meta.env; if using Create React App, ensure @types/node is installed and add a declaration for process.env if needed.
 // Usar solo el dominio/base, sin /api al final
 const apiUrl = import.meta.env?.VITE_API_URL;
+// Preferir la variable de entorno; en producción usar el backend público si no está configurada
 const API_BASE_URL =
   (typeof apiUrl === 'string' ? apiUrl.replace(/\/?api\/?$/, '') : null) ||
-  (import.meta.env.DEV ? '' : 'http://localhost:3000');
+  (import.meta.env.DEV ? '' : 'https://profile-craft-v2-backend.onrender.com');
 debugLog.api('🔧 API Base URL configurada:', API_BASE_URL);
 
 // Validación de seguridad de dominio antes de configurar interceptors

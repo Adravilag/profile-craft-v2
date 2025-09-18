@@ -40,5 +40,5 @@
     }
   },
   "include": ["src", "src/types", "vite.config.ts", "types"],
-  "exclude": ["**/*.stories.ts", "**/*.stories.tsx", "src/utils/testAboutAPI.ts"]
+  "exclude": ["**/*.stories.ts", "**/*.stories.tsx"]
 }

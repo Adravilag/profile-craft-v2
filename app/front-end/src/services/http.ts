@@ -14,7 +14,8 @@ type AxiosInstance = ReturnType<typeof axios.create>;
 function getApiBaseUrl(): string {
   const envUrl = (import.meta.env as any).VITE_API_URL as string | undefined;
   if (import.meta.env.DEV) return envUrl ?? '/api';
-  return envUrl ?? 'http://localhost:3000/api';
+  // En producción usar la URL pública del backend si no se proporciona VITE_API_URL
+  return envUrl ?? 'https://profile-craft-v2-backend.onrender.com/api';
 }
 
 const API_BASE_URL = getApiBaseUrl();

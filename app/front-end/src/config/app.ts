@@ -5,7 +5,7 @@ export const APP_CONFIG = {
   BASE_PATH: '',
 
   // URL de la API
-  API_URL: import.meta.env?.VITE_API_URL || 'http://localhost:3000/api',
+  API_URL: import.meta.env?.VITE_API_URL || 'https://profile-craft-v2-backend.onrender.com/api',
 
   // Configuración de rutas
   ROUTES: {

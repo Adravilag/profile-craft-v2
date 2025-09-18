@@ -34,39 +34,23 @@ export const handlers = [
     logRequest(request);
     return HttpResponse.json(sanitizeArray(experiences));
   }),
-  http.get('http://localhost:3000/api/experiences', ({ request }) => {
-    logRequest(request);
-    console.log('[MSW] 📋 Returning experiences preview data (full URL)');
-    return HttpResponse.json(sanitizeArray(experiences));
-  }),
+  // full URL handlers removed to avoid interfering in non-local environments
 
   http.get('/api/skills', ({ request }) => {
     logRequest(request);
     return HttpResponse.json(skills);
   }),
-  http.get('http://localhost:3000/api/skills', ({ request }) => {
-    logRequest(request);
-    console.log('[MSW] 🛠️ Returning skills preview data (full URL)');
-    return HttpResponse.json(skills);
-  }),
+  // full URL handlers removed to avoid interfering in non-local environments
 
   http.get('/api/certifications', ({ request }) => {
     logRequest(request);
     return HttpResponse.json(certifications);
   }),
-  http.get('http://localhost:3000/api/certifications', ({ request }) => {
-    logRequest(request);
-    console.log('[MSW] 🎓 Returning certifications preview data (full URL)');
-    return HttpResponse.json(certifications);
-  }),
+  // full URL handlers removed to avoid interfering in non-local environments
 
   http.get('/api/testimonials', ({ request }) => {
     logRequest(request);
     return HttpResponse.json(testimonials);
   }),
-  http.get('http://localhost:3000/api/testimonials', ({ request }) => {
-    logRequest(request);
-    console.log('[MSW] 💬 Returning testimonials preview data (full URL)');
-    return HttpResponse.json(testimonials);
-  }),
+  // full URL handlers removed to avoid interfering in non-local environments
 ];
