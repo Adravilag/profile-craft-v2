@@ -1,15 +1,19 @@
 {
-  "version": 2,
-  "installCommand": "npm --prefix app/front-end ci --include=dev",
-  "builds": [
-    {
-      "src": "app/front-end/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "dist"
-      }
-    }
-  ],
+  "buildCommand": "cd app/front-end && pnpm install --frozen-lockfile && pnpm run build",
   "outputDirectory": "app/front-end/dist",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "installCommand": "echo 'skipping root install'",
+  "framework": "vite",
+  "env": {
+    "VITE_API_URL": "https://profile-craft-v2-backend.onrender.com/api",
+    "VITE_BASE_PATH": "",
+    "VITE_CLOUDINARY_CLOUD_NAME": "demo",
+    "NODE_ENV": "production",
+    "SKIP_ENV_VALIDATION": "true"
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
 }
