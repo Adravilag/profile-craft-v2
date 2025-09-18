@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import '@/styles/04-features/skills-colors.css';
 import { normalizeSvgPath } from '@/features/skills/utils/skillUtils';
 
+// When svg/color are not provided we can try to resolve them from the centralized skill settings loader.
+// Use a dynamic import so the loader isn't bundled into every place that renders SkillPill.
+
 interface SkillPillProps {
   slug: string;
-  name?: string;
-  svg?: string; // url or path
-  color?: string;
+  // name, svg and color are resolved internally from the centralized skill settings when needed
   level?: number | null;
   size?: number;
   tooltipPosition?: 'up' | 'down';
@@ -20,9 +21,6 @@ interface SkillPillProps {
 
 const SkillPill: React.FC<SkillPillProps> = ({
   slug,
-  name: displayName,
-  svg,
-  color,
   level,
   size = 18,
   tooltipPosition = 'up',
@@ -33,19 +31,76 @@ const SkillPill: React.FC<SkillPillProps> = ({
   onClose,
   closable = false,
 }) => {
-  const original = displayName ?? slug ?? '';
+  const [resolvedName, setResolvedName] = useState<string>(slug ?? '');
+  const original = resolvedName;
   const tooltipId = `skillpill-tooltip-${slug}-${Math.random().toString(36).slice(2, 8)}`;
   const [showTooltip, setShowTooltip] = useState(false);
 
-  // icon url
-  const [iconUrl, setIconUrl] = useState<string | undefined>(
-    svg ? normalizeSvgPath(svg) : undefined
-  );
-  useEffect(() => {
-    if (svg) setIconUrl(normalizeSvgPath(svg));
-  }, [svg]);
+  // icon url (initially undefined; will be resolved from settings if available)
+  const [iconUrl, setIconUrl] = useState<string | undefined>(undefined);
 
-  const resolvedColor = color;
+  // Try to resolve svg/color from centralized skill settings when not passed as props.
+  useEffect(() => {
+    let mounted = true;
+
+    // If the consumer provided explicit svg/color we would skip; since we no longer accept those
+    // props we always try to resolve from settings but keep existing fallback behaviour.
+
+    const resolveFromSettings = async () => {
+      try {
+        const mod = await import('@/features/skills/utils/skillSettingsLoader');
+        // loader exports default as function and named helpers; try to access default or named
+        const loadSkillSettings: any = (mod && (mod.default || mod.loadSkillSettings)) ?? mod;
+        if (!loadSkillSettings || typeof loadSkillSettings !== 'function') return;
+
+        // Try to get cached first via a helper if available to avoid extra fetch
+        const anyMod = mod as any;
+        const getCached = anyMod.getCachedSkillSettings as (() => any[]) | undefined;
+        let data: any[] | undefined;
+        if (getCached) {
+          data = getCached();
+        }
+        if (!data) {
+          data = await loadSkillSettings();
+        }
+        if (!mounted || !Array.isArray(data)) return;
+
+        // Match by slug or name
+        const entry = data.find(e => {
+          const s = (e.slug || '').toLowerCase();
+          const n = (e.name || '').toLowerCase();
+          const target = (slug || '').toLowerCase();
+          return s === target || n === target;
+        });
+        if (!entry) return;
+
+        if (mounted && entry.svg) {
+          setIconUrl(normalizeSvgPath(String(entry.svg)));
+        }
+        if (mounted && entry.color) {
+          setResolvedColorState(String(entry.color));
+        }
+        if (mounted && entry.name) {
+          setResolvedName(String(entry.name));
+        }
+      } catch (e) {
+        // swallow errors — keep existing fallback behavior
+        // eslint-disable-next-line no-console
+        if (process.env.NODE_ENV === 'development')
+          console.debug('SkillPill: failed to resolve from settings', e);
+      }
+    };
+
+    resolveFromSettings();
+
+    return () => {
+      mounted = false;
+    };
+  }, [slug]);
+
+  // Allow runtime-resolved color from settings via a small local state if needed.
+  const [resolvedColorState, setResolvedColorState] = useState<string | undefined>(undefined);
+  const resolvedColor = resolvedColorState;
   const isActive = forceActive || colored;
 
   const pillStyle: React.CSSProperties | undefined =

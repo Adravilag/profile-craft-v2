@@ -77,7 +77,9 @@ const DEFAULT_TTL = 5 * 60 * 1000; // 5 minutos
 // Ruta pública (servida desde `public/` en el proyecto front-end). Esto evita
 // que el fetch devuelva una página HTML del dev server cuando la ruta no existe.
 // Apuntar al archivo que hemos copiado a `app/front-end/public/skill_settings.json`
-export const SKILL_ICON_SOURCE = '/skill_settings.json';
+import { SKILL_SETTINGS_SOURCE } from './skillSettingsConstants';
+
+export const SKILL_ICON_SOURCE = SKILL_SETTINGS_SOURCE || '/skill_settings.json';
 
 /**
  * Carga las skills desde JSON y construye un mapa normalizado.
@@ -109,13 +111,13 @@ export async function loadSkillIconMap(
           `loadSkillIconMap: fallo cargando JSON desde ${source}: ${err?.message ?? err}`
         );
         try {
-          entries = await loadJson<SkillIconEntry[]>('/skill_settings.json');
+          entries = await loadJson<SkillIconEntry[]>(SKILL_ICON_SOURCE);
           // eslint-disable-next-line no-console
-          console.info('loadSkillIconMap: cargado fallback desde /skill_settings.json');
+          console.info(`loadSkillIconMap: cargado fallback desde ${SKILL_ICON_SOURCE}`);
         } catch (err2: any) {
           // eslint-disable-next-line no-console
           console.warn(
-            `loadSkillIconMap: fallback /skill_settings.json falló: ${err2?.message ?? err2}`
+            `loadSkillIconMap: fallback ${SKILL_ICON_SOURCE} falló: ${err2?.message ?? err2}`
           );
           entries = [];
         }

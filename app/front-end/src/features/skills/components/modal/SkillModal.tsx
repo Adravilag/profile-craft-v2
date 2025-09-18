@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import type { SkillModalProps } from '../../types/skills';
 import type { LogoHubResult } from '../../types/skills';
 import { loadJson } from '@/features/skills/utils/iconLoader';
+import loadSkillSettings from '@/features/skills/utils/skillSettingsLoader';
 import { normalizeSvgPath } from '@/features/skills/utils/skillUtils';
 import { debugLog } from '@/utils/debugConfig';
 import styles from './SkillModal.module.css';
@@ -137,7 +138,7 @@ const SkillModal: React.FC<SkillModalProps> = ({
       if (results.length < 8) {
         try {
           if (!cachedSeed) {
-            const loaded = await loadJson<any[]>('/skill_settings.json');
+            const loaded = await loadSkillSettings();
             cachedSeed = Array.isArray(loaded) ? loaded : [];
           }
         } catch (e) {

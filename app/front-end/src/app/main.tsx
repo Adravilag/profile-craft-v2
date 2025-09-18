@@ -9,6 +9,8 @@ import { setupBaseUrlRedirect } from './setup/baseUrlRedirect';
 import { setupRevealObserver } from './setup/revealObserver';
 import { setupMsw } from './setup/msw';
 import { ensureImageMap } from '@/utils/imageLookup';
+// Preload skill settings to improve UX on components that need suggestions/icons
+// Use dynamic import to avoid increasing the initial bundle size
 
 // Punto de entrada
 const root = document.getElementById('root');
@@ -40,6 +42,20 @@ const main = async () => {
   } catch (error) {
     console.error('❌ Error al iniciar MSW:', error);
   }
+
+  // Preload skill settings in background (non-blocking)
+  void (async () => {
+    try {
+      const mod = await import(
+        /* webpackChunkName: "skill-settings-loader" */ '@/features/skills/utils/skillSettingsLoader'
+      );
+      const anyMod = mod as any;
+      const fn = anyMod.preloadSkillSettings || anyMod.preload || anyMod.default || anyMod;
+      if (typeof fn === 'function') await fn();
+    } catch (e) {
+      /* noop */
+    }
+  })();
 
   renderApp();
 };

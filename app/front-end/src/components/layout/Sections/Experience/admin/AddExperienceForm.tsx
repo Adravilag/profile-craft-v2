@@ -6,6 +6,7 @@ import { experiences as experiencesApi } from '@/services/endpoints';
 import { useNotification } from '@/hooks/useNotification';
 import { useTranslation } from '@/contexts/TranslationContext';
 import SkillPill from '@/components/ui/SkillPill/SkillPill';
+import TechnologyChips from '@/components/ui/TechnologyChips/TechnologyChips';
 import { resolvePillFromTech } from '@/features/skills/utils/pillUtils';
 import CalendarPicker from '@/components/ui/Calendar/CalendarPicker';
 import styles from './AddExperienceForm.module.css';
@@ -69,9 +70,10 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
 
     const loadSuggestions = async () => {
       try {
-        const res = await fetch('/skill_settings.json');
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
+        const { default: loadSkillSettings } = await import(
+          '@/features/skills/utils/skillSettingsLoader'
+        );
+        const data = await loadSkillSettings();
         if (!mounted) return;
         if (Array.isArray(data)) {
           // Mapear a SkillItem y eliminar duplicados por nombre
@@ -848,23 +850,13 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
 
               {selectedTechnologies.length > 0 && (
                 <div className={styles.technologyChips}>
-                  {selectedTechnologies.map((tech, index) => {
-                    const pill = resolvePillFromTech(tech, technologySuggestions, index);
-
-                    return (
-                      <SkillPill
-                        key={pill.slug || index}
-                        slug={pill.slug}
-                        svg={pill.svg}
-                        name={pill.name}
-                        colored={true}
-                        closable={true}
-                        onClose={handleTechnologyRemoveBySlug}
-                        className={styles.skillChip}
-                        color={pill.color}
-                      />
-                    );
-                  })}
+                  <TechnologyChips
+                    items={selectedTechnologies.map(s => ({ slug: s.slug, name: s.name }))}
+                    onRemove={(slug: string) => handleTechnologyRemoveBySlug(slug)}
+                    colored={true}
+                    closable={true}
+                    itemClassName={styles.skillChip}
+                  />
                 </div>
               )}
 

@@ -9,6 +9,7 @@ import { useTranslation } from '@/contexts/TranslationContext';
 import type { ProjectFormProps } from './types/ProjectFormTypes';
 import SkillPill from '@/components/ui/SkillPill/SkillPill';
 import { resolvePillFromTech } from '@/features/skills/utils/pillUtils';
+import TechnologyChips from '@/components/ui/TechnologyChips/TechnologyChips';
 
 /**
  * ProjectForm - A comprehensive form component for creating and editing projects
@@ -167,9 +168,10 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
       let mounted = true;
       const loadSuggestions = async () => {
         try {
-          const res = await fetch('/skill_settings.json');
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          const data = await res.json();
+          const { default: loadSkillSettings } = await import(
+            '@/features/skills/utils/skillSettingsLoader'
+          );
+          const data = await loadSkillSettings();
           if (!mounted) return;
           if (Array.isArray(data)) {
             const items: SuggestionItem[] = data
@@ -527,22 +529,23 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                           role="list"
                           aria-label="Tecnologías seleccionadas"
                         >
-                          {form.technologies.map((tech, index) => {
-                            const pill = resolvePillFromTech(tech, technologySuggestions, index);
-                            return (
-                              <SkillPill
-                                key={pill.slug || index}
-                                slug={pill.slug}
-                                svg={pill.svg}
-                                name={pill.name}
-                                colored={true}
-                                closable={true}
-                                onClose={() => handleRemoveTechnology(index)}
-                                className={styles.skillChip}
-                                color={pill.color}
-                              />
-                            );
-                          })}
+                          <TechnologyChips
+                            items={form.technologies.map((tech: any, index: number) => {
+                              const pill = resolvePillFromTech(tech, technologySuggestions, index);
+                              return { slug: pill.slug, name: pill.name };
+                            })}
+                            onRemove={(slug: string) => {
+                              // find index by slug and remove
+                              const idx = form.technologies.findIndex((t: string) => {
+                                const p = resolvePillFromTech(t, technologySuggestions, 0);
+                                return p.slug === slug || p.name === slug;
+                              });
+                              if (idx >= 0) handleRemoveTechnology(idx);
+                            }}
+                            colored={true}
+                            closable={true}
+                            itemClassName={styles.skillChip}
+                          />
                         </div>
                       )}
                     </div>
