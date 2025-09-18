@@ -415,5 +415,34 @@
     "category": "library",
     "color": "#0769AD",
     "svg": "jquery.svg"
+  },
+  {
+    "name": "Redux",
+    "slug": "redux",
+    "category": "library",
+    "color": "#764ABC",
+    "svg": "redux.svg"
+  },
+  {
+    "name": "Wordpress",
+    "slug": "wordpress",
+    "category": "platform",
+    "color": "#21759B",
+    "svg": "wordpress.svg"
+  },
+  {
+    "name": "Microsoft SQL Server",
+    "slug": "microsoft-sql-server",
+    "category": "database",
+    "color": "#CC2927",
+    "svg": "sql-server.svg",
+    "aliases": ["mssql", "sqlserver", "sql server"]
+  },
+  {
+    "name": "Oracle",
+    "slug": "oracle",
+    "category": "database",
+    "color": "#F80000",
+    "svg": "oracle.svg"
   }
 ]

@@ -44,10 +44,7 @@ export interface ExternalSkillData {
 export interface SkillFormData {
   name: string;
   category: string;
-  // icon_class removed - prefer svg_path or leave blank; keep compatibility with older code via any casts
   svg_path?: string;
-  /** @deprecated legacy; kept for tests and older code paths */
-  icon_class?: string;
   level: number;
   featured?: boolean;
 }

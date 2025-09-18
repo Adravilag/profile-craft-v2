@@ -21,6 +21,7 @@ interface UseChronologicalItemReturn {
   positionClass: string;
   animationDelay: string;
   timelineDate: string;
+  isPresent: boolean;
   typeIcon: string;
   triggerAnimation: () => void;
   handleEdit: () => void;
@@ -79,10 +80,32 @@ export const useChronologicalItem = (
   // Fecha para el timeline
   const timelineDate = useMemo(() => {
     // Extraer el año de la fecha de fin, o de inicio si no hay fecha de fin
-    const dateStr = item.end_date || item.start_date;
-    const year = new Date(dateStr).getFullYear();
+    const dateStr = item.end_date || item.start_date || '';
+    // Validar cadena antes de construir Date
+    const parsed = Date.parse(dateStr);
+    if (isNaN(parsed)) {
+      // Si no se puede parsear, devolver cadena vacía para evitar mostrar el año actual por defecto
+      return '';
+    }
+    const year = new Date(parsed).getFullYear();
     return year.toString();
   }, [item.start_date, item.end_date]);
+
+  // Determinar si el item representa una experiencia actual/presente
+  const isPresent = useMemo(() => {
+    // Si existe la bandera explícita en el backend (ej. is_current)
+    const anyItem = item as any;
+    if (anyItem && anyItem.is_current === true) return true;
+
+    // Si end_date contiene una palabra que indica presente
+    const end = (item.end_date || '').trim();
+    if (!end) return false;
+
+    // Detectar palabras como 'presente', 'actual', 'ahora', 'now'
+    if (/^(presente|actualmente|actual|ahora|now)$/i.test(end)) return true;
+
+    return false;
+  }, [item.end_date, item]);
 
   // Icono según el tipo de item
   const typeIcon = useMemo(() => {
@@ -96,6 +119,7 @@ export const useChronologicalItem = (
     positionClass,
     animationDelay,
     timelineDate,
+    isPresent,
     typeIcon,
     triggerAnimation,
     handleEdit,

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { formatDateRange, calculateDuration } from '@/utils/dateUtils';
 import SkillPill from '@/components/ui/SkillPill/SkillPill';
-import { resolvePillFromTech } from '@/features/skills/utils/pillUtils';
+// resolvePillFromTech removed: use skill suggestions from hook and a local resolver below
 import { useSkillSuggestions } from '@/features/skills/hooks/useSkillSuggestions';
 import { findImageForName } from '@/utils/imageLookup';
 import cardStyles from './ChronologicalCard.module.css';
@@ -43,6 +43,68 @@ const ChronologicalCard: React.FC<ChronologicalCardProps> = ({
 
   // Suggestions loaded from public/skill_settings.json to allow resolving svg/color
   const technologySuggestions = useSkillSuggestions();
+
+  // Local resolver: given a technology item (string or object) try to find a matching
+  // suggestion from `technologySuggestions`. Fallback to sensible defaults.
+  const slugify = (s?: string) =>
+    (s || '')
+      .toString()
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/\p{Diacritic}/gu, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+  const resolvePill = (tech: any, suggestions: any[], index?: number) => {
+    // tech can be a string like 'react' or an object with fields
+    if (!tech && tech !== 0) {
+      return { slug: `unknown-${index ?? '0'}`, name: 'Unknown' } as any;
+    }
+
+    if (typeof tech === 'string') {
+      const slug = slugify(tech);
+      const match = suggestions.find(
+        (s: any) =>
+          (s.slug && s.slug.toLowerCase() === slug) ||
+          (s.name && s.name.toLowerCase() === tech.toLowerCase())
+      );
+      if (match) {
+        return {
+          slug: match.slug ?? slug,
+          svg: match.svg,
+          name: match.name ?? tech,
+          color: match.color,
+        };
+      }
+
+      return { slug, name: tech };
+    }
+
+    // tech is object-like
+    const techSlug = (tech && (tech.slug || (tech.name && slugify(tech.name)))) || undefined;
+    const techName = tech && (tech.name || tech.label || String(tech));
+
+    const match = suggestions.find(
+      (s: any) =>
+        (techSlug && s.slug === techSlug) ||
+        (techName && s.name?.toLowerCase() === String(techName).toLowerCase())
+    );
+    if (match) {
+      return {
+        slug: match.slug ?? techSlug ?? `tech-${index ?? 0}`,
+        svg: tech.svg ?? match.svg,
+        name: techName ?? match.name,
+        color: tech.color ?? match.color,
+      };
+    }
+
+    return {
+      slug: techSlug ?? `tech-${index ?? 0}`,
+      svg: tech.svg,
+      name: techName ?? String(tech),
+      color: tech.color,
+    };
+  };
 
   const styles = context === 'chronological' ? chronologicalStyles : cardStyles;
 
@@ -142,7 +204,7 @@ const ChronologicalCard: React.FC<ChronologicalCardProps> = ({
             </div>
             <div className={styles.skillsTags}>
               {item.technologies.map((tech: string, idx: number) => {
-                const pill = resolvePillFromTech(tech, technologySuggestions, idx);
+                const pill = resolvePill(tech, technologySuggestions, idx);
                 return (
                   <SkillPill
                     key={pill.slug || idx}

@@ -104,6 +104,31 @@ export function convertSpanishDateToISO(spanish: string) {
     return `${yyyy}-${mm}-${dd}`;
   }
 
+  // Match 'mes de yyyy' or 'mes yyyy' in Spanish (e.g. 'junio de 2024' or 'junio 2024')
+  const months = {
+    enero: '01',
+    febrero: '02',
+    marzo: '03',
+    abril: '04',
+    mayo: '05',
+    junio: '06',
+    julio: '07',
+    agosto: '08',
+    septiembre: '09',
+    octubre: '10',
+    noviembre: '11',
+    diciembre: '12',
+  } as Record<string, string>;
+
+  const mmMatch = s.match(/^([A-Za-zÀ-ÿ]+)\s+(?:de\s+)?(\d{4})$/i);
+  if (mmMatch) {
+    const [, monthName, yyyy] = mmMatch;
+    const key = monthName.toLowerCase();
+    if (months[key]) {
+      return `${yyyy}-${months[key]}-01`;
+    }
+  }
+
   // Fallback: try Date parse and return ISO date if valid
   try {
     const d = new Date(s);

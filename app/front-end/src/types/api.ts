@@ -71,8 +71,6 @@ export interface Project {
 
   // Lightweight fields used by Profile hero / skills
   category?: string;
-  /** @deprecated legacy: prefer svg_path / skill icons from assets; kept for compatibility */
-  icon_class?: string;
   featured?: boolean;
   level?: number;
   years_experience?: number;

@@ -259,26 +259,36 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
         if (value.trim().length < 2) return t.forms.validation.minLength;
         if (!/[\p{L}]/u.test(value)) return t.forms.validation.companyMustContainLetters;
         break;
-      case 'start_date':
+      case 'start_date': {
         if (!value) return t.forms.validation.startDateRequired;
-        // Accept both DD-MM-YYYY and YYYY-MM (month picker)
-        if (!/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/.test(value) && !/^\d{4}-\d{2}$/.test(value))
+
+        const ddmmyyyy = /^([0-3]\d)[-\/]?(0[1-9]|1[0-2])[-\/]?(\d{4})$/;
+        const yyyyMm = /^\d{4}-\d{2}$/;
+        const spanishMonth =
+          /^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)(\s+de)?\s+\d{4}$/i;
+
+        if (!ddmmyyyy.test(value) && !yyyyMm.test(value) && !spanishMonth.test(value)) {
           return t.forms.validation.invalidDateFormat;
+        }
         break;
-      case 'end_date':
+      }
+      case 'end_date': {
+        // If the experience is marked as current, end_date may be empty
         if (!value && !formData.is_current) return t.forms.validation.endDateRequired;
-        if (
-          value &&
-          !/^(\d{2})[-\/](\d{2})[-\/](\d{4})$/.test(value) &&
-          !/^\d{4}-\d{2}$/.test(value)
-        )
-          return t.forms.validation.invalidDateFormat;
+
+        if (value) {
+          const ddmmyyyy = /^([0-3]\d)[-\/]?(0[1-9]|1[0-2])[-\/]?(\d{4})$/;
+          const yyyyMm = /^\d{4}-\d{2}$/;
+          const spanishMonth =
+            /^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)(\s+de)?\s+\d{4}$/i;
+
+          if (!ddmmyyyy.test(value) && !yyyyMm.test(value) && !spanishMonth.test(value)) {
+            return t.forms.validation.invalidDateFormat;
+          }
+        }
+
         break;
-      case 'description':
-        if (!value.trim()) return 'La descripción es obligatoria';
-        if (value.trim().length < 20) return 'La descripción debe tener al menos 20 caracteres';
-        if (value.length > 500) return t.forms.validation.descriptionMaxLength;
-        break;
+      }
     }
     return null;
   };
@@ -664,14 +674,37 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
                 </label>
                 <CalendarPicker
                   initial={formData.start_date ? new Date(formData.start_date) : null}
-                  onSelect={ym => handleFieldChange('start_date', ym ? String(ym) : '')}
+                  onSelect={(ym: any) => {
+                    let val = '';
+                    if (!ym) val = '';
+                    else if (ym instanceof Date) {
+                      const y = ym.getFullYear();
+                      const m = String(ym.getMonth() + 1).padStart(2, '0');
+                      val = `${y}-${m}`;
+                    } else if (typeof ym === 'string') val = ym;
+                    handleFieldChange('start_date', val);
+                  }}
+                  ariaDescribedBy={validationErrors.start_date ? 'start_date_error' : undefined}
+                  ariaInvalid={!!validationErrors.start_date}
+                  onFocus={() => setTouchedFields(prev => ({ ...prev, start_date: true }))}
+                  onBlur={() => {
+                    const err = validateField('start_date', formData.start_date);
+                    setValidationErrors(prev => {
+                      const next = { ...prev };
+                      if (err) next.start_date = err;
+                      else delete next.start_date;
+                      return next;
+                    });
+                  }}
                   placeholder="DD-MM-YYYY"
                   className={styles.input}
                   id="start_date"
                   name="start_date"
                 />
                 {touchedFields.start_date && validationErrors.start_date && (
-                  <div className={styles.errorText}>{validationErrors.start_date}</div>
+                  <div id="start_date_error" className={styles.errorText}>
+                    {validationErrors.start_date}
+                  </div>
                 )}
               </div>
 
@@ -682,7 +715,28 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
                 </label>
                 <CalendarPicker
                   initial={formData.end_date ? new Date(formData.end_date) : null}
-                  onSelect={ym => handleFieldChange('end_date', ym ? String(ym) : '')}
+                  onSelect={(ym: any) => {
+                    let val = '';
+                    if (!ym) val = '';
+                    else if (ym instanceof Date) {
+                      const y = ym.getFullYear();
+                      const m = String(ym.getMonth() + 1).padStart(2, '0');
+                      val = `${y}-${m}`;
+                    } else if (typeof ym === 'string') val = ym;
+                    handleFieldChange('end_date', val);
+                  }}
+                  ariaDescribedBy={validationErrors.end_date ? 'end_date_error' : undefined}
+                  ariaInvalid={!!validationErrors.end_date}
+                  onFocus={() => setTouchedFields(prev => ({ ...prev, end_date: true }))}
+                  onBlur={() => {
+                    const err = validateField('end_date', formData.end_date);
+                    setValidationErrors(prev => {
+                      const next = { ...prev };
+                      if (err) next.end_date = err;
+                      else delete next.end_date;
+                      return next;
+                    });
+                  }}
                   disabled={formData.is_current}
                   placeholder="DD-MM-YYYY"
                   className={styles.input}
@@ -690,7 +744,9 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
                   name="end_date"
                 />
                 {touchedFields.end_date && validationErrors.end_date && (
-                  <div className={styles.errorText}>{validationErrors.end_date}</div>
+                  <div id="end_date_error" className={styles.errorText}>
+                    {validationErrors.end_date}
+                  </div>
                 )}
               </div>
             </div>

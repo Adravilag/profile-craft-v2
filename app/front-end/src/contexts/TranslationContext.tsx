@@ -839,7 +839,7 @@ const esTranslations: Translations = {
       mustContainLetters: 'debe contener letras',
       startDateRequired: 'La fecha de inicio es obligatoria',
       endDateRequired: 'La fecha de fin es obligatoria',
-      invalidDateFormat: 'Formato de fecha inválido (DD-MM-YYYY)',
+      invalidDateFormat: 'Formato de fecha inválido (MM-YYYY)',
       descriptionMaxLength: 'La descripción no puede exceder 500 caracteres',
       technologiesRequired: 'Agrega al menos una tecnología o herramienta',
       endDateMustBeAfterStart: 'La fecha de fin debe ser posterior a la de inicio',

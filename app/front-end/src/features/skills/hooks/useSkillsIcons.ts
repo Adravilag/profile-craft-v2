@@ -117,23 +117,25 @@ export const useSkillsIcons = () => {
           let hasChanges = false;
           const updatedSkills = prevSkills.map(skill => {
             const currentSvg = (skill as any).svg_path || '';
-            const currentLegacy = (skill as any).icon_class || '';
-            if (
-              !currentSvg ||
-              String(currentSvg).trim() === '' ||
-              !currentLegacy ||
-              String(currentLegacy).trim() === '' ||
-              String(currentLegacy).includes('fa-') ||
-              String(currentLegacy).includes('fas ') ||
-              String(currentLegacy).includes('fab ')
-            ) {
-              const bestIconSvg = getSkillSvg(skill.name, currentLegacy, skillsIcons);
+
+            // If we already have a valid svg_path, keep it. We no longer rely on
+            // the legacy `icon_class` field to decide enrichment.
+            if (currentSvg && String(currentSvg).trim() !== '') {
+              return skill;
+            }
+
+            // Find the best svg for this skill using available name/slug and the
+            // loaded `skillsIcons` map. getSkillSvg remains responsible for
+            // searching by name/slug or falling back to a default SVG.
+            const bestIconSvg = getSkillSvg(skill.name, undefined, skillsIcons);
+            if (bestIconSvg && String(bestIconSvg).trim() !== '') {
               debugLog.dataLoading(
                 `[SkillsIcons] Actualizando icono para: ${skill.name} - Nuevo: ${bestIconSvg}`
               );
               hasChanges = true;
               return { ...skill, svg_path: bestIconSvg } as any;
             }
+
             return skill;
           });
 

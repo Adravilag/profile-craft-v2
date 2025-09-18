@@ -11,6 +11,11 @@ interface PickerProps {
   name?: string;
   className?: string;
   disabled?: boolean;
+  // Accessibility and focus handlers
+  ariaDescribedBy?: string;
+  ariaInvalid?: boolean;
+  onFocus?: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
 const CalendarPicker: React.FC<PickerProps> = ({
@@ -21,6 +26,10 @@ const CalendarPicker: React.FC<PickerProps> = ({
   name,
   className,
   disabled = false,
+  ariaDescribedBy,
+  ariaInvalid,
+  onFocus,
+  onBlur,
 }) => {
   // internal value stored as 'YYYY-MM' string or empty
   const [monthValue, setMonthValue] = useState<string | ''>(() => {
@@ -61,6 +70,10 @@ const CalendarPicker: React.FC<PickerProps> = ({
           setMonthValue(newVal);
           onSelect && onSelect(newVal || null);
         }}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        aria-describedby={ariaDescribedBy}
+        aria-invalid={ariaInvalid}
         placeholder={placeholder}
         className={className || styles.pickerInput}
         aria-label="month"

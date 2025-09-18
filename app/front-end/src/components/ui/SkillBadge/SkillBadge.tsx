@@ -306,7 +306,7 @@ const SkillBadge: React.FC<SkillBadgeProps> = ({
         />
       );
     }
-    return <i className={(skill as any)?.icon_class || 'fas fa-code'} aria-hidden="true" />;
+    return <i className={'fas fa-code'} aria-hidden="true" />;
   };
 
   const isActive = forceActive || colored;

@@ -115,34 +115,61 @@ const ModalShell: FC<ModalShellProps> = ({
     // Validar período
     const startValid = (() => {
       const s = (formData.start_date || '').toString().trim();
-      const isValidFormat = /^(\d{2})[-\/](\d{2})[-\/](\d{4})$/.test(s);
-      if (!isValidFormat) return false;
+      if (!s) return false;
 
-      const [d, m, y] = s.split(/[-\/]/).map(Number);
-      const date = new Date(y, m - 1, d);
-      return (
-        date.getFullYear() === y &&
-        date.getMonth() === m - 1 &&
-        date.getDate() === d &&
-        !validationErrors.start_date
-      );
+      // Accept DD-MM-YYYY, YYYY-MM, MM-YYYY, or Spanish month names (e.g. "junio 2024" or "junio de 2024")
+      const ddmmyyyy = /^([0-3]\d)[-\/]?(0[1-9]|1[0-2])[-\/]?(\d{4})$/;
+      const yyyyMm = /^\d{4}-\d{2}$/;
+      const mmYyyy = /^(0[1-9]|1[0-2])[\/-]\d{4}$/;
+      const spanishMonth =
+        /^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)(\s+de)?\s+\d{4}$/i;
+
+      if (ddmmyyyy.test(s)) {
+        const [d, m, y] = s.split(/[-\/]/).map(Number);
+        const date = new Date(y, m - 1, d);
+        return (
+          date.getFullYear() === y &&
+          date.getMonth() === m - 1 &&
+          date.getDate() === d &&
+          !validationErrors.start_date
+        );
+      }
+
+      if (yyyyMm.test(s) || mmYyyy.test(s) || spanishMonth.test(s)) {
+        // month-year formats are considered valid if no explicit validation error
+        return !validationErrors.start_date;
+      }
+
+      return false;
     })();
 
     const endValid = (() => {
       if (formData.is_current) return true;
       const e = (formData.end_date || '').toString().trim();
       if (!e) return false;
-      const isValidFormat = /^(\d{2})[-\/](\d{2})[-\/](\d{4})$/.test(e);
-      if (!isValidFormat) return false;
 
-      const [d, m, y] = e.split(/[-\/]/).map(Number);
-      const date = new Date(y, m - 1, d);
-      return (
-        date.getFullYear() === y &&
-        date.getMonth() === m - 1 &&
-        date.getDate() === d &&
-        !validationErrors.end_date
-      );
+      const ddmmyyyy = /^([0-3]\d)[-\/]?(0[1-9]|1[0-2])[-\/]?(\d{4})$/;
+      const yyyyMm = /^\d{4}-\d{2}$/;
+      const mmYyyy = /^(0[1-9]|1[0-2])[\/-]\d{4}$/;
+      const spanishMonth =
+        /^(enero|febrero|marzo|abril|mayo|junio|julio|agosto|septiembre|octubre|noviembre|diciembre)(\s+de)?\s+\d{4}$/i;
+
+      if (ddmmyyyy.test(e)) {
+        const [d, m, y] = e.split(/[-\/]/).map(Number);
+        const date = new Date(y, m - 1, d);
+        return (
+          date.getFullYear() === y &&
+          date.getMonth() === m - 1 &&
+          date.getDate() === d &&
+          !validationErrors.end_date
+        );
+      }
+
+      if (yyyyMm.test(e) || mmYyyy.test(e) || spanishMonth.test(e)) {
+        return !validationErrors.end_date;
+      }
+
+      return false;
     })();
 
     stepCompletion.period = startValid && endValid;
@@ -369,6 +396,16 @@ const ModalShell: FC<ModalShellProps> = ({
                               (formRef.current as HTMLFormElement).requestSubmit();
                               return;
                             }
+                            // Fallback: intentar usar submit() si requestSubmit no existe
+                            if (
+                              formRef &&
+                              'current' in formRef &&
+                              formRef.current &&
+                              typeof (formRef.current as HTMLFormElement).submit === 'function'
+                            ) {
+                              (formRef.current as HTMLFormElement).submit();
+                              return;
+                            }
                           } catch (err) {
                             /* noop */
                           }
@@ -379,6 +416,11 @@ const ModalShell: FC<ModalShellProps> = ({
                               const f = document.getElementById(b.formId) as HTMLFormElement | null;
                               if (f && typeof f.requestSubmit === 'function') {
                                 f.requestSubmit();
+                                return;
+                              }
+                              // Fallback to submit()
+                              if (f && typeof f.submit === 'function') {
+                                f.submit();
                                 return;
                               }
                             } catch (err) {
@@ -393,6 +435,11 @@ const ModalShell: FC<ModalShellProps> = ({
                             ) as HTMLFormElement | null;
                             if (maybeForm && typeof maybeForm.requestSubmit === 'function') {
                               maybeForm.requestSubmit();
+                              return;
+                            }
+                            // Fallback: call submit() if requestSubmit not available
+                            if (maybeForm && typeof maybeForm.submit === 'function') {
+                              maybeForm.submit();
                               return;
                             }
                           } catch (err) {

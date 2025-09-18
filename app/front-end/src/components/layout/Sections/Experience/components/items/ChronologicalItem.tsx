@@ -54,6 +54,7 @@ const ChronologicalItem: React.FC<ChronologicalItemProps> = ({
     positionClass,
     animationDelay: hookAnimationDelay,
     timelineDate,
+    isPresent,
     typeIcon,
     handleEdit,
   } = useChronologicalItem(item, index, position, onEdit);
@@ -68,7 +69,7 @@ const ChronologicalItem: React.FC<ChronologicalItemProps> = ({
           <i className={typeIcon} />
         </div>
         <div className={styles.chronologicalYearExternal}>
-          {timelineDate === new Date().getFullYear().toString() ? t.time.present : timelineDate}
+          {isPresent ? t.time.present : timelineDate || ''}
         </div>
       </div>
       <div className={styles.cardWrapper}>

@@ -33,22 +33,6 @@ const SkillPill: React.FC<SkillPillProps> = ({
   onClose,
   closable = false,
 }) => {
-  if (import.meta.env && import.meta.env.DEV) {
-    // eslint-disable-next-line no-console
-    console.log('SkillPill rendered:', {
-      slug,
-      displayName,
-      svg,
-      color,
-      level,
-      size,
-      className,
-      forceActive,
-      colored,
-      closable,
-    });
-  }
-
   const original = displayName ?? slug ?? '';
   const tooltipId = `skillpill-tooltip-${slug}-${Math.random().toString(36).slice(2, 8)}`;
   const [showTooltip, setShowTooltip] = useState(false);
