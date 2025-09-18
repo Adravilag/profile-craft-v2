@@ -106,19 +106,18 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 30%; /* reduced to 26% so the thumbnail and content stand out more */
+  width: 60%; /* ancho lateral por defecto */
   height: 100%;
+  opacity: 0.4;
   background-image: var(--project-bg-image);
   background-position: left center;
-  /* slightly reduce image scale so it doesn't dominate */
-  background-size: 120% auto;
+  background-size: 100% auto;
   background-repeat: no-repeat;
   z-index: 0;
   pointer-events: none;
   transition:
     transform 0.4s ease,
     opacity 0.4s ease;
-  /* fade the image itself towards the right */
   -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 70%);
   mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 70%);
 }

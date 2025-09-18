@@ -132,6 +132,7 @@ export interface Certification {
   user_id?: number | string;
   title: string;
   issuer: string;
+  technologies?: string[];
   date: string;
   credential_id?: string;
   image_url?: string;

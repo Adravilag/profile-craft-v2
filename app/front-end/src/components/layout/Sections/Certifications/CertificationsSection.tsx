@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { certifications as certificationsApi } from '@/services/endpoints';
 import type { Certification as APICertification } from '@/types/api';
 import BlurImage from '@/components/utils/BlurImage';
+import TechnologyChips from '@/components/ui/TechnologyChips/TechnologyChips';
 const { getCertifications, createCertification, updateCertification, deleteCertification } =
   certificationsApi;
 import { useNotification } from '@/hooks/useNotification';
@@ -18,6 +19,7 @@ interface Certification {
   id: number | string;
   title: string;
   issuer: string;
+  technologies?: string[];
   date: string;
   credentialId?: string;
   image: string;
@@ -59,6 +61,7 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
           id: cert._id || cert.id || '',
           title: cert.title,
           issuer: cert.issuer,
+          technologies: Array.isArray((cert as any).technologies) ? (cert as any).technologies : [],
           date: cert.date,
           credentialId: cert.credential_id,
           // Prefer explicit image_url, fallback to issuer logo (if known), then to a generic placeholder
@@ -226,6 +229,16 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                         </a>
                       </div>
                     </div>
+                    {/* Mostrar tecnologías asociadas (si existen) */}
+                    {Array.isArray(cert.technologies) && cert.technologies.length > 0 && (
+                      <div style={{ marginTop: 12 }}>
+                        <TechnologyChips
+                          items={cert.technologies.map(s => ({ slug: s, name: s }))}
+                          colored={true}
+                          closable={false}
+                        />
+                      </div>
+                    )}
                     <div className={styles.certActions}>
                       {/* Botones de administración */}
                       {isAdminMode && (
@@ -290,6 +303,7 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                 id: String(editingCert.id || ''),
                 title: editingCert.title || '',
                 issuer: editingCert.issuer || '',
+                technologies: editingCert.technologies || [],
                 date: editingCert.date || '',
                 credential_id: editingCert.credentialId || '',
                 image_url: editingCert.image || '',

@@ -7,6 +7,10 @@ import { normalizeSvgPath } from '@/features/skills/utils/skillUtils';
 
 interface SkillPillProps {
   slug: string;
+  // backward-compatible optional props: if consumers still pass these we should honor them
+  svg?: string;
+  color?: string;
+  name?: string;
   // name, svg and color are resolved internally from the centralized skill settings when needed
   level?: number | null;
   size?: number;
@@ -21,6 +25,9 @@ interface SkillPillProps {
 
 const SkillPill: React.FC<SkillPillProps> = ({
   slug,
+  svg: propSvg,
+  color: propColor,
+  name: propName,
   level,
   size = 18,
   tooltipPosition = 'up',
@@ -31,20 +38,29 @@ const SkillPill: React.FC<SkillPillProps> = ({
   onClose,
   closable = false,
 }) => {
-  const [resolvedName, setResolvedName] = useState<string>(slug ?? '');
+  const [resolvedName, setResolvedName] = useState<string>(propName ?? slug ?? '');
   const original = resolvedName;
+  const slugNormalized = (slug || resolvedName || '').toString().toLowerCase();
   const tooltipId = `skillpill-tooltip-${slug}-${Math.random().toString(36).slice(2, 8)}`;
   const [showTooltip, setShowTooltip] = useState(false);
 
   // icon url (initially undefined; will be resolved from settings if available)
-  const [iconUrl, setIconUrl] = useState<string | undefined>(undefined);
+  const [iconUrl, setIconUrl] = useState<string | undefined>(
+    propSvg ? normalizeSvgPath(String(propSvg)) : undefined
+  );
 
   // Try to resolve svg/color from centralized skill settings when not passed as props.
   useEffect(() => {
     let mounted = true;
 
-    // If the consumer provided explicit svg/color we would skip; since we no longer accept those
-    // props we always try to resolve from settings but keep existing fallback behaviour.
+    // If the consumer provided explicit svg/color/name via props, respect them and skip resolving
+    // from the centralized settings to avoid extra fetches.
+    if (propSvg || propColor || propName) {
+      if (propSvg) setIconUrl(normalizeSvgPath(String(propSvg)));
+      if (propColor) setResolvedColorState(String(propColor));
+      if (propName) setResolvedName(String(propName));
+      return;
+    }
 
     const resolveFromSettings = async () => {
       try {
@@ -183,7 +199,7 @@ const SkillPill: React.FC<SkillPillProps> = ({
       className={`stackIcon ${className ?? ''} ${isActive ? 'stackIcon--active' : ''}`.trim()}
       data-tooltip-id={tooltipId}
       aria-describedby={compact ? tooltipId : undefined}
-      data-tech={original}
+      data-tech={slugNormalized}
       role="button"
       tabIndex={0}
       style={containerStyle}

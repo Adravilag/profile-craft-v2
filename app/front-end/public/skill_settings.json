@@ -444,5 +444,20 @@
     "category": "database",
     "color": "#F80000",
     "svg": "oracle.svg"
+  },
+  {
+    "name": "Claude",
+    "slug": "claude",
+    "category": "ai",
+    "color": "#000000",
+    "svg": "claude.svg"
+  },
+  {
+    "name": "MCP",
+    "slug": "mcp",
+    "category": "certification",
+    "color": "#107C10",
+    "svg": "mcp.svg",
+    "aliases": ["mcp"]
   }
 ]

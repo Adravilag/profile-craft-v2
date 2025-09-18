@@ -17,6 +17,9 @@ import {
 import { SectionsLoadingProvider } from '@/contexts/SectionsLoadingContext';
 import ReactMarkdown from 'react-markdown';
 import styles from './ProjectPage.module.css';
+import TechnologyChips from '@/components/ui/TechnologyChips/TechnologyChips';
+import { useSkillSuggestions } from '@/features/skills/hooks/useSkillSuggestions';
+import { resolvePillFromTech } from '@/features/skills/utils/pillUtils';
 
 // Función utilitaria para detectar si el contenido es HTML o Markdown
 const isHtmlContent = (content: string): boolean => {
@@ -56,6 +59,7 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [readingTime, setReadingTime] = useState<number>(0);
+  const suggestions = useSkillSuggestions();
 
   // Establecer la sección activa como 'projects' cuando se carga la página
   useEffect(() => {
@@ -334,11 +338,17 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
                 <h2 className={styles.wordpressTechTitle}>Tecnologías Utilizadas</h2>
               </div>
               <div className={styles.wordpressTechList}>
-                {project.technologies.map((tech, idx) => (
-                  <span key={idx} className={styles.wordpressTechChip}>
-                    {tech}
-                  </span>
-                ))}
+                {/* Renderizar chips con iconos/colores resueltos desde skill_settings */}
+                <TechnologyChips
+                  items={project.technologies.map((tech: string, idx: number) => {
+                    const pill = resolvePillFromTech(tech, suggestions, idx);
+                    return { slug: pill.slug, name: pill.name };
+                  })}
+                  colored
+                  closable={false}
+                  containerClassName={styles.wordpressTechList}
+                  itemClassName={styles.wordpressTechChip}
+                />
               </div>
             </div>
           )}
@@ -535,11 +545,16 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
                       Tecnologías utilizadas
                     </h3>
                     <div className={styles.wordpressTechList}>
-                      {project.technologies.map((tech, idx) => (
-                        <span key={idx} className={styles.wordpressTechChip}>
-                          {tech}
-                        </span>
-                      ))}
+                      <TechnologyChips
+                        items={project.technologies.map((tech: string, idx: number) => {
+                          const pill = resolvePillFromTech(tech, suggestions, idx);
+                          return { slug: pill.slug, name: pill.name };
+                        })}
+                        colored
+                        closable={false}
+                        containerClassName={styles.wordpressTechList}
+                        itemClassName={styles.wordpressTechChip}
+                      />
                     </div>
                   </div>
                 )}

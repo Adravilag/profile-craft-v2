@@ -765,6 +765,58 @@
   align-items: center;
 }
 
+/* Label que aparece a la derecha del icono hamburguesa en móvil */
+.mobileSectionLabel {
+  display: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--md-sys-color-on-surface);
+  margin-left: 0.25rem;
+}
+
+@media (max-width: 768px) {
+  .mobileSectionLabel {
+    display: inline-block;
+  }
+}
+
+/* Mobile header row layout: left side (hamburger), center (label), right placeholder */
+.mobileHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+}
+
+.mobileSide {
+  display: flex;
+  align-items: center;
+  min-width: 44px; /* reserve space for hamburger */
+}
+
+.mobileCenter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+}
+
+.mobileSidePlaceholder {
+  min-width: 44px;
+  height: 1px;
+}
+
+@media (min-width: 769px) {
+  .mobileHeaderRow,
+  .mobileSide,
+  .mobileCenter,
+  .mobileSidePlaceholder {
+    display: none !important;
+  }
+}
+
 /* ===== DARK MODE STYLES ===== */
 [data-theme='dark'] .scrollProgressContainer {
   background: rgba(0, 0, 0, 0.3);

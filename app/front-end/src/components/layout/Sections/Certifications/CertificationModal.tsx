@@ -10,6 +10,7 @@ import {
 } from '@/features/certifications';
 import type { Certification } from '@/types/api';
 import styles from './CertificationModal.module.css';
+import TechnologyChips from '@/components/ui/TechnologyChips/TechnologyChips';
 
 interface CertificationModalProps {
   isOpen: boolean;
@@ -95,6 +96,8 @@ const CertificationModal: React.FC<CertificationModalProps> = ({
       return {
         title: initialData.title || '',
         issuer: initialData.issuer || '',
+        // keep list of technologies (slugs) associated with the certification
+        technologies: initialData.technologies || [],
         date: convertDateToMonthFormat(initialData.date || ''),
         credential_id: initialData.credential_id || '',
         image_url: initialData.image_url || '',
@@ -111,6 +114,7 @@ const CertificationModal: React.FC<CertificationModalProps> = ({
       return {
         title: '',
         issuer: '',
+        technologies: [],
         date: ym,
         credential_id: '',
         image_url: '',
@@ -122,6 +126,16 @@ const CertificationModal: React.FC<CertificationModalProps> = ({
   };
 
   const [form, setForm] = useState(initForm);
+  const [newTech, setNewTech] = useState('');
+  // helper to normalize slugs: trim, lowercase, replace spaces with '-', remove invalid chars
+  const normalizeTechSlug = (s: string) =>
+    s
+      .toString()
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-_]/g, '')
+      .replace(/-+/g, '-');
   const [selectedIssuer, setSelectedIssuer] = useState<CertificationIssuer | null>(() => {
     if (initialData) {
       return CERTIFICATION_ISSUERS.find(i => i.name === initialData.issuer) || null;
@@ -221,6 +235,7 @@ const CertificationModal: React.FC<CertificationModalProps> = ({
 
       const payload = {
         ...form,
+        technologies: Array.isArray(form.technologies) ? form.technologies : [],
         date: convertMonthFormatToReadable(form.date),
         image_url: imageUrl,
         verify_url: verifyUrl || undefined,
@@ -413,6 +428,64 @@ const CertificationModal: React.FC<CertificationModalProps> = ({
                     <i className="fas fa-external-link-alt"></i>
                   </a>
                 )}
+              </div>
+            </div>
+            {/* Tecnologías relacionadas con la certificación */}
+            <div className={styles.certificationModalGroup}>
+              <label className={styles.certificationModalLabel} htmlFor="tech_input">
+                <i className={`fas fa-tools ${styles.certificationModalIcon}`}></i> Tecnologías
+              </label>
+              <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+                <input
+                  id="tech_input"
+                  name="tech_input"
+                  value={newTech}
+                  onChange={e => setNewTech(e.target.value)}
+                  className={styles.certificationModalInput}
+                  placeholder="Ej: react, nodejs, docker (usar slug)"
+                />
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={() => {
+                    const raw = (newTech || '').trim();
+                    if (!raw) return;
+                    const t = normalizeTechSlug(raw);
+                    if (!t) return;
+                    setForm(f => {
+                      const arr = Array.isArray(f.technologies) ? [...f.technologies] : [];
+                      if (arr.includes(t)) {
+                        // simple feedback; could be replaced by inline error state
+                        showError('Duplicado', `La tecnología "${t}" ya está añadida`);
+                        return f;
+                      }
+                      return { ...f, technologies: [...arr, t] };
+                    });
+                    setNewTech('');
+                  }}
+                >
+                  Añadir
+                </button>
+              </div>
+
+              <div style={{ marginTop: 8 }}>
+                <TechnologyChips
+                  items={(Array.isArray(form.technologies) ? form.technologies : []).map(s => ({
+                    slug: String(s),
+                  }))}
+                  onRemove={slugOrIndex => {
+                    setForm(f => {
+                      const arr = Array.isArray(f.technologies) ? [...f.technologies] : [];
+                      if (typeof slugOrIndex === 'number') {
+                        arr.splice(slugOrIndex, 1);
+                      } else {
+                        const idx = arr.indexOf(String(slugOrIndex));
+                        if (idx >= 0) arr.splice(idx, 1);
+                      }
+                      return { ...f, technologies: arr };
+                    });
+                  }}
+                />
               </div>
             </div>
           </div>

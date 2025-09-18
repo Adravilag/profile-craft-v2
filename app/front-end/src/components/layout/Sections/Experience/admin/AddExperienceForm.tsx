@@ -8,6 +8,7 @@ import { useTranslation } from '@/contexts/TranslationContext';
 import SkillPill from '@/components/ui/SkillPill/SkillPill';
 import TechnologyChips from '@/components/ui/TechnologyChips/TechnologyChips';
 import { resolvePillFromTech } from '@/features/skills/utils/pillUtils';
+import { useSkillSettings } from '@/features/skills/utils/skillSettingsLoader';
 import CalendarPicker from '@/components/ui/Calendar/CalendarPicker';
 import styles from './AddExperienceForm.module.css';
 
@@ -64,57 +65,39 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
   type SkillItem = { name: string; slug: string; category?: string; color?: string; svg?: string };
   const [technologySuggestions, setTechnologySuggestions] = useState<SkillItem[]>([]);
 
-  // Cargar sugerencias desde `/skill_settings.json` al montar el componente
+  // Cargar sugerencias desde el loader central `skillSettingsLoader`
+  const skillSettings = useSkillSettings();
+
   useEffect(() => {
-    let mounted = true;
+    if (!skillSettings || !Array.isArray(skillSettings) || skillSettings.length === 0) {
+      setTechnologySuggestions([]);
+      setCategories([]);
+      return;
+    }
 
-    const loadSuggestions = async () => {
-      try {
-        const { default: loadSkillSettings } = await import(
-          '@/features/skills/utils/skillSettingsLoader'
-        );
-        const data = await loadSkillSettings();
-        if (!mounted) return;
-        if (Array.isArray(data)) {
-          // Mapear a SkillItem y eliminar duplicados por nombre
-          const items: SkillItem[] = data
-            .map((item: any) => ({
-              name: item?.name ? String(item.name) : '',
-              slug: item?.slug ? String(item.slug) : String(item?.name || ''),
-              category: item?.category ? String(item.category) : undefined,
-              color: item?.color ? String(item.color) : undefined,
-              svg: item?.svg ? String(item.svg) : undefined,
-            }))
-            .filter(i => i.name)
-            .reduce((acc: SkillItem[], it) => {
-              if (!acc.find(a => a.name === it.name)) acc.push(it);
-              return acc;
-            }, [] as SkillItem[])
-            .sort((a, b) => a.name.localeCompare(b.name));
+    // Mapear a SkillItem y eliminar duplicados por nombre
+    const items: SkillItem[] = skillSettings
+      .map((item: any) => ({
+        name: item?.name ? String(item.name) : '',
+        slug: item?.slug ? String(item.slug) : String(item?.name || ''),
+        category: item?.category ? String(item.category) : undefined,
+        color: item?.color ? String(item.color) : undefined,
+        svg: item?.svg ? String(item.svg) : undefined,
+      }))
+      .filter(i => i.name)
+      .reduce((acc: SkillItem[], it) => {
+        if (!acc.find(a => a.name === it.name)) acc.push(it);
+        return acc;
+      }, [] as SkillItem[])
+      .sort((a, b) => a.name.localeCompare(b.name));
 
-          setTechnologySuggestions(items);
+    setTechnologySuggestions(items);
 
-          // Extraer categorías
-          const cats = Array.from(new Set(items.map(i => i.category).filter(Boolean))) as string[];
-          cats.sort();
-          setCategories(['all', ...cats]);
-        }
-      } catch (e) {
-        // Si falla la carga, dejar el array vacío (sin fallback hardcodeado)
-        // eslint-disable-next-line no-console
-        if (process.env.NODE_ENV === 'development')
-          console.warn(
-            'No se pudieron cargar las sugerencias de tecnologías desde /skill_settings.json:',
-            e
-          );
-      }
-    };
-
-    loadSuggestions();
-    return () => {
-      mounted = false;
-    };
-  }, []);
+    // Extraer categorías
+    const cats = Array.from(new Set(items.map(i => i.category).filter(Boolean))) as string[];
+    cats.sort();
+    setCategories(['all', ...cats]);
+  }, [skillSettings]);
 
   // Estados del formulario - Simplificado para experiencia únicamente
   const [formData, setFormData] = useState<FormData>(() => ({

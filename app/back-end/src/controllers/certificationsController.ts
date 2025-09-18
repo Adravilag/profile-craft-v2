@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { Certification } from '../models/index.js';
 import mongoose from 'mongoose';
 import { getFirstAdminUserId, resolveUserId } from '../services/userService.js';
+import { normalizeTechnologiesArray } from '../utils/techUtils.js';
 import { logger } from '../utils/logger.js';
 
 // Usar userService para resolver user ids dinámicos
@@ -78,6 +79,8 @@ export const certificationsController = {
       }
 
       // MongoDB-only implementation
+      const sanitizedTechnologies = normalizeTechnologiesArray(req.body.technologies);
+
       const newCertification = new Certification({
         title,
         issuer,
@@ -88,6 +91,7 @@ export const certificationsController = {
         course_url,
         user_id: new mongoose.Types.ObjectId(resolvedUserId),
         order_index,
+        technologies: sanitizedTechnologies,
       });
       await newCertification.save();
       logger.debug('✅ Certificación creada exitosamente:', newCertification._id);
@@ -113,6 +117,8 @@ export const certificationsController = {
       const { title, issuer, date, credential_id, image_url, verify_url, course_url, order_index } =
         req.body;
 
+      const sanitizedTechnologies = normalizeTechnologiesArray(req.body.technologies);
+
       const updatedCertification = await Certification.findByIdAndUpdate(
         id,
         {
@@ -124,6 +130,7 @@ export const certificationsController = {
           verify_url,
           course_url,
           order_index,
+          technologies: sanitizedTechnologies,
         },
         { new: true }
       );

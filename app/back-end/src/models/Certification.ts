@@ -4,6 +4,7 @@ export interface ICertification extends Document {
   title: string;
   issuer: string;
   date: string;
+  technologies?: string[];
   credential_id?: string;
   image_url?: string;
   verify_url?: string;
@@ -51,6 +52,10 @@ const certificationSchema = new Schema<ICertification>(
       type: String,
       trim: true,
       maxlength: 500,
+    },
+    technologies: {
+      type: [String],
+      default: [],
     },
     user_id: {
       type: Schema.Types.ObjectId,

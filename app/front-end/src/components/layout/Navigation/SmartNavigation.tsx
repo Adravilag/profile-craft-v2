@@ -397,20 +397,35 @@ const SmartNavigation: React.FC<SmartNavigationProps> = ({ navItems }) => {
 
       {/* Navegación principal */}
       <nav
-        className={`${styles.headerPortfolioNav} ${isNavSticky ? styles.navSticky : ''} ${navVisibilityClass}`}
+        className={`${styles.headerPortfolioNav} ${isNavSticky ? styles.navSticky : ''} ${navVisibilityClass} ${
+          isMobile && isNavSticky ? styles.mobileStickyLayout : ''
+        }`}
       >
-        {/* Botón de menú hamburguesa - solo visible en móvil cuando está sticky */}
+        {/* Botón de menú hamburguesa a la izquierda en móvil y label de la sección activa */}
         {isMobile && activeSection !== 'home' && (
-          <button
-            className={`${styles.mobileMenuToggle} ${isMobileMenuOpen ? styles.active : ''}`}
-            onClick={toggleMobileMenu}
-            aria-label="Abrir menú de navegación"
-            aria-expanded={isMobileMenuOpen}
-          >
-            <span className={styles.hamburgerLine}></span>
-            <span className={styles.hamburgerLine}></span>
-            <span className={styles.hamburgerLine}></span>
-          </button>
+          <div className={styles.mobileHeaderRow}>
+            <div className={styles.mobileSide}>
+              <button
+                className={`${styles.mobileMenuToggle} ${isMobileMenuOpen ? styles.active : ''}`}
+                onClick={toggleMobileMenu}
+                aria-label="Abrir menú de navegación"
+                aria-expanded={isMobileMenuOpen}
+              >
+                <span className={styles.hamburgerLine}></span>
+                <span className={styles.hamburgerLine}></span>
+                <span className={styles.hamburgerLine}></span>
+              </button>
+            </div>
+
+            <div className={styles.mobileCenter}>
+              <span className={styles.mobileSectionLabel}>
+                {navItems.find(n => n.id === activeSection)?.label || ''}
+              </span>
+            </div>
+
+            {/* Placeholder right side to keep the center aligned */}
+            <div className={styles.mobileSidePlaceholder} aria-hidden="true" />
+          </div>
         )}
 
         {/* Items de navegación - ocultos en móvil cuando sticky */}

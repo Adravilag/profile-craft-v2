@@ -5,6 +5,7 @@ import SkillPill from '@/components/ui/SkillPill/SkillPill';
 import { useSkillSuggestions } from '@/features/skills/hooks/useSkillSuggestions';
 import { resolvePillFromTech } from '@/features/skills/utils/pillUtils';
 import { useTranslation } from '@/contexts/TranslationContext';
+import TechnologyChips from '@/components/ui/TechnologyChips/TechnologyChips';
 
 type Media = { type: 'image' | 'gif' | 'video'; src: string; poster?: string };
 
@@ -118,20 +119,15 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
         </p>
 
         <div className={styles.techRow}>
-          {technologies.slice(0, 6).map((tech: string, index: number) => {
-            const pill = resolvePillFromTech(tech, skillSuggestions, index);
-            return (
-              <SkillPill
-                key={`${pill.slug || tech}-${index}`}
-                slug={pill.slug}
-                svg={pill.svg}
-                name={pill.name}
-                colored
-                className={styles.chipPill}
-                color={pill.color}
-              />
-            );
-          })}
+          <TechnologyChips
+            items={technologies.slice(0, 6).map((tech: string, index: number) => {
+              const pill = resolvePillFromTech(tech, skillSuggestions, index);
+              return { slug: pill.slug, name: pill.name };
+            })}
+            colored={true}
+            closable={false}
+            itemClassName={styles.chipPill}
+          />
         </div>
 
         <div className={styles.ctaRow}>
