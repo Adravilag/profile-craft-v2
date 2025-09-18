@@ -10,8 +10,10 @@ type AxiosInstance = ReturnType<typeof axios.create>;
 
 const securityLogger = createSecureLogger('DOMAIN_SECURITY');
 
-// Dominios autorizados
-const AUTHORIZED_DOMAINS = {
+// Dominios autorizados por defecto
+// En producción se puede sobreescribir con la variable de entorno VITE_ALLOWED_ORIGINS
+// que debe ser una lista separada por comas de orígenes exactos (incluyendo esquema y puerto si aplica).
+const DEFAULT_AUTHORIZED_DOMAINS = {
   PRODUCTION: 'https://adavilag-portfolio.vercel.app',
   DEVELOPMENT: [
     'http://localhost:3000',
@@ -19,6 +21,33 @@ const AUTHORIZED_DOMAINS = {
     'http://127.0.0.1:3000',
     'http://127.0.0.1:5173',
   ],
+};
+
+/**
+ * Lee VITE_ALLOWED_ORIGINS y devuelve un array de orígenes válidos o undefined
+ */
+function readAllowedOriginsFromEnv(): string[] | undefined {
+  try {
+    const raw = (import.meta.env as any).VITE_ALLOWED_ORIGINS as string | undefined;
+    if (!raw) return undefined;
+    return raw
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean);
+  } catch {
+    return undefined;
+  }
+}
+
+const ENV_ALLOWED_ORIGINS = readAllowedOriginsFromEnv();
+
+// Construir objeto final de dominios autorizados (puede incluir overrides desde env)
+const AUTHORIZED_DOMAINS = {
+  PRODUCTION:
+    ENV_ALLOWED_ORIGINS && ENV_ALLOWED_ORIGINS.length > 0
+      ? ENV_ALLOWED_ORIGINS[0]
+      : DEFAULT_AUTHORIZED_DOMAINS.PRODUCTION,
+  DEVELOPMENT: DEFAULT_AUTHORIZED_DOMAINS.DEVELOPMENT,
 };
 
 /**

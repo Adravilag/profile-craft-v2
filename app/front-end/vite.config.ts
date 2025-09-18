@@ -9,6 +9,15 @@ import { analyzer } from 'vite-bundle-analyzer';
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 
+// Proxy target for local development. Prefer VITE_API_URL / VITE_API_BASE_URL when defined
+// but fall back to localhost for developers running the backend locally.
+const viteApiUrlForProxy =
+  process.env.VITE_API_URL || process.env.VITE_API_BASE_URL || 'http://localhost:3000';
+const proxyTarget =
+  typeof viteApiUrlForProxy === 'string'
+    ? viteApiUrlForProxy.replace(/\/?api\/?$/, '')
+    : 'http://localhost:3000';
+
 // Detectar si estamos ejecutando tests (para cargar el plugin de Storybook)
 const isRunningTests =
   !!process.env.npm_lifecycle_event && /test|vitest/i.test(process.env.npm_lifecycle_event);
@@ -121,7 +130,7 @@ const config: any = {
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: proxyTarget,
         changeOrigin: true,
         secure: false,
         rewrite: (path: string) => path.replace(/^\/api/, '/api'),
