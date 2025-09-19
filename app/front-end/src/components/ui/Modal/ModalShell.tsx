@@ -330,29 +330,29 @@ const ModalShell: FC<ModalShellProps> = ({
       <div className={styles.modalContainer} role="document" tabIndex={-1} style={containerStyle}>
         <div className={styles.modalHeader}>
           <div className={styles.modalHeaderTop}>
-            <h3 id="modal-title" className={styles.modalTitle}>
-              {title ?? 'Modal'}
-            </h3>
-            <button
-              aria-label="Cerrar"
-              className={styles.closeButton}
-              onClick={() => {
-                try {
-                  if (typeof onClose === 'function') onClose();
-                } catch (err) {
-                  /* noop */
-                }
-                try {
-                  document.body.classList.remove('modal-open');
-                } catch (err) {
-                  /* noop */
-                }
-              }}
-            >
-              ✕
-            </button>
-          </div>
-          {headerActions && <div className={styles.modalHeaderToolbar}>{headerActions}</div>}
+              <h3 id="modal-title" className={styles.modalTitle}>
+                {title ?? 'Modal'}
+              </h3>
+              {headerActions && <div className={styles.modalHeaderToolbar}>{headerActions}</div>}
+              <button
+                aria-label="Cerrar"
+                className={styles.closeButton}
+                onClick={() => {
+                  try {
+                    if (typeof onClose === 'function') onClose();
+                  } catch (err) {
+                    /* noop */
+                  }
+                  try {
+                    document.body.classList.remove('modal-open');
+                  } catch (err) {
+                    /* noop */
+                  }
+                }}
+              >
+                ✕
+              </button>
+            </div>
         </div>
 
         {/* Barra de progreso del formulario */}

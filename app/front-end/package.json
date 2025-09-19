@@ -47,6 +47,7 @@
     "jspdf": "^3.0.1",
     "localforage": "^1.10.0",
     "md5": "^2.3.0",
+    "profile-craft-workspace": "file:../..",
     "react": "^19.1.1",
     "react-big-calendar": "^1.19.4",
     "react-datepicker": "^8.7.0",

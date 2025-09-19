@@ -1064,7 +1064,9 @@ code {
 
 .headerActionButtons .themeToggle,
 .headerActionButtons .shareButton {
-  display: none;
+  display: inline-flex; /* permitir que se muestren si existen */
+  align-items: center;
+  justify-content: center;
 }
 
 .headerActionButton {
@@ -1913,6 +1915,7 @@ code {
     top: var(--spacing-sm);
     right: var(--spacing-sm);
     gap: 6px; /* Reducir espacio entre botones */
+    display: flex; /* asegurar visibilidad en móvil */
   }
 
   .fixedTopRight .topRightButton {

@@ -108,7 +108,7 @@ import ProfileHero from './ProfileHero';
 describe('ProfileHero colors', () => {
   it('applies global skill color classes and hover label is present', async () => {
     const user = userEvent.setup();
-    render(<ProfileHero darkMode={false} />);
+  render(<ProfileHero />);
 
     // Encontrar el icono de React por title
     const els = await screen.findAllByTitle('React');

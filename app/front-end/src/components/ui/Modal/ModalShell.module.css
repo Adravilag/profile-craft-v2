@@ -52,17 +52,20 @@
 .modalHeaderTop {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   width: 100%;
+  gap: 12px;
 }
 
 .modalHeaderToolbar {
-  margin-top: 10px;
   display: flex;
   gap: 8px;
   align-items: center;
-  width: 100%;
-  justify-content: flex-start;
+  margin-left: 8px;
+}
+
+.modalHeaderSpacer {
+  flex: 1 1 auto;
 }
 
 /* Estilos para la barra de progreso */

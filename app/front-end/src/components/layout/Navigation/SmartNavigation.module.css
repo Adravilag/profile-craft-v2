@@ -320,6 +320,14 @@
   transition: var(--nav-transition);
 }
 
+/* Actions container (right side) - small area for language selector, auth buttons, etc. */
+.navActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto; /* push to the right */
+}
+
 /* ===== NAVIGATION ITEMS ===== */
 .headerNavItem {
   display: flex;

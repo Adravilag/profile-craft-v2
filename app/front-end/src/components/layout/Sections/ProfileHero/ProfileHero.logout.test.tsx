@@ -75,7 +75,7 @@ describe('[TEST] ProfileHero - Funcionalidad de logout completa', () => {
     // ACT: Renderizar ProfileHero
     render(
       <TestWrapper>
-        <ProfileHero darkMode={false} />
+  <ProfileHero />
       </TestWrapper>
     );
 
@@ -140,7 +140,7 @@ describe('[TEST] ProfileHero - Funcionalidad de logout completa', () => {
 
     render(
       <TestWrapper>
-        <ProfileHero darkMode={false} />
+  <ProfileHero />
       </TestWrapper>
     );
 

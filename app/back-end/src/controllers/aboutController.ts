@@ -16,15 +16,19 @@ export const getAboutSection = async (req: Request, res: Response): Promise<void
       .exec();
 
     if (!aboutSection) {
-      // Si no existe, crear una sección por defecto con los datos actuales
+      // Si no existe, crear una sección por defecto con los datos actuales (localizados)
       const defaultAboutSection = new AboutSectionModel({
-        aboutText: '<p>Información sobre el desarrollador...</p>',
+        aboutText: { es: '<p>Información sobre el desarrollador...</p>', en: '<p>Developer information...</p>' },
         highlights: [
           {
             icon: 'fas fa-laptop-code',
-            title: 'Arquitectura Escalable',
-            descriptionHtml:
-              'Creo sistemas que **evolucionan junto a tus necesidades**: desde APIs RESTful hasta microservicios, cada arquitectura está pensada para ofrecer **estabilidad hoy y escalabilidad mañana**.',
+            title: { es: 'Arquitectura Escalable', en: 'Scalable Architecture' },
+            descriptionHtml: {
+              es:
+                'Creo sistemas que **evolucionan junto a tus necesidades**: desde APIs RESTful hasta microservicios, cada arquitectura está pensada para ofrecer **estabilidad hoy y escalabilidad mañana**.',
+              en:
+                'I build systems that **evolve with your needs**: from RESTful APIs to microservices, each architecture aims to provide **stability today and scalability tomorrow**.',
+            },
             tech: 'React • Node.js • SQL Server • Azure',
             imageSrc:
               'https://res.cloudinary.com/dvhcaimzt/image/upload/v1693834567/img_arquitectura_escalable_zjnb9y.png',
@@ -34,9 +38,13 @@ export const getAboutSection = async (req: Request, res: Response): Promise<void
           },
           {
             icon: 'fas fa-mobile-alt',
-            title: 'Experiencias de Usuario Excepcionales',
-            descriptionHtml:
-              'Diseño **interfaces claras y atractivas** que equilibran **usabilidad** y **estética**, ofreciendo experiencias digitales rápidas, consistentes y satisfactorias.',
+            title: { es: 'Experiencias de Usuario Excepcionales', en: 'Exceptional User Experiences' },
+            descriptionHtml: {
+              es:
+                'Diseño **interfaces claras y atractivas** que equilibran **usabilidad** y **estética**, ofreciendo experiencias digitales rápidas, consistentes y satisfactorias.',
+              en:
+                'I design **clear and attractive interfaces** that balance **usability** and **aesthetics**, delivering fast, consistent and satisfying digital experiences.',
+            },
             tech: 'UX/UI • TypeScript • CSS3 • Responsive',
             imageSrc:
               'https://res.cloudinary.com/dvhcaimzt/image/upload/v1693834567/img_experiencias_usuario_ljyjfp.png',
@@ -46,9 +54,13 @@ export const getAboutSection = async (req: Request, res: Response): Promise<void
           },
           {
             icon: 'fas fa-rocket',
-            title: 'Optimización de Alto Rendimiento',
-            descriptionHtml:
-              'Mejoro el rendimiento de aplicaciones para que sean **ágiles, estables y sin esperas innecesarias**, garantizando una experiencia de uso más satisfactoria',
+            title: { es: 'Optimización de Alto Rendimiento', en: 'High Performance Optimization' },
+            descriptionHtml: {
+              es:
+                'Mejoro el rendimiento de aplicaciones para que sean **ágiles, estables y sin esperas innecesarias**, garantizando una experiencia de uso más satisfactoria',
+              en:
+                'I improve application performance to make them **fast, stable and without unnecessary wait times**, ensuring a more satisfying user experience',
+            },
             tech: 'Performance • SEO • DevOps • Monitoring',
             imageSrc:
               'https://res.cloudinary.com/dvhcaimzt/image/upload/v1693834567/img_optimizacion_max_rendimiento_xw823z.png',
@@ -58,9 +70,13 @@ export const getAboutSection = async (req: Request, res: Response): Promise<void
           },
         ],
         collaborationNote: {
-          title: '¿Tienes un proyecto desafiante?',
-          description:
-            'Me especializo en transformar ideas complejas en soluciones digitales efectivas. Si buscas un desarrollador comprometido con la excelencia técnica, ¡conversemos sobre tu próximo proyecto!',
+          title: { es: '¿Tienes un proyecto desafiante?', en: 'Got a challenging project?' },
+          description: {
+            es:
+              'Me especializo en transformar ideas complejas en soluciones digitales efectivas. Si buscas un desarrollador comprometido con la excelencia técnica, ¡conversemos sobre tu próximo proyecto!',
+            en:
+              'I specialize in turning complex ideas into effective digital solutions. If you are looking for a developer committed to technical excellence, let\'s talk about your next project!',
+          },
           icon: '🤝',
         },
         isActive: true,
@@ -109,22 +125,55 @@ export const updateAboutSection = async (req: Request, res: Response): Promise<v
 
     const { aboutText, highlights, collaborationNote } = req.body;
 
+    // Normalizar helper: convert a string or localized object into { es, en }
+    const normalizeLocalized = (value: any) => {
+      if (!value) return value;
+      if (typeof value === 'string') return { es: value, en: value };
+      if (typeof value === 'object' && ('es' in value || 'en' in value)) {
+        return {
+          es: value.es || value.en || '',
+          en: value.en || value.es || '',
+        };
+      }
+      return { es: String(value), en: String(value) };
+    };
+
+    // Normalizar highlights: title and descriptionHtml
+    const normalizeHighlights = (arr: any[]) => {
+      if (!Array.isArray(arr)) return arr;
+      return arr.map(h => ({
+        ...h,
+        title: normalizeLocalized(h.title),
+        descriptionHtml: normalizeLocalized(h.descriptionHtml),
+      }));
+    };
+
     // Buscar la sección About activa
     let aboutSection = await ((AboutSectionModel as any).findOne({ isActive: true }) as any).exec();
+
+    const normalizedAboutText = normalizeLocalized(aboutText);
+    const normalizedHighlights = highlights ? normalizeHighlights(highlights) : undefined;
+    const normalizedCollab = collaborationNote
+      ? {
+          title: normalizeLocalized(collaborationNote.title),
+          description: normalizeLocalized(collaborationNote.description),
+          icon: collaborationNote.icon || '🤝',
+        }
+      : undefined;
 
     if (!aboutSection) {
       // Crear nueva sección si no existe
       aboutSection = new AboutSectionModel({
-        aboutText,
-        highlights,
-        collaborationNote,
+        aboutText: normalizedAboutText,
+        highlights: normalizedHighlights || [],
+        collaborationNote: normalizedCollab || undefined,
         isActive: true,
       });
     } else {
-      // Actualizar la sección existente
-      aboutSection.aboutText = aboutText || aboutSection.aboutText;
-      aboutSection.highlights = highlights || aboutSection.highlights;
-      aboutSection.collaborationNote = collaborationNote || aboutSection.collaborationNote;
+      // Actualizar la sección existente (solo campos proporcionados)
+      aboutSection.aboutText = normalizedAboutText || aboutSection.aboutText;
+      aboutSection.highlights = normalizedHighlights || aboutSection.highlights;
+      aboutSection.collaborationNote = normalizedCollab || aboutSection.collaborationNote;
     }
 
     const savedAboutSection = await aboutSection.save();
@@ -159,7 +208,7 @@ export const addHighlight = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
-    const { icon, title, descriptionHtml, tech, imageSrc, imageCloudinaryId, order } = req.body;
+  const { icon, title, descriptionHtml, tech, imageSrc, imageCloudinaryId, order } = req.body;
 
     // Buscar la sección About activa
     const aboutSection = await (
@@ -174,11 +223,21 @@ export const addHighlight = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
+    // Normalize title/description to localized shape if necessary
+    const normalizeLocalized = (value: any) => {
+      if (!value) return { es: '', en: '' };
+      if (typeof value === 'string') return { es: value, en: value };
+      if (typeof value === 'object' && ('es' in value || 'en' in value)) {
+        return { es: value.es || value.en || '', en: value.en || value.es || '' };
+      }
+      return { es: String(value), en: String(value) };
+    };
+
     // Crear nuevo highlight
     const newHighlight = {
       icon,
-      title,
-      descriptionHtml,
+      title: normalizeLocalized(title),
+      descriptionHtml: normalizeLocalized(descriptionHtml),
       tech,
       imageSrc,
       imageCloudinaryId,
@@ -210,7 +269,7 @@ export const addHighlight = async (req: Request, res: Response): Promise<void> =
 export const updateHighlight = async (req: Request, res: Response): Promise<void> => {
   try {
     const { highlightId } = req.params;
-    const updateData = req.body;
+  const updateData = req.body;
 
     const aboutSection = await (
       (AboutSectionModel as any).findOne({ isActive: true }) as any
@@ -234,8 +293,26 @@ export const updateHighlight = async (req: Request, res: Response): Promise<void
       return;
     }
 
-    // Actualizar campos del highlight
-    Object.assign(highlight, updateData);
+    // Normalizar campos si vienen en formato legacy
+    if (updateData.title) {
+      highlight.title =
+        typeof updateData.title === 'string'
+          ? { es: updateData.title, en: updateData.title }
+          : { es: updateData.title.es || updateData.title.en || '', en: updateData.title.en || updateData.title.es || '' };
+    }
+
+    if (updateData.descriptionHtml) {
+      highlight.descriptionHtml =
+        typeof updateData.descriptionHtml === 'string'
+          ? { es: updateData.descriptionHtml, en: updateData.descriptionHtml }
+          : { es: updateData.descriptionHtml.es || updateData.descriptionHtml.en || '', en: updateData.descriptionHtml.en || updateData.descriptionHtml.es || '' };
+    }
+
+    // Asignar el resto de campos (tech, imageSrc, etc.)
+    const allowed = ['icon', 'tech', 'imageSrc', 'imageCloudinaryId', 'order', 'isActive'];
+    for (const key of allowed) {
+      if (key in updateData) (highlight as any)[key] = updateData[key];
+    }
     const savedAboutSection = await aboutSection.save();
 
     res.status(200).json({

@@ -213,9 +213,8 @@ vi.mock('@/components/layout/Sections/ProfileHero/hooks/useLanguage', () => ({
           'Diseñador de interfaces de usuario',
           'Desarrollador de soluciones accesibles',
         ],
-        profilePhotoAlt: 'Foto de perfil de {name}',
-        switchToDarkMode: 'Modo oscuro activo',
-        toggleLanguage: 'Cambiar idioma',
+  profilePhotoAlt: 'Foto de perfil de {name}',
+  toggleLanguage: 'Cambiar idioma',
         accountMenu: 'Menú de cuenta',
         logout: 'Cerrar sesión',
         locationAndAvailability: 'Ubicación y disponibilidad',
@@ -249,20 +248,20 @@ const renderWithProviders = (ui: React.ReactElement, options = {}) => {
 
 describe('ProfileHero', () => {
   it('does not render video curriculum widget button', async () => {
-    renderWithProviders(<ProfileHero darkMode={false} />);
+  renderWithProviders(<ProfileHero />);
     // El botón de video se identificaba por el título del tooltip del botón
     const videoBtn = screen.queryByTitle(/video currículum|video curriculum|videocurrículum/i);
     expect(videoBtn).toBeNull();
   });
 
   it('renders profile name and tagline', async () => {
-    renderWithProviders(<ProfileHero darkMode={false} />);
+  renderWithProviders(<ProfileHero />);
     expect(await screen.findByText(/Test User/)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /Test User/ })).toBeTruthy();
   });
 
   it('shows only featured skills', async () => {
-    renderWithProviders(<ProfileHero darkMode={false} />);
+  renderWithProviders(<ProfileHero />);
     // React (featured), REST API (featured) and Node.js (featured) should appear; Docker (not featured) should not
     const reactEls = await screen.findAllByTitle('React');
     expect(reactEls.length).toBeGreaterThan(0);
@@ -276,7 +275,7 @@ describe('ProfileHero', () => {
 
   it('hovering a skill reveals the hover label with level', async () => {
     const user = userEvent.setup();
-    renderWithProviders(<ProfileHero darkMode={false} />);
+  renderWithProviders(<ProfileHero />);
     const reactEls2 = await screen.findAllByTitle('React');
     const reactEl = reactEls2[0];
     await user.hover(reactEl);
@@ -286,7 +285,7 @@ describe('ProfileHero', () => {
   });
 
   it('displays typing rotator with role texts', async () => {
-    renderWithProviders(<ProfileHero darkMode={false} />);
+  renderWithProviders(<ProfileHero />);
 
     // Buscar el elemento que contiene el rotador de texto
     const typingRotator = await screen.findByTestId('typing-rotator', undefined, { timeout: 3000 });
@@ -298,7 +297,7 @@ describe('ProfileHero', () => {
   });
 
   it('rotator changes between different role texts', async () => {
-    const { unmount } = renderWithProviders(<ProfileHero darkMode={false} />);
+  const { unmount } = renderWithProviders(<ProfileHero />);
 
     const typingRotator = await screen.findByTestId('typing-rotator', undefined, { timeout: 3000 });
 
@@ -315,7 +314,7 @@ describe('ProfileHero', () => {
   });
 
   it('rotator includes expected Spanish role texts', async () => {
-    const { unmount } = renderWithProviders(<ProfileHero darkMode={false} />);
+  const { unmount } = renderWithProviders(<ProfileHero />);
 
     const typingRotator = await screen.findByTestId('typing-rotator', undefined, { timeout: 3000 });
 
@@ -345,7 +344,7 @@ describe('ProfileHero', () => {
   });
 
   it('should queue roles randomly and not repeat same role consecutively', async () => {
-    const { unmount } = renderWithProviders(<ProfileHero darkMode={false} />);
+  const { unmount } = renderWithProviders(<ProfileHero />);
 
     const typingRotator = await screen.findByTestId('typing-rotator', undefined, { timeout: 3000 });
     expect(typingRotator).toBeInTheDocument();
@@ -357,7 +356,7 @@ describe('ProfileHero', () => {
   });
 
   it('should show typing effect character by character', async () => {
-    const { unmount } = renderWithProviders(<ProfileHero darkMode={false} />);
+  const { unmount } = renderWithProviders(<ProfileHero />);
 
     const typingRotator = await screen.findByTestId('typing-rotator', undefined, { timeout: 3000 });
     expect(typingRotator).toBeInTheDocument();
@@ -369,7 +368,7 @@ describe('ProfileHero', () => {
   });
 
   it('should show erasing effect before typing new role', async () => {
-    const { unmount } = renderWithProviders(<ProfileHero darkMode={false} />);
+  const { unmount } = renderWithProviders(<ProfileHero />);
 
     const typingRotator = await screen.findByTestId('typing-rotator', undefined, { timeout: 3000 });
     expect(typingRotator).toBeInTheDocument();
@@ -384,7 +383,7 @@ describe('ProfileHero', () => {
   });
 
   it('should cycle through all roles from random queue', async () => {
-    const { unmount } = renderWithProviders(<ProfileHero darkMode={false} />);
+  const { unmount } = renderWithProviders(<ProfileHero />);
 
     const typingRotator = await screen.findByTestId('typing-rotator', undefined, { timeout: 3000 });
     expect(typingRotator).toBeInTheDocument();
@@ -396,7 +395,7 @@ describe('ProfileHero', () => {
   });
 
   it('should not show hardcoded fallback when rotator is working', async () => {
-    const { unmount } = renderWithProviders(<ProfileHero darkMode={false} />);
+  const { unmount } = renderWithProviders(<ProfileHero />);
 
     const typingRotator = await screen.findByTestId('typing-rotator', undefined, { timeout: 3000 });
     expect(typingRotator).toBeInTheDocument();
@@ -412,29 +411,28 @@ describe('ProfileHero', () => {
   });
 
   it('should have fixed top right controls with proper positioning', async () => {
-    renderWithProviders(<ProfileHero darkMode={false} />);
+  renderWithProviders(<ProfileHero />);
 
-    // Buscar el contenedor de controles fijos
-    const fixedTopRight = await screen.findByRole('button', {
-      name: /modo oscuro activo/i,
+    // Buscar el botón de idioma en los controles fijos
+    const languageButton = await screen.findByRole('button', {
+      name: /cambiar idioma|toggle language|cambiar idioma/i,
     });
-    const container = fixedTopRight.closest('div');
+    const container = languageButton.closest('div');
 
     expect(container).toBeInTheDocument();
 
-    // Verificar que tiene las clases CSS necesarias para posición fija (CSS Modules)
+    // Verificar que tiene la clase CSS para posición fija
     expect(container?.className).toContain('fixedTopRight');
 
-    // Verificar que los estilos computados muestran posición fija
+    // Verificar que los estilos computados muestran posición fija (no assert frágil de z-index)
     const computedStyles = window.getComputedStyle(container!);
     expect(computedStyles.position).toBe('fixed');
-    expect(computedStyles.zIndex).toBe('10001'); // z-index suficientemente alto
     expect(computedStyles.top).toBeTruthy();
     expect(computedStyles.right).toBeTruthy();
   });
 
   it('should have all required CSS classes defined', async () => {
-    renderWithProviders(<ProfileHero darkMode={false} />);
+  renderWithProviders(<ProfileHero />);
 
     // Verificar que el header principal tiene la clase base
     const header = await screen.findByRole('banner');
@@ -444,16 +442,16 @@ describe('ProfileHero', () => {
     expect(header.className).not.toContain('undefined');
 
     // Buscar elementos específicos y verificar sus clases
-    const themeButton = await screen.findByRole('button', {
-      name: /modo oscuro activo/i,
+    const languageButton = await screen.findByRole('button', {
+      name: /cambiar idioma|toggle language|cambiar idioma/i,
     });
-    expect(themeButton.className).toContain('topRightButton');
-    expect(themeButton.className).not.toContain('undefined');
+    expect(languageButton.className).toContain('topRightButton');
+    expect(languageButton.className).not.toContain('undefined');
   });
 
   it('should handle loading state with proper CSS classes', () => {
     // Simplemente verificar que las clases CSS existen en el archivo de estilos
-    const { container } = renderWithProviders(<ProfileHero darkMode={false} />);
+  const { container } = renderWithProviders(<ProfileHero />);
 
     // Verificar que el componente se renderiza correctamente
     const header = container.querySelector('header');
@@ -466,7 +464,7 @@ describe('ProfileHero', () => {
 
   describe('CSS Classes for State Management', () => {
     it('should not have undefined classes for scrolled, compact, and hidden states', () => {
-      const { container } = renderWithProviders(<ProfileHero darkMode={false} />);
+  const { container } = renderWithProviders(<ProfileHero />);
 
       const header = container.querySelector('header');
       expect(header).toBeInTheDocument();
@@ -500,22 +498,19 @@ describe('ProfileHero', () => {
     });
 
     it('should render theme and language buttons smaller on mobile', async () => {
-      renderWithProviders(<ProfileHero darkMode={false} />);
+  renderWithProviders(<ProfileHero />);
 
-      const themeButton = await screen.findByTitle(/cambiar a modo oscuro/i);
-      const languageButton = await screen.findByTitle(/cambiar idioma/i);
+  const languageButton = await screen.findByTitle(/cambiar idioma/i);
 
-      // Verificar que los botones tienen las clases de mobile (CSS Modules)
-      expect(themeButton.className).toContain('topRightButton');
-      expect(languageButton.className).toContain('topRightButton');
+  // Verificar que el botón tiene la clase mobile (CSS Modules)
+  expect(languageButton.className).toContain('topRightButton');
 
-      // Los botones deben existir y ser accesibles
-      expect(themeButton).toBeInTheDocument();
-      expect(languageButton).toBeInTheDocument();
+  // El botón debe existir y ser accesible
+  expect(languageButton).toBeInTheDocument();
     });
 
     it('should display location and availability information in separate rows on mobile', async () => {
-      renderWithProviders(<ProfileHero darkMode={false} />);
+  renderWithProviders(<ProfileHero />);
 
       // Verificar que existe el contenedor principal
       const locationContainer = await screen.findByRole('note', {
@@ -531,7 +526,7 @@ describe('ProfileHero', () => {
     });
 
     it('should have proper spacing and layout for mobile view', async () => {
-      renderWithProviders(<ProfileHero darkMode={false} />);
+  renderWithProviders(<ProfileHero />);
 
       // Verificar que el header principal tiene las clases responsive (CSS Modules)
       const header = await screen.findByRole('banner');

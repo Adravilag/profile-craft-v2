@@ -1,11 +1,16 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 // Interface para TypeScript
+export interface ILocalizedString {
+  es: string;
+  en: string;
+}
+
 export interface IAboutHighlight {
   _id?: string;
   icon: string; // Clase de icono CSS (ej: "fas fa-laptop-code")
-  title: string;
-  descriptionHtml: string;
+  title: ILocalizedString | string;
+  descriptionHtml: ILocalizedString | string;
   tech: string;
   imageSrc: string; // URL de Cloudinary
   imageCloudinaryId: string; // ID de la imagen en Cloudinary para gestión
@@ -17,11 +22,11 @@ export interface IAboutHighlight {
 
 // Interface para la sección About completa
 export interface IAboutSection extends Document {
-  aboutText: string; // Texto principal de la sección
+  aboutText: ILocalizedString | string; // Texto principal de la sección (localizable)
   highlights: IAboutHighlight[];
   collaborationNote: {
-    title: string;
-    description: string;
+    title: ILocalizedString | string;
+    description: ILocalizedString | string;
     icon: string;
   };
   isActive: boolean;
@@ -38,15 +43,13 @@ const AboutHighlightSchema = new Schema<IAboutHighlight>(
       trim: true,
     },
     title: {
-      type: String,
+      // Support either a simple string (legacy) or an object { es, en }
+      type: Schema.Types.Mixed,
       required: true,
-      trim: true,
-      maxlength: 100,
     },
     descriptionHtml: {
-      type: String,
+      type: Schema.Types.Mixed,
       required: true,
-      trim: true,
     },
     tech: {
       type: String,
@@ -82,22 +85,30 @@ const AboutHighlightSchema = new Schema<IAboutHighlight>(
 const AboutSectionSchema = new Schema<IAboutSection>(
   {
     aboutText: {
-      type: String,
+      // Can be a legacy string or an object { es, en }
+      type: Schema.Types.Mixed,
       required: true,
       trim: true,
     },
     highlights: [AboutHighlightSchema],
     collaborationNote: {
       title: {
-        type: String,
+        type: Schema.Types.Mixed,
         required: true,
-        default: '¿Tienes un proyecto desafiante?',
+        default: {
+          es: '¿Tienes un proyecto desafiante?',
+          en: 'Got a challenging project?',
+        },
       },
       description: {
-        type: String,
+        type: Schema.Types.Mixed,
         required: true,
-        default:
-          'Me especializo en transformar ideas complejas en soluciones digitales efectivas. Si buscas un desarrollador comprometido con la excelencia técnica, ¡conversemos sobre tu próximo proyecto!',
+        default: {
+          es:
+            'Me especializo en transformar ideas complejas en soluciones digitales efectivas. Si buscas un desarrollador comprometido con la excelencia técnica, ¡conversemos sobre tu próximo proyecto!',
+          en:
+            'I specialize in turning complex ideas into effective digital solutions. If you are looking for a developer committed to technical excellence, let\'s talk about your next project!',
+        },
       },
       icon: {
         type: String,

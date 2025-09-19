@@ -10,8 +10,8 @@ import {
 export interface AboutHighlightData {
   _id?: string;
   icon: string;
-  title: string;
-  descriptionHtml: string;
+  title: string | { es?: string; en?: string };
+  descriptionHtml: string | { es?: string; en?: string };
   tech: string;
   imageSrc: string;
   imageCloudinaryId: string;
@@ -21,11 +21,11 @@ export interface AboutHighlightData {
 
 export interface AboutSectionData {
   _id: string;
-  aboutText: string;
+  aboutText: string | { es?: string; en?: string };
   highlights: AboutHighlightData[];
   collaborationNote: {
-    title: string;
-    description: string;
+    title: string | { es?: string; en?: string };
+    description: string | { es?: string; en?: string };
     icon: string;
   };
   isActive: boolean;

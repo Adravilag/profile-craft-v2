@@ -97,7 +97,7 @@ const RootLayoutContent: FC<RootLayoutProps> = ({ initialSection }) => {
     <SkillsFilterProvider>
       <div className="curriculum-container" style={{ position: 'relative' }}>
         <div id="curriculum-container">
-          <ProfileHero darkMode={true} />
+          <ProfileHero />
           <SmartNavigation navItems={navItems} />
           <main className="sections-container">
             <Suspense>

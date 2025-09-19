@@ -21,8 +21,6 @@ interface ShareOption {
 
 interface HeaderOptions {
   profileName?: string;
-  darkMode: boolean;
-  onToggleDarkMode?: () => void;
   exportToPDF?: (containerId: string, filename: string) => Promise<boolean>; // Ya no se usa, pero mantenido por compatibilidad
 }
 
@@ -41,7 +39,7 @@ interface HeaderActions {
  * @param options Opciones de configuración del header
  */
 export const useHeader = (options: HeaderOptions) => {
-  const { profileName, darkMode, onToggleDarkMode } = options;
+  const { profileName } = options;
   const { showSuccess, showError } = useNotificationContext();
   const shareMenuRef = useRef<HTMLDivElement>(null);
 
@@ -215,15 +213,10 @@ export const useHeader = (options: HeaderOptions) => {
   }, [profileName, showSuccess, showError]);
 
   // Callback optimizado para toggle de tema
+  // Theme toggle removed: portfolio uses single default theme.
   const handleToggleTheme = useCallback(() => {
-    if (onToggleDarkMode) {
-      onToggleDarkMode();
-      showSuccess(
-        darkMode ? 'Tema claro activado' : 'Tema oscuro activado',
-        'El tema se ha cambiado correctamente'
-      );
-    }
-  }, [onToggleDarkMode, darkMode, showSuccess]);
+    // No-op kept for compatibility
+  }, []);
 
   // Efecto para cerrar el menú al hacer clic fuera
   useEffect(() => {
@@ -256,7 +249,7 @@ export const useHeader = (options: HeaderOptions) => {
     (): HeaderActions => ({
       handleShare,
       handleDownloadPDF,
-      handleToggleTheme,
+    handleToggleTheme,
       toggleShareMenu,
       closeShareMenu,
       getShareOptions,

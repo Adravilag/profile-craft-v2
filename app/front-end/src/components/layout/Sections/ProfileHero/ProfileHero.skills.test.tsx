@@ -35,7 +35,6 @@ vi.mock('./hooks', () => ({
     changeLanguage: vi.fn(),
     t: {
       profileHero: {
-        switchToDarkMode: 'Dark mode active',
         toggleLanguage: 'Toggle language',
         profilePhotoAlt: 'Profile photo of {name}',
         available: 'Available',
@@ -146,8 +145,7 @@ vi.mock('@/components/auth/PatternLogin', () => ({
 
 describe('ProfileHero - Skills Integration', () => {
   const defaultProps = {
-    darkMode: false,
-    onToggleDarkMode: vi.fn(),
+  // darkMode removed — portfolio uses single default theme
     isFirstTime: false,
   };
 

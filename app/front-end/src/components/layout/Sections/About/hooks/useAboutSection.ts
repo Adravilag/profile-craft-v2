@@ -3,6 +3,7 @@ import { useAboutNavigation } from './useAboutNavigation';
 import { useAboutData } from './useAboutData';
 import { useAboutApiData } from './useAboutApiData';
 import { useHighlightCards } from './useHighlightCards';
+import { useLocalizedContent } from '@/hooks/useLocalizedContent';
 import { useSectionsLoadingContext } from '@/contexts/SectionsLoadingContext';
 import type { UnifiedHighlightCard } from '../types';
 
@@ -29,6 +30,7 @@ export function useAboutSection() {
 
   // Highlight Cards con imágenes de Cloudinary (fallback estático)
   const { highlightCards: staticHighlightCards } = useHighlightCards();
+  const { getLocalizedText } = useLocalizedContent();
 
   // Determinar qué highlights usar: dinámicos si están disponibles, estáticos como fallback
   const highlights: UnifiedHighlightCard[] =
@@ -39,9 +41,9 @@ export function useAboutSection() {
           .map(h => ({
             _id: h._id,
             icon: h.icon, // String de la clase CSS del icono
-            title: h.title,
-            descriptionHtml: h.descriptionHtml,
-            tech: h.tech,
+            title: getLocalizedText(h.title, ''),
+            descriptionHtml: getLocalizedText(h.descriptionHtml, ''),
+            tech: getLocalizedText(h.tech, ''),
             imageSrc: h.imageSrc,
           }))
       : staticHighlightCards.map((card, index) => ({
@@ -54,11 +56,17 @@ export function useAboutSection() {
         }));
 
   // Determinar el texto de About: dinámico si está disponible, del perfil como fallback
-  const aboutText = hasAboutData && aboutData?.aboutText ? aboutData.aboutText : profile?.about_me;
+  const aboutText = hasAboutData && aboutData?.aboutText ? getLocalizedText(aboutData.aboutText, profile?.about_me || '') : profile?.about_me;
 
-  // Nota de colaboración: dinámico si está disponible
+  // Nota de colaboración: dinámico si está disponible (localize fields)
   const collaborationNote =
-    hasAboutData && aboutData?.collaborationNote ? aboutData.collaborationNote : null;
+    hasAboutData && aboutData?.collaborationNote
+      ? {
+          title: getLocalizedText(aboutData.collaborationNote.title, ''),
+          description: getLocalizedText(aboutData.collaborationNote.description, ''),
+          icon: aboutData.collaborationNote.icon,
+        }
+      : null;
 
   // Estados de carga y error
   const isLoading = centralLoading('about');

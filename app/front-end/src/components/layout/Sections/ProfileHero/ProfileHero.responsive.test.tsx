@@ -62,7 +62,6 @@ vi.mock('./hooks', () => ({
         profilePhotoAlt: 'Foto de perfil de {name}',
         accountMenu: 'Menú de cuenta',
         logout: 'Cerrar sesión',
-        switchToDarkMode: 'Cambiar a modo oscuro',
         toggleLanguage: 'Cambiar idioma',
         available: 'Disponible',
         openToRemote: 'Abierto a remoto',
@@ -116,7 +115,7 @@ describe('[TEST] ProfileHero Responsive - Burbujas de Estadísticas', () => {
       value: 375, // iPhone SE width
     });
 
-    const { container } = render(<ProfileHero darkMode={true} isFirstTime={false} />);
+  const { container } = render(<ProfileHero isFirstTime={false} />);
 
     // Verificar que las burbujas existen
     const statsContainer = container.querySelector('[class*="headerHighlights"]');
@@ -139,7 +138,7 @@ describe('[TEST] ProfileHero Responsive - Burbujas de Estadísticas', () => {
   });
 
   test('las burbujas deben tener tamaño táctil adecuado en móvil', () => {
-    const { container } = render(<ProfileHero darkMode={true} isFirstTime={false} />);
+  const { container } = render(<ProfileHero isFirstTime={false} />);
 
     const statBadges = container.querySelectorAll('[class*="statBadge"]');
     const firstBubble = statBadges[0] as HTMLElement;
@@ -149,7 +148,7 @@ describe('[TEST] ProfileHero Responsive - Burbujas de Estadísticas', () => {
   });
 
   test('el contenedor de burbujas debe permitir wrap en pantallas pequeñas', () => {
-    const { container } = render(<ProfileHero darkMode={true} isFirstTime={false} />);
+  const { container } = render(<ProfileHero isFirstTime={false} />);
 
     const statsContainer = container.querySelector('[class*="headerHighlights"]');
     // Evitar comprobar computed styles en JSDOM; verificar la clase helper 'responsiveWrap'

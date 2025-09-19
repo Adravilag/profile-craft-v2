@@ -32,20 +32,14 @@ import styles from './ProfileHero.module.css';
 import '@/styles/04-features/skills-colors.css';
 
 // Interfaz para el componente
-interface ProfileHeroProps {
-  darkMode: boolean;
-  onToggleDarkMode?: () => void;
-  isFirstTime?: boolean;
-}
-
 // Constante para controlar cuántas tecnologías mostrar
 const MAX_FEATURED_SKILLS = 6;
 
-const ProfileHero: React.FC<ProfileHeroProps> = ({
-  darkMode,
-  onToggleDarkMode,
-  isFirstTime = false,
-}) => {
+interface ProfileHeroProps {
+  isFirstTime?: boolean;
+}
+
+const ProfileHero: React.FC<ProfileHeroProps> = ({ isFirstTime = false }) => {
   // === 1. Uso de Hooks Personalizados ===
   const { exportToPDF } = usePDFExport();
   const { userProfile, loading, error, refetchProfile } = useProfileData(isFirstTime);
@@ -87,8 +81,6 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
   const { currentText, reset, isTyping, isErasing } = useTypingRotator(typingWords, 25, 15, 500);
   const { state, actions, elementRef } = useHeader({
     profileName: userProfile?.name,
-    darkMode,
-    onToggleDarkMode,
     exportToPDF,
   });
 
@@ -110,9 +102,7 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
     }
   }, [reset, typingWords]);
 
-  useEffect(() => {
-    document.body.classList.toggle('dark-mode', darkMode);
-  }, [darkMode]);
+  // NOTE: theme switching (dark/light) removed — no body class toggling
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -195,19 +185,7 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
       aria-labelledby="profile-name"
     >
       {/* Fixed controls: theme and language */}
-      {/* <div className={`${styles.fixedTopRight} animate-slide-in-right`} aria-hidden={false}>
-        <button
-          type="button"
-          className={`${styles.topRightButton} transition-all hover:scale-105 active:scale-95`}
-          onClick={() => {
-            // Solo modo oscuro disponible - botón decorativo
-          }}
-          aria-pressed={true}
-          title={t.profileHero.switchToDarkMode}
-        >
-          <i className="fas fa-moon transition-transform hover:rotate-12" aria-hidden="true" />
-        </button>
-
+      <div className={`${styles.fixedTopRight} animate-slide-in-right`} aria-hidden={false}>
         <button
           type="button"
           className={`${styles.topRightButton} transition-all hover:scale-105 active:scale-95`}
@@ -217,7 +195,7 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({
         >
           {currentLanguage === 'es' ? 'ES' : 'EN'}
         </button>
-      </div> */}
+      </div>
       {/* Vignette overlay */}
       <div className={styles.vignette} aria-hidden="true" />
 

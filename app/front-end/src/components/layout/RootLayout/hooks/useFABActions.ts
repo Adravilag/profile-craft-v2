@@ -34,14 +34,17 @@ export const useFABActions = ({
   const navigate = useNavigate();
 
   // Helper para abrir un modal dinámico
+  // openDynamicModal ahora recibe una función que devuelve la promesa del import.
+  // Esto permite que el bundler (Vite) detecte las rutas dinámicas en tiempo de compilación
+  // y genere los chunks correspondientes. Pasar una cadena con alias '@' falla en runtime.
   const openDynamicModal = async (
-    importPath: string,
+    importer: () => Promise<any>,
     modalId: string,
     title: string,
     props: Record<string, any> = {}
   ) => {
     try {
-      const mod = await import(importPath);
+      const mod = await importer();
       const Comp = mod.default || mod[Object.keys(mod)[0]]; // Soporte default o named export
       const modalContent = React.createElement(Comp, {
         isOpen: true,
@@ -72,7 +75,7 @@ export const useFABActions = ({
         color: 'success',
         onClick: async () =>
           openDynamicModal(
-            '@/components/layout/Sections/Testimonials/forms/TestimonialsFormModal',
+            () => import('@/components/layout/Sections/Testimonials/forms/TestimonialsFormModal'),
             'testimonial-add',
             'Añadir Testimonio',
             {
@@ -143,9 +146,9 @@ export const useFABActions = ({
       icon: modalId === 'add-company' ? 'fas fa-building' : 'fas fa-briefcase',
       label: modalId === 'add-company' ? 'Añadir Empresa' : 'Añadir Experiencia',
       color: 'success' as const,
-      onClick: () =>
+        onClick: () =>
         openDynamicModal(
-          '@/components/layout/Sections/Experience/components/FormModal',
+          () => import('@/components/layout/Sections/Experience/components/FormModal'),
           modalId,
           title,
           {
@@ -211,7 +214,7 @@ export const useFABActions = ({
         color: 'primary',
         onClick: () =>
           openDynamicModal(
-            '@/components/layout/Sections/About/modals/AboutModal',
+            () => import('@/components/layout/Sections/About/modals/AboutModal'),
             'about-edit',
             'Editar Sección About'
           ),

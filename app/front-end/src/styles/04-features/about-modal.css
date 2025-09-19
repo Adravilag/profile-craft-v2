@@ -605,10 +605,6 @@
   transform: translateY(-4px) scale(1.02);
 }
 
-.about-modal__highlight-item:hover::before {
-  transform: scaleX(1);
-}
-
 .about-modal__highlight-item--disabled {
   opacity: 0.6;
   filter: grayscale(0.3);
@@ -1460,9 +1456,7 @@
   animation: fadeSlideUp var(--about-modal-transition-normal) var(--ease-out);
 }
 
-.about-modal__highlight-item:hover {
-  animation: breathe 2s infinite;
-}
+/* Removed breathing animation for highlight items to reduce motion */
 
 .about-modal__save-success {
   animation: success-bounce var(--about-modal-transition-slow) var(--ease-out);
@@ -1504,6 +1498,22 @@
   animation-delay: 400ms;
 }
 
-.about-modal__highlight-item {
-  animation: reveal var(--about-modal-transition-normal) var(--ease-out) both;
+/* animation for .about-modal__highlight-item has been removed; existing hover/transition styles remain above */
+
+/* Language toggle buttons in modal header */
+.about-modal__lang-btn {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-primary);
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: var(--font-weight-medium);
+}
+
+.about-modal__lang-btn--active {
+  background: linear-gradient(135deg, var(--about-modal-primary), var(--about-modal-primary-hover));
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 6px 16px rgba(var(--color-primary-rgb), 0.12);
 }

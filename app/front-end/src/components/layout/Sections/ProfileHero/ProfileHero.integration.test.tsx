@@ -91,7 +91,7 @@ const renderComponents = () => {
   return render(
     <BrowserRouter>
       <div>
-        <ProfileHero darkMode={false} onToggleDarkMode={vi.fn()} />
+  <ProfileHero />
         <SmartNavigation navItems={navItems} />
       </div>
     </BrowserRouter>

@@ -10,10 +10,24 @@ import {
 import type { Project, Experience, Education, UserProfile, Skill } from '@/types/api';
 import { getTerminalTranslations } from './context/TerminalTranslationContext';
 
-// Función para obtener el idioma actual desde localStorage o por defecto
+// Función para obtener el idioma actual desde localStorage o por defecto.
+// Usar la misma clave que usa TranslationContext ('cv-language') y
+// fallback a document.documentElement.lang si está disponible.
 const getCurrentLanguage = (): string => {
   if (typeof window === 'undefined') return 'es';
-  return localStorage.getItem('preferredLanguage') || 'es';
+  try {
+    const saved = localStorage.getItem('cv-language');
+    if (saved && (saved === 'es' || saved === 'en')) return saved;
+  } catch (e) {
+    // ignore
+  }
+  try {
+    const docLang = document?.documentElement?.lang;
+    if (docLang && (docLang === 'es' || docLang === 'en')) return docLang;
+  } catch (e) {
+    // ignore
+  }
+  return 'es';
 };
 
 export interface CommandResult {

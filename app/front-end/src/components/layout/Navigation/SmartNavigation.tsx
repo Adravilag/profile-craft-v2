@@ -6,6 +6,7 @@ import { useInitialScrollToSection } from '@/hooks/useInitialScrollToSection';
 import styles from './SmartNavigation.module.css';
 import { scrollToElement } from '@/utils/scrollToElement';
 import LoadingSpinner from '@/components/ui/LoadingSpinner/LoadingSpinner';
+import LanguageSelector from '@/components/common/LanguageSelector/LanguageSelector';
 import { useSectionsLoadingContext } from '@/contexts/SectionsLoadingContext';
 
 interface SmartNavigationProps {
@@ -448,6 +449,12 @@ const SmartNavigation: React.FC<SmartNavigationProps> = ({ navItems }) => {
               <span>{item.label}</span>
             </button>
           ))}
+          {/* Desktop: language selector on the right */}
+        </div>
+
+        {/* Right side container for actions (language, auth, etc.) */}
+        <div className={styles.navActions} aria-hidden={isMobile}>
+          <LanguageSelector variant="button" />
         </div>
       </nav>
 
