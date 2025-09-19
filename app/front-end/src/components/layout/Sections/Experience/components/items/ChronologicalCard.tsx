@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { formatDateRange, calculateDuration } from '@/utils/dateUtils';
+import { formatDateRange, calculateDuration, calculateDurationInternal } from '@/utils/dateUtils';
 import SkillPill from '@/components/ui/SkillPill/SkillPill';
 // resolvePillFromTech removed: use skill suggestions from hook and a local resolver below
 import { useSkillSuggestions } from '@/features/skills/hooks/useSkillSuggestions';
@@ -8,6 +8,7 @@ import cardStyles from './ChronologicalCard.module.css';
 import chronologicalStyles from './ChronologicalItem.module.css';
 import BlurImage from '@/components/utils/BlurImage';
 import { useTranslation } from '@/contexts/TranslationContext';
+import { useLocalizedContent } from '@/hooks/useLocalizedContent';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface CombinedItem {
@@ -37,7 +38,8 @@ const ChronologicalCard: React.FC<ChronologicalCardProps> = ({
   onEdit,
   onDelete,
 }) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
+  const { getLocalizedText } = useLocalizedContent();
   const { isAuthenticated } = useAuth();
   const imgCandidate = findImageForName(item.company ?? item.institution);
 
@@ -162,22 +164,22 @@ const ChronologicalCard: React.FC<ChronologicalCardProps> = ({
           <>
             <h4 className={`${styles.chronologicalTitle} ${styles.companyTitle}`}>
               <i className="fas fa-building" />
-              {item.company}
+              {getLocalizedText(item.company, '')}
             </h4>
             <p className={`${styles.metaRow} ${styles.positionSubtitle}`}>
               <i className="fas fa-user-tie" />
-              <span>{item.title}</span>
+              <span>{getLocalizedText(item.title, '')}</span>
             </p>
           </>
         ) : (
           <>
             <h4 className={styles.chronologicalTitle}>
               <i className="fas fa-building-columns" />
-              <span>{item.title}</span>
+              <span>{getLocalizedText(item.title, '')}</span>
             </h4>
             <p className={styles.metaRow}>
               <i className="fas fa-graduation-cap" />
-              <span>{item.institution}</span>
+              <span>{getLocalizedText(item.institution, '')}</span>
             </p>
           </>
         )}
@@ -185,16 +187,24 @@ const ChronologicalCard: React.FC<ChronologicalCardProps> = ({
         <div className={styles.chronologicalMetaRow}>
           <div className={styles.chronologicalPeriod}>
             <i className="fas fa-calendar-alt" />
-            <span>{formatDateRange(item.start_date, item.end_date)}</span>
+            <span>{formatDateRange(item.start_date, item.end_date, language)}</span>
           </div>
 
           <div className={styles.chronologicalDuration}>
             <i className="fas fa-hourglass-half" />
-            <span>{calculateDuration(item.start_date, item.end_date)}</span>
+            <span>
+              {calculateDurationInternal
+                ? calculateDurationInternal(item.start_date, item.end_date, language)
+                : calculateDuration(item.start_date, item.end_date)}
+            </span>
           </div>
         </div>
 
-        {item.description && <p className={styles.chronologicalDescription}>{item.description}</p>}
+        {item.description && (
+          <p className={styles.chronologicalDescription}>
+            {getLocalizedText(item.description, '')}
+          </p>
+        )}
 
         {item.type === 'experience' && item.technologies && item.technologies.length > 0 && (
           <div className={styles.chronologicalSkills}>

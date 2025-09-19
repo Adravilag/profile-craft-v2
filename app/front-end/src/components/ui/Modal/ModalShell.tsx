@@ -1,6 +1,7 @@
 import React, { type FC, type ReactNode, useEffect, useRef, useCallback, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './ModalShell.module.css';
+import HeaderLangToggle from './HeaderLangToggle';
 
 // Tipos para manejo de progreso de formularios
 interface FormData {
@@ -26,6 +27,12 @@ interface ModalShellProps {
   actions?: ReactNode;
   /** custom actions node placed in the header (rendered next to the title) */
   headerActions?: ReactNode;
+  /** If true, show a built-in language toggle (ES/EN) in the header. Only shown when `headerActions` is not provided. */
+  showHeaderLangToggle?: boolean;
+  /** Current language for the built-in header language toggle (when enabled) */
+  headerLang?: 'es' | 'en';
+  /** Callback invoked when the built-in header language toggle is changed */
+  onHeaderLangChange?: (lang: 'es' | 'en') => void;
   /** simple declarative action buttons shown in the header (ignored when `actions` is provided) */
   actionButtons?: Array<{
     key?: string;
@@ -78,6 +85,9 @@ const ModalShell: FC<ModalShellProps> = ({
   validationErrors = {},
   selectedTechnologies = [],
   headerActions,
+  showHeaderLangToggle = false,
+  headerLang = 'es',
+  onHeaderLangChange,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const modalRef = useRef<HTMLDivElement | null>(null);
@@ -330,29 +340,35 @@ const ModalShell: FC<ModalShellProps> = ({
       <div className={styles.modalContainer} role="document" tabIndex={-1} style={containerStyle}>
         <div className={styles.modalHeader}>
           <div className={styles.modalHeaderTop}>
-              <h3 id="modal-title" className={styles.modalTitle}>
-                {title ?? 'Modal'}
-              </h3>
-              {headerActions && <div className={styles.modalHeaderToolbar}>{headerActions}</div>}
-              <button
-                aria-label="Cerrar"
-                className={styles.closeButton}
-                onClick={() => {
-                  try {
-                    if (typeof onClose === 'function') onClose();
-                  } catch (err) {
-                    /* noop */
-                  }
-                  try {
-                    document.body.classList.remove('modal-open');
-                  } catch (err) {
-                    /* noop */
-                  }
-                }}
-              >
-                ✕
-              </button>
-            </div>
+            <h3 id="modal-title" className={styles.modalTitle}>
+              {title ?? 'Modal'}
+            </h3>
+            {headerActions ? (
+              <div className={styles.modalHeaderToolbar}>{headerActions}</div>
+            ) : showHeaderLangToggle ? (
+              <div className={styles.modalHeaderToolbar}>
+                <HeaderLangToggle lang={headerLang} onChange={onHeaderLangChange} />
+              </div>
+            ) : null}
+            <button
+              aria-label="Cerrar"
+              className={styles.closeButton}
+              onClick={() => {
+                try {
+                  if (typeof onClose === 'function') onClose();
+                } catch (err) {
+                  /* noop */
+                }
+                try {
+                  document.body.classList.remove('modal-open');
+                } catch (err) {
+                  /* noop */
+                }
+              }}
+            >
+              ✕
+            </button>
+          </div>
         </div>
 
         {/* Barra de progreso del formulario */}

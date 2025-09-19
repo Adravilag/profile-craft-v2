@@ -178,28 +178,9 @@ const FormModal: React.FC<FormModalProps> = ({
       formData={formData}
       validationErrors={validationErrors}
       selectedTechnologies={selectedTechnologies}
-      headerActions={
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <button
-            type="button"
-            aria-pressed={lang === 'es'}
-            onClick={() => handleLangChange('es')}
-            className={`form-modal__lang-btn ${lang === 'es' ? 'form-modal__lang-btn--active' : ''}`}
-            style={{ padding: '6px 8px', borderRadius: 6 }}
-          >
-            ES
-          </button>
-          <button
-            type="button"
-            aria-pressed={lang === 'en'}
-            onClick={() => handleLangChange('en')}
-            className={`form-modal__lang-btn ${lang === 'en' ? 'form-modal__lang-btn--active' : ''}`}
-            style={{ padding: '6px 8px', borderRadius: 6 }}
-          >
-            EN
-          </button>
-        </div>
-      }
+      showHeaderLangToggle={true}
+      headerLang={lang}
+      onHeaderLangChange={handleLangChange}
       actionButtons={[
         { label: t.states.cancel, variant: 'ghost', onClick: onClose },
         {

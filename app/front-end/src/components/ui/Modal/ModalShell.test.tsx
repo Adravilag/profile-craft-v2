@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
 import ModalShell from './ModalShell';
 
@@ -8,6 +9,34 @@ describe('ModalShell', () => {
     title: 'Test Modal',
     onClose: vi.fn(),
   };
+
+  it('renders ES/EN buttons and calls onHeaderLangChange when clicked', async () => {
+    const user = userEvent.setup();
+    const handleChange = vi.fn();
+
+    render(
+      <ModalShell
+        title="Test Modal"
+        showHeaderLangToggle={true}
+        headerLang="es"
+        onHeaderLangChange={handleChange}
+      >
+        <div>Body</div>
+      </ModalShell>
+    );
+
+    const btnEs = screen.getByRole('button', { name: /ES/i });
+    const btnEn = screen.getByRole('button', { name: /EN/i });
+
+    expect(btnEs).toBeInTheDocument();
+    expect(btnEn).toBeInTheDocument();
+
+    await user.click(btnEn);
+    expect(handleChange).toHaveBeenCalledWith('en');
+
+    await user.click(btnEs);
+    expect(handleChange).toHaveBeenCalledWith('es');
+  });
 
   it('debe renderizar un modal básico', () => {
     render(

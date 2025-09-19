@@ -1,19 +1,40 @@
-export function formatDateRange(from: string | Date, to?: string | Date) {
-  // Mostrar nombres de mes en español: e.g. "junio 2024 - noviembre 2024"
-  const months = [
-    'Enero',
-    'Febrero',
-    'Marzo',
-    'Abril',
-    'Mayo',
-    'Junio',
-    'Julio',
-    'Agosto',
-    'Septiembre',
-    'Octubre',
-    'Noviembre',
-    'Diciembre',
-  ];
+export function formatDateRange(
+  from: string | Date,
+  to?: string | Date,
+  language: 'es' | 'en' = 'es'
+) {
+  // Month names per language
+  const monthsByLang: Record<'es' | 'en', string[]> = {
+    es: [
+      'Enero',
+      'Febrero',
+      'Marzo',
+      'Abril',
+      'Mayo',
+      'Junio',
+      'Julio',
+      'Agosto',
+      'Septiembre',
+      'Octubre',
+      'Noviembre',
+      'Diciembre',
+    ],
+    en: [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ],
+  };
+  const months = monthsByLang[language] || monthsByLang.es;
 
   const parse = (v?: string | Date | undefined) => {
     if (!v) return null;
@@ -30,9 +51,10 @@ export function formatDateRange(from: string | Date, to?: string | Date) {
     return null;
   };
 
+  const presentByLang: Record<'es' | 'en', string> = { es: 'Presente', en: 'Present' };
   const fmt = (d: Date | 'PRESENT' | null) => {
     if (!d) return '';
-    if (d === 'PRESENT') return 'Presente';
+    if (d === 'PRESENT') return presentByLang[language] || presentByLang.es;
     return `${months[d.getMonth()]} ${d.getFullYear()}`;
   };
 
@@ -51,10 +73,15 @@ export function formatDateRange(from: string | Date, to?: string | Date) {
 }
 
 export function calculateDuration(from: string | Date, to?: string | Date) {
-  // Devuelve duración legible en español.
-  // - si < 12 meses: 'X mes(es)'
-  // - si >= 12 y sin meses adicionales: 'Y año(s)'
-  // - si >=12 y con meses: 'Ya Mm' (ej. '2a 3m')
+  // Backwards-compatible: default to Spanish
+  return calculateDurationInternal(from, to, 'es');
+}
+
+export function calculateDurationInternal(
+  from: string | Date,
+  to?: string | Date,
+  language: 'es' | 'en' = 'es'
+) {
   try {
     const start = typeof from === 'string' ? new Date(from) : from;
     const end =
@@ -71,10 +98,33 @@ export function calculateDuration(from: string | Date, to?: string | Date) {
     const y = Math.floor(months / 12);
     const m = months % 12;
 
-    if (months === 0) return `0 meses`;
-    if (y === 0) return `${m} ${m === 1 ? 'mes' : 'meses'}`;
-    if (m === 0) return `${y} ${y === 1 ? 'año' : 'años'}`;
-    return `${y}a ${m}m`;
+    // localization tokens
+    const tokensByLang: Record<
+      'es' | 'en',
+      {
+        month: (n: number) => string;
+        year: (n: number) => string;
+        compact: (y: number, m: number) => string;
+      }
+    > = {
+      es: {
+        month: (n: number) => `${n} ${n === 1 ? 'mes' : 'meses'}`,
+        year: (n: number) => `${n} ${n === 1 ? 'año' : 'años'}`,
+        compact: (yy: number, mm: number) => `${yy}a ${mm}m`,
+      },
+      en: {
+        month: (n: number) => `${n} ${n === 1 ? 'month' : 'months'}`,
+        year: (n: number) => `${n} ${n === 1 ? 'year' : 'years'}`,
+        compact: (yy: number, mm: number) => `${yy}y ${mm}m`,
+      },
+    };
+
+    const tokens = tokensByLang[language] || tokensByLang.es;
+
+    if (months === 0) return tokens.month(0);
+    if (y === 0) return tokens.month(m);
+    if (m === 0) return tokens.year(y);
+    return tokens.compact(y, m);
   } catch (e) {
     return '';
   }

@@ -437,28 +437,9 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, initial
           disabled: loading,
         },
       ]}
-      headerActions={
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <button
-            type="button"
-            aria-pressed={lang === 'es'}
-            onClick={() => handleLangChange('es')}
-            className={`about-modal__lang-btn ${lang === 'es' ? 'about-modal__lang-btn--active' : ''}`}
-            style={{ padding: '6px 8px', borderRadius: 6 }}
-          >
-            ES
-          </button>
-          <button
-            type="button"
-            aria-pressed={lang === 'en'}
-            onClick={() => handleLangChange('en')}
-            className={`about-modal__lang-btn ${lang === 'en' ? 'about-modal__lang-btn--active' : ''}`}
-            style={{ padding: '6px 8px', borderRadius: 6 }}
-          >
-            EN
-          </button>
-        </div>
-      }
+      showHeaderLangToggle={true}
+      headerLang={lang}
+      onHeaderLangChange={(l: 'es' | 'en') => handleLangChange(l)}
     >
       {/* Tabs Navigation */}
       <div className="about-modal__tabs">

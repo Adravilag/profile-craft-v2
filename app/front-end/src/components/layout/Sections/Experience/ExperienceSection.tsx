@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, Suspense } from 'react';
 import { useExperienceSection } from '@/hooks/useExperienceSection';
 import type { Experience, Education } from '@/types/api';
 import { useTimelineAnimation } from '@/hooks/useTimelineAnimation';
@@ -13,7 +13,18 @@ import ChronologicalItem from './components/items/ChronologicalItem';
 import { useFab } from '@/contexts/FabContext';
 import { useAuth } from '@/contexts';
 import { useModal } from '@/contexts/ModalContext';
-import FormModal from './components/FormModal';
+// Import FormModal lazily to avoid bundler/runtime issues when module doesn't expose a clean default
+const FormModal = React.lazy(() =>
+  import('./components/FormModal').then(mod => ({
+    default: (mod as any).default ?? (mod as any).FormModal ?? mod,
+  }))
+);
+
+// Wrapper to help TypeScript understand props forwarded to a lazy-loaded module
+const FormModalWrapper: React.FC<any> = props => (
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  <FormModal {...props} />
+);
 
 interface ExperienceSectionProps {
   className?: string;
@@ -22,7 +33,7 @@ interface ExperienceSectionProps {
 }
 
 const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const { openModal, closeModal } = useModal();
   const { showSuccess, showError } = useNotificationContext();
   const timelineRef = useTimelineAnimation();
@@ -99,7 +110,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
   const handleEditExperience = async (experience: Experience) => {
     try {
       const mod = await import('./components/FormModal');
-      const FormModalComp = mod.default;
+      const FormModalComp = (mod as any).default ?? (mod as any).FormModal ?? mod;
 
       const modalContent = React.createElement(FormModalComp, {
         isOpen: true,
@@ -156,7 +167,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
   const handleEditEducation = async (edu: Education) => {
     try {
       const mod = await import('./components/FormModal');
-      const FormModalComp = mod.default;
+      const FormModalComp = (mod as any).default ?? (mod as any).FormModal ?? mod;
 
       const modalContent = React.createElement(FormModalComp, {
         isOpen: true,
@@ -202,7 +213,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
   const handleAddEducation = async () => {
     try {
       const mod = await import('./components/FormModal');
-      const FormModalComp = mod.default;
+      const FormModalComp = (mod as any).default ?? (mod as any).FormModal ?? mod;
 
       const modalContent = React.createElement(FormModalComp, {
         isOpen: true,
@@ -245,7 +256,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
   const handleAddExperience = async () => {
     try {
       const mod = await import('./components/FormModal');
-      const FormModalComp = mod.default;
+      const FormModalComp = (mod as any).default ?? (mod as any).FormModal ?? mod;
 
       const modalContent = React.createElement(FormModalComp, {
         isOpen: true,
@@ -433,7 +444,9 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
                   <div className={styles.adminExpMetadata}>
                     <div className={styles.adminItemDate}>
                       <i className="fas fa-calendar-alt"></i>
-                      <span>{formatDateRange(experience.start_date, experience.end_date)}</span>
+                      <span>
+                        {formatDateRange(experience.start_date, experience.end_date, language)}
+                      </span>
                     </div>
                   </div>
                   {experience.description && (
@@ -517,7 +530,7 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
                   <div className={styles.adminEduMetadata}>
                     <div className={styles.adminItemDate}>
                       <i className="fas fa-calendar-alt"></i>
-                      <span>{formatDateRange(edu.start_date, edu.end_date)}</span>
+                      <span>{formatDateRange(edu.start_date, edu.end_date, language)}</span>
                     </div>
                     {edu.grade && (
                       <div className={styles.adminItemGrade}>
@@ -699,14 +712,16 @@ const ExperienceSection: React.FC<ExperienceSectionProps> = ({ className }) => {
     };
 
     return (
-      <FormModal
-        isOpen={true}
-        onClose={handleCloseForm}
-        formType={editingType as 'experience' | 'education'}
-        initialData={initialData}
-        isEditing={!!editingId}
-        onSubmit={handleEnhancedFormSubmit}
-      />
+      <Suspense fallback={<div>Loading form...</div>}>
+        <FormModalWrapper
+          isOpen={true}
+          onClose={handleCloseForm}
+          formType={editingType as 'experience' | 'education'}
+          initialData={initialData}
+          isEditing={!!editingId}
+          onSubmit={handleEnhancedFormSubmit}
+        />
+      </Suspense>
     );
   };
 
