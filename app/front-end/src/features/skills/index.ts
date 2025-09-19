@@ -25,3 +25,4 @@ export { default as SkillsFilterFAB } from './components/filters/SkillsFilterFAB
 export { default as SortFilters } from './components/filters/SortFilters';
 export { default as SkillsGrid } from './components/grid/SkillsGrid';
 export { default as SkillModal } from './components/modal/SkillModal';
+export { default as SkillPreviewModal } from './components/modal/SkillPreviewModal';

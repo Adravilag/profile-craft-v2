@@ -48,15 +48,22 @@ const AddEducationForm: React.FC<AddEducationFormProps> = ({
   onValidationErrorsChange,
 }) => {
   const { showSuccess, showError } = useNotification();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
+
+  const getVisible = (value: any) => {
+    if (value == null) return '';
+    if (typeof value === 'string') return value;
+    if (typeof value === 'object') return value[language] ?? value.es ?? value.en ?? '';
+    return String(value);
+  };
 
   // Estados del formulario
   const [formData, setFormData] = useState<FormData>(() => ({
-    title: editingEducation?.title || initialData.title || '',
-    institution: editingEducation?.institution || initialData.institution || '',
+    title: getVisible(editingEducation?.title) || initialData.title || '',
+    institution: getVisible(editingEducation?.institution) || initialData.institution || '',
     start_date: editingEducation?.start_date || initialData.start_date || '',
     end_date: editingEducation?.end_date || initialData.end_date || '',
-    description: editingEducation?.description || initialData.description || '',
+    description: getVisible(editingEducation?.description) || initialData.description || '',
     grade: editingEducation?.grade || initialData.grade || '',
     order_index: editingEducation?.order_index || initialData.order_index || 0,
   }));
@@ -185,6 +192,19 @@ const AddEducationForm: React.FC<AddEducationFormProps> = ({
     }
   }, [useModalShell, onFormDataChange, formData]);
 
+  // Re-inicializar campos cuando cambia el idioma para mostrar el texto visible correcto
+  useEffect(() => {
+    setFormData({
+      title: getVisible(editingEducation?.title) || initialData.title || '',
+      institution: getVisible(editingEducation?.institution) || initialData.institution || '',
+      start_date: editingEducation?.start_date || initialData.start_date || '',
+      end_date: editingEducation?.end_date || initialData.end_date || '',
+      description: getVisible(editingEducation?.description) || initialData.description || '',
+      grade: editingEducation?.grade || initialData.grade || '',
+      order_index: editingEducation?.order_index || initialData.order_index || 0,
+    });
+  }, [language, editingEducation, initialData]);
+
   useEffect(() => {
     if (useModalShell && onValidationErrorsChange) {
       onValidationErrorsChange(validationErrors);
@@ -220,18 +240,19 @@ const AddEducationForm: React.FC<AddEducationFormProps> = ({
         const endIso = formData.end_date ? convertSpanishDateToISO(formData.end_date) : '';
 
         const educationData = {
-          title: formData.title,
-          institution: formData.institution,
+          // Send localized objects for fields that can be localized
+          title: { [language]: formData.title },
+          institution: { [language]: formData.institution },
           start_date: startIso,
           end_date: endIso,
-          description: formData.description,
+          description: { [language]: formData.description },
           grade: formData.grade,
           order_index: formData.order_index,
         };
 
         if (editingEducation?._id) {
           const id = parseInt(editingEducation._id as string);
-          await educationApi.updateEducation(id, educationData);
+          await educationApi.updateEducation(id, educationData as any);
           showSuccess('Formación Actualizada', 'Se ha actualizado la formación correctamente');
         } else {
           await educationApi.createEducation(educationData as any);

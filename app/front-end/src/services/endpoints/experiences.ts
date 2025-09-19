@@ -15,7 +15,7 @@ export const getExperiences = () => getExperiencesImpl();
  * Crea una nueva experiencia.
  */
 export const createExperience = (experience: Omit<Experience, 'id'>) =>
-  createExperienceImpl(experience as any);
+  createExperienceImpl(experience);
 
 /**
  * Actualiza una experiencia existente.

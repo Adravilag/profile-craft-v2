@@ -80,7 +80,7 @@ export const educationController = {
         return;
       }
 
-      // MongoDB-only implementation
+      // MongoDB-only implementation — store payload as provided (string or localized object)
       const newEducation = new Education({
         title,
         institution,
@@ -119,22 +119,43 @@ export const educationController = {
         logo_image,
       } = req.body;
 
-      // MongoDB-only implementation
-      const updatedEducation = await Education.findByIdAndUpdate(
-        id,
-        {
-          title,
-          institution,
-          start_date,
-          end_date,
-          description,
-          grade,
-          header_image: header_image || null,
-          logo_image: logo_image || null,
-          order_index,
-        },
-        { new: true }
-      );
+      // Merge localized fields with existing document to preserve other locales
+      const existing = await Education.findById(id).lean();
+
+      const mergeLocalized = (existingVal: any, incomingVal: any) => {
+        if (incomingVal == null) return existingVal;
+        if (typeof incomingVal === 'string') return incomingVal;
+        if (typeof incomingVal === 'object' && (incomingVal.es || incomingVal.en)) {
+          const existingObj =
+            typeof existingVal === 'object' ? existingVal : { es: existingVal, en: existingVal };
+          return {
+            es: incomingVal.es ?? existingObj.es ?? '',
+            en: incomingVal.en ?? existingObj.en ?? '',
+          };
+        }
+        return incomingVal;
+      };
+
+      const updatePayload: any = {
+        start_date,
+        end_date,
+        grade,
+        header_image: header_image || null,
+        logo_image: logo_image || null,
+        order_index,
+      };
+
+      if (existing) {
+        updatePayload.title = mergeLocalized(existing.title, title);
+        updatePayload.institution = mergeLocalized(existing.institution, institution);
+        updatePayload.description = mergeLocalized(existing.description, description);
+      } else {
+        updatePayload.title = title;
+        updatePayload.institution = institution;
+        updatePayload.description = description;
+      }
+
+      const updatedEducation = await Education.findByIdAndUpdate(id, updatePayload, { new: true });
 
       if (!updatedEducation) {
         res.status(404).json({ error: 'Educación no encontrada' });

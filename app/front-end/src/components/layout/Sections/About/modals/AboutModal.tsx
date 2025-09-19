@@ -81,7 +81,10 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, initial
         ...existing,
         // title and descriptionHtml should be objects with es/en
         title: { ...(existing.title || { es: '', en: '' }), [targetLang]: visible.title || '' },
-        descriptionHtml: { ...(existing.descriptionHtml || { es: '', en: '' }), [targetLang]: visible.descriptionHtml || '' },
+        descriptionHtml: {
+          ...(existing.descriptionHtml || { es: '', en: '' }),
+          [targetLang]: visible.descriptionHtml || '',
+        },
         // copy other non-localized fields if present
         icon: visible.icon ?? existing.icon ?? '',
         tech: visible.tech ?? existing.tech ?? '',
@@ -94,10 +97,21 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, initial
     });
 
     // collaborationNote
-    copy.collaborationNote = copy.collaborationNote || { title: { es: '', en: '' }, description: { es: '', en: '' }, icon: '' };
-    copy.collaborationNote.title = { ...(copy.collaborationNote.title || { es: '', en: '' }), [targetLang]: aboutData.collaborationNote.title || '' };
-    copy.collaborationNote.description = { ...(copy.collaborationNote.description || { es: '', en: '' }), [targetLang]: aboutData.collaborationNote.description || '' };
-    copy.collaborationNote.icon = aboutData.collaborationNote.icon || copy.collaborationNote.icon || '';
+    copy.collaborationNote = copy.collaborationNote || {
+      title: { es: '', en: '' },
+      description: { es: '', en: '' },
+      icon: '',
+    };
+    copy.collaborationNote.title = {
+      ...(copy.collaborationNote.title || { es: '', en: '' }),
+      [targetLang]: aboutData.collaborationNote.title || '',
+    };
+    copy.collaborationNote.description = {
+      ...(copy.collaborationNote.description || { es: '', en: '' }),
+      [targetLang]: aboutData.collaborationNote.description || '',
+    };
+    copy.collaborationNote.icon =
+      aboutData.collaborationNote.icon || copy.collaborationNote.icon || '';
 
     return copy;
   };
@@ -109,7 +123,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, initial
     setLocalizedData(nextLocalized);
 
     // map localized -> visible for the new language
-    const mapForLang = (t: any) => (t ? (typeof t === 'string' ? t : t[newLang] ?? '') : '');
+    const mapForLang = (t: any) => (t ? (typeof t === 'string' ? t : (t[newLang] ?? '')) : '');
     setAboutData({
       aboutText: mapForLang(nextLocalized.aboutText),
       highlights: (nextLocalized.highlights || []).map((h: any, i: number) => ({
@@ -189,7 +203,7 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, initial
           setLocalizedData(localized);
 
           // populate visible fields for selected lang
-          const mapForLang = (t: any) => (t ? (typeof t === 'string' ? t : t[lang] ?? '') : '');
+          const mapForLang = (t: any) => (t ? (typeof t === 'string' ? t : (t[lang] ?? '')) : '');
           setAboutData({
             aboutText: mapForLang(localized.aboutText),
             highlights: (localized.highlights || []).map((h: any) => ({
@@ -219,7 +233,10 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, initial
   const handleAboutTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
     setAboutData(prev => ({ ...prev, aboutText: value }));
-    setLocalizedData(prev => ({ ...prev, aboutText: { ...(prev.aboutText || {}), [lang]: value } }));
+    setLocalizedData(prev => ({
+      ...prev,
+      aboutText: { ...(prev.aboutText || {}), [lang]: value },
+    }));
     setHasUnsavedChanges(true);
   };
 
@@ -259,7 +276,9 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, initial
   const handleChangeHighlightField = (index: number, field: string, value: string) => {
     setAboutData(prev => {
       const copy = { ...prev } as any;
-      copy.highlights = (copy.highlights || []).map((h: any, i: number) => (i === index ? { ...h, [field]: value } : h));
+      copy.highlights = (copy.highlights || []).map((h: any, i: number) =>
+        i === index ? { ...h, [field]: value } : h
+      );
       return copy;
     });
     setLocalizedData(prev => {
@@ -302,14 +321,26 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, initial
     setError(null);
 
     try {
-      // Build payload using current selected language strings for backend compatibility
+      // Build payload sending localized objects to preserve separate languages
+      // Helper to ensure legacy string values are converted to { es, en }
+      const ensureLocalized = (v: any) => {
+        if (v == null) return { es: '', en: '' };
+        if (typeof v === 'string') return { es: v, en: v };
+        if (typeof v === 'object' && ('es' in v || 'en' in v)) {
+          return { es: v.es ?? v.en ?? '', en: v.en ?? v.es ?? '' };
+        }
+        return { es: String(v), en: String(v) };
+      };
+
       const payload: any = {
-        aboutText: (localizedData.aboutText && (localizedData.aboutText[lang] ?? localizedData.aboutText)) || '',
+        // Send the full localized object so backend doesn't mirror the same string in both locales
+        aboutText: ensureLocalized(localizedData.aboutText),
         highlights: (localizedData.highlights || []).map((h: any, i: number) => ({
           _id: h._id,
           icon: h.icon || '',
-          title: (h.title && (h.title[lang] ?? h.title)) || '',
-          descriptionHtml: (h.descriptionHtml && (h.descriptionHtml[lang] ?? h.descriptionHtml)) || '',
+          // title/descriptionHtml expected as localized objects
+          title: ensureLocalized(h.title),
+          descriptionHtml: ensureLocalized(h.descriptionHtml),
           tech: h.tech || '',
           imageSrc: h.imageSrc || '',
           imageCloudinaryId: h.imageCloudinaryId || '',
@@ -317,8 +348,8 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, initial
           isActive: h.isActive ?? true,
         })),
         collaborationNote: {
-          title: (localizedData.collaborationNote?.title && (localizedData.collaborationNote.title[lang] ?? localizedData.collaborationNote.title)) || '',
-          description: (localizedData.collaborationNote?.description && (localizedData.collaborationNote.description[lang] ?? localizedData.collaborationNote.description)) || '',
+          title: ensureLocalized(localizedData.collaborationNote?.title),
+          description: ensureLocalized(localizedData.collaborationNote?.description),
           icon: localizedData.collaborationNote?.icon || '',
         },
         isActive: aboutData.isActive,
@@ -406,28 +437,28 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, initial
           disabled: loading,
         },
       ]}
-        headerActions={
-          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-            <button
-              type="button"
-              aria-pressed={lang === 'es'}
-              onClick={() => handleLangChange('es')}
-              className={`about-modal__lang-btn ${lang === 'es' ? 'about-modal__lang-btn--active' : ''}`}
-              style={{ padding: '6px 8px', borderRadius: 6 }}
-            >
-              ES
-            </button>
-            <button
-              type="button"
-              aria-pressed={lang === 'en'}
-              onClick={() => handleLangChange('en')}
-              className={`about-modal__lang-btn ${lang === 'en' ? 'about-modal__lang-btn--active' : ''}`}
-              style={{ padding: '6px 8px', borderRadius: 6 }}
-            >
-              EN
-            </button>
-          </div>
-        }
+      headerActions={
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <button
+            type="button"
+            aria-pressed={lang === 'es'}
+            onClick={() => handleLangChange('es')}
+            className={`about-modal__lang-btn ${lang === 'es' ? 'about-modal__lang-btn--active' : ''}`}
+            style={{ padding: '6px 8px', borderRadius: 6 }}
+          >
+            ES
+          </button>
+          <button
+            type="button"
+            aria-pressed={lang === 'en'}
+            onClick={() => handleLangChange('en')}
+            className={`about-modal__lang-btn ${lang === 'en' ? 'about-modal__lang-btn--active' : ''}`}
+            style={{ padding: '6px 8px', borderRadius: 6 }}
+          >
+            EN
+          </button>
+        </div>
+      }
     >
       {/* Tabs Navigation */}
       <div className="about-modal__tabs">
@@ -607,10 +638,10 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, initial
                               className="about-modal__action-button about-modal__action-button--edit"
                               data-testid={`edit-highlight-${index}`}
                               aria-label={`Editar ${highlight.title}`}
-                                onClick={() => startEditHighlight(index)}
-                              >
-                                <span aria-hidden="true">✏️</span>
-                              </button>
+                              onClick={() => startEditHighlight(index)}
+                            >
+                              <span aria-hidden="true">✏️</span>
+                            </button>
                             <button
                               type="button"
                               className="about-modal__action-button about-modal__action-button--delete"
@@ -625,52 +656,68 @@ export const AboutModal: React.FC<AboutModalProps> = ({ isOpen, onClose, initial
                           className="about-modal__highlight-content"
                           dangerouslySetInnerHTML={{ __html: highlight.descriptionHtml }}
                         />
-                          {/* Inline editor when this highlight is being edited */}
-                          {editingHighlightIndex === index && (
-                            <div className="about-modal__highlight-editor">
-                              <label>
-                                Título:
-                                <input
-                                  type="text"
-                                  value={highlight.title}
-                                  onChange={e => handleChangeHighlightField(index, 'title', e.target.value)}
-                                  className="about-modal__input"
-                                />
-                              </label>
-                              <label>
-                                Descripción (HTML):
-                                <textarea
-                                  value={highlight.descriptionHtml}
-                                  onChange={e => handleChangeHighlightField(index, 'descriptionHtml', e.target.value)}
-                                  className="about-modal__textarea"
-                                  rows={4}
-                                />
-                              </label>
-                              <label>
-                                Tech (comma separated):
-                                <input
-                                  type="text"
-                                  value={highlight.tech}
-                                  onChange={e => handleChangeHighlightField(index, 'tech', e.target.value)}
-                                  className="about-modal__input"
-                                />
-                              </label>
-                              <label>
-                                Icon class:
-                                <input
-                                  type="text"
-                                  value={highlight.icon}
-                                  onChange={e => handleChangeHighlightField(index, 'icon', e.target.value)}
-                                  className="about-modal__input"
-                                />
-                              </label>
-                              <div style={{ marginTop: 8 }}>
-                                <button type="button" className="about-modal__button" onClick={stopEditHighlight}>
-                                  Hecho
-                                </button>
-                              </div>
+                        {/* Inline editor when this highlight is being edited */}
+                        {editingHighlightIndex === index && (
+                          <div className="about-modal__highlight-editor">
+                            <label>
+                              Título:
+                              <input
+                                type="text"
+                                value={highlight.title}
+                                onChange={e =>
+                                  handleChangeHighlightField(index, 'title', e.target.value)
+                                }
+                                className="about-modal__input"
+                              />
+                            </label>
+                            <label>
+                              Descripción (HTML):
+                              <textarea
+                                value={highlight.descriptionHtml}
+                                onChange={e =>
+                                  handleChangeHighlightField(
+                                    index,
+                                    'descriptionHtml',
+                                    e.target.value
+                                  )
+                                }
+                                className="about-modal__textarea"
+                                rows={4}
+                              />
+                            </label>
+                            <label>
+                              Tech (comma separated):
+                              <input
+                                type="text"
+                                value={highlight.tech}
+                                onChange={e =>
+                                  handleChangeHighlightField(index, 'tech', e.target.value)
+                                }
+                                className="about-modal__input"
+                              />
+                            </label>
+                            <label>
+                              Icon class:
+                              <input
+                                type="text"
+                                value={highlight.icon}
+                                onChange={e =>
+                                  handleChangeHighlightField(index, 'icon', e.target.value)
+                                }
+                                className="about-modal__input"
+                              />
+                            </label>
+                            <div style={{ marginTop: 8 }}>
+                              <button
+                                type="button"
+                                className="about-modal__button"
+                                onClick={stopEditHighlight}
+                              >
+                                Hecho
+                              </button>
                             </div>
-                          )}
+                          </div>
+                        )}
                         <div className="about-modal__highlight-tech">
                           <span className="about-modal__tech-label">Tech Stack:</span>
                           <div className="about-modal__tech-tags">

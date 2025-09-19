@@ -453,11 +453,11 @@
     "svg": "claude.svg"
   },
   {
-    "name": "MCP",
-    "slug": "mcp",
-    "category": "certification",
-    "color": "#107C10",
-    "svg": "mcp.svg",
-    "aliases": ["mcp"]
+    "name": "SCRUM",
+    "slug": "scrum",
+    "category": "methodology",
+    "color": "#F15A24",
+    "svg": "scrum.svg",
+    "aliases": ["scrum"]
   }
 ]

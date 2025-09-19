@@ -100,12 +100,21 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
   }, [skillSettings]);
 
   // Estados del formulario - Simplificado para experiencia únicamente
+  const { language } = useTranslation();
+
+  const getVisible = (value: any) => {
+    if (value == null) return '';
+    if (typeof value === 'string') return value;
+    if (typeof value === 'object') return value[language] ?? value.es ?? value.en ?? '';
+    return String(value);
+  };
+
   const [formData, setFormData] = useState<FormData>(() => ({
-    title: editingExperience?.position || initialData.title || '',
-    company: editingExperience?.company || initialData.company || '',
+    title: getVisible(editingExperience?.position) || initialData.title || '',
+    company: getVisible(editingExperience?.company) || initialData.company || '',
     start_date: editingExperience?.start_date || initialData.start_date || '',
     end_date: editingExperience?.end_date || initialData.end_date || '',
-    description: editingExperience?.description || initialData.description || '',
+    description: getVisible(editingExperience?.description) || initialData.description || '',
     // No normalizamos aquí: mantenemos el valor tal cual viene (string o array)
     technologies: editingExperience?.technologies ?? initialData.technologies ?? '',
     order_index: editingExperience?.order_index || initialData.order_index || 0,
@@ -116,17 +125,17 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
   // re-inicializar el state del formulario para reflejar los nuevos datos.
   useEffect(() => {
     setFormData({
-      title: editingExperience?.position || initialData.title || '',
-      company: editingExperience?.company || initialData.company || '',
+      title: getVisible(editingExperience?.position) || initialData.title || '',
+      company: getVisible(editingExperience?.company) || initialData.company || '',
       start_date: editingExperience?.start_date || initialData.start_date || '',
       end_date: editingExperience?.end_date || initialData.end_date || '',
-      description: editingExperience?.description || initialData.description || '',
+      description: getVisible(editingExperience?.description) || initialData.description || '',
       // Mantener el tipo original (string o array) proveniente del editingExperience o initialData
       technologies: editingExperience?.technologies ?? initialData.technologies ?? '',
       order_index: editingExperience?.order_index || initialData.order_index || 0,
       is_current: initialData.is_current || false,
     });
-  }, [editingExperience, initialData]);
+  }, [editingExperience, initialData, language]);
 
   // Estados de validación y UX - Sin barra de progreso (delegada a ModalShell)
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
@@ -493,12 +502,13 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
         const startIso = convertSpanishDateToISO(formData.start_date);
         const endIso = formData.end_date ? convertSpanishDateToISO(formData.end_date) : '';
 
+        // Build localized payload for fields that can be localized so backend can merge
         const experienceData = {
-          position: formData.title,
-          company: formData.company,
+          position: { [language]: formData.title },
+          company: { [language]: formData.company },
           start_date: startIso,
           end_date: endIso,
-          description: formData.description,
+          description: { [language]: formData.description },
           // Enviar slugs de tecnologías seleccionadas
           technologies:
             selectedTechnologies && selectedTechnologies.length > 0
@@ -510,7 +520,7 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
         };
 
         if (editingExperience?._id) {
-          await experiencesApi.updateExperience(editingExperience._id, experienceData);
+          await experiencesApi.updateExperience(editingExperience._id, experienceData as any);
           showSuccess(t.forms.notifications.experienceUpdated, t.forms.notifications.updateSuccess);
         } else {
           // Unconditional console log of payload so it's visible in DevTools

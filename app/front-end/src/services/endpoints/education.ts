@@ -15,7 +15,7 @@ export const getEducation = () => getEducationImpl();
  * Crea un registro de educación.
  */
 export const createEducation = (education: Omit<Education, 'id' | 'created_at'>) =>
-  createEducationImpl(education as any);
+  createEducationImpl(education);
 
 /**
  * Actualiza un registro de educación.

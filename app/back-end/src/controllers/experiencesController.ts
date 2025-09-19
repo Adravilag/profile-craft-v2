@@ -59,7 +59,7 @@ export const experiencesController = {
         return;
       }
 
-      // MongoDB-only implementation
+      // MongoDB-only implementation — store payload as provided (strings or localized objects)
       const experience = new Experience({
         user_id,
         company,
@@ -105,30 +105,57 @@ export const experiencesController = {
         technologies = [],
       } = req.body;
 
-      if (!company || !position || !start_date) {
-        res.status(400).json({ error: 'Empresa, posición y fecha de inicio son requeridos' });
+      if (!start_date) {
+        res.status(400).json({ error: 'Fecha de inicio es requerida' });
         return;
       }
 
-      // MongoDB-only implementation
-      const experience = await Experience.findByIdAndUpdate(
-        req.params.id,
-        {
-          company,
-          position,
-          description,
-          header_image: header_image || null,
-          logo_image: logo_image || null,
-          start_date: new Date(start_date),
-          end_date: end_date ? new Date(end_date) : null,
-          is_current,
-          location,
-          order_index,
-          technologies: Array.isArray(technologies) ? technologies : [],
-          updated_at: new Date(),
-        },
-        { new: true, lean: true }
-      );
+      // Find existing doc to merge localized fields when necessary
+      const existing = await Experience.findById(req.params.id).lean();
+
+      const mergeLocalized = (existingVal: any, incomingVal: any) => {
+        // If incoming is a string, convert to both locales (backwards compatible)
+        if (incomingVal == null) return existingVal;
+        if (typeof incomingVal === 'string') return incomingVal;
+        if (typeof incomingVal === 'object' && (incomingVal.es || incomingVal.en)) {
+          // Merge: keep existing locales if not provided
+          const existingObj =
+            typeof existingVal === 'object' ? existingVal : { es: existingVal, en: existingVal };
+          return {
+            es: incomingVal.es ?? existingObj.es ?? '',
+            en: incomingVal.en ?? existingObj.en ?? '',
+          };
+        }
+        return incomingVal;
+      };
+
+      const updatePayload: any = {
+        header_image: header_image || null,
+        logo_image: logo_image || null,
+        start_date: new Date(start_date),
+        end_date: end_date ? new Date(end_date) : null,
+        is_current,
+        location,
+        order_index,
+        technologies: Array.isArray(technologies) ? technologies : [],
+        updated_at: new Date(),
+      };
+
+      // Merge company/position/description preserving other locales when possible
+      if (existing) {
+        updatePayload.company = mergeLocalized(existing.company, company);
+        updatePayload.position = mergeLocalized(existing.position, position);
+        updatePayload.description = mergeLocalized(existing.description, description);
+      } else {
+        updatePayload.company = company;
+        updatePayload.position = position;
+        updatePayload.description = description;
+      }
+
+      const experience = await Experience.findByIdAndUpdate(req.params.id, updatePayload, {
+        new: true,
+        lean: true,
+      });
 
       if (!experience) {
         res.status(404).json({ error: 'Experiencia no encontrada' });

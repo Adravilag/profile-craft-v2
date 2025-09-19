@@ -14,13 +14,18 @@ export interface UserProfile {
   profile_image?: string;
 }
 
+export interface LocalizedString {
+  es?: string;
+  en?: string;
+}
+
 export interface Experience {
   _id?: string;
   id?: string | number;
   user_id?: string | number;
-  company: string;
-  position: string;
-  description?: string;
+  company: string | LocalizedString;
+  position: string | LocalizedString;
+  description?: string | LocalizedString;
   start_date: string;
   end_date?: string;
   is_current?: boolean;
@@ -147,11 +152,11 @@ export interface Education {
   _id?: string;
   id?: number | string;
   user_id?: number | string;
-  title: string;
-  institution: string;
+  title: string | LocalizedString;
+  institution: string | LocalizedString;
   start_date: string;
   end_date: string;
-  description?: string;
+  description?: string | LocalizedString;
   header_image?: string;
   logo_image?: string;
   grade?: string;

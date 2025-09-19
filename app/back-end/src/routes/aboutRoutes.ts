@@ -27,15 +27,51 @@ router.put(
   '/',
   authenticate,
   [
-    body('aboutText').optional().isString().withMessage('El texto About debe ser una cadena'),
+    // aboutText can be a string (legacy) or a localized object { es, en }
+    body('aboutText')
+      .optional()
+      .custom(value => {
+        if (value == null) return true;
+        if (typeof value === 'string') return true;
+        if (typeof value === 'object' && ('es' in value || 'en' in value)) {
+          const es = value.es ?? value.en ?? '';
+          const en = value.en ?? value.es ?? '';
+          return typeof es === 'string' && typeof en === 'string';
+        }
+        return false;
+      })
+      .withMessage('El texto About debe ser una cadena o un objeto localizado { es, en }'),
+    // collaborationNote.title/description can be string or localized object
     body('collaborationNote.title')
       .optional()
-      .isString()
-      .withMessage('El título de la nota de colaboración debe ser una cadena'),
+      .custom(value => {
+        if (value == null) return true;
+        if (typeof value === 'string') return true;
+        if (typeof value === 'object' && ('es' in value || 'en' in value)) {
+          const es = value.es ?? value.en ?? '';
+          const en = value.en ?? value.es ?? '';
+          return typeof es === 'string' && typeof en === 'string';
+        }
+        return false;
+      })
+      .withMessage(
+        'El título de la nota de colaboración debe ser una cadena o un objeto localizado { es, en }'
+      ),
     body('collaborationNote.description')
       .optional()
-      .isString()
-      .withMessage('La descripción de la nota de colaboración debe ser una cadena'),
+      .custom(value => {
+        if (value == null) return true;
+        if (typeof value === 'string') return true;
+        if (typeof value === 'object' && ('es' in value || 'en' in value)) {
+          const es = value.es ?? value.en ?? '';
+          const en = value.en ?? value.es ?? '';
+          return typeof es === 'string' && typeof en === 'string';
+        }
+        return false;
+      })
+      .withMessage(
+        'La descripción de la nota de colaboración debe ser una cadena o un objeto localizado { es, en }'
+      ),
   ],
   updateAboutSection
 );

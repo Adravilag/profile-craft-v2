@@ -26,17 +26,19 @@ const ExperienceSchema: Schema = new Schema(
       required: true,
     },
     company: {
-      type: String,
+      // Support legacy string or localized object { es, en }
+      type: Schema.Types.Mixed,
       required: true,
       trim: true,
     },
     position: {
-      type: String,
+      // Support legacy string or localized object { es, en }
+      type: Schema.Types.Mixed,
       required: true,
       trim: true,
     },
     description: {
-      type: String,
+      type: Schema.Types.Mixed,
       default: null,
     },
     start_date: {

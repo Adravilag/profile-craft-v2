@@ -299,26 +299,35 @@ export function PatternLogin({
           }}
         >
           {src ? (
-            <img
-              src={buildCloudinaryUrl(src, {
-                width: (imgAttrs && (imgAttrs.width as number)) || 200,
-                crop: 'fill',
-                gravity: 'face',
-                quality: 'auto',
-                format: 'auto',
-              })}
-              srcSet={getCloudinarySrcSet(src, [120, 200, 400, 800], {
-                crop: 'fill',
-                gravity: 'face',
-                quality: 'auto',
-                format: 'auto',
-              })}
-              sizes="(max-width: 480px) 120px, (max-width: 1024px) 200px, 400px"
-              alt={alt ?? 'avatar'}
-              className={className}
-              style={{ display: 'block', objectFit: 'cover', width: '100%', height: '100%' }}
-              {...(imgAttrs || {})}
-            />
+            // Avoid passing unknown props like fetchPriority directly to DOM elements.
+            // Extract fetchPriority and pass it as lowercase `fetchpriority` attribute
+            (() => {
+              const { fetchPriority, ...restAttrs } = (imgAttrs || {}) as any;
+              const fpAttr = fetchPriority != null ? { fetchpriority: fetchPriority } : {};
+              return (
+                <img
+                  src={buildCloudinaryUrl(src, {
+                    width: (imgAttrs && (imgAttrs.width as number)) || 200,
+                    crop: 'fill',
+                    gravity: 'face',
+                    quality: 'auto',
+                    format: 'auto',
+                  })}
+                  srcSet={getCloudinarySrcSet(src, [120, 200, 400, 800], {
+                    crop: 'fill',
+                    gravity: 'face',
+                    quality: 'auto',
+                    format: 'auto',
+                  })}
+                  sizes="(max-width: 480px) 120px, (max-width: 1024px) 200px, 400px"
+                  alt={alt ?? 'avatar'}
+                  className={className}
+                  style={{ display: 'block', objectFit: 'cover', width: '100%', height: '100%' }}
+                  {...restAttrs}
+                  {...(fpAttr as any)}
+                />
+              );
+            })()
           ) : (
             // Decorative inline avatar to avoid any external network request when no src
             <svg

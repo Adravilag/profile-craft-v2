@@ -18,13 +18,14 @@ export interface IEducation extends Document {
 const educationSchema = new Schema<IEducation>(
   {
     title: {
-      type: String,
+      // Support legacy string or localized object { es, en }
+      type: Schema.Types.Mixed,
       required: true,
       trim: true,
       maxlength: 200,
     },
     institution: {
-      type: String,
+      type: Schema.Types.Mixed,
       required: true,
       trim: true,
       maxlength: 200,
@@ -38,7 +39,7 @@ const educationSchema = new Schema<IEducation>(
       default: null,
     },
     description: {
-      type: String,
+      type: Schema.Types.Mixed,
       trim: true,
       maxlength: 1000,
     },

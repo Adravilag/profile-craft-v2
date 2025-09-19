@@ -104,10 +104,8 @@ const AboutSectionSchema = new Schema<IAboutSection>(
         type: Schema.Types.Mixed,
         required: true,
         default: {
-          es:
-            'Me especializo en transformar ideas complejas en soluciones digitales efectivas. Si buscas un desarrollador comprometido con la excelencia técnica, ¡conversemos sobre tu próximo proyecto!',
-          en:
-            'I specialize in turning complex ideas into effective digital solutions. If you are looking for a developer committed to technical excellence, let\'s talk about your next project!',
+          es: 'Me especializo en transformar ideas complejas en soluciones digitales efectivas. Si buscas un desarrollador comprometido con la excelencia técnica, ¡conversemos sobre tu próximo proyecto!',
+          en: "I specialize in turning complex ideas into effective digital solutions. If you are looking for a developer committed to technical excellence, let's talk about your next project!",
         },
       },
       icon: {
@@ -122,6 +120,7 @@ const AboutSectionSchema = new Schema<IAboutSection>(
   },
   {
     timestamps: true,
+    collection: 'about-section', // Forzar nombre de colección singular con guion según convención del proyecto
   }
 );
 

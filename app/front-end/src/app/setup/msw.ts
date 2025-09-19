@@ -13,7 +13,11 @@ export const setupMsw = async (opts: SetupMswOptions = {}): Promise<void> => {
   if (!isDev) return;
 
   try {
-    const mod = await import(opts.mockPath || '@/mocks/browser');
+    // Evitar dependencias de alias en import dinámico (fallan en runtime si no están resueltas)
+    // Usar una ruta relativa desde este archivo hacia `src/mocks/browser` por defecto.
+    // allow override via opts.mockPath when needed (e.g., tests)
+    const defaultMockPath = opts.mockPath || '../../mocks/browser';
+    const mod = await import(defaultMockPath);
     const worker = mod?.worker;
     if (worker && typeof worker.start === 'function') {
       await worker.start();
