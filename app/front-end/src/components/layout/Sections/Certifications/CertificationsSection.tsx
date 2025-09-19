@@ -9,6 +9,7 @@ import { useNotification } from '@/hooks/useNotification';
 import { findIssuerByName } from '@/features/certifications';
 import { debugLog } from '@/utils/debugConfig';
 import HeaderSection from '../../HeaderSection/HeaderSection';
+import { useTranslation } from '@/contexts/TranslationContext';
 import FloatingActionButtonGroup from '@/components/ui/FloatingActionButtonGroup/FloatingActionButtonGroup';
 import CertificationModal from './CertificationModal';
 import { useFABActions } from '@/components/layout/RootLayout/hooks/useFABActions';
@@ -144,12 +145,14 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
     }
   };
 
+  const { t, getText } = useTranslation();
+
   return (
     <div className="section-cv" id="certifications">
       <HeaderSection
         icon="fas fa-certificate"
-        title="Certificaciones"
-        subtitle="Credenciales y certificaciones profesionales obtenidas"
+        title={t.certifications.title}
+        subtitle={t.certifications.subtitle}
         className="certifications"
       />
 
@@ -158,7 +161,7 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
           <div className={styles.loadingState}>
             <div className={styles.loadingSpinner}>
               <i className="fas fa-spinner fa-spin"></i>
-              <p>Cargando certificaciones...</p>
+              <p>{t.certifications.loading}</p>
             </div>
           </div>
         ) : (
@@ -189,7 +192,7 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                     <div className={styles.certDetails}>
                       <div className={styles.certDate}>
                         <i className="fas fa-calendar-alt"></i>
-                        <span>{new Date(cert.date).toLocaleDateString('es-ES')}</span>
+                        <span>{new Date(cert.date).toLocaleDateString()}</span>
                       </div>
                       {cert.credentialId && (
                         <div className={styles.certId}>
@@ -205,13 +208,13 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                             target="_blank"
                             rel="noopener noreferrer"
                             className={styles.certSiteLink}
-                            title="Visitar sitio del curso"
+                            title={t.certifications.courseSite}
                           >
-                            Sitio del curso
+                            {t.certifications.courseSite}
                           </a>
                         </div>
                       )}
-                      {/* añadir aquí verificar */}
+                      {/* verificar */}
                       <div className={styles.certSite}>
                         <i className="fas fa-globe"></i>
                         <a
@@ -220,12 +223,10 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                           rel="noopener noreferrer"
                           className={styles.certSiteLink}
                           title={
-                            cert.verifyUrl
-                              ? 'Verificar certificación'
-                              : 'Verificación no disponible'
+                            cert.verifyUrl ? t.certifications.verify : t.certifications.notAvailable
                           }
                         >
-                          {cert.verifyUrl ? 'Verificar' : 'No disponible'}
+                          {cert.verifyUrl ? t.certifications.verify : t.certifications.notAvailable}
                         </a>
                       </div>
                     </div>
@@ -246,14 +247,14 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                           <button
                             className={styles.editBtn}
                             onClick={() => handleOpenModal(cert)}
-                            title="Editar certificación"
+                            title={t.certifications.editCertification}
                           >
                             <i className="fas fa-edit"></i>
                           </button>
                           <button
                             className={styles.deleteBtn}
                             onClick={() => handleDeleteCertification(cert.id)}
-                            title="Eliminar certificación"
+                            title={t.certifications.deleteCertification}
                           >
                             <i className="fas fa-trash"></i>
                           </button>
@@ -274,10 +275,8 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
                 <div className={styles.emptyIcon}>
                   <i className="fas fa-certificate"></i>
                 </div>
-                <h3 className={styles.emptyTitle}>No hay certificaciones disponibles</h3>
-                <p className={styles.emptyDescription}>
-                  Las certificaciones aparecerán aquí cuando estén disponibles.
-                </p>
+                <h3 className={styles.emptyTitle}>{t.certifications.emptyTitle}</h3>
+                <p className={styles.emptyDescription}>{t.certifications.emptyDescription}</p>
               </div>
             )}
           </div>

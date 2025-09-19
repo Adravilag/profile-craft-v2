@@ -69,8 +69,8 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
       <div className={`section-cv`} id="projects">
         <HeaderSection
           icon="fas fa-code"
-          title="Proyectos"
-          subtitle="Explora mis proyectos y desarrollos más destacados"
+          title={t.projects.title}
+          subtitle={t.projects.subtitle ?? 'Explora mis proyectos y desarrollos más destacados'}
           className="projects"
         />
         <div className="section-container">
@@ -109,8 +109,8 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
       <div className={`section-cv`} id="projects">
         <HeaderSection
           icon="fas fa-code"
-          title="Proyectos"
-          subtitle="Explora mis proyectos y desarrollos más destacados"
+          title={t.projects.title}
+          subtitle={t.projects.subtitle ?? 'Explora mis proyectos y desarrollos más destacados'}
           className="projects"
         />
         <div className="section-container">
@@ -132,8 +132,8 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
       <div className={`section-cv`} id="projects">
         <HeaderSection
           icon="fas fa-code"
-          title="Proyectos"
-          subtitle="Explora mis proyectos y desarrollos más destacados"
+          title={t.projects.title}
+          subtitle={t.projects.subtitle ?? 'Explora mis proyectos y desarrollos más destacados'}
           className="projects"
         />
         <div className="section-container">
@@ -153,8 +153,8 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
     <div className={`section-cv`} id="projects" data-section="projects">
       <HeaderSection
         icon="fas fa-code"
-        title="Proyectos"
-        subtitle="Explora mis proyectos y desarrollos más destacados"
+        title={t.projects.title}
+        subtitle={t.projects.subtitle ?? 'Explora mis proyectos y desarrollos más destacados'}
         className="projects"
       />
       <div className="section-container">

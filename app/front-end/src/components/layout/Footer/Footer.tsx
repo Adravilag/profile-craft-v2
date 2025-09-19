@@ -5,6 +5,7 @@ import styles from './Footer.module.css';
 import { profile } from '@/services/endpoints';
 const { getUserProfile } = profile;
 import type { UserProfile } from '@/types/api';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 interface FooterProps {
   className?: string;
@@ -15,6 +16,7 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
   const currentYear = new Date().getFullYear();
   // Obtener la función de navegación y la sección actual del hook una vez en el nivel del componente
   const { navigateToSection, currentSection } = useNavigation();
+  const { t } = useTranslation();
   const [profile, setProfile] = useState<UserProfile | null>(profileProp || null);
   const [loading, setLoading] = useState(!profileProp);
   const [error, setError] = useState<string | null>(null);
@@ -108,7 +110,7 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
                     <i className="fas fa-code" aria-hidden="true"></i>
                   </div>
                   <div className={styles.brandText}>
-                    <h3 className={styles.brandName}>ProfileCraft</h3>
+                    <h3 className={styles.brandName}>Mi Portafolio</h3>
                     <p className={styles.brandTagline}>Cargando información del perfil...</p>
                   </div>
                 </div>
@@ -149,16 +151,16 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
                   <i className="fas fa-code" aria-hidden="true"></i>
                 </div>
                 <div className={styles.brandText}>
-                  <h3 className={styles.brandName}>ProfileCraft</h3>
-                  <p className={styles.brandTagline}>
-                    Creando experiencias digitales excepcionales
-                  </p>
+                  <h3 className={styles.brandName}>
+                    {profile?.name || t.footer.brandNameFallback}
+                  </h3>
+                  <p className={styles.brandTagline}>{t.footer.brandTagline}</p>
                 </div>
               </div>
 
               {/* Redes sociales */}
               <div className={styles.socialSection}>
-                <h4 className={styles.sectionTitle}>Sígueme</h4>
+                <h4 className={styles.sectionTitle}>{t.footer.followTitle}</h4>
                 <div className={styles.socialLinks} role="list">
                   {socialLinks.map(social => (
                     <a
@@ -184,7 +186,7 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
           <div className={styles.footerSection}>
             {/* Separador visual */}
             <div className={styles.sectionSeparator}></div>
-            <h4 className={styles.sectionTitle}>Navegación</h4>
+            <h4 className={styles.sectionTitle}>{t.footer.navigationTitle}</h4>
             <nav className={styles.quickLinksNav} aria-label="Enlaces rápidos">
               <ul className={styles.quickLinks} role="list">
                 {quickLinks.map(link => (
@@ -271,7 +273,7 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
           <div className={`${styles.footerSection} ${styles.gradientBackground}`}>
             {/* Separador visual */}
             <div className={styles.sectionSeparator}></div>
-            <h4 className={styles.sectionTitle}>Contacto</h4>
+            <h4 className={styles.sectionTitle}>{t.footer.contactTitle}</h4>
             <div className={styles.contactInfo}>
               {profile?.location && (
                 <div className={styles.contactItem}>
@@ -281,10 +283,29 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
               )}
               {profile?.email_contact && (
                 <div className={styles.contactItem}>
-                  <a href={`mailto:${profile.email_contact}`} className={styles.contactLink}>
-                    <i className="fas fa-envelope" aria-hidden="true"></i>
-                    {profile.email_contact}
-                  </a>
+                  {(() => {
+                    const email = profile.email_contact;
+                    const subject = t.footer.emailSubject;
+                    const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+                    const name = profile.name || '';
+                    const bodyTemplate = t.footer.emailBody || '';
+                    const body = bodyTemplate.replace('{name}', name).replace('{url}', currentUrl);
+
+                    const mailto = `mailto:${email}?subject=${encodeURIComponent(
+                      subject
+                    )}&body=${encodeURIComponent(body)}`;
+
+                    return (
+                      <a
+                        href={mailto}
+                        className={styles.contactLink}
+                        aria-label={t.footer.sendEmailAria.replace('{email}', email)}
+                      >
+                        <i className="fas fa-envelope" aria-hidden="true"></i>
+                        {email}
+                      </a>
+                    );
+                  })()}
                 </div>
               )}
               {profile?.phone && (
@@ -298,7 +319,7 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
               {!profile?.location && !profile?.email_contact && !profile?.phone && !loading && (
                 <div className={styles.contactItem}>
                   <i className="fas fa-info-circle" aria-hidden="true"></i>
-                  <span>Información de contacto disponible en el CV</span>
+                  <span>{t.footer.contactFallback}</span>
                 </div>
               )}
             </div>
@@ -308,7 +329,7 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
               <div className={styles.statusIndicator}>
                 <div className={styles.statusDot}></div>
                 <span className={styles.statusText}>
-                  {profile?.status || 'Disponible para nuevos proyectos'}
+                  {profile?.status || t.footer.availabilityDefault}
                 </span>
               </div>
             </div>
@@ -318,23 +339,21 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
           <div className={`${styles.footerSection} ${styles.gradientBackground}`}>
             {/* Separador visual */}
             <div className={styles.sectionSeparator}></div>
-            <h4 className={styles.sectionTitle}>Mantente al día</h4>
-            <p className={styles.newsletterDescription}>
-              Recibe actualizaciones sobre nuevos proyectos y tecnologías.
-            </p>
+            <h4 className={styles.sectionTitle}>{t.footer.newsletterTitle}</h4>
+            <p className={styles.newsletterDescription}>{t.footer.newsletterDescription}</p>
             <form className={styles.newsletterForm} onSubmit={e => e.preventDefault()}>
               <div className={styles.inputGroup}>
                 <input
                   type="email"
-                  placeholder={profile?.email_contact || 'tu@email.com'}
+                  placeholder={profile?.email_contact || t.footer.newsletterPlaceholder}
                   className={styles.emailInput}
-                  aria-label="Dirección de email para newsletter"
+                  aria-label={t.footer.subscribeAria}
                   required
                 />
                 <button
                   type="submit"
                   className={styles.subscribeButton}
-                  aria-label="Suscribirse al newsletter"
+                  aria-label={t.footer.subscribeAria}
                 >
                   <i className="fas fa-paper-plane" aria-hidden="true"></i>
                 </button>
@@ -350,11 +369,7 @@ const Footer: React.FC<FooterProps> = ({ className = '', profile: profileProp })
         <div className={styles.footerBottom}>
           <div className={styles.copyrightSection}>
             <p className={styles.copyright}>
-              © {currentYear} {profile?.name || 'ProfileCraft'}. Hecho con{' '}
-              <span className={styles.heartIcon} aria-label="amor">
-                ❤️
-              </span>{' '}
-              usando React y Material Design 3.
+              © {currentYear} {profile?.name || t.footer.brandNameFallback} (@Adavilag)
             </p>
           </div>
 

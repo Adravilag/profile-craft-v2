@@ -389,6 +389,17 @@
   transition: color var(--md-sys-motion-duration-short3) ease;
 }
 
+/* Ensure icons are perfectly centered vertically and horizontally */
+.socialLink i,
+.quickLink i,
+.contactItem i,
+.techIcons i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+
 .socialName {
   font-weight: 500;
 }
@@ -519,6 +530,14 @@
   color: var(--md-sys-color-primary);
   font-size: 1.1rem;
   flex-shrink: 0;
+}
+
+/* Make links that contain icons align their children */
+.contactLink,
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--md-sys-spacing-sm);
 }
 
 .contactLink {

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import useRenderCount from '@/utils/useRenderCount';
+import { useTranslation } from '@/contexts/TranslationContext';
 import SkillCard from '../cards/SkillCard';
 import type { SkillsGridProps } from '../../types/skills';
 import { debugLog } from '@/utils/debugConfig';
@@ -45,6 +46,8 @@ const SkillsGrid: React.FC<SkillsGridProps> = ({
 
   // Dev instrumentation: count renders
   useRenderCount && useRenderCount('SkillsGrid', true);
+
+  const { t } = useTranslation();
 
   // Verificar que tenemos iconos
   const iconsLoaded = skillsIcons && skillsIcons.length > 0;
@@ -151,8 +154,8 @@ const SkillsGrid: React.FC<SkillsGridProps> = ({
     return (
       <div className={styles.emptyState}>
         <i className={`fas fa-code ${styles.emptyIcon}`}></i>
-        <h3>No hay habilidades registradas</h3>
-        <p>Comienza añadiendo tus primeras habilidades técnicas</p>
+        <h3>{t.terminalCommands.noSkillsRegistered}</h3>
+        <p>{t.terminalCommands.addSkills}</p>
       </div>
     );
   }
@@ -161,7 +164,11 @@ const SkillsGrid: React.FC<SkillsGridProps> = ({
     <div className={styles.skillsCategories}>
       {skillsIcons && skillsIcons.length === 0 && (
         <div className={styles.loadingIcons}>
-          <p>Cargando iconos de habilidades...</p>
+          <p>
+            {t.skills.title
+              ? `Cargando ${t.skills.title.toLowerCase()}...`
+              : 'Cargando iconos de habilidades...'}
+          </p>
         </div>
       )}
       {getCategoriesToShow.map(([category, skills]) => {
@@ -178,7 +185,9 @@ const SkillsGrid: React.FC<SkillsGridProps> = ({
                   <i className={`${styles.categoryIcon} ${CATEGORY_ICONS[category]}`}></i>
                 )}
                 {category === 'Destacados' && (
-                  <span className={styles.featuredBadge}>Destacados</span>
+                  <span className={styles.featuredBadge}>
+                    {t.skills.highlights || 'Destacados'}
+                  </span>
                 )}
                 <span className={styles.categoryName}>{category}</span>
                 <span className={styles.categoryCount}>{skills.length}</span>

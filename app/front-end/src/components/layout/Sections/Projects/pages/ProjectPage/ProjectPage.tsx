@@ -1,5 +1,5 @@
 // src/components/sections/projects/ProjectPage.tsx
-
+// Clean ProjectPage (single, consistent implementation)
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { projects, profile } from '@/services/endpoints';
@@ -20,55 +20,40 @@ import styles from './ProjectPage.module.css';
 import TechnologyChips from '@/components/ui/TechnologyChips/TechnologyChips';
 import { useSkillSuggestions } from '@/features/skills/hooks/useSkillSuggestions';
 import { resolvePillFromTech } from '@/features/skills/utils/pillUtils';
+import { useTranslation } from '@/contexts/TranslationContext';
 
-// Función utilitaria para detectar si el contenido es HTML o Markdown
-const isHtmlContent = (content: string): boolean => {
-  // Detectar etiquetas HTML comunes
-  const htmlTagPattern = /<\/?[a-z][\s\S]*>/i;
-  return htmlTagPattern.test(content);
-};
+const isHtmlContent = (content: string): boolean => /<\/?[a-z][\s\S]*>/i.test(content);
 
-// Componente para renderizar contenido dinámicamente
 const ContentRenderer: React.FC<{ content: string; className?: string }> = ({
   content,
   className,
 }) => {
-  if (isHtmlContent(content)) {
-    // Renderizar como HTML
+  if (isHtmlContent(content))
     return <div className={className} dangerouslySetInnerHTML={{ __html: content }} />;
-  } else {
-    // Renderizar como Markdown
-    return (
-      <div className={className}>
-        <ReactMarkdown>{content}</ReactMarkdown>
-      </div>
-    );
-  }
+  return (
+    <div className={className}>
+      <ReactMarkdown>{content}</ReactMarkdown>
+    </div>
+  );
 };
 
-interface ProjectPageProps {}
-
-const ProjectPage: React.FC<ProjectPageProps> = () => {
+const ProjectPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { showError } = useNotificationContext();
   const { isAuthenticated } = useAuth();
+  const { t, getText } = useTranslation();
 
   const [project, setProject] = useState<Project | null>(null);
-  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [profileData, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [readingTime, setReadingTime] = useState<number>(0);
   const suggestions = useSkillSuggestions();
 
-  // Establecer la sección activa como 'projects' cuando se carga la página
   useEffect(() => {
     const currentPath = window.location.pathname;
-    if (
-      currentPath.startsWith('/project/') ||
-      currentPath.startsWith('/project/') ||
-      currentPath.startsWith('/profile-craft/projects/')
-    ) {
+    if (currentPath.startsWith('/project/') || currentPath.startsWith('/profile-craft/projects/')) {
       document.body.setAttribute('data-active-section', 'projects');
       document.body.className = document.body.className.replace(/section-active-\w+/g, '').trim();
       document.body.classList.add('section-active-projects');
@@ -81,15 +66,17 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
       navigate('/');
       return;
     }
-
-    loadProject(id);
-    loadProfile();
-  }, [id, navigate, showError]);
+    (async () => {
+      await loadProject(id);
+      await loadProfile();
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   const loadProfile = async () => {
     try {
-      const profileData = await getUserProfile();
-      setProfile(profileData);
+      const p = await getUserProfile();
+      setProfile(p);
     } catch (err) {
       console.error('Error loading profile:', err);
     }
@@ -99,17 +86,10 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
     try {
       setLoading(true);
       setError(null);
-
-      // Validación básica del ID
-      if (!projectId || projectId === 'undefined' || projectId === 'null') {
+      if (!projectId || projectId === 'undefined' || projectId === 'null')
         throw new Error('ID de proyecto inválido');
-      }
-
       const data = await getProjectById(projectId);
       setProject(data);
-      // Debug: log project content length: console.log('Project content length:', data.project_content?.length || 0);
-
-      // Calcular tiempo de lectura estimado
       if (data.project_content) {
         const wordsPerMinute = 200;
         const words = data.project_content.replace(/<[^>]*>/g, '').split(/\s+/).length;
@@ -118,8 +98,6 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
     } catch (err: any) {
       console.error('❌ Error al cargar proyecto:', err);
       let errorMessage = `No se pudo encontrar el proyecto con ID: ${projectId}`;
-
-      // Personalizar mensaje de error según el tipo
       if (err?.message?.includes('Invalid ObjectId') || err?.response?.status === 400) {
         errorMessage = `El ID del proyecto "${projectId}" no es válido. Verifica el enlace e intenta nuevamente.`;
       } else if (err?.response?.status === 404) {
@@ -127,7 +105,6 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
       } else if (err?.message?.includes('ID de proyecto inválido')) {
         errorMessage = 'El enlace del proyecto no es válido. Regresa a la sección de proyectos.';
       }
-
       setError(errorMessage);
       showError('Proyecto no encontrado', errorMessage);
     } finally {
@@ -146,39 +123,25 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
       } catch (err) {
         navigator.clipboard.writeText(window.location.href);
       }
-    } else if (project) {
-      navigator.clipboard.writeText(window.location.href);
-    }
+    } else if (project) navigator.clipboard.writeText(window.location.href);
   };
 
   const handleEditProject = () => {
-    if (project) {
-      navigate(`/projects/edit/${project.id}`);
-    }
+    if (project) navigate(`/projects/edit/${project.id}`);
   };
 
-  const handleAdminPanel = () => {
-    navigate('/projects/admin');
-  };
+  const handleAdminPanel = () => navigate('/projects/admin');
 
-  // Items de navegación para SmartNavigation
   const navItems = [
     { id: 'home', label: 'Inicio', icon: 'fas fa-home' },
     { id: 'about', label: 'Sobre mí', icon: 'fas fa-user' },
     { id: 'experience', label: 'Experiencia', icon: 'fas fa-briefcase' },
-    { id: 'projects', label: 'Proyectos', icon: 'fas fa-project-diagram' },
+    { id: 'projects', label: t.projects.title, icon: 'fas fa-project-diagram' },
     { id: 'skills', label: 'Habilidades', icon: 'fas fa-tools' },
-    {
-      id: 'certifications',
-      label: 'Certificaciones',
-      icon: 'fas fa-certificate',
-    },
+    { id: 'certifications', label: 'Certificaciones', icon: 'fas fa-certificate' },
     { id: 'testimonials', label: 'Testimonios', icon: 'fas fa-comments' },
     { id: 'contact', label: 'Contacto', icon: 'fas fa-envelope' },
-  ]; // Función para verificar si una URL es de YouTube
-  const isYouTubeUrl = (url: string): boolean => {
-    return url.includes('youtube.com') || url.includes('youtu.be');
-  };
+  ];
 
   if (loading) {
     return (
@@ -186,22 +149,20 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
         <div className={styles.wordpressHeader}>
           <nav className={styles.projectNavigation}>
             <div className={styles.backButton}>
-              <i className="fas fa-spinner fa-spin"></i> Cargando...
+              <i className="fas fa-spinner fa-spin"></i> {getText('states.loading', 'Cargando...')}
             </div>
           </nav>
         </div>
         <main className={styles.mainContent}>
           <div
-            style={{
-              textAlign: 'center',
-              padding: '60px 0',
-              color: 'var(--text-color, #656d76)',
-            }}
+            style={{ textAlign: 'center', padding: '60px 0', color: 'var(--text-color, #656d76)' }}
           >
             <div style={{ fontSize: '48px', marginBottom: '24px' }}>
               <i className="fas fa-spinner fa-spin"></i>
             </div>
-            <h1 style={{ fontSize: '24px', marginBottom: '16px' }}>Cargando artículo...</h1>
+            <h1 style={{ fontSize: '24px', marginBottom: '16px' }}>
+              {getText('states.loading', 'Cargando...')}
+            </h1>
             <p>Por favor espera mientras cargamos el contenido.</p>
           </div>
         </main>
@@ -215,22 +176,20 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
         <div className={styles.wordpressHeader}>
           <nav className={styles.projectNavigation}>
             <Link to="/projects" className={styles.backButton}>
-              <i className="fas fa-arrow-left"></i> Volver a proyectos
+              <i className="fas fa-arrow-left"></i> {t.actions.previous} {t.projects.title}
             </Link>
           </nav>
         </div>
         <main className={styles.mainContent}>
           <div
-            style={{
-              textAlign: 'center',
-              padding: '60px 0',
-              color: 'var(--text-color, #656d76)',
-            }}
+            style={{ textAlign: 'center', padding: '60px 0', color: 'var(--text-color, #656d76)' }}
           >
             <div style={{ fontSize: '48px', marginBottom: '24px', color: '#dc3545' }}>
               <i className="fas fa-exclamation-triangle"></i>
             </div>
-            <h1 style={{ fontSize: '24px', marginBottom: '16px' }}>Artículo no encontrado</h1>
+            <h1 style={{ fontSize: '24px', marginBottom: '16px' }}>
+              {t.projects.type.article} {getText('states.notFound', 'no encontrado')}
+            </h1>
             <p style={{ marginBottom: '32px' }}>
               {error || 'El artículo solicitado no existe o ha sido eliminado.'}
             </p>
@@ -242,7 +201,7 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
                 className={`${styles.wordpressActionButton} ${styles.wordpressActionPrimary}`}
               >
                 <i className="fas fa-home"></i>
-                Volver a proyectos
+                {t.actions.previous} {t.projects.title}
               </Link>
               <button
                 onClick={() => loadProject(id!)}
@@ -258,7 +217,6 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
     );
   }
 
-  // Determinar si es proyecto usando el campo type (con fallback a lógica anterior)
   const isProject = project.type
     ? project.type === 'proyecto'
     : !project.project_content || project.project_content.length < 500;
@@ -266,33 +224,36 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
   return (
     <SectionsLoadingProvider>
       <div className={styles.projectPage}>
-        {/* WordPress Header */}
         <header className={styles.wordpressHeader}>
           <nav className={styles.projectNavigation}>
             <Link to="/projects" className={styles.backButton}>
-              <i className="fas fa-arrow-left"></i> Volver a artículos
+              <i className="fas fa-arrow-left"></i> {t.actions.previous} {t.projects.type.article}
             </Link>
             <div className={styles.progressIndicator}></div>
           </nav>
         </header>
-        {/* SmartNavigation para cambiar de sección */}
+
         <SmartNavigation navItems={navItems} />
-        {/* Contenido principal */}
+
         <main className={styles.mainContent}>
-          {/* WordPress Project Header */}
           <header className={styles.wordpressProjectHeader}>
             <a href="#" className={styles.wordpressCategory}>
-              <span>{isProject ? 'Proyecto' : 'Artículo'}</span>
+              <span>{isProject ? t.projects.type.project : t.projects.type.article}</span>
             </a>
 
             <h1 className={styles.wordpressTitle}>{project.title}</h1>
             <div className={styles.wordpressExcerpt}>{project.description}</div>
 
-            {/* WordPress Post Meta */}
             <div className={styles.wordpressPostMeta}>
               <div className={styles.wordpressMetaItem}>
                 <i className={`fas fa-flag ${styles.wordpressMetaIcon}`}></i>
-                <span className={styles.wordpressMetaText}>{project.status}</span>
+                <span className={styles.wordpressMetaText}>
+                  {project.status === 'En Desarrollo' || project.status === 'En progreso'
+                    ? t.projects.statusLabels.inProgress
+                    : project.status === 'Completado'
+                      ? t.projects.statusLabels.completed
+                      : project.status}
+                </span>
               </div>
 
               {project.created_at && (
@@ -330,7 +291,7 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
               )}
             </div>
           </header>
-          {/* WordPress Technologies Section */}
+
           {project.technologies && project.technologies.length > 0 && (
             <div className={styles.wordpressTechnologies}>
               <div className={styles.wordpressTechHeader}>
@@ -338,7 +299,6 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
                 <h2 className={styles.wordpressTechTitle}>Tecnologías Utilizadas</h2>
               </div>
               <div className={styles.wordpressTechList}>
-                {/* Renderizar chips con iconos/colores resueltos desde skill_settings */}
                 <TechnologyChips
                   items={project.technologies.map((tech: string, idx: number) => {
                     const pill = resolvePillFromTech(tech, suggestions, idx);
@@ -352,7 +312,7 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
               </div>
             </div>
           )}
-          {/* WordPress Action Buttons */}
+
           <div className={styles.wordpressActions}>
             {project.live_url && project.live_url !== '#' && (
               <a
@@ -401,13 +361,11 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
                 Leer Artículo
               </a>
             )}
-          </div>{' '}
-          {/* WordPress Media Section with Image Carousel */}
+          </div>
+
           {(project.image_url || project.video_demo_url) && (
             <div className={styles.wordpressMediaSection}>
               <div className={styles.wordpressMediaGrid}>
-                {' '}
-                {/* Image Carousel */}
                 {project.image_url && (
                   <div className={styles.wordpressMediaItem}>
                     <h3 className={styles.wordpressMediaTitle}>Galería del Proyecto</h3>
@@ -415,7 +373,7 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
                       Explora las imágenes del proyecto en detalle
                     </p>
                     <ImageCarousel
-                      images={[project.image_url]} // Solo mostrar la imagen principal
+                      images={[project.image_url]}
                       title={project.title}
                       className={styles.wordpressCarousel}
                     />
@@ -424,92 +382,7 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
               </div>
             </div>
           )}
-        </main>
-        {/* Video demo - Sección independiente fuera del mainContent */}
-        {project.video_demo_url && (
-          <div className={styles.wordpressFullWidthVideoSection}>
-            <div className={styles.wordpressVideoWrapper}>
-              <div className={styles.wordpressVideoHeader}>
-                <h3 className={styles.wordpressVideoTitle}>
-                  <i
-                    className="fab fa-youtube"
-                    style={{ color: '#ff0000', marginRight: '8px' }}
-                  ></i>
-                  Demo en Video
-                </h3>
-                <p className={styles.wordpressVideoDescription}>
-                  Demostración completa del funcionamiento del proyecto
-                </p>
-              </div>
-              <div className={styles.wordpressVideoContainer}>
-                {isYouTubeUrl(project.video_demo_url) ? (
-                  // Renderizar iframe embed directo como fallback robusto
-                  (() => {
-                    try {
-                      const url = project.video_demo_url || '';
-                      // Extraer el ID de YouTube y construir URL embed
-                      const m = url.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/);
-                      const videoId = m ? m[1] : null;
-                      const embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : url;
-                      // Debug: si no encontramos id, aún intentamos usar la URL original
-                      return (
-                        <iframe
-                          title={`Demo de ${project.title}`}
-                          src={embedUrl}
-                          className={styles.wordpressVideoPlayer}
-                          frameBorder="0"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                          allowFullScreen
-                        />
-                      );
-                    } catch (err) {
-                      // eslint-disable-next-line no-console
-                      console.error('Error rendering youtube iframe', err);
-                      return (
-                        <div className={styles.wordpressVideoPlaceholder}>
-                          <p>Video no disponible</p>
-                        </div>
-                      );
-                    }
-                  })()
-                ) : (
-                  <div className={styles.wordpressVideoPlaceholder}>
-                    <div>
-                      <i className="fas fa-play-circle"></i>
-                      <p>Video disponible en enlace externo</p>
-                      <a
-                        href={project.video_demo_url}
-                        className={styles.wordpressMediaLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          marginTop: '12px',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          padding: '8px 16px',
-                          borderRadius: '6px',
-                          background: '#0969da',
-                          color: '#ffffff',
-                          textDecoration: 'none',
-                          fontSize: '14px',
-                          fontWeight: '500',
-                        }}
-                      >
-                        <i className="fas fa-external-link-alt"></i>
-                        Ver Video Demo
-                      </a>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}{' '}
-        {/* Continuar con el resto del contenido en mainContent */}
-        <main className={styles.mainContent}>
-          {/* WordPress Project Content */}
-          {/* Debug indicator: show content length to help troubleshooting */}
+
           <div style={{ fontSize: 12, color: 'var(--muted-color, #8b949e)', marginBottom: 8 }}>
             Contenido:{' '}
             {project.project_content
@@ -526,7 +399,6 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
             </article>
           )}
 
-          {/* Project Summary para proyectos */}
           {isProject && (
             <div className={styles.wordpressProjectSummary}>
               <div className={styles.wordpressSummaryGrid}>
@@ -569,7 +441,7 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
               </div>
             </div>
           )}
-          {/* WordPress Share Section */}
+
           <div
             style={{
               textAlign: 'center',
@@ -587,36 +459,36 @@ const ProjectPage: React.FC<ProjectPageProps> = () => {
               {isProject ? 'proyecto' : 'artículo'}
             </button>
           </div>
+
+          <RelatedProjects
+            currentProjectId={project.id}
+            maxProjects={3}
+            className={styles.wordpressRelatedProjects}
+          />
+
+          <Footer className="curriculum-footer" profile={profileData} />
+
+          {isAuthenticated && project && (
+            <div className={styles.fabContainer}>
+              <FloatingActionButton
+                onClick={handleEditProject}
+                icon="fas fa-edit"
+                label="Editar artículo"
+                position="bottom-right"
+                color="primary"
+                usePortal={false}
+              />
+              <FloatingActionButton
+                onClick={handleAdminPanel}
+                icon="fas fa-cog"
+                label="Panel de administración"
+                position="bottom-right"
+                color="secondary"
+                usePortal={false}
+              />
+            </div>
+          )}
         </main>
-        {/* Related Projects Section */}
-        <RelatedProjects
-          currentProjectId={project.id}
-          maxProjects={3}
-          className={styles.wordpressRelatedProjects}
-        />
-        {/* Footer */}
-        <Footer className="curriculum-footer" profile={profile} />
-        {/* Floating Action Buttons para administración */}
-        {isAuthenticated && project && (
-          <div className={styles.fabContainer}>
-            <FloatingActionButton
-              onClick={handleEditProject}
-              icon="fas fa-edit"
-              label="Editar artículo"
-              position="bottom-right"
-              color="primary"
-              usePortal={false}
-            />
-            <FloatingActionButton
-              onClick={handleAdminPanel}
-              icon="fas fa-cog"
-              label="Panel de administración"
-              position="bottom-right"
-              color="secondary"
-              usePortal={false}
-            />
-          </div>
-        )}
       </div>
     </SectionsLoadingProvider>
   );

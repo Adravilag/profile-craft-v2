@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
+import { useTranslation } from '@/contexts/TranslationContext';
 import {
   useSkillsIcons,
   SkillsGrid,
@@ -211,9 +212,14 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
     [handleAddSkill, skillsIcons]
   );
 
-  const getDynamicTitle = React.useMemo(() => 'Habilidades', []);
+  const { t, getText } = useTranslation();
+
+  const getDynamicTitle = React.useMemo(() => t.skills.title || 'Habilidades', [t]);
   const getDynamicIcon = React.useMemo(() => 'fas fa-tools', []);
-  const getDynamicSubtitle = React.useMemo(() => 'Competencias técnicas y conocimientos', []);
+  const getDynamicSubtitle = React.useMemo(
+    () => t.skills.subtitle ?? 'Competencias técnicas y conocimientos',
+    [t]
+  );
 
   if (loading) {
     return (
@@ -227,7 +233,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
         <div className="section-container">
           <div className={styles.loadingContainer}>
             <div className={styles.spinner}></div>
-            <p>Cargando habilidades...</p>
+            <p>{getText('states.loading', 'Cargando habilidades...')}</p>
           </div>
         </div>
       </div>
@@ -239,8 +245,8 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({
       <div className={`section-cv`} id="skills">
         <HeaderSection
           icon="fas fa-exclamation-triangle"
-          title="Habilidades"
-          subtitle={`Error al cargar las habilidades: ${error}`}
+          title={t.skills.title}
+          subtitle={`${getText('states.error', 'Error')} - ${error}`}
           className="projects"
         />
         <div className="section-container">

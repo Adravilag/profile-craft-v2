@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from '@/contexts/TranslationContext';
 import '@/styles/04-features/skills-colors.css';
 import { normalizeSvgPath } from '@/features/skills/utils/skillUtils';
 
@@ -165,6 +166,8 @@ const SkillPill: React.FC<SkillPillProps> = ({
     return <i className="fas fa-code" aria-hidden />;
   };
 
+  const { t } = useTranslation();
+
   const renderCloseButton = () => {
     if (!closable || !onClose) return null;
     return (
@@ -173,7 +176,7 @@ const SkillPill: React.FC<SkillPillProps> = ({
         className="skillPill__close"
         onClick={handleClose}
         onKeyDown={handleCloseKeyDown}
-        aria-label={`Eliminar ${original}`}
+        aria-label={`${t.states.delete || 'Eliminar'} ${original}`}
         style={{
           background: 'none',
           border: 'none',

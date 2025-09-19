@@ -5,6 +5,7 @@ import { useModal } from '@/contexts/ModalContext';
 import TestimonialModal from '@/components/layout/Sections/Testimonials/modal/TestimonialModal';
 import TestimonialForm from './TestimonialForm';
 import HeaderSection from '../../HeaderSection/HeaderSection';
+import { useTranslation } from '@/contexts/TranslationContext';
 import TestimonialsAdmin from './admin/TestimonialsAdmin';
 import { generateAvatarUrl, handleAvatarError } from '@/utils/avatarUtils';
 import { useNotificationContext } from '@/hooks/useNotification';
@@ -63,6 +64,8 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   const { testimonials: testimonialsData = [], add, refresh, loading } = useTestimonials();
   const { showSuccess, showError } = useNotificationContext();
 
+  const { t } = useTranslation();
+
   const [form, setForm] = React.useState<typeof emptyForm>(emptyForm);
   const [editingId, setEditingId] = React.useState<number | null>(null);
   const [animatingId, setAnimatingId] = React.useState<number | null>(null);
@@ -88,27 +91,25 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
   const validateForm = () => {
     const errors: Record<string, string> = {};
 
-    if (!form.name.trim()) errors.name = 'El nombre es requerido';
-    if (form.name.length > 100) errors.name = 'El nombre es demasiado largo';
+    if (!form.name.trim()) errors.name = t.testimonials.validation.nameRequired;
+    if (form.name.length > 100) errors.name = t.testimonials.validation.nameTooLong;
 
-    if (!form.position.trim()) errors.position = 'El puesto es requerido';
-    if (form.position.length > 100) errors.position = 'El puesto es demasiado largo';
+    if (!form.position.trim()) errors.position = t.testimonials.validation.positionRequired;
+    if (form.position.length > 100) errors.position = t.testimonials.validation.positionTooLong;
 
-    if (!form.text.trim()) errors.text = 'El testimonio es requerido';
-    if (form.text.length < 20)
-      errors.text = 'El testimonio es demasiado corto (mínimo 20 caracteres)';
-    if (form.text.length > 1000)
-      errors.text = 'El testimonio es demasiado largo (máximo 1000 caracteres)';
+    if (!form.text.trim()) errors.text = t.testimonials.validation.textRequired;
+    if (form.text.length < 20) errors.text = t.testimonials.validation.textTooShort;
+    if (form.text.length > 1000) errors.text = t.testimonials.validation.textTooLong;
 
     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      errors.email = 'Email inválido';
+      errors.email = t.testimonials.validation.emailInvalid;
     }
 
     if (form.website && !/^https?:\/\/.+/.test(form.website) && !form.website.includes('.')) {
-      errors.website = 'URL inválida';
+      errors.website = t.testimonials.validation.websiteInvalid;
     }
 
-    if (form.rating < 1 || form.rating > 5) errors.rating = 'La valoración debe estar entre 1 y 5';
+    if (form.rating < 1 || form.rating > 5) errors.rating = t.testimonials.validation.ratingInvalid;
 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -156,7 +157,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
     <TestimonialModal
       isOpen={true}
       onClose={() => closeModal(isEditing ? 'testimonial-edit' : 'testimonial-add')}
-      title={isEditing ? 'Editar Testimonio' : 'Añadir Nuevo Testimonio'}
+      title={isEditing ? t.testimonials.editModalTitle : t.testimonials.addModalTitle}
       disableAutoFocus={true}
     >
       <TestimonialForm
@@ -195,8 +196,8 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
 
             // Mostrar mensaje de éxito
             showSuccess(
-              'Testimonio enviado',
-              'Gracias por compartir tu experiencia. Tu testimonio será revisado.'
+              t.testimonials.notifications.submitSuccessTitle,
+              t.testimonials.notifications.submitSuccessMsg
             );
 
             // Cerrar modal
@@ -206,12 +207,15 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
             refresh();
           } catch (error) {
             console.error('Error enviando testimonio:', error);
-            showError('Error', 'No se pudo enviar el testimonio. Inténtalo de nuevo.');
+            showError(
+              t.testimonials.notifications.submitErrorTitle,
+              t.testimonials.notifications.submitErrorMsg
+            );
           }
         },
       });
       openModal('testimonial-add-local', modalContent, {
-        title: 'Añadir Testimonio',
+        title: t.testimonials.addModalTitle,
         disableAutoFocus: true,
       });
     } catch (err) {
@@ -270,7 +274,10 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
     e.preventDefault();
 
     if (!validateForm()) {
-      showError('Formulario inválido', 'Por favor, corrige los errores antes de continuar');
+      showError(
+        t.testimonials.notifications.submitErrorTitle,
+        t.testimonials.notifications.submitErrorMsg
+      );
       return;
     }
 
@@ -280,12 +287,18 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
       if (editingId) {
         onEdit?.(editingId, form);
         setAnimatingId(editingId);
-        showSuccess('Testimonio actualizado', 'Los cambios se han guardado correctamente');
+        showSuccess(
+          t.testimonials.notifications.updateSuccessTitle,
+          t.testimonials.notifications.updateSuccessMsg
+        );
       } else {
         const payload = { ...form, user_id: 1, order_index: normalizedTestimonials.length };
         await (onAdd ?? (async p => add(p as any)))(payload);
         setAnimatingId(-1);
-        showSuccess('Testimonio enviado', '¡Gracias por compartir tu experiencia!');
+        showSuccess(
+          t.testimonials.notifications.submitSuccessTitle,
+          t.testimonials.notifications.submitSuccessMsg
+        );
       }
 
       setForm(emptyForm);
@@ -296,7 +309,10 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
       setTimeout(() => setAnimatingId(null), 800);
     } catch (error) {
       console.error('Error al procesar testimonio:', error);
-      showError('Error', 'No se pudo procesar el testimonio. Inténtalo de nuevo.');
+      showError(
+        t.testimonials.notifications.submitErrorTitle,
+        t.testimonials.notifications.submitErrorMsg
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -348,8 +364,8 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
     <div ref={sectionRef} id="testimonials" className="section-cv" aria-label="Testimonios">
       <HeaderSection
         icon="fas fa-comments"
-        title="Testimonios"
-        subtitle="Lo que dicen quienes han trabajado conmigo"
+        title={t.testimonials.title}
+        subtitle={t.testimonials.subtitle}
         className={styles.testimonials}
       />
 
@@ -359,11 +375,11 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
         <button
           className={styles.emptyCtaBtn}
           onClick={() => handleOpenAddModalWithSubmit()}
-          aria-label="Añadir testimonio"
-          title="Añadir mi testimonio"
+          aria-label={t.testimonials.addCta}
+          title={t.testimonials.addCta}
         >
           <i className="fas fa-plus-circle" />
-          Añadir mi testimonio
+          {t.testimonials.addCta}
         </button>
       </div>
 
@@ -377,14 +393,14 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
               name="name"
               value={form.name}
               onChange={handleChange}
-              placeholder="Nombre"
+              placeholder={t.testimonials.form.placeholders.name}
               required
             />
             <input
               name="position"
               value={form.position}
               onChange={handleChange}
-              placeholder="Puesto"
+              placeholder={t.testimonials.form.placeholders.position}
               required
             />
           </div>
@@ -392,7 +408,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
             name="text"
             value={form.text}
             onChange={handleChange}
-            placeholder="Testimonio"
+            placeholder={t.testimonials.form.placeholders.text}
             required
           />
           <div className={styles['form-row']}>
@@ -401,13 +417,13 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
               type="email"
               value={form.email}
               onChange={handleChange}
-              placeholder="Email (opcional)"
+              placeholder={t.testimonials.form.placeholders.email}
             />
             <input
               name="company"
               value={form.company}
               onChange={handleChange}
-              placeholder="Empresa (opcional)"
+              placeholder={t.testimonials.form.placeholders.company}
             />
           </div>
           <div className={styles['form-row']}>
@@ -416,7 +432,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
               type="url"
               value={form.website}
               onChange={handleChange}
-              placeholder="Sitio web (opcional)"
+              placeholder={t.testimonials.form.placeholders.website}
             />
             <div className={styles['rating-admin-group']}>
               <label htmlFor="admin-rating">Rating:</label>
@@ -438,7 +454,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
           </div>
           <div className={styles['form-actions']}>
             <button type="submit" className={`${styles['action-button']} ${styles.primary}`}>
-              {editingId ? 'Guardar' : 'Añadir Testimonio'}
+              {editingId ? t.testimonials.form.buttons.save : t.testimonials.form.buttons.add}
             </button>
             {editingId && (
               <button
@@ -449,7 +465,7 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                   setEditingId(null);
                 }}
               >
-                Cancelar
+                {t.testimonials.form.buttons.cancel}
               </button>
             )}
           </div>
@@ -462,35 +478,35 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
             <div className={styles.loadingSpinner}>
               <i className="fas fa-spinner fa-spin"></i>
             </div>
-            <p>Cargando testimonios...</p>
+            <p>{t.testimonials.loading}</p>
           </div>
         ) : (
           <div className={styles.testimonialsGrid}>
-            {normalizedTestimonials.map((t, idx) => {
-              const isExpanded = expandedTestimonials.has(t.id);
-              const displayText = getTruncatedText(t.text, isExpanded);
+            {normalizedTestimonials.map((item, idx) => {
+              const isExpanded = expandedTestimonials.has(item.id);
+              const displayText = getTruncatedText(item.text, isExpanded);
               return (
                 <div
-                  key={t.id}
+                  key={item.id}
                   className={`${styles.testimonialCard}${
-                    animatingId === t.id ||
+                    animatingId === item.id ||
                     (animatingId === -1 && idx === normalizedTestimonials.length - 1)
                       ? ` ${styles.testimonialAnimate}`
                       : ''
                   }`}
                   style={{ animationDelay: `${idx * 100}ms` }}
                   tabIndex={0}
-                  aria-label={`Testimonio de ${t.name}`}
+                  aria-label={`Testimonio de ${item.name}`}
                 >
                   <div className={styles.testimonialHeader}>
                     <div className={styles.testimonialAvatarWrapper}>
                       <BlurImage
                         src={generateAvatarUrl({
-                          name: t.name,
-                          email: t.email,
-                          avatar: t.avatar || t.avatar_url,
+                          name: item.name,
+                          email: item.email,
+                          avatar: item.avatar || item.avatar_url,
                         })}
-                        alt={`Avatar de ${t.name}`}
+                        alt={`Avatar de ${item.name}`}
                         className={styles.testimonialAvatar}
                         onError={handleImgError}
                         loading="lazy"
@@ -502,36 +518,36 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                     <div
                       className={styles.testimonialTextContainer}
                       aria-expanded={isExpanded}
-                      aria-controls={`testimonial-text-${t.id}`}
+                      aria-controls={`testimonial-text-${item.id}`}
                     >
                       <p
                         className={`${styles.testimonialText}${isExpanded ? ` ${styles.expanded}` : ''}`}
-                        id={`testimonial-text-${t.id}`}
+                        id={`testimonial-text-${item.id}`}
                       >
                         {displayText}
                       </p>
-                      {needsReadMore(t.text) && (
+                      {needsReadMore(item.text) && (
                         <button
                           className={styles.readMoreBtn}
-                          onClick={() => toggleExpanded(t.id)}
+                          onClick={() => toggleExpanded(item.id)}
                           aria-expanded={isExpanded}
-                          aria-controls={`testimonial-text-${t.id}`}
+                          aria-controls={`testimonial-text-${item.id}`}
                           aria-label={
-                            isExpanded ? 'Contraer testimonio' : 'Expandir testimonio completo'
+                            isExpanded ? t.testimonials.readLess : t.testimonials.readMore
                           }
                         >
-                          {isExpanded ? 'Leer menos' : 'Leer más'}
+                          {isExpanded ? t.testimonials.readLess : t.testimonials.readMore}
                         </button>
                       )}
                     </div>
 
-                    {renderStars(t.rating)}
+                    {renderStars(item.rating)}
 
-                    {t.created_at && (
+                    {item.created_at && (
                       <div className={styles.testimonialDate}>
                         <i className="fas fa-calendar-alt" aria-hidden></i>
                         <span>
-                          {new Date(t.created_at).toLocaleDateString('es-ES', {
+                          {new Date(item.created_at).toLocaleDateString('es-ES', {
                             year: 'numeric',
                             month: 'long',
                             day: 'numeric',
@@ -544,19 +560,23 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                   <div className={styles.testimonialFooter}>
                     <div className={styles.testimonialAuthor}>
                       <div className={styles.authorInfo}>
-                        <span className={styles.authorName}>{t.name}</span>
+                        <span className={styles.authorName}>{item.name}</span>
                         <span className={styles.authorPosition}>
-                          {t.position}
-                          {t.company && ` en ${t.company}`}
+                          {item.position}
+                          {item.company && ` ${item.company ? `en ${item.company}` : ''}`}
                         </span>
-                        {t.website && (
+                        {item.website && (
                           <a
-                            href={t.website.startsWith('http') ? t.website : `https://${t.website}`}
+                            href={
+                              item.website.startsWith('http')
+                                ? item.website
+                                : `https://${item.website}`
+                            }
                             target="_blank"
                             rel="noopener noreferrer"
                             className={styles.authorWebsite}
-                            aria-label={`Sitio web de ${t.name}`}
-                            title="Visitar sitio web"
+                            aria-label={t.testimonials.form.placeholders.website}
+                            title={t.testimonials.form.placeholders.website}
                           >
                             <i className="fas fa-external-link-alt" />
                           </a>
@@ -568,17 +588,17 @@ const TestimonialsSection: React.FC<TestimonialsSectionProps> = ({
                       <div className={styles.testimonialActions}>
                         <button
                           className={styles.editBtn}
-                          title="Editar"
-                          aria-label={`Editar testimonio de ${t.name}`}
-                          onClick={() => handleEdit(t)}
+                          title={t.testimonials.admin.edit}
+                          aria-label={`${t.testimonials.admin.edit} ${item.name}`}
+                          onClick={() => handleEdit(item)}
                         >
                           <i className="fas fa-edit" />
                         </button>
                         <button
                           className={styles.deleteBtn}
-                          title="Eliminar"
-                          aria-label={`Eliminar testimonio de ${t.name}`}
-                          onClick={() => onDelete?.(t.id)}
+                          title={t.testimonials.admin.delete}
+                          aria-label={`${t.testimonials.admin.delete} ${item.name}`}
+                          onClick={() => onDelete?.(item.id)}
                         >
                           <i className="fas fa-trash" />
                         </button>

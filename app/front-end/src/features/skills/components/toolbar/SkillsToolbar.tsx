@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from './SkillsToolbar.module.css';
+import { useTranslation } from '@/contexts/TranslationContext';
 import type { SortOption } from '../../types/skills';
 
 interface SkillsToolbarProps {
@@ -21,6 +22,7 @@ const SkillsToolbar: React.FC<SkillsToolbarProps> = ({
     const currentSort = selectedSort[selectedCategory] || 'alphabetical';
     return currentSort.startsWith(sortType);
   };
+  const { t } = useTranslation();
 
   const getDirectionIcon = (sortType: string) => {
     const currentSort = selectedSort[selectedCategory];
@@ -39,13 +41,13 @@ const SkillsToolbar: React.FC<SkillsToolbarProps> = ({
             onClick={() => onCategoryChange(isFeaturedActive ? 'All' : 'Destacados')}
           >
             <i className="fas fa-star"></i>
-            <span>Destacados</span>
+            <span>{t.skills.highlights ? 'Destacados' : 'Destacados'}</span>
           </button>
           {/* Aquí se podrían añadir más filtros principales si fuera necesario */}
         </div>
 
         <div className={styles.sortControls}>
-          <span className={styles.sortLabel}>Ordenar por:</span>
+          <span className={styles.sortLabel}>{'Ordenar por:'}</span>
           <div className={styles.sortButtons}>
             <button
               className={`${styles.sortButton} ${isButtonActive('alphabetical') ? styles.active : ''}`}
@@ -53,7 +55,7 @@ const SkillsToolbar: React.FC<SkillsToolbarProps> = ({
               title="Ordenar alfabéticamente"
             >
               <i className="fas fa-sort-alpha-down"></i>
-              <span>Alfabético</span>
+              <span>{'Alfabético'}</span>
               {getDirectionIcon('alphabetical') && (
                 <i className={getDirectionIcon('alphabetical')!}></i>
               )}
@@ -64,7 +66,7 @@ const SkillsToolbar: React.FC<SkillsToolbarProps> = ({
               title="Ordenar por dificultad"
             >
               <i className="fas fa-star"></i>
-              <span>Dificultad</span>
+              <span>{'Dificultad'}</span>
               {getDirectionIcon('difficulty') && (
                 <i className={getDirectionIcon('difficulty')!}></i>
               )}
@@ -75,7 +77,7 @@ const SkillsToolbar: React.FC<SkillsToolbarProps> = ({
               title="Ordenar por nivel"
             >
               <i className="fas fa-percentage"></i>
-              <span>Nivel</span>
+              <span>{t.skills.level}</span>
               {getDirectionIcon('level') && <i className={getDirectionIcon('level')!}></i>}
             </button>
           </div>

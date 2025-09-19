@@ -182,10 +182,21 @@
 .infoCard i {
   font-size: 1.5rem;
   color: var(--md-sys-color-primary);
-  width: 24px;
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   flex-shrink: 0;
   transition: var(--contact-transition-standard);
+}
+
+/* Ensure the content (title + paragraph) inside the card is vertically centered next to the icon */
+.infoCard > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .infoCard:hover i {

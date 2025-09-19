@@ -184,18 +184,6 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({ isFirstTime = false }) => {
       className={`${styles.headerCurriculum} animate-fade-in`}
       aria-labelledby="profile-name"
     >
-      {/* Fixed controls: theme and language */}
-      <div className={`${styles.fixedTopRight} animate-slide-in-right`} aria-hidden={false}>
-        <button
-          type="button"
-          className={`${styles.topRightButton} transition-all hover:scale-105 active:scale-95`}
-          onClick={() => changeLanguage(currentLanguage === 'es' ? 'en' : 'es')}
-          title={t.profileHero.toggleLanguage}
-          aria-label={t.profileHero.toggleLanguage}
-        >
-          {currentLanguage === 'es' ? 'ES' : 'EN'}
-        </button>
-      </div>
       {/* Vignette overlay */}
       <div className={styles.vignette} aria-hidden="true" />
 

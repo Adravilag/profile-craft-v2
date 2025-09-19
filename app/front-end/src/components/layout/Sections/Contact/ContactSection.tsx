@@ -1,6 +1,7 @@
 // src/components/sections/contact/ContactSection.tsx
 
 import React, { useState } from 'react';
+import { useTranslation } from '../../../../contexts/TranslationContext';
 import HeaderSection from '../../HeaderSection/HeaderSection';
 import styles from './ContactSection.module.css';
 
@@ -16,6 +17,8 @@ interface FormData {
 }
 
 const ContactSection: React.FC<ContactSectionProps> = ({ onSubmit }) => {
+  const { t } = useTranslation();
+
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
@@ -38,14 +41,14 @@ const ContactSection: React.FC<ContactSectionProps> = ({ onSubmit }) => {
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
 
-    if (!formData.name.trim()) newErrors.name = 'El nombre es requerido';
+    if (!formData.name.trim()) newErrors.name = t.contactForms.required;
     if (!formData.email.trim()) {
-      newErrors.email = 'El email es requerido';
+      newErrors.email = t.contactForms.required;
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Email inválido';
+      newErrors.email = t.contactForms.invalidEmail;
     }
-    if (!formData.subject.trim()) newErrors.subject = 'El asunto es requerido';
-    if (!formData.message.trim()) newErrors.message = 'El mensaje es requerido';
+    if (!formData.subject.trim()) newErrors.subject = t.contactForms.required;
+    if (!formData.message.trim()) newErrors.message = t.contactForms.required;
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -86,8 +89,8 @@ const ContactSection: React.FC<ContactSectionProps> = ({ onSubmit }) => {
     <div className="section-cv" id="contact">
       <HeaderSection
         icon="fas fa-envelope"
-        title="Contacto"
-        subtitle="¿Tienes un proyecto en mente? ¡Hablemos!"
+        title={t.contact.title}
+        subtitle={t.contactExtras.subtitle}
         className="contact"
       />
       <div className="section-container">
@@ -95,22 +98,22 @@ const ContactSection: React.FC<ContactSectionProps> = ({ onSubmit }) => {
           <div className={styles.infoCard}>
             <i className="fas fa-map-marker-alt"></i>
             <div>
-              <h4>Ubicación</h4>
-              <p>España, remoto disponible</p>
+              <h4>{t.contactExtras.locationLabel}</h4>
+              <p>{t.contactExtras.locationValue}</p>
             </div>
           </div>
           <div className={styles.infoCard}>
             <i className="fas fa-clock"></i>
             <div>
-              <h4>Tiempo de respuesta</h4>
-              <p>24-48 horas</p>
+              <h4>{t.contactExtras.responseTimeLabel}</h4>
+              <p>{t.contactExtras.responseTimeValue}</p>
             </div>
           </div>
           <div className={styles.infoCard}>
             <i className="fas fa-language"></i>
             <div>
-              <h4>Idiomas</h4>
-              <p>Español, Inglés</p>
+              <h4>{t.contactExtras.languagesLabel}</h4>
+              <p>{t.contactExtras.languagesValue}</p>
             </div>
           </div>
         </div>{' '}
@@ -119,7 +122,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ onSubmit }) => {
           <div className={styles.formGrid}>
             <div className={styles.formGroup}>
               <label htmlFor="contact-name" className={errors.name ? 'error' : ''}>
-                Nombre *
+                {t.contactForms.name} *
               </label>
               <div className={`${styles.inputWrapper} ${errors.name ? 'error' : ''}`}>
                 <i className="fas fa-user"></i>
@@ -129,7 +132,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ onSubmit }) => {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  placeholder="Tu nombre completo"
+                  placeholder={t.contactForms.name}
                   className={errors.name ? 'error' : ''}
                   required
                 />
@@ -139,7 +142,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ onSubmit }) => {
 
             <div className={styles.formGroup}>
               <label htmlFor="contact-email" className={errors.email ? 'error' : ''}>
-                Email *
+                {t.contactForms.email} *
               </label>
               <div className={`${styles.inputWrapper} ${errors.email ? 'error' : ''}`}>
                 <i className="fas fa-envelope"></i>
@@ -149,7 +152,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ onSubmit }) => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="tu@correo.com"
+                  placeholder={t.contactForms.email}
                   className={errors.email ? 'error' : ''}
                   required
                 />
@@ -160,7 +163,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ onSubmit }) => {
 
           <div className={styles.formGroup}>
             <label htmlFor="contact-subject" className={errors.subject ? 'error' : ''}>
-              Asunto *
+              {t.contactForms.subject} *
             </label>
             <div className={`${styles.inputWrapper} ${errors.subject ? 'error' : ''}`}>
               <i className="fas fa-tag"></i>
@@ -170,7 +173,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ onSubmit }) => {
                 name="subject"
                 value={formData.subject}
                 onChange={handleChange}
-                placeholder="¿En qué puedo ayudarte?"
+                placeholder={t.contactForms.subject}
                 className={errors.subject ? 'error' : ''}
                 required
               />
@@ -180,7 +183,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ onSubmit }) => {
 
           <div className={styles.formGroup}>
             <label htmlFor="contact-message" className={errors.message ? 'error' : ''}>
-              Mensaje *
+              {t.contactForms.message} *
             </label>
             <div className={`${styles.textareaWrapper} ${errors.message ? 'error' : ''}`}>
               <i className="fas fa-comment-alt"></i>
@@ -190,7 +193,7 @@ const ContactSection: React.FC<ContactSectionProps> = ({ onSubmit }) => {
                 value={formData.message}
                 onChange={handleChange}
                 rows={6}
-                placeholder="Cuéntame sobre tu proyecto, ideas o cualquier consulta que tengas..."
+                placeholder={t.contactForms.message}
                 className={errors.message ? 'error' : ''}
                 required
               />
@@ -210,18 +213,18 @@ const ContactSection: React.FC<ContactSectionProps> = ({ onSubmit }) => {
               {isLoading ? (
                 <>
                   <i className="fas fa-spinner fa-spin"></i>
-                  Enviando...
+                  {t.contactExtras.sending}
                 </>
               ) : (
                 <>
                   <i className="fas fa-paper-plane"></i>
-                  Enviar Mensaje
+                  {t.contact.sendMessage}
                 </>
               )}
             </button>
             <div className={styles.formNote}>
               <i className="fas fa-shield-alt"></i>
-              Tu información está segura y nunca será compartida.
+              {t.contactExtras.privacyNote}
             </div>{' '}
           </div>
         </form>

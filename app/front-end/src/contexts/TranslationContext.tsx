@@ -16,6 +16,7 @@ export interface Translations {
     experience: string;
     contact: string;
     services: string;
+    certifications: string;
     testimonials: string;
     blog: string;
     portfolio: string;
@@ -153,6 +154,105 @@ export interface Translations {
     useCommandsNote: string;
   };
 
+  // Definiciones para respuestas usadas por la terminal (respuestas preformateadas)
+  responses: {
+    // Mensajes generales
+    commandNotFound: string;
+    tryHelp: string;
+    error: string;
+
+    // About / profile
+    about: {
+      noProfile: string[];
+      status: string;
+      footer: string;
+    };
+
+    // Skills
+    skills: {
+      title: string;
+      noSkills: string[];
+      footer: string;
+    };
+
+    // Projects
+    projects: {
+      title: string;
+      noProjects: string[];
+      techStack: string;
+      footer: string;
+    };
+
+    // Experience
+    experience: {
+      title: string;
+      noExperience: string[];
+      current: string;
+      footer: string;
+    };
+
+    // Contact
+    contact: {
+      title: string;
+      noContact: string[];
+      email: string;
+      phone: string;
+      location: string;
+      footer: string;
+    };
+
+    // Education
+    education: {
+      title: string;
+      noEducation: string[];
+      current: string;
+      footer: string;
+    };
+  };
+
+  // Definiciones para ayuda y comandos con salidas predefinidas
+  commands: {
+    help: { description: string; output?: string[] | string };
+    about: { description: string } & { output?: string[] | string };
+    skills: { description: string } & { output?: string[] | string };
+    projects: { description: string } & { output?: string[] | string };
+    contact: { description: string } & { output?: string[] | string };
+    experience: { description: string } & { output?: string[] | string };
+    education: { description: string } & { output?: string[] | string };
+    refresh: { description: string; output?: string[] | string };
+    clear: { description: string };
+    whoami: { description: string; fallback?: string[] };
+    ls: {
+      description: string;
+      directories?: string[];
+      skills?: string[];
+      projects?: string[];
+      usage?: string;
+    };
+    cat: {
+      description: string;
+      noFile?: string[];
+      files?: Record<string, string[]>;
+      notFound?: string;
+    };
+
+    // Easter eggs and small commands
+    hack: { description: string; output?: string[] };
+    undertale: { description: string; output?: string[] };
+    matrix: { description: string; output?: string[] };
+    coffee: { description: string; output?: string[] };
+    sudo: { description: string; output?: string[] };
+    konami: { description: string; output?: string[] };
+    pokemon: { description: string; output?: string[] };
+    pizza: { description: string; output?: string[] };
+    vim: { description: string; output?: string[] };
+    '42': { description: string; output?: string[] };
+    debug: { description: string; output?: string[] };
+    emoji: { description: string; output?: string[] };
+    refreshOutput?: string[];
+    rm?: { noOperand?: string[]; readOnly?: string[] };
+  };
+
   // Widget de Video
   videoWidget: {
     playVideo: string;
@@ -213,7 +313,9 @@ export interface Translations {
   // Sección de Habilidades
   skills: {
     title: string;
+    subtitle?: string;
     technical: string;
+    highlights: string;
     soft: string;
     languages: string;
     tools: string;
@@ -228,12 +330,15 @@ export interface Translations {
 
   // Sección de Proyectos
   projects: {
+    // Título corto y subtítulo para cabeceras
+    subtitle?: string;
     title: string;
     viewDetails: string;
     viewProject: string;
     viewCode: string;
     liveDemo: string;
     viewDemoAria: string;
+    readArticleAria: string;
     viewVideoDemoAria: string;
     viewCodeOnGitHub: string;
     playDemoAria: string;
@@ -253,12 +358,96 @@ export interface Translations {
     completed: string;
     inProgress: string;
     planned: string;
+    // Badges / tipos legibles para UI
+    type: {
+      project: string;
+      article: string;
+    };
+    statusLabels: {
+      completed: string;
+      inProgress: string;
+      planned: string;
+      paused: string;
+      draft: string;
+    };
   };
 
   // Sección específica de Proyectos (textos de cabecera)
   projectsSection: {
     subtitleAll: string;
     subtitleProjects: string;
+  };
+
+  // Sección de Certificaciones
+  certifications: {
+    title: string;
+    subtitle?: string;
+    loading: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    verify: string;
+    notAvailable: string;
+    courseSite: string;
+    editCertification: string;
+    deleteCertification: string;
+    deleteConfirm: string;
+    deleteSuccess: string;
+    deleteError: string;
+    loadError: string;
+    saveError: string;
+  };
+
+  // Sección de Testimonios
+  testimonials: {
+    title: string;
+    subtitle?: string;
+    addCta: string;
+    addModalTitle: string;
+    editModalTitle: string;
+    loading: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    readMore: string;
+    readLess: string;
+    form: {
+      placeholders: {
+        name: string;
+        position: string;
+        text: string;
+        email: string;
+        company: string;
+        website: string;
+      };
+      buttons: {
+        save: string;
+        add: string;
+        cancel: string;
+      };
+    };
+    validation: {
+      nameRequired: string;
+      nameTooLong: string;
+      positionRequired: string;
+      positionTooLong: string;
+      textRequired: string;
+      textTooShort: string;
+      textTooLong: string;
+      emailInvalid: string;
+      websiteInvalid: string;
+      ratingInvalid: string;
+    };
+    notifications: {
+      submitSuccessTitle: string;
+      submitSuccessMsg: string;
+      updateSuccessTitle: string;
+      updateSuccessMsg: string;
+      submitErrorTitle: string;
+      submitErrorMsg: string;
+    };
+    admin: {
+      edit: string;
+      delete: string;
+    };
   };
 
   // Sección de Experiencia
@@ -317,6 +506,18 @@ export interface Translations {
     twitter: string;
     instagram: string;
     website: string;
+  };
+
+  contactExtras: {
+    subtitle: string;
+    locationLabel: string;
+    locationValue: string;
+    responseTimeLabel: string;
+    responseTimeValue: string;
+    languagesLabel: string;
+    languagesValue: string;
+    privacyNote: string;
+    sending: string;
   };
 
   // Términos técnicos comunes
@@ -501,6 +702,26 @@ export interface Translations {
     upload: string;
     print: string;
   };
+
+  // Sección Footer
+  footer: {
+    brandNameFallback: string; // fallback when profile name is not available
+    brandTagline: string;
+    followTitle: string;
+    navigationTitle: string;
+    contactTitle: string;
+    contactFallback: string;
+    availabilityDefault: string;
+    emailSubject: string;
+    emailBody: string;
+    sendEmailAria: string;
+    newsletterTitle: string;
+    newsletterDescription: string;
+    newsletterPlaceholder: string;
+    subscribeAria: string;
+    developedWithLabel: string;
+    madeWithLoveAria: string;
+  };
 }
 
 // Traducciones en español
@@ -511,6 +732,7 @@ const esTranslations: Translations = {
     skills: 'Habilidades',
     projects: 'Proyectos',
     experience: 'Experiencia',
+    certifications: 'Certificaciones',
     contact: 'Contacto',
     services: 'Servicios',
     testimonials: 'Testimonios',
@@ -519,6 +741,97 @@ const esTranslations: Translations = {
     navigating: 'Navegando...',
     navigatingTo: 'Navegando a {section}...',
     headerNavItem: 'Elemento de navegación',
+  },
+
+  // Respuestas usadas por el widget terminal y helpers
+  responses: {
+    commandNotFound: 'comando no encontrado',
+    tryHelp: "Escribe 'help' para ver los comandos disponibles.",
+    error: 'Error',
+
+    about: {
+      noProfile: ['No hay información de perfil disponible.'],
+      status: 'Estado',
+      footer: '— Fin del perfil —',
+    },
+
+    skills: {
+      title: '🛠️  Mis habilidades técnicas:',
+      noSkills: ['No hay habilidades registradas en la base de datos.'],
+      footer: '— Fin de la lista de habilidades —',
+    },
+
+    projects: {
+      title: '🚀 Proyectos destacados:',
+      noProjects: ['No hay proyectos registrados en la base de datos.'],
+      techStack: 'Tech stack',
+      footer: '— Fin de la lista de proyectos —',
+    },
+
+    experience: {
+      title: '💼 Experiencia profesional:',
+      noExperience: ['No hay experiencias laborales registradas en la base de datos.'],
+      current: 'Presente',
+      footer: '— Fin de la lista de experiencias —',
+    },
+
+    contact: {
+      title: '📞 Información de contacto:',
+      noContact: ['No hay información de contacto.'],
+      email: 'Correo electrónico',
+      phone: 'Teléfono',
+      location: 'Ubicación',
+      footer: '— Fin de la información de contacto —',
+    },
+
+    education: {
+      title: '🎓 Formación académica:',
+      noEducation: ['No hay información de educación registrada en la base de datos.'],
+      current: 'Actualidad',
+      footer: '— Fin de la lista de educación —',
+    },
+  },
+
+  // Definiciones de ayuda/comandos para la terminal (salidas y descripciones)
+  commands: {
+    help: { description: 'Muestra esta ayuda', output: [] },
+    about: { description: 'Muestra información básica del perfil' },
+    skills: { description: 'Lista mis habilidades' },
+    projects: { description: 'Lista mis proyectos' },
+    contact: { description: 'Muestra información de contacto' },
+    experience: { description: 'Lista mi experiencia' },
+    education: { description: 'Lista mi formación académica' },
+    refresh: { description: 'Actualizar datos desde la base de datos', output: [] },
+    clear: { description: 'Limpia la pantalla' },
+    whoami: { description: 'Muestra mi rol', fallback: ['Sin información de perfil'] },
+    ls: {
+      description: 'Lista directorios disponibles',
+      directories: ['skills', 'projects'],
+      skills: [],
+      projects: [],
+      usage: '',
+    },
+    cat: {
+      description: 'Muestra contenido de archivos',
+      noFile: ['Especifica un archivo a mostrar'],
+      files: {},
+      notFound: 'Archivo no encontrado',
+    },
+
+    hack: { description: 'Modo hacking (easter egg)', output: [] },
+    undertale: { description: 'Experiencia tipo Undertale', output: [] },
+    matrix: { description: 'Modo matrix', output: [] },
+    coffee: { description: 'Necesitas cafeína', output: [] },
+    sudo: { description: 'Prueba permisos de administrador', output: [] },
+    konami: { description: 'Código Konami', output: [] },
+    pokemon: { description: 'Centro Pokémon', output: [] },
+    pizza: { description: 'Ordena pizza de código', output: [] },
+    vim: { description: 'Entra al editor (buena suerte saliendo)', output: [] },
+    '42': { description: 'La respuesta del universo', output: [] },
+    debug: { description: 'Sesión de debugging', output: [] },
+    emoji: { description: 'Festival de emojis', output: [] },
+    refreshOutput: [],
+    rm: { noOperand: ['rm: falta operando'], readOnly: ['rm: sistema de solo lectura'] },
   },
   profileHero: {
     downloadCV: 'Descargar CV',
@@ -712,9 +1025,12 @@ const esTranslations: Translations = {
     knowMyHistory: 'Conoce mi historia',
     whatMotivatesMe: 'Lo que me motiva',
   },
+
   skills: {
     title: 'Habilidades',
+    subtitle: 'Competencias técnicas y conocimientos',
     technical: 'Técnicas',
+    highlights: 'Destacados',
     soft: 'Blandas',
     languages: 'Idiomas',
     tools: 'Herramientas',
@@ -726,13 +1042,16 @@ const esTranslations: Translations = {
     advanced: 'Avanzado',
     expert: 'Experto',
   },
+
   projects: {
+    subtitle: 'Explora mis proyectos y desarrollos más destacados',
     title: 'Proyectos',
     viewProject: 'Ver Proyecto',
     viewDetails: 'Ver detalles',
     viewCode: 'Ver Código',
     liveDemo: 'Demo en Vivo',
     viewDemoAria: 'Ver demo de {title}',
+    readArticleAria: 'Leer artículo de {title}',
     viewVideoDemoAria: 'Ver demo en vídeo de {title}',
     viewCodeOnGitHub: 'Ver código de {title} en GitHub',
     playDemoAria: 'Reproducir demo de {title}',
@@ -752,6 +1071,18 @@ const esTranslations: Translations = {
     completed: 'Completado',
     inProgress: 'En Progreso',
     planned: 'Planificado',
+    // Badges / tipos legibles
+    type: {
+      project: 'Proyecto',
+      article: 'Artículo',
+    },
+    statusLabels: {
+      completed: 'Completado',
+      inProgress: 'En Desarrollo',
+      planned: 'Planificado',
+      paused: 'Pausado',
+      draft: 'Borrador',
+    },
   },
 
   projectsSection: {
@@ -759,6 +1090,76 @@ const esTranslations: Translations = {
       'Explora mi colección de proyectos técnicos. Cada uno cuenta una historia de innovación y aprendizaje.',
     subtitleProjects:
       'Explora mis proyectos más recientes y relevantes. Cada uno muestra tecnologías clave y demos.',
+  },
+
+  certifications: {
+    title: 'Certificaciones',
+    subtitle: 'Credenciales y certificaciones profesionales obtenidas',
+    loading: 'Cargando certificaciones...',
+    emptyTitle: 'No hay certificaciones disponibles',
+    emptyDescription: 'Las certificaciones aparecerán aquí cuando estén disponibles.',
+    verify: 'Verificar',
+    notAvailable: 'No disponible',
+    courseSite: 'Sitio del curso',
+    editCertification: 'Editar certificación',
+    deleteCertification: 'Eliminar certificación',
+    deleteConfirm: '¿Estás seguro de que quieres eliminar esta certificación?',
+    deleteSuccess: '¡Certificación eliminada!',
+    deleteError: 'No se pudo eliminar la certificación',
+    loadError: 'No se pudieron cargar las certificaciones',
+    saveError: 'No se pudo guardar la certificación',
+  },
+
+  testimonials: {
+    title: 'Testimonios',
+    subtitle: 'Lo que dicen quienes han trabajado conmigo',
+    addCta: 'Añadir mi testimonio',
+    addModalTitle: 'Añadir Testimonio',
+    editModalTitle: 'Editar Testimonio',
+    loading: 'Cargando testimonios...',
+    emptyTitle: 'No hay testimonios disponibles',
+    emptyDescription: '¡Sé el primero en compartir tu experiencia!',
+    readMore: 'Leer más',
+    readLess: 'Leer menos',
+    form: {
+      placeholders: {
+        name: 'Nombre',
+        position: 'Puesto',
+        text: 'Testimonio',
+        email: 'Email (opcional)',
+        company: 'Empresa (opcional)',
+        website: 'Sitio web (opcional)',
+      },
+      buttons: {
+        save: 'Guardar',
+        add: 'Añadir Testimonio',
+        cancel: 'Cancelar',
+      },
+    },
+    validation: {
+      nameRequired: 'El nombre es requerido',
+      nameTooLong: 'El nombre es demasiado largo',
+      positionRequired: 'El puesto es requerido',
+      positionTooLong: 'El puesto es demasiado largo',
+      textRequired: 'El testimonio es requerido',
+      textTooShort: 'El testimonio es demasiado corto (mínimo 20 caracteres)',
+      textTooLong: 'El testimonio es demasiado largo (máximo 1000 caracteres)',
+      emailInvalid: 'Email inválido',
+      websiteInvalid: 'URL inválida',
+      ratingInvalid: 'La valoración debe estar entre 1 y 5',
+    },
+    notifications: {
+      submitSuccessTitle: 'Testimonio enviado',
+      submitSuccessMsg: 'Gracias por compartir tu experiencia. Tu testimonio será revisado.',
+      updateSuccessTitle: 'Testimonio actualizado',
+      updateSuccessMsg: 'Los cambios se han guardado correctamente',
+      submitErrorTitle: 'Error',
+      submitErrorMsg: 'No se pudo enviar el testimonio. Inténtalo de nuevo.',
+    },
+    admin: {
+      edit: 'Editar',
+      delete: 'Eliminar',
+    },
   },
 
   // Formularios de experiencia
@@ -916,6 +1317,18 @@ const esTranslations: Translations = {
     instagram: 'Instagram',
     website: 'Sitio Web',
   },
+  contactExtras: {
+    subtitle: '¿Tienes un proyecto en mente? ¡Hablemos!',
+    locationLabel: 'Ubicación',
+    locationValue: 'España, remoto disponible',
+    responseTimeLabel: 'Tiempo de respuesta',
+    responseTimeValue: '24-48 horas',
+    languagesLabel: 'Idiomas',
+    languagesValue: 'Español, Inglés',
+    privacyNote: 'Tu información está segura y nunca será compartida.',
+    sending: 'Enviando...',
+  },
+
   tech: {
     frontend: 'Frontend',
     backend: 'Backend',
@@ -989,6 +1402,25 @@ const esTranslations: Translations = {
     upload: 'Subir',
     print: 'Imprimir',
   },
+  footer: {
+    brandNameFallback: 'Portfolio',
+    brandTagline: 'Creando experiencias digitales excepcionales',
+    followTitle: 'Sígueme',
+    navigationTitle: 'Navegación',
+    contactTitle: 'Contacto',
+    contactFallback: 'Información de contacto disponible en el CV',
+    availabilityDefault: 'Disponible para nuevos proyectos',
+    emailSubject: 'Contacto desde portafolio',
+    emailBody:
+      'Hola, me gustaría hablar sobre un proyecto. Mi nombre es {name} y encontré tu portafolio en {url}.',
+    sendEmailAria: 'Enviar email a {email}',
+    newsletterTitle: 'Mantente al día',
+    newsletterDescription: 'Recibe actualizaciones sobre nuevos proyectos y tecnologías.',
+    newsletterPlaceholder: 'tu@email.com',
+    subscribeAria: 'Suscribirse al newsletter',
+    developedWithLabel: 'Desarrollado con:',
+    madeWithLoveAria: 'amor',
+  },
 };
 
 // Traducciones en inglés
@@ -1001,6 +1433,7 @@ const enTranslations: Translations = {
     experience: 'Experience',
     contact: 'Contact',
     services: 'Services',
+    certifications: 'Certifications',
     testimonials: 'Testimonials',
     blog: 'Blog',
     portfolio: 'Portfolio',
@@ -1200,6 +1633,8 @@ const enTranslations: Translations = {
   },
   skills: {
     title: 'Skills',
+    subtitle: 'Technical competencies and knowledge',
+    highlights: 'Highlights',
     technical: 'Technical',
     soft: 'Soft',
     languages: 'Languages',
@@ -1213,12 +1648,14 @@ const enTranslations: Translations = {
     expert: 'Expert',
   },
   projects: {
+    subtitle: 'Explore my projects and highlighted developments',
     title: 'Projects',
     viewProject: 'View Project',
     viewDetails: 'View details',
     viewCode: 'View Code',
     liveDemo: 'Live Demo',
     viewDemoAria: 'View demo of {title}',
+    readArticleAria: 'Read article of {title}',
     viewVideoDemoAria: 'View video demo of {title}',
     viewCodeOnGitHub: 'View {title} code on GitHub',
     playDemoAria: 'Play demo of {title}',
@@ -1238,6 +1675,18 @@ const enTranslations: Translations = {
     completed: 'Completed',
     inProgress: 'In Progress',
     planned: 'Planned',
+    // Readable badges / types
+    type: {
+      project: 'Project',
+      article: 'Article',
+    },
+    statusLabels: {
+      completed: 'Completed',
+      inProgress: 'In Progress',
+      planned: 'Planned',
+      paused: 'Paused',
+      draft: 'Draft',
+    },
   },
 
   projectsSection: {
@@ -1245,6 +1694,76 @@ const enTranslations: Translations = {
       'Explore my collection of technical projects. Each one tells a story of innovation and learning.',
     subtitleProjects:
       'Explore my most recent and relevant projects. Each shows key technologies and demos.',
+  },
+
+  certifications: {
+    title: 'Certifications',
+    subtitle: 'Professional credentials and certifications obtained',
+    loading: 'Loading certifications...',
+    emptyTitle: 'No certifications available',
+    emptyDescription: 'Certifications will appear here when available.',
+    verify: 'Verify',
+    notAvailable: 'Not available',
+    courseSite: 'Course site',
+    editCertification: 'Edit certification',
+    deleteCertification: 'Delete certification',
+    deleteConfirm: 'Are you sure you want to delete this certification?',
+    deleteSuccess: 'Certification deleted!',
+    deleteError: 'Could not delete certification',
+    loadError: 'Could not load certifications',
+    saveError: 'Could not save certification',
+  },
+
+  testimonials: {
+    title: 'Testimonials',
+    subtitle: 'What people who worked with me say',
+    addCta: 'Add my testimonial',
+    addModalTitle: 'Add Testimonial',
+    editModalTitle: 'Edit Testimonial',
+    loading: 'Loading testimonials...',
+    emptyTitle: 'No testimonials available',
+    emptyDescription: 'Be the first to share your experience!',
+    readMore: 'Read more',
+    readLess: 'Read less',
+    form: {
+      placeholders: {
+        name: 'Name',
+        position: 'Position',
+        text: 'Testimonial',
+        email: 'Email (optional)',
+        company: 'Company (optional)',
+        website: 'Website (optional)',
+      },
+      buttons: {
+        save: 'Save',
+        add: 'Add Testimonial',
+        cancel: 'Cancel',
+      },
+    },
+    validation: {
+      nameRequired: 'Name is required',
+      nameTooLong: 'Name is too long',
+      positionRequired: 'Position is required',
+      positionTooLong: 'Position is too long',
+      textRequired: 'Testimonial is required',
+      textTooShort: 'Testimonial is too short (min 20 chars)',
+      textTooLong: 'Testimonial is too long (max 1000 chars)',
+      emailInvalid: 'Invalid email',
+      websiteInvalid: 'Invalid URL',
+      ratingInvalid: 'Rating must be between 1 and 5',
+    },
+    notifications: {
+      submitSuccessTitle: 'Testimonial submitted',
+      submitSuccessMsg: 'Thanks for sharing your experience. Your testimonial will be reviewed.',
+      updateSuccessTitle: 'Testimonial updated',
+      updateSuccessMsg: 'Changes have been saved successfully',
+      submitErrorTitle: 'Error',
+      submitErrorMsg: 'Could not submit testimonial. Please try again.',
+    },
+    admin: {
+      edit: 'Edit',
+      delete: 'Delete',
+    },
   },
 
   // Experience Forms
@@ -1403,6 +1922,17 @@ const enTranslations: Translations = {
     instagram: 'Instagram',
     website: 'Website',
   },
+  contactExtras: {
+    subtitle: "Have a project in mind? Let's talk!",
+    locationLabel: 'Location',
+    locationValue: 'Spain, remote available',
+    responseTimeLabel: 'Response time',
+    responseTimeValue: '24-48 hours',
+    languagesLabel: 'Languages',
+    languagesValue: 'Spanish, English',
+    privacyNote: 'Your information is safe and will never be shared.',
+    sending: 'Sending...',
+  },
   tech: {
     frontend: 'Frontend',
     backend: 'Backend',
@@ -1475,6 +2005,115 @@ const enTranslations: Translations = {
     download: 'Download',
     upload: 'Upload',
     print: 'Print',
+  },
+  footer: {
+    brandNameFallback: 'Portfolio',
+    brandTagline: 'Creating exceptional digital experiences',
+    followTitle: 'Follow me',
+    navigationTitle: 'Navigation',
+    contactTitle: 'Contact',
+    contactFallback: 'Contact information available in the CV',
+    availabilityDefault: 'Available for new projects',
+    emailSubject: 'Contact from portfolio',
+    emailBody:
+      'Hi, I would like to talk about a project. My name is {name} and I found your portfolio at {url}.',
+    sendEmailAria: 'Send email to {email}',
+    newsletterTitle: 'Stay up to date',
+    newsletterDescription: 'Receive updates about new projects and technologies.',
+    newsletterPlaceholder: 'your@email.com',
+    subscribeAria: 'Subscribe to newsletter',
+    developedWithLabel: 'Developed with:',
+    madeWithLoveAria: 'love',
+  },
+  // Terminal responses (used by interactive terminal)
+  responses: {
+    commandNotFound: 'command not found',
+    tryHelp: "Type 'help' to see available commands.",
+    error: 'Error',
+
+    about: {
+      noProfile: ['No profile information available.'],
+      status: 'Status',
+      footer: '-- End of profile --',
+    },
+
+    skills: {
+      title: '🛠️  My technical skills:',
+      noSkills: ['No skills registered in the database.'],
+      footer: '-- End of skills list --',
+    },
+
+    projects: {
+      title: '🚀 Featured projects:',
+      noProjects: ['No projects registered in the database.'],
+      techStack: 'Tech stack',
+      footer: '-- End of projects list --',
+    },
+
+    experience: {
+      title: '💼 Professional experience:',
+      noExperience: ['No work experiences registered in the database.'],
+      current: 'Present',
+      footer: '-- End of experiences list --',
+    },
+
+    contact: {
+      title: '📞 Contact information:',
+      noContact: ['No contact information.'],
+      email: 'Email',
+      phone: 'Phone',
+      location: 'Location',
+      footer: '-- End of contact information --',
+    },
+
+    education: {
+      title: '🎓 Academic formation:',
+      noEducation: ['No education information registered in the database.'],
+      current: 'Current',
+      footer: '-- End of education list --',
+    },
+  },
+
+  // Command metadata and canned outputs used by the terminal
+  commands: {
+    help: { description: 'Shows this help', output: [] },
+    about: { description: 'Shows basic profile information' },
+    skills: { description: 'Lists my skills' },
+    projects: { description: 'Lists my projects' },
+    contact: { description: 'Shows contact information' },
+    experience: { description: 'Lists my experience' },
+    education: { description: 'Lists my academic background' },
+    refresh: { description: 'Update data from database', output: [] },
+    clear: { description: 'Clear the screen' },
+    whoami: { description: 'Show my role', fallback: ['No profile information'] },
+    ls: {
+      description: 'List available directories',
+      directories: ['skills', 'projects'],
+      skills: [],
+      projects: [],
+      usage: '',
+    },
+    cat: {
+      description: 'Show file content',
+      noFile: ['Specify a file to show'],
+      files: {},
+      notFound: 'File not found',
+    },
+
+    hack: { description: 'Hollywood hacking mode', output: [] },
+    undertale: { description: 'Undertale-style experience', output: [] },
+    matrix: { description: 'Matrix mode', output: [] },
+    coffee: { description: 'You need caffeine', output: [] },
+    sudo: { description: 'Test admin permissions', output: [] },
+    konami: { description: 'Konami code', output: [] },
+    pokemon: { description: 'Pokémon Center', output: [] },
+    pizza: { description: 'Order code pizza', output: [] },
+    vim: { description: 'Enter the editor (good luck exiting)', output: [] },
+    '42': { description: 'The answer to the universe', output: [] },
+    debug: { description: 'Debugging session', output: [] },
+    emoji: { description: 'Emoji festival', output: [] },
+    refreshOutput: [],
+    rm: { noOperand: ['rm: missing operand'], readOnly: ['rm: read-only file system'] },
   },
 };
 

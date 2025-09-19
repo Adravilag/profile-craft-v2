@@ -98,12 +98,30 @@ const ProjectCard: React.FC<{ project: Project }> = ({ project }) => {
             <div className={styles.metaBadges} aria-hidden>
               {project.type && (
                 <span className={styles.metaBadge} data-type={project.type}>
-                  {project.type}
+                  {/* Mostrar versión traducida si coincide con valores conocidos, por defecto usar project.type */}
+                  {project.type === 'Proyecto' || project.type === 'proyecto'
+                    ? t.projects.type.project
+                    : project.type === 'Artículo' ||
+                        project.type === 'articulo' ||
+                        project.type === 'artículo'
+                      ? t.projects.type.article
+                      : project.type}
                 </span>
               )}
               {project.status && (
                 <span className={styles.metaBadge} data-status={project.status}>
-                  {project.status}
+                  {/* Mapear algunos estados comunes a las etiquetas traducidas, dejar por defecto */}
+                  {project.status === 'En Desarrollo' ||
+                  project.status === 'En progreso' ||
+                  project.status === 'En progreso'
+                    ? t.projects.statusLabels.inProgress
+                    : project.status === 'Completado' || project.status === 'Completado '
+                      ? t.projects.statusLabels.completed
+                      : project.status === 'Pausado'
+                        ? t.projects.statusLabels.paused
+                        : project.status === 'Borrador'
+                          ? t.projects.statusLabels.draft
+                          : project.status}
                 </span>
               )}
             </div>
