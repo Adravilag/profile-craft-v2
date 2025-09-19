@@ -42,6 +42,10 @@ interface AddExperienceFormProps {
   onFormDataChange?: (data: FormData) => void;
   onValidationErrorsChange?: (errors: ValidationErrors) => void;
   onSelectedTechnologiesChange?: (technologies: string[]) => void;
+  // Localized content sync (optional)
+  localizedData?: any;
+  onLocalizedFieldChange?: (field: string, value: string) => void;
+  visibleLang?: 'es' | 'en';
 }
 
 // (La carga de sugerencias se realiza dentro del componente más abajo.)
@@ -57,9 +61,13 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
   onFormDataChange,
   onValidationErrorsChange,
   onSelectedTechnologiesChange,
+  localizedData,
+  onLocalizedFieldChange,
+  visibleLang,
 }) => {
   const { showSuccess, showError } = useNotification();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
+  const effectiveLang = (visibleLang ?? language) as 'es' | 'en';
 
   // Sugerencias de tecnologías cargadas desde el JSON público
   type SkillItem = { name: string; slug: string; category?: string; color?: string; svg?: string };
@@ -100,12 +108,12 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
   }, [skillSettings]);
 
   // Estados del formulario - Simplificado para experiencia únicamente
-  const { language } = useTranslation();
+  // Use visibleLang (from modal) if provided to show the proper localized text
 
   const getVisible = (value: any) => {
     if (value == null) return '';
     if (typeof value === 'string') return value;
-    if (typeof value === 'object') return value[language] ?? value.es ?? value.en ?? '';
+    if (typeof value === 'object') return value[effectiveLang] ?? value.es ?? value.en ?? '';
     return String(value);
   };
 
@@ -135,7 +143,7 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
       order_index: editingExperience?.order_index || initialData.order_index || 0,
       is_current: initialData.is_current || false,
     });
-  }, [editingExperience, initialData, language]);
+  }, [editingExperience, initialData, effectiveLang]);
 
   // Estados de validación y UX - Sin barra de progreso (delegada a ModalShell)
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
@@ -302,6 +310,15 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
       }
       return newErrors;
     });
+
+    // Notify parent about localized text changes
+    if (
+      onLocalizedFieldChange &&
+      (name === 'title' || name === 'company' || name === 'description')
+    ) {
+      const key = name === 'title' ? 'title' : name === 'company' ? 'company' : 'description';
+      onLocalizedFieldChange(key, value);
+    }
   };
 
   // Manejar checkbox "Actualmente"
@@ -502,13 +519,23 @@ const AddExperienceForm: React.FC<AddExperienceFormProps> = ({
         const startIso = convertSpanishDateToISO(formData.start_date);
         const endIso = formData.end_date ? convertSpanishDateToISO(formData.end_date) : '';
 
-        // Build localized payload for fields that can be localized so backend can merge
+        // Helper: ensure we send complete localized objects when available
+        const ensureLocalized = (key: string, currentValue: string) => {
+          const v = (localizedData && localizedData[key]) || undefined;
+          if (v == null) return { es: currentValue, en: currentValue } as any;
+          if (typeof v === 'string') return { es: v, en: v } as any;
+          return {
+            es: v.es ?? v.en ?? currentValue ?? '',
+            en: v.en ?? v.es ?? currentValue ?? '',
+          } as any;
+        };
+
         const experienceData = {
-          position: { [language]: formData.title },
-          company: { [language]: formData.company },
+          position: ensureLocalized('title', formData.title),
+          company: ensureLocalized('company', formData.company),
           start_date: startIso,
           end_date: endIso,
-          description: { [language]: formData.description },
+          description: ensureLocalized('description', formData.description),
           // Enviar slugs de tecnologías seleccionadas
           technologies:
             selectedTechnologies && selectedTechnologies.length > 0

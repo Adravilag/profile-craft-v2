@@ -78,6 +78,8 @@ const ExperienceSchema: Schema = new Schema(
   },
   {
     timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
+    // Forzar nombre de colección para mantener compatibilidad con la estructura traducida
+    collection: 'experience-section',
   }
 );
 
@@ -85,5 +87,6 @@ const ExperienceSchema: Schema = new Schema(
 ExperienceSchema.index({ user_id: 1, order_index: 1 });
 ExperienceSchema.index({ user_id: 1, start_date: -1 });
 
+// Mantener el nombre del modelo 'Experience' pero apuntando a la colección 'experience-section'
 const Experience = mongoose.model<IExperience>('Experience', ExperienceSchema);
 export default Experience;

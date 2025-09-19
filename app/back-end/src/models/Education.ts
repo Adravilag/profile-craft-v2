@@ -73,6 +73,8 @@ const educationSchema = new Schema<IEducation>(
       createdAt: 'created_at',
       updatedAt: 'updated_at',
     },
+    // Forzar nombre de colección para mantener compatibilidad con la estructura traducida
+    collection: 'education-section',
   }
 );
 
@@ -80,6 +82,7 @@ const educationSchema = new Schema<IEducation>(
 educationSchema.index({ user_id: 1, order_index: 1 });
 educationSchema.index({ user_id: 1, start_date: -1 });
 
+// Mantener el nombre del modelo 'Education' pero apuntando a la colección 'education-section'
 const Education = mongoose.model<IEducation>('Education', educationSchema);
 
 export default Education;

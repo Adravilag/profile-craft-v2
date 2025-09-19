@@ -152,7 +152,8 @@ const generateExperienceSummary = (experiences: Experience[], t: any): string[] 
     output.push(`   📅 ${startDate} - ${endDate}`);
 
     if (exp.description) {
-      const lines = exp.description.split('\n').filter(line => line.trim());
+      const desc = exp.description || '';
+      const lines = desc.split('\n').filter(line => line.trim());
       lines.forEach(line => {
         output.push(`   • ${line.trim()}`);
       });
@@ -242,7 +243,8 @@ const generateEducationSummary = (educations: Education[], t: any): string[] => 
     output.push(`   📅 ${startYear} - ${endYear}`);
 
     if (edu.description) {
-      const lines = edu.description.split('\n').filter(line => line.trim());
+      const desc = edu.description || '';
+      const lines = desc.split('\n').filter(line => line.trim());
       lines.forEach(line => {
         output.push(`   • ${line.trim()}`);
       });

@@ -18,15 +18,21 @@ export const normalizeTechnologies = (tech: any): string => {
   return '';
 };
 
+const localizedToString = (val: string | { es?: string; en?: string } | undefined): string => {
+  if (!val) return '';
+  if (typeof val === 'string') return val;
+  return val.es ?? val.en ?? '';
+};
+
 export const getInitialFormData = (
   editing?: Experience,
   initial: Partial<FormData> = {}
 ): FormData => ({
-  title: editing?.position || initial.title || '',
-  company: editing?.company || initial.company || '',
+  title: localizedToString(editing?.position) || initial.title || '',
+  company: localizedToString(editing?.company) || initial.company || '',
   start_date: editing?.start_date || initial.start_date || '',
   end_date: editing?.end_date || initial.end_date || '',
-  description: editing?.description || initial.description || '',
+  description: localizedToString(editing?.description) || initial.description || '',
   technologies:
     normalizeTechnologies(editing?.technologies) || normalizeTechnologies(initial.technologies),
   order_index: editing?.order_index || initial.order_index || 0,

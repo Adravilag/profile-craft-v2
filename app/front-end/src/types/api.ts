@@ -23,9 +23,9 @@ export interface Experience {
   _id?: string;
   id?: string | number;
   user_id?: string | number;
-  company: string | LocalizedString;
-  position: string | LocalizedString;
-  description?: string | LocalizedString;
+  company: string;
+  position: string;
+  description?: string;
   start_date: string;
   end_date?: string;
   is_current?: boolean;
@@ -152,11 +152,11 @@ export interface Education {
   _id?: string;
   id?: number | string;
   user_id?: number | string;
-  title: string | LocalizedString;
-  institution: string | LocalizedString;
+  title: string;
+  institution: string;
   start_date: string;
   end_date: string;
-  description?: string | LocalizedString;
+  description?: string;
   header_image?: string;
   logo_image?: string;
   grade?: string;

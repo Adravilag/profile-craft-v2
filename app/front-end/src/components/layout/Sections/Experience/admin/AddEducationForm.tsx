@@ -32,6 +32,10 @@ interface AddEducationFormProps {
   useModalShell?: boolean;
   onFormDataChange?: (data: FormData) => void;
   onValidationErrorsChange?: (errors: ValidationErrors) => void;
+  // Localized content sync (optional)
+  localizedData?: any;
+  onLocalizedFieldChange?: (field: string, value: string) => void;
+  visibleLang?: 'es' | 'en';
 }
 
 const AddEducationForm: React.FC<AddEducationFormProps> = ({
@@ -46,14 +50,18 @@ const AddEducationForm: React.FC<AddEducationFormProps> = ({
   useModalShell = false,
   onFormDataChange,
   onValidationErrorsChange,
+  localizedData,
+  onLocalizedFieldChange,
+  visibleLang,
 }) => {
   const { showSuccess, showError } = useNotification();
   const { t, language } = useTranslation();
+  const effectiveLang = (visibleLang ?? language) as 'es' | 'en';
 
   const getVisible = (value: any) => {
     if (value == null) return '';
     if (typeof value === 'string') return value;
-    if (typeof value === 'object') return value[language] ?? value.es ?? value.en ?? '';
+    if (typeof value === 'object') return value[effectiveLang] ?? value.es ?? value.en ?? '';
     return String(value);
   };
 
@@ -129,6 +137,14 @@ const AddEducationForm: React.FC<AddEducationFormProps> = ({
     if (onFormDataChange) {
       onFormDataChange(updatedFormData);
     }
+    // Notify parent about localized text changes
+    if (
+      onLocalizedFieldChange &&
+      (name === 'title' || name === 'institution' || name === 'description')
+    ) {
+      const key = name === 'title' ? 'title' : name === 'institution' ? 'company' : 'description';
+      onLocalizedFieldChange(key, value);
+    }
     if (onValidationErrorsChange) {
       const updatedErrors = { ...validationErrors };
       if (error) {
@@ -203,7 +219,7 @@ const AddEducationForm: React.FC<AddEducationFormProps> = ({
       grade: editingEducation?.grade || initialData.grade || '',
       order_index: editingEducation?.order_index || initialData.order_index || 0,
     });
-  }, [language, editingEducation, initialData]);
+  }, [effectiveLang, editingEducation, initialData]);
 
   useEffect(() => {
     if (useModalShell && onValidationErrorsChange) {
@@ -239,13 +255,23 @@ const AddEducationForm: React.FC<AddEducationFormProps> = ({
         const startIso = convertSpanishDateToISO(formData.start_date);
         const endIso = formData.end_date ? convertSpanishDateToISO(formData.end_date) : '';
 
+        const ensureLocalized = (key: string, currentValue: string) => {
+          const v = (localizedData && localizedData[key]) || undefined;
+          if (v == null) return { es: currentValue, en: currentValue } as any;
+          if (typeof v === 'string') return { es: v, en: v } as any;
+          return {
+            es: v.es ?? v.en ?? currentValue ?? '',
+            en: v.en ?? v.es ?? currentValue ?? '',
+          } as any;
+        };
+
         const educationData = {
           // Send localized objects for fields that can be localized
-          title: { [language]: formData.title },
-          institution: { [language]: formData.institution },
+          title: ensureLocalized('title', formData.title),
+          institution: ensureLocalized('company', formData.institution),
           start_date: startIso,
           end_date: endIso,
-          description: { [language]: formData.description },
+          description: ensureLocalized('description', formData.description),
           grade: formData.grade,
           order_index: formData.order_index,
         };
