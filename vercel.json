@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd app/front-end && pnpm install --frozen-lockfile && pnpm run build",
+  "buildCommand": "cd app/front-end && rm -rf .pnpm-store || true && pnpm install --frozen-lockfile && pnpm run build",
   "outputDirectory": "app/front-end/dist",
   "installCommand": "echo 'skipping root install'",
   "framework": "vite",
