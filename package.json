@@ -12,9 +12,9 @@
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "dev:frontend": "npm run dev --workspace=app/front-end",
     "dev:backend": "npm run dev --workspace=app/back-end",
-  "build": "npm --prefix app/front-end install --no-workspaces && npm --prefix app/front-end run build",
-  "build:frontend": "npm --prefix app/front-end install --no-workspaces && npm --prefix app/front-end run build",
-  "build:backend": "npm --prefix app/back-end install --no-workspaces && npm --prefix app/back-end run build",
+    "build": "npm --prefix app/front-end install --no-workspaces && npm --prefix app/front-end run build",
+    "build:frontend": "npm --prefix app/front-end install --no-workspaces && npm --prefix app/front-end run build",
+    "build:backend": "npm --prefix app/back-end install --no-workspaces && npm --prefix app/back-end run build",
     "type-check": "npm run type-check --workspaces",
     "lint": "npm run lint --workspaces",
     "lint:fix": "npm run lint:fix --workspaces",
@@ -45,8 +45,8 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

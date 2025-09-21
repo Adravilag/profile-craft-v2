@@ -78,9 +78,9 @@
     "@types/markdown-to-jsx": "^7.0.0",
     "@types/md5": "^2.3.5",
     "@types/node": "^24.3.0",
-    "@types/react": "^19.1.10",
+    "@types/react": "^18.2.21",
     "@types/react-datepicker": "^6.2.0",
-    "@types/react-dom": "^19.1.7",
+    "@types/react-dom": "^18.2.7",
     "@types/react-router-dom": "^5.3.3",
     "@types/storybook__addon-actions": "^3.4.3",
     "@types/testing-library__react": "^10.0.1",
@@ -111,14 +111,13 @@
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.2.4"
   },
-  "overrides": {
-    "react-datepicker": {
-      "react": "^19.1.1",
-      "react-dom": "^19.1.1"
-    }
-  },
   "browserslist": [
     "defaults",
     "not ie <= 11"
-  ]
+  ],
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
 }

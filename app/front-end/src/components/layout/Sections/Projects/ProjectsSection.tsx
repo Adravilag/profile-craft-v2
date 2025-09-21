@@ -18,7 +18,7 @@ interface ProjectsSectionProps {
 }
 
 const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => {
-  const { t } = useTranslation();
+  const { t, getText } = useTranslation();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
@@ -70,7 +70,13 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
         <HeaderSection
           icon="fas fa-code"
           title={t.projects.title}
-          subtitle={t.projects.subtitle ?? 'Explora mis proyectos y desarrollos más destacados'}
+          subtitle={
+            t.projects.subtitle ??
+            getText(
+              'projects.section.subtitle',
+              'Explora mis proyectos y desarrollos más destacados'
+            )
+          }
           className="projects"
         />
         <div className="section-container">
@@ -118,7 +124,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
             <div className={styles.projectsError}>
               <p>{error}</p>
               <button onClick={retry} className={styles.retryButton}>
-                {t.projectsCarousel.retry}
+                {getText('projects.form.retryButton', 'Reintentar')}
               </button>
             </div>
           </div>
@@ -140,7 +146,7 @@ const ProjectsSection: React.FC<ProjectsSectionProps> = ({ onProjectClick }) => 
           <div className={styles.panel}>
             <div className={styles.projectsEmpty}>
               <i className="fas fa-project-diagram"></i>
-              <p>{t.projectsCarousel.noProjects}</p>
+              <p>{getText('projects.form.noProjects', 'No hay proyectos para mostrar')}</p>
               {/* Botón de administración movido al FAB para centralizar control */}
             </div>
           </div>

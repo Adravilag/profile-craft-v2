@@ -446,7 +446,8 @@ const InteractiveTerminalContent: React.FC = () => {
           navigateAutocomplete(-1);
         } else {
           playKeySound('arrow'); // Sonido especial al navegar historial
-          navigateHistory(-1);
+          // ArrowUp debe ir hacia comandos anteriores (historial más reciente primero)
+          navigateHistory(1);
         }
         break;
 
@@ -456,7 +457,8 @@ const InteractiveTerminalContent: React.FC = () => {
           navigateAutocomplete(1);
         } else {
           playKeySound('arrow'); // Sonido especial al navegar historial
-          navigateHistory(1);
+          // ArrowDown debe ir hacia comandos más nuevos / limpiar selección
+          navigateHistory(-1);
         }
         break;
 

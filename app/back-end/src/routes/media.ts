@@ -11,6 +11,7 @@ router.use(authenticateAdmin);
 // Rutas de gestión de archivos
 router.post('/upload', upload.single('image'), mediaController.uploadFile);
 router.post('/upload-multiple', upload.array('images', 10), mediaController.uploadMultiple);
+router.post('/sign', mediaController.generateSignature);
 router.get('/', mediaController.getMediaFiles);
 router.delete('/:filename', mediaController.deleteFile);
 router.delete('/cloudinary/delete', mediaController.deleteCloudinaryImage);

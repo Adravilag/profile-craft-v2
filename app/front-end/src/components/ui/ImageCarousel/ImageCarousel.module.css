@@ -1,0 +1,138 @@
+.carousel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  position: relative;
+}
+
+.main {
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #000; /* fallback background */
+}
+
+.mainImageContainer {
+  display: flex;
+  width: 100%;
+  max-height: 400px;
+  aspect-ratio: 16/9; /* mantiene proporción responsiva */
+}
+
+.mainImage {
+  width: 100%;
+  height: 100%;
+  flex-shrink: 0;
+  object-fit: contain;
+  border-radius: inherit;
+  display: block;
+}
+
+.mainImageStrip {
+  display: flex;
+  height: 100%;
+  transition: transform 0.5s ease-in-out;
+}
+
+.navButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 10;
+  transition:
+    background-color 0.25s ease,
+    transform 0.2s ease;
+}
+
+.navButton:hover {
+  background-color: rgba(0, 0, 0, 0.75);
+  transform: translateY(-50%) scale(1.05);
+}
+
+.navButton:focus {
+  outline: 2px solid var(--primary-color, #2563eb);
+  outline-offset: 3px;
+}
+
+.navButton.prev {
+  left: 1rem;
+}
+
+.navButton.next {
+  right: 1rem;
+}
+
+.thumbs {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color, #2563eb) transparent;
+}
+
+.thumbs::-webkit-scrollbar {
+  height: 6px;
+}
+
+.thumbs::-webkit-scrollbar-thumb {
+  background: var(--primary-color, #2563eb);
+  border-radius: 3px;
+}
+
+.thumbBtn {
+  border: 2px solid transparent;
+  background: transparent;
+  padding: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+  flex-shrink: 0;
+}
+
+.thumbBtn:hover,
+.thumbBtn:focus {
+  border-color: var(--primary-color, #2563eb);
+  box-shadow: 0 0 6px rgba(37, 99, 235, 0.5);
+  outline: none;
+}
+
+.thumbImage {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: inherit;
+  display: block;
+}
+
+.active {
+  border-color: var(--primary-color, #2563eb);
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.6);
+}
+
+/* 📱 Responsive ajustes */
+@media (max-width: 640px) {
+  .mainImageContainer {
+    max-height: 250px;
+    aspect-ratio: 4/3;
+  }
+
+  .thumbImage {
+    width: 60px;
+    height: 45px;
+  }
+}

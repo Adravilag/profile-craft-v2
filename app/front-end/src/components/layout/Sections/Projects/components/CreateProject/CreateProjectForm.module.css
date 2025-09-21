@@ -114,6 +114,28 @@
   gap: 0.5rem;
 }
 
+.coverPreview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.coverPreview img {
+  width: 180px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.coverActions button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary, #e6eef8);
+  cursor: pointer;
+}
+
 .formGroup label {
   font-weight: 500;
   color: var(--text-primary, #e6eef8);

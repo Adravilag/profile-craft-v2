@@ -1,5 +1,5 @@
 // useProjectForm hook - Form state management and logic
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useNotificationContext } from '@/contexts';
 import { createProject, updateProject } from '@/services/endpoints/projects';
@@ -15,6 +15,7 @@ const createEmptyProject = (): EnhancedProject => ({
   title: '',
   description: '',
   image_url: '',
+  gallery_images: [],
   github_url: '',
   live_url: '',
   project_url: '',
@@ -75,10 +76,10 @@ export const useProjectForm = (
 
   // Handle form field changes
   const handleFormChange = useCallback(
-    (field: keyof EnhancedProject, value: string | number) => {
+    (field: keyof EnhancedProject, value: string | number | string[]) => {
       setForm(prev => ({
         ...prev,
-        [field]: value,
+        [field]: value as any,
       }));
 
       // Clear validation error for this field if it exists
@@ -166,7 +167,7 @@ export const useProjectForm = (
   }, [form]);
 
   // Validate form data
-  const validateForm = useCallback((): boolean => {
+  const validateForm = useCallback((): Record<string, string> => {
     const errors: Record<string, string> = {};
 
     if (!form.title.trim()) {
@@ -181,9 +182,10 @@ export const useProjectForm = (
       errors.image_url = 'La imagen es requerida';
     }
 
-    if (!form.github_url.trim()) {
-      errors.github_url = 'El enlace de GitHub es requerido';
-    }
+    // GitHub URL is optional — do not block save if missing
+    // if (!form.github_url.trim()) {
+    //   errors.github_url = 'El enlace de GitHub es requerido';
+    // }
 
     if (!form.project_content.trim()) {
       errors.project_content = 'El contenido del proyecto es requerido';
@@ -203,12 +205,15 @@ export const useProjectForm = (
     });
 
     setValidationErrors(errors);
-    return Object.keys(errors).length === 0;
+    return errors;
   }, [form]);
 
   // Handle form submission
   const handleSave = useCallback(async () => {
-    if (!validateForm()) {
+    console.debug('[useProjectForm] handleSave invoked, mode=', mode, 'projectId=', projectId);
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      console.debug('[useProjectForm] validation failed', errors);
       showError('Por favor corrige los errores en el formulario');
       return;
     }
@@ -240,6 +245,27 @@ export const useProjectForm = (
       setSaving(false);
     }
   }, [form, mode, projectId, validateForm, showSuccess, showError, onSuccess, navigate]);
+
+  // Auto-fill image_url from the first gallery image when appropriate
+  // If user has not provided an image_url but added gallery images, use the first one
+  // This keeps the thumbnail in sync with gallery uploads and is a convenient default.
+  // Note: This effect intentionally writes to state using setForm and therefore
+  // is run as a side-effect when form.gallery_images changes.
+  useEffect(() => {
+    try {
+      const gallery = form.gallery_images || [];
+      if ((!form.image_url || !String(form.image_url).trim()) && gallery.length > 0) {
+        setForm(prev => ({ ...prev, image_url: gallery[0] }));
+      }
+    } catch (e) {
+      // noop
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.gallery_images]);
+
+  const setPrimaryImage = useCallback((url: string) => {
+    setForm(prev => ({ ...prev, image_url: url }));
+  }, []);
 
   // Handle cancel action
   const handleCancel = useCallback(() => {

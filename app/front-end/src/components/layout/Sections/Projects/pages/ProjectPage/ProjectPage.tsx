@@ -42,7 +42,7 @@ const ProjectPage: React.FC = () => {
   const navigate = useNavigate();
   const { showError } = useNotificationContext();
   const { isAuthenticated } = useAuth();
-  const { t, getText } = useTranslation();
+  const { t, getText, language } = useTranslation();
 
   const [project, setProject] = useState<Project | null>(null);
   const [profileData, setProfile] = useState<UserProfile | null>(null);
@@ -60,9 +60,41 @@ const ProjectPage: React.FC = () => {
     }
   }, []);
 
+  // Helper para contenido localizado: acepta string | { es?: string; en?: string }
+  const getLocalized = (input: any, preferredLangs?: string[]): string => {
+    if (input == null) return '';
+    if (typeof input === 'string') return input;
+    if (typeof input === 'number' || typeof input === 'boolean') return String(input);
+
+    const currentLang = (language as string) || 'en';
+    const langs =
+      Array.isArray(preferredLangs) && preferredLangs.length > 0
+        ? preferredLangs
+        : [currentLang, 'es', 'en'];
+
+    if (typeof input === 'object') {
+      for (const l of langs) {
+        if ((input as any)[l] != null) {
+          const v = (input as any)[l];
+          if (typeof v === 'string') return v;
+          if (typeof v === 'number' || typeof v === 'boolean') return String(v);
+        }
+      }
+      // fallback: any string property
+      for (const k of Object.keys(input)) {
+        const v = (input as any)[k];
+        if (typeof v === 'string' && v.trim()) return v;
+      }
+    }
+    return '';
+  };
+
   useEffect(() => {
     if (!id) {
-      showError('Error', 'ID de artículo no válido');
+      showError(
+        getText('errors.invalidIdTitle', 'Error'),
+        getText('errors.invalidId', 'ID de artículo inválido')
+      );
       navigate('/');
       return;
     }
@@ -91,9 +123,13 @@ const ProjectPage: React.FC = () => {
       const data = await getProjectById(projectId);
       setProject(data);
       if (data.project_content) {
+        const localizedContent = getLocalized(data.project_content) || '';
         const wordsPerMinute = 200;
-        const words = data.project_content.replace(/<[^>]*>/g, '').split(/\s+/).length;
-        setReadingTime(Math.ceil(words / wordsPerMinute));
+        const words = localizedContent
+          .replace(/<[^>]*>/g, '')
+          .split(/\s+/)
+          .filter(Boolean).length;
+        setReadingTime(localizedContent ? Math.ceil(words / wordsPerMinute) : 0);
       }
     } catch (err: any) {
       console.error('❌ Error al cargar proyecto:', err);
@@ -106,7 +142,7 @@ const ProjectPage: React.FC = () => {
         errorMessage = 'El enlace del proyecto no es válido. Regresa a la sección de proyectos.';
       }
       setError(errorMessage);
-      showError('Proyecto no encontrado', errorMessage);
+      showError(getText('projects.form.notFoundTitle', 'Proyecto no encontrado'), errorMessage);
     } finally {
       setLoading(false);
     }
@@ -116,8 +152,8 @@ const ProjectPage: React.FC = () => {
     if (navigator.share && project) {
       try {
         await navigator.share({
-          title: project.title,
-          text: project.description,
+          title: getLocalized((project as any).title),
+          text: getLocalized((project as any).description),
           url: window.location.href,
         });
       } catch (err) {
@@ -163,7 +199,12 @@ const ProjectPage: React.FC = () => {
             <h1 style={{ fontSize: '24px', marginBottom: '16px' }}>
               {getText('states.loading', 'Cargando...')}
             </h1>
-            <p>Por favor espera mientras cargamos el contenido.</p>
+            <p>
+              {getText(
+                'projects.form.loadingMessage',
+                'Por favor espera mientras cargamos el contenido.'
+              )}
+            </p>
           </div>
         </main>
       </div>
@@ -191,7 +232,11 @@ const ProjectPage: React.FC = () => {
               {t.projects.type.article} {getText('states.notFound', 'no encontrado')}
             </h1>
             <p style={{ marginBottom: '32px' }}>
-              {error || 'El artículo solicitado no existe o ha sido eliminado.'}
+              {error ||
+                getText(
+                  'projects.form.notFoundSubtitle',
+                  'El artículo solicitado no existe o ha sido eliminado.'
+                )}
             </p>
             <div
               style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}
@@ -208,7 +253,7 @@ const ProjectPage: React.FC = () => {
                 className={`${styles.wordpressActionButton} ${styles.wordpressActionSecondary}`}
               >
                 <i className="fas fa-redo"></i>
-                Reintentar
+                {getText('projects.form.retryButton', 'Reintentar')}
               </button>
             </div>
           </div>
@@ -217,9 +262,14 @@ const ProjectPage: React.FC = () => {
     );
   }
 
-  const isProject = project.type
-    ? project.type === 'proyecto'
-    : !project.project_content || project.project_content.length < 500;
+  const localizedContentForTypeCheck = project
+    ? getLocalized((project as any).project_content)
+    : '';
+  const isProject = project
+    ? project.type
+      ? project.type === 'proyecto'
+      : !localizedContentForTypeCheck || localizedContentForTypeCheck.length < 500
+    : false;
 
   return (
     <SectionsLoadingProvider>
@@ -241,8 +291,10 @@ const ProjectPage: React.FC = () => {
               <span>{isProject ? t.projects.type.project : t.projects.type.article}</span>
             </a>
 
-            <h1 className={styles.wordpressTitle}>{project.title}</h1>
-            <div className={styles.wordpressExcerpt}>{project.description}</div>
+            <h1 className={styles.wordpressTitle}>{getLocalized((project as any).title)}</h1>
+            <div className={styles.wordpressExcerpt}>
+              {getLocalized((project as any).description)}
+            </div>
 
             <div className={styles.wordpressPostMeta}>
               <div className={styles.wordpressMetaItem}>
@@ -274,7 +326,8 @@ const ProjectPage: React.FC = () => {
                   <div className={styles.wordpressMetaItem}>
                     <i className={`fas fa-edit ${styles.wordpressMetaIcon}`}></i>
                     <span className={styles.wordpressMetaText}>
-                      Actualizado el {new Date(project.updated_at).toLocaleDateString('es-ES')}
+                      {getText('projects.form.labels.updatedOn', 'Actualizado el')}{' '}
+                      {new Date(project.updated_at).toLocaleDateString()}
                     </span>
                   </div>
                 </>
@@ -285,7 +338,9 @@ const ProjectPage: React.FC = () => {
                   <div className={styles.wordpressDivider}></div>
                   <div className={styles.wordpressMetaItem}>
                     <i className={`fas fa-clock ${styles.wordpressMetaIcon}`}></i>
-                    <span className={styles.wordpressMetaText}>{readingTime} min de lectura</span>
+                    <span className={styles.wordpressMetaText}>
+                      {readingTime} {getText('projects.form.labels.readingTime', 'min de lectura')}
+                    </span>
                   </div>
                 </>
               )}
@@ -296,7 +351,9 @@ const ProjectPage: React.FC = () => {
             <div className={styles.wordpressTechnologies}>
               <div className={styles.wordpressTechHeader}>
                 <i className={`fas fa-tools ${styles.wordpressTechIcon}`}></i>
-                <h2 className={styles.wordpressTechTitle}>Tecnologías Utilizadas</h2>
+                <h2 className={styles.wordpressTechTitle}>
+                  {getText('projects.form.labels.technologies', 'Tecnologías utilizadas')}
+                </h2>
               </div>
               <div className={styles.wordpressTechList}>
                 <TechnologyChips
@@ -322,7 +379,7 @@ const ProjectPage: React.FC = () => {
                 rel="noopener noreferrer"
               >
                 <i className={`fas fa-external-link-alt ${styles.wordpressActionIcon}`}></i>
-                Ver Demo
+                {getText('projects.form.actions.viewDemo', 'Ver demo')}
               </a>
             )}
 
@@ -334,7 +391,7 @@ const ProjectPage: React.FC = () => {
                 rel="noopener noreferrer"
               >
                 <i className={`fab fa-github ${styles.wordpressActionIcon}`}></i>
-                Ver Código
+                {getText('projects.form.actions.viewCode', 'Ver código')}
               </a>
             )}
 
@@ -346,7 +403,7 @@ const ProjectPage: React.FC = () => {
                 rel="noopener noreferrer"
               >
                 <i className={`fab fa-youtube ${styles.wordpressActionIcon}`}></i>
-                Ver Video
+                {getText('projects.form.actions.viewVideo', 'Ver video')}
               </a>
             )}
 
@@ -358,46 +415,155 @@ const ProjectPage: React.FC = () => {
                 rel="noopener noreferrer"
               >
                 <i className={`fas fa-newspaper ${styles.wordpressActionIcon}`}></i>
-                Leer Artículo
+                {getText('projects.form.actions.readArticle', 'Leer artículo')}
               </a>
             )}
           </div>
 
-          {(project.image_url || project.video_demo_url) && (
-            <div className={styles.wordpressMediaSection}>
-              <div className={styles.wordpressMediaGrid}>
-                {project.image_url && (
-                  <div className={styles.wordpressMediaItem}>
-                    <h3 className={styles.wordpressMediaTitle}>Galería del Proyecto</h3>
-                    <p className={styles.wordpressMediaDescription}>
-                      Explora las imágenes del proyecto en detalle
-                    </p>
-                    <ImageCarousel
-                      images={[project.image_url]}
-                      title={project.title}
-                      className={styles.wordpressCarousel}
-                    />
-                  </div>
-                )}
+          {(() => {
+            // Helper seguro para extraer imágenes de la entidad `project`.
+            const getGalleryImages = (p: any): string[] => {
+              const images: string[] = [];
+              if (!p) return images;
+
+              const apiBase = (import.meta.env as any).VITE_API_URL as string | undefined;
+
+              const normalize = (input: any): string | null => {
+                if (!input) return null;
+                // If it's a string, return as-is
+                if (typeof input === 'string') return input.trim() || null;
+                // If it's an object, try known fields
+                if (typeof input === 'object') {
+                  const candidates = [
+                    input.secure_url,
+                    input.url,
+                    input.path,
+                    input.public_url,
+                    input.publicId,
+                    input.public_id,
+                  ];
+                  for (const c of candidates) {
+                    if (typeof c === 'string' && c.trim()) return c.trim();
+                  }
+                }
+                return null;
+              };
+
+              const prefixIfRelative = (url: string) => {
+                try {
+                  // absolute URL if it has a protocol
+                  const hasProtocol = /^(https?:)?\/\//i.test(url);
+                  if (hasProtocol) return url;
+                  // blob urls should remain as-is
+                  if (url.startsWith('blob:')) return url;
+                  // otherwise, prefix with apiBase if available, or return the raw url
+                  if (apiBase) return `${apiBase.replace(/\/$/, '')}/${url.replace(/^\//, '')}`;
+                  return url;
+                } catch {
+                  return url;
+                }
+              };
+
+              const pushUnique = (u?: string) => {
+                if (!u) return;
+                const normalized = prefixIfRelative(u);
+                if (!images.includes(normalized)) images.push(normalized);
+              };
+
+              // portada preferida (varios nombres posibles)
+              const coverCandidates = [
+                p.image_url,
+                p.imageUrl,
+                p.thumbnail,
+                p.thumbnail_url,
+                p.image,
+              ];
+              for (const c of coverCandidates) {
+                const n = normalize(c);
+                if (n) {
+                  pushUnique(n);
+                  break;
+                }
+              }
+
+              // soporte para distintos nombres: snake_case o camelCase
+              const maybeGallery =
+                p.gallery_images ?? p.galleryImages ?? p.gallery ?? p.images ?? (p as any).media;
+              if (Array.isArray(maybeGallery)) {
+                maybeGallery.forEach((item: any) => {
+                  const n = normalize(item);
+                  if (n) pushUnique(n);
+                });
+              } else {
+                const single = normalize(maybeGallery);
+                if (single) pushUnique(single);
+              }
+
+              return images;
+            };
+
+            const images = getGalleryImages(project as any);
+            if (images.length === 0 && !project.image_url && !project.video_demo_url) return null;
+
+            return (
+              <div className={styles.wordpressMediaSection}>
+                <div className={styles.wordpressMediaGrid}>
+                  {images.length > 0 ? (
+                    <div className={styles.wordpressMediaItem}>
+                      <h3 className={styles.wordpressMediaTitle}>
+                        {getText('projects.form.labels.galleryTitle', 'Galería del proyecto')}
+                      </h3>
+                      <p className={styles.wordpressMediaDescription}>
+                        {getText(
+                          'projects.form.labels.galleryDescription',
+                          'Explora las imágenes del proyecto en detalle'
+                        )}
+                      </p>
+                      <ImageCarousel
+                        images={images}
+                        title={getLocalized((project as any).title)}
+                        className={styles.wordpressCarousel}
+                      />
+                    </div>
+                  ) : project.image_url ? (
+                    <div className={styles.wordpressMediaItem}>
+                      <h3 className={styles.wordpressMediaTitle}>
+                        {getText('projects.form.labels.galleryTitle', 'Galería del proyecto')}
+                      </h3>
+                      <p className={styles.wordpressMediaDescription}>
+                        {getText(
+                          'projects.form.labels.galleryDescription',
+                          'Explora las imágenes del proyecto en detalle'
+                        )}
+                      </p>
+                      <ImageCarousel
+                        images={[project.image_url]}
+                        title={getLocalized((project as any).title)}
+                        className={styles.wordpressCarousel}
+                      />
+                    </div>
+                  ) : null}
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
           <div style={{ fontSize: 12, color: 'var(--muted-color, #8b949e)', marginBottom: 8 }}>
-            Contenido:{' '}
-            {project.project_content
-              ? `${project.project_content.length} caracteres`
-              : 'sin contenido'}
+            {getText('projects.form.labels.contentLabel', 'Contenido')}:{' '}
+            {getLocalized((project as any).project_content)
+              ? `${getLocalized((project as any).project_content).length} ${getText('projects.form.labels.characters', 'caracteres')}`
+              : getText('projects.form.labels.noContent', 'sin contenido')}
           </div>
 
-          {project.project_content && project.project_content.trim() && (
-            <article className={styles.wordpressProjectContent}>
-              <ContentRenderer
-                content={project.project_content}
-                className={`${styles.wordpressProse}`}
-              />
-            </article>
-          )}
+          {getLocalized((project as any).project_content) &&
+            getLocalized((project as any).project_content).trim() && (
+              <article className={styles.wordpressProjectContent}>
+                <ContentRenderer
+                  content={getLocalized((project as any).project_content)}
+                  className={`${styles.wordpressProse}`}
+                />
+              </article>
+            )}
 
           {isProject && (
             <div className={styles.wordpressProjectSummary}>
@@ -405,16 +571,16 @@ const ProjectPage: React.FC = () => {
                 <div className={styles.wordpressSummaryCard}>
                   <h3>
                     <i className="fas fa-info-circle"></i>
-                    Acerca del proyecto
+                    {getText('projects.form.labels.aboutProject', 'Acerca del proyecto')}
                   </h3>
-                  <p>{project.description}</p>
+                  <p>{getLocalized((project as any).description)}</p>
                 </div>
 
                 {project.technologies && project.technologies.length > 0 && (
                   <div className={styles.wordpressSummaryCard}>
                     <h3>
                       <i className="fas fa-cogs"></i>
-                      Tecnologías utilizadas
+                      {getText('projects.form.labels.techUsed', 'Tecnologías utilizadas')}
                     </h3>
                     <div className={styles.wordpressTechList}>
                       <TechnologyChips
@@ -434,7 +600,7 @@ const ProjectPage: React.FC = () => {
                 <div className={styles.wordpressSummaryCard}>
                   <h3>
                     <i className="fas fa-flag-checkered"></i>
-                    Estado del proyecto
+                    {getText('projects.form.labels.projectStatus', 'Estado del proyecto')}
                   </h3>
                   <p className={styles.wordpressStatusText}>{project.status}</p>
                 </div>
@@ -453,10 +619,13 @@ const ProjectPage: React.FC = () => {
             <button
               onClick={handleShare}
               className={`${styles.wordpressActionButton} ${styles.wordpressActionSecondary}`}
-              title="Compartir artículo"
+              title={getText('projects.form.actions.shareTitle', 'Compartir artículo')}
             >
-              <i className="fas fa-share-alt"></i> Compartir este{' '}
-              {isProject ? 'proyecto' : 'artículo'}
+              <i className="fas fa-share-alt"></i>{' '}
+              {getText('projects.form.actions.sharePrefix', 'Compartir este')}{' '}
+              {isProject
+                ? getText('projects.type.project', 'proyecto')
+                : getText('projects.type.article', 'artículo')}
             </button>
           </div>
 
@@ -465,8 +634,6 @@ const ProjectPage: React.FC = () => {
             maxProjects={3}
             className={styles.wordpressRelatedProjects}
           />
-
-          <Footer className="curriculum-footer" profile={profileData} />
 
           {isAuthenticated && project && (
             <div className={styles.fabContainer}>
@@ -489,6 +656,7 @@ const ProjectPage: React.FC = () => {
             </div>
           )}
         </main>
+        <Footer className="curriculum-footer" profile={profileData} />
       </div>
     </SectionsLoadingProvider>
   );

@@ -25,13 +25,15 @@ export interface SeoMetadata {
 export interface EnhancedProject extends Omit<Project, 'id'> {
   /** Optional SEO metadata for the project */
   seo_metadata?: SeoMetadata;
+  /** Optional gallery images for the project (array of image URLs) */
+  gallery_images?: string[];
 }
 
 /**
  * Available tab types for the project form interface
  * Represents the different sections of the form
  */
-export type TabType = 'basic' | 'links' | 'content' | 'seo';
+export type TabType = 'basic' | 'gallery' | 'links' | 'content' | 'seo';
 
 /**
  * Props interface for the ProjectForm component
@@ -46,6 +48,10 @@ export interface ProjectFormProps {
   onSuccess?: () => void;
   /** Callback function called when form is cancelled */
   onCancel?: () => void;
+  /** Optional current language for the form ('es' | 'en') */
+  language?: 'es' | 'en';
+  /** Optional callback when language changes */
+  onLanguageChange?: (lang: 'es' | 'en') => void;
 }
 
 /**
@@ -70,7 +76,7 @@ export interface UseProjectFormReturn {
   /** Setter function for active tab */
   setActiveTab: React.Dispatch<React.SetStateAction<TabType>>;
   /** Handler for updating form field values */
-  handleFormChange: (field: keyof EnhancedProject, value: string | number) => void;
+  handleFormChange: (field: keyof EnhancedProject, value: string | number | string[]) => void;
   /** Handler for adding a new technology to the list */
   handleAddTechnology: () => void;
   /** Handler for removing a technology from the list by index */

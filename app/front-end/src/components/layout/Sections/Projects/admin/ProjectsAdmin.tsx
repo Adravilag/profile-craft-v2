@@ -31,7 +31,7 @@ interface SortConfig {
 const ITEMS_PER_PAGE = 10;
 
 const ProjectsAdmin: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, getText } = useTranslation();
   const [projects, setProjects] = useState<article[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -176,7 +176,7 @@ const ProjectsAdmin: React.FC = () => {
 
   const handleView = (project: Project) => {
     // Navegar a la página de visualización del artículo/proyecto
-    navigate(`/profile-craft/projects/${project.id}`);
+    navigate(`/projects/${project.id}`);
   };
 
   const getProjectType = (project: Project): string => {
@@ -214,24 +214,29 @@ const ProjectsAdmin: React.FC = () => {
             <div className={styles.headerContent}>
               <h1 className={styles.projectsAdminTitle}>
                 <i className="fas fa-newspaper" aria-hidden="true"></i>
-                <span>Gestión de {t.projects.title}</span>
+                <span>{getText('projects.admin.title', `Gestión de ${t.projects.title}`)}</span>
               </h1>
               <p className={styles.projectsAdminSubtitle}>
-                Administra y organiza todos tus artículos y proyectos
+                {getText(
+                  'projects.admin.subtitle',
+                  'Administra y organiza todos tus artículos y proyectos'
+                )}
               </p>
             </div>
 
             <div
               className={styles.headerActions}
-              style={{ display: 'flex', gap: '10px', marginLeft: 'auto' }}
+              style={{ display: 'flex', gap: '10px', marginLeft: 'auto', marginTop: '10px' }}
             >
               <button
                 className={styles.btnPrimary}
                 onClick={handleNewProject}
-                aria-label="Crear nuevo proyecto"
+                aria-label={getText('projects.admin.newProjectAria', 'Crear nuevo proyecto')}
               >
                 <i className="fas fa-plus" aria-hidden="true"></i>
-                <span>Nuevo {t.projects.title.slice(0, -1)}</span>
+                <span>
+                  {getText('projects.admin.newProject', `Nuevo ${t.projects.title.slice(0, -1)}`)}
+                </span>
               </button>
             </div>
           </div>
@@ -240,19 +245,23 @@ const ProjectsAdmin: React.FC = () => {
           <div className={styles.statsContainer}>
             <div className={styles.statItem}>
               <i className="fas fa-list"></i>
-              <span>Total: {stats.total}</span>
+              <span>{getText('projects.admin.stats.total', `Total: ${stats.total}`)}</span>
             </div>
             <div className={styles.statItem}>
               <i className="fas fa-check-circle"></i>
-              <span>Completados: {stats.completed}</span>
+              <span>
+                {getText('projects.admin.stats.completed', `Completados: ${stats.completed}`)}
+              </span>
             </div>
             <div className={styles.statItem}>
               <i className="fas fa-clock"></i>
-              <span>En Desarrollo: {stats.inProgress}</span>
+              <span>
+                {getText('projects.admin.stats.inProgress', `En Desarrollo: ${stats.inProgress}`)}
+              </span>
             </div>
             <div className={styles.statItem}>
               <i className="fas fa-edit"></i>
-              <span>Borradores: {stats.draft}</span>
+              <span>{getText('projects.admin.stats.draft', `Borradores: ${stats.draft}`)}</span>
             </div>
           </div>
 
@@ -264,7 +273,7 @@ const ProjectsAdmin: React.FC = () => {
                   <i className="fas fa-search"></i>
                   <input
                     type="text"
-                    placeholder="Buscar proyectos..."
+                    placeholder={getText('projects.admin.searchPlaceholder', 'Buscar proyectos...')}
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
                     className={styles.searchInput}
@@ -285,7 +294,9 @@ const ProjectsAdmin: React.FC = () => {
                   onChange={e => setStatusFilter(e.target.value)}
                   className={styles.filterSelect}
                 >
-                  <option value="all">Todos los estados</option>
+                  <option value="all">
+                    {getText('projects.admin.filter.all', 'Todos los estados')}
+                  </option>
                   {uniqueStatuses.map(status => (
                     <option key={status} value={status}>
                       {status}
@@ -296,14 +307,17 @@ const ProjectsAdmin: React.FC = () => {
             </div>
 
             <div className={styles.resultsInfo}>
-              {`Mostrando ${filteredProjects.length} de ${stats.total} ${t.projects.title.toLowerCase()}`}
+              {getText(
+                'projects.admin.resultsInfo',
+                `Mostrando ${filteredProjects.length} de ${stats.total} ${t.projects.title.toLowerCase()}`
+              )}
             </div>
           </div>
 
           {loading ? (
             <div className={styles.adminLoading}>
               <div className={styles.loadingSpinner}></div>
-              <p>{t.states.loading}</p>
+              <p>{getText('states.loading', 'Cargando...')}</p>
             </div>
           ) : (
             <>
@@ -312,11 +326,16 @@ const ProjectsAdmin: React.FC = () => {
                   <div className={styles.emptyIcon}>
                     <i className="fas fa-newspaper"></i>
                   </div>
-                  <h3>No hay proyectos creados</h3>
-                  <p>Comienza creando tu primer proyecto para mostrar tu trabajo</p>
+                  <h3>{getText('projects.admin.empty.title', 'No hay proyectos creados')}</h3>
+                  <p>
+                    {getText(
+                      'projects.admin.empty.subtitle',
+                      'Comienza creando tu primer proyecto para mostrar tu trabajo'
+                    )}
+                  </p>
                   <button className={styles.btnPrimary} onClick={handleNewProject}>
                     <i className="fas fa-plus"></i>
-                    Crear mi primer proyecto
+                    {getText('projects.admin.empty.action', 'Crear mi primer proyecto')}
                   </button>
                 </div>
               ) : filteredProjects.length === 0 ? (
@@ -324,8 +343,15 @@ const ProjectsAdmin: React.FC = () => {
                   <div className={styles.emptyIcon}>
                     <i className="fas fa-search"></i>
                   </div>
-                  <h3>No se encontraron resultados</h3>
-                  <p>Intenta con otros términos de búsqueda o cambia los filtros</p>
+                  <h3>
+                    {getText('projects.admin.noResults.title', 'No se encontraron resultados')}
+                  </h3>
+                  <p>
+                    {getText(
+                      'projects.admin.noResults.subtitle',
+                      'Intenta con otros términos de búsqueda o cambia los filtros'
+                    )}
+                  </p>
                   <button
                     className={styles.btnSecondary}
                     onClick={() => {
@@ -334,7 +360,7 @@ const ProjectsAdmin: React.FC = () => {
                     }}
                   >
                     <i className="fas fa-undo"></i>
-                    {t.states.reset}
+                    {getText('states.reset', 'Restablecer')}
                   </button>
                 </div>
               ) : (
@@ -359,7 +385,6 @@ const ProjectsAdmin: React.FC = () => {
                               }`}
                             ></i>
                           </th>
-                          <th className={styles.thTipo}>Tipo</th>
                           <th
                             className={`${styles.thEstado} ${styles.sortable}`}
                             onClick={() => handleSort('status')}
@@ -375,8 +400,12 @@ const ProjectsAdmin: React.FC = () => {
                               }`}
                             ></i>
                           </th>
-                          <th className={styles.thTecnologias}>{t.projects.technologies}</th>
-                          <th className={styles.thAcciones}>Acciones</th>
+                          <th className={styles.thTecnologias}>
+                            {getText('projects.technologies', t.projects.technologies)}
+                          </th>
+                          <th className={styles.thAcciones}>
+                            {getText('projects.admin.actions', 'Acciones')}
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
@@ -401,9 +430,6 @@ const ProjectsAdmin: React.FC = () => {
                                 <h4 title={project.title}>{project.title}</h4>
                                 <p title={project.description}>{project.description}</p>
                               </div>
-                            </td>
-                            <td className={styles.tdTipo}>
-                              <span className={styles.badgeTipo}>{getProjectType(project)}</span>
                             </td>
                             <td className={styles.tdEstado}>
                               <span
@@ -442,21 +468,30 @@ const ProjectsAdmin: React.FC = () => {
                                 <button
                                   className={`${styles.buttonIcon} ${styles.viewBtn}`}
                                   onClick={() => handleView(project)}
-                                  title={`${t.projects.viewProject}/${t.projects.title.slice(0, -1).toLowerCase()}`}
+                                  title={getText(
+                                    'projects.admin.action.view',
+                                    `${t.projects.viewProject}/${t.projects.title.slice(0, -1).toLowerCase()}`
+                                  )}
                                 >
                                   <i className="fas fa-external-link-alt" aria-hidden></i>
                                 </button>
                                 <button
                                   className={`${styles.buttonIcon} ${styles.editBtn}`}
                                   onClick={() => handleEdit(project)}
-                                  title={`Editar ${t.projects.title.slice(0, -1).toLowerCase()}`}
+                                  title={getText(
+                                    'projects.admin.action.edit',
+                                    `Editar ${t.projects.title.slice(0, -1).toLowerCase()}`
+                                  )}
                                 >
                                   <i className="fas fa-edit"></i>
                                 </button>
                                 <button
                                   className={`${styles.buttonIcon} ${styles.deleteBtn}`}
                                   onClick={() => handleDelete(project)}
-                                  title={`Eliminar ${t.projects.title.slice(0, -1).toLowerCase()}`}
+                                  title={getText(
+                                    'projects.admin.action.delete',
+                                    `Eliminar ${t.projects.title.slice(0, -1).toLowerCase()}`
+                                  )}
                                 >
                                   <i className="fas fa-trash"></i>
                                 </button>

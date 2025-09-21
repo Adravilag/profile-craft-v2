@@ -241,7 +241,6 @@
   display: flex;
   gap: 1rem;
   align-items: center;
-  flex-wrap: wrap;
 }
 
 .rightControls {
@@ -385,12 +384,11 @@
   padding: 0.65rem 0.8rem;
   border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 12px;
-  background: transparent;
-  color: var(--admin-on-surface);
+  background: var(--admin-on-surface);
+  color: var(--admin-surface);
   font-family: inherit;
   font-size: 0.9rem;
   cursor: pointer;
-  min-width: 150px;
 }
 
 .filterSelect:focus {
@@ -526,11 +524,6 @@
 .thTitulo,
 .tdTitulo {
   min-width: 240px;
-}
-
-.thTipo,
-.tdTipo {
-  width: 120px;
 }
 
 .thEstado,

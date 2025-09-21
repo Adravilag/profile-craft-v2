@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useUnifiedTheme } from '@/contexts';
 import styles from './ProjectFormContainer.module.css';
+import { useTranslation } from '@/contexts/TranslationContext';
 
 interface ProjectFormContainerProps {
   children: React.ReactNode;
@@ -14,6 +14,8 @@ interface ProjectFormContainerProps {
   backButtonTo?: string;
   backButtonText?: string;
   showThemeToggle?: boolean;
+  language?: 'es' | 'en';
+  onLanguageChange?: (lang: 'es' | 'en') => void;
 }
 
 const ProjectFormContainer: React.FC<ProjectFormContainerProps> = ({
@@ -23,10 +25,14 @@ const ProjectFormContainer: React.FC<ProjectFormContainerProps> = ({
   subtitle,
   showBackButton = true,
   backButtonTo = '/projects/admin',
-  backButtonText = 'Volver a administración',
-  showThemeToggle = true,
+  backButtonText = undefined,
+  language = 'es',
+  onLanguageChange,
 }) => {
-  const { currentGlobalTheme, toggleGlobalTheme } = useUnifiedTheme();
+  const { getText } = useTranslation();
+  const backText =
+    backButtonText || getText('projects.form.actions.backToAdmin', 'Volver a administración');
+  // Scroll is now handled globally by ScrollToTop; keep Link simple
 
   return (
     <div className={styles.formContainer}>
@@ -34,9 +40,9 @@ const ProjectFormContainer: React.FC<ProjectFormContainerProps> = ({
       <header className={styles.formHeader}>
         <div className={styles.headerLeft}>
           {showBackButton && (
-            <Link to={backButtonTo} className={styles.backButton}>
-              <i className="fas fa-arrow-left"></i>
-              {backButtonText}
+            <Link to={backButtonTo} className={styles.backButton} aria-label={backText}>
+              <i className="fas fa-arrow-left" aria-hidden="true"></i>
+              <span>{backText}</span>
             </Link>
           )}
           <div className={styles.titleSection}>
@@ -47,23 +53,8 @@ const ProjectFormContainer: React.FC<ProjectFormContainerProps> = ({
             {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
           </div>
         </div>
-
-        {showThemeToggle && (
-          <div className={styles.headerActions}>
-            <button
-              className={styles.themeToggle}
-              onClick={toggleGlobalTheme}
-              title={currentGlobalTheme === 'dark' ? 'Cambiar a modo día' : 'Cambiar a modo noche'}
-              aria-label={currentGlobalTheme === 'dark' ? 'Activar modo día' : 'Activar modo noche'}
-            >
-              <i className={currentGlobalTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon'}></i>
-              {currentGlobalTheme === 'dark' ? 'Modo Día' : 'Modo Noche'}
-            </button>
-          </div>
-        )}
       </header>
 
-      {/* Contenido principal del formulario */}
       <main className={styles.formMain}>
         <div className={styles.formContent}>{children}</div>
       </main>

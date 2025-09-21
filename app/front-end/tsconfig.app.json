@@ -40,5 +40,12 @@
     }
   },
   "include": ["src", "src/types", "vite.config.ts", "types"],
-  "exclude": ["**/*.stories.ts", "**/*.stories.tsx"]
+  "exclude": [
+    "**/*.stories.ts",
+    "**/*.stories.tsx",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "**/*.spec.ts",
+    "**/*.spec.tsx"
+  ]
 }

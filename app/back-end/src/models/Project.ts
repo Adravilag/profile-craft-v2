@@ -38,6 +38,10 @@ const ProjectSchema: Schema = new Schema(
       type: String,
       default: null,
     },
+    gallery_images: {
+      type: [String],
+      default: [],
+    },
     image_url: {
       type: String,
       default: null,

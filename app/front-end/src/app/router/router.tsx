@@ -1,5 +1,6 @@
 // src/app/router.tsx
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import ScrollToTop from '@/components/ScrollToTop/ScrollToTop';
 import { NORMALIZED_BASE } from '@/config/basePath';
 import { lazy, Suspense } from 'react';
 import type { ReactNode } from 'react';
@@ -49,7 +50,13 @@ export const router = createBrowserRouter(
   [
     {
       path: '/',
-      element: withSuspense(<Outlet />),
+      // Include ScrollToTop inside the root so child routes scroll to top on navigation
+      element: withSuspense(
+        <>
+          <ScrollToTop />
+          <Outlet />
+        </>
+      ),
       errorElement: withSuspense(<NotFoundPage />),
       children: [
         {
@@ -74,25 +81,51 @@ export const router = createBrowserRouter(
       ],
     },
     // Páginas independientes para proyectos (no renderizadas dentro del layout de secciones)
-    { path: '/projects/:id', element: withSuspense(<ProjectPage />) },
+    {
+      path: '/projects/:id',
+      element: withSuspense(
+        <>
+          <ScrollToTop /> <ProjectPage />
+        </>
+      ),
+    },
     // Admin pages for projects (list, create, edit)
     {
       path: '/projects/admin',
-      element: withSuspense(<ProjectAdminPage />),
+      element: withSuspense(
+        <>
+          <ScrollToTop /> <ProjectAdminPage />
+        </>
+      ),
       errorElement: <RouteError />,
     },
     {
       path: '/projects/new',
-      element: withSuspense(<ProjectAdminPage />),
+      element: withSuspense(
+        <>
+          <ScrollToTop /> <ProjectAdminPage />
+        </>
+      ),
       errorElement: <RouteError />,
     },
     {
       path: '/projects/edit/:id',
-      element: withSuspense(<ProjectAdminPage />),
+      element: withSuspense(
+        <>
+          <ScrollToTop /> <ProjectAdminPage />
+        </>
+      ),
       errorElement: <RouteError />,
     },
     // Rutas legacy/compatibilidad
-    { path: '/project/:id', element: withSuspense(<ProjectPage />) },
+    {
+      path: '/project/:id',
+      element: withSuspense(
+        <>
+          <ScrollToTop /> <ProjectPage />
+        </>
+      ),
+    },
   ],
   {
     // Use configured base path when available (keeps production/CI behavior).
@@ -103,6 +136,7 @@ export const router = createBrowserRouter(
 export function Router() {
   return (
     <QueryErrorBoundary>
+      {/* ScrollToTop debe vivir dentro del contexto del router */}
       <RouterProvider router={router} />
     </QueryErrorBoundary>
   );

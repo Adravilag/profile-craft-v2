@@ -515,7 +515,7 @@
     var(--md-sys-color-primary) 0%,
     color-mix(in srgb, var(--md-sys-color-primary) 80%, black 10%) 100%
   );
-  color: var(--md-sys-color-on-surface);
+  color: var(--md-sys-color-on-primary);
   border: none;
   padding: 0.9rem 1.75rem;
   font-size: var(--font-size-md);

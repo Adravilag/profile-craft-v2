@@ -7,7 +7,6 @@ import { App } from './App';
 import { setupMomentLocalePatch } from './setup/momentLocalePatch';
 import { setupBaseUrlRedirect } from './setup/baseUrlRedirect';
 import { setupRevealObserver } from './setup/revealObserver';
-import { setupMsw } from './setup/msw';
 import { ensureImageMap } from '@/utils/imageLookup';
 // Preload skill settings to improve UX on components that need suggestions/icons
 // Use dynamic import to avoid increasing the initial bundle size
@@ -35,12 +34,6 @@ const main = async () => {
     await ensureImageMap();
   } catch (error) {
     console.warn('No se pudo cargar el mapa de imágenes:', error);
-  }
-
-  try {
-    await setupMsw();
-  } catch (error) {
-    console.error('❌ Error al iniciar MSW:', error);
   }
 
   // Preload skill settings in background (non-blocking)

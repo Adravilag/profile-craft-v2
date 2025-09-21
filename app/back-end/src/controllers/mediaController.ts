@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { v2 as cloudinary } from 'cloudinary';
 import cloudinaryService from '../services/cloudinaryService.js';
 import { logger } from '../utils/logger.js';
 
@@ -132,6 +133,48 @@ export const mediaController = {
         error: 'Error al subir el archivo',
         message: error instanceof Error ? error.message : 'Error desconocido',
       });
+    }
+  },
+
+  // Generar firma para subida directa a Cloudinary (signed upload)
+  generateSignature: (req: any, res: any): void => {
+    try {
+      if (
+        !process.env.CLOUDINARY_API_SECRET ||
+        !process.env.CLOUDINARY_API_KEY ||
+        !process.env.CLOUDINARY_CLOUD_NAME
+      ) {
+        res
+          .status(500)
+          .json({ success: false, error: 'Cloudinary no está configurado en el servidor' });
+        return;
+      }
+      const folder = req.body.folder || req.query.folder || 'proyectos';
+      const timestamp = Math.round(Date.now() / 1000);
+
+      const paramsToSign: any = { timestamp };
+      if (folder) paramsToSign.folder = folder;
+
+      const signature = cloudinary.utils.api_sign_request(
+        paramsToSign,
+        process.env.CLOUDINARY_API_SECRET
+      );
+
+      res.json({
+        success: true,
+        signature,
+        timestamp,
+        apiKey: process.env.CLOUDINARY_API_KEY,
+        cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+      });
+    } catch (error) {
+      logger.error('❌ Error generando firma Cloudinary:', error);
+      res
+        .status(500)
+        .json({
+          success: false,
+          error: error instanceof Error ? error.message : 'Error generando firma',
+        });
     }
   },
 

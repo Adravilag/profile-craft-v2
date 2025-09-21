@@ -133,7 +133,6 @@ const RootLayoutContent: FC<RootLayoutProps> = ({ initialSection }) => {
               </div>
             </Suspense>
           </main>
-          <Footer className="curriculum-footer" profile={profile} />
           {/* Usar el router para vistas de superposición */}
           <NavigationOverlay />
           {/* Floating Action Buttons globales para secciones (p. ej. Testimonios) */}
@@ -166,14 +165,14 @@ const RootLayoutContent: FC<RootLayoutProps> = ({ initialSection }) => {
 
           {/* El modal global ahora se abre desde el FAB usando ModalShell vía ModalContext */}
           {/* Vista individual de artículo/proyecto (overlay) */}
-          {(location.pathname.startsWith('/project/') ||
-            location.pathname.startsWith('/project/') ||
-            location.pathname.startsWith('/profile-craft/projects/')) && (
+          {location.pathname.startsWith('/project/') && (
             <Suspense fallback={<div>Cargando proyecto...</div>}>
               <ProjectPage />
             </Suspense>
           )}
         </div>
+        {/* Footer moved outside of #curriculum-container so it can render full-bleed */}
+        <Footer className="curriculum-footer" profile={profile} />
       </div>
     </SkillsFilterProvider>
   );

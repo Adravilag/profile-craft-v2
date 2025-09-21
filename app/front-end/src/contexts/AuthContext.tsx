@@ -126,20 +126,51 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
           } catch {}
         }
 
-        // Si hay token en localStorage, configúralo en el storage helper.
-        // La instancia axios leerá el token desde storage al hacer peticiones
-        // (el interceptor en services/http lee localStorage). Evitamos import dinámico
-        // de '@/services/http' para no causar mezcla de importaciones.
+        // Si hay token en localStorage, guárdalo también en tokenStorage
+        // y sincronízalo con el access token en memoria que usa `apiFetch`.
         if (savedToken) {
           try {
             const { setToken } = await import('@/services/tokenStorage');
             setToken(savedToken);
           } catch (e) {
-            // fallback directo
             try {
               localStorage.setItem('portfolio_auth_token', savedToken);
             } catch {}
           }
+
+          // También sincronizar con el token en memoria utilizado por apiFetch
+          try {
+            const { setAccessToken } = await import('@/services/auth');
+            setAccessToken(savedToken);
+          } catch (e) {
+            // Silenciar errores de import dinámico
+          }
+        }
+
+        // DEV fallback: si en el entorno de desarrollo se proporciona un token
+        // explícito vía VITE_DEV_AUTH_TOKEN, úsalo para inicializar la sesión en memoria.
+        // Esto es útil cuando el backend espera un Authorization header y el token
+        // no está presente en localStorage (por ejemplo, se inyecta en el backend env).
+        try {
+          if (import.meta.env.DEV) {
+            const devToken = import.meta.env.VITE_DEV_AUTH_TOKEN as string | undefined;
+            if (devToken) {
+              try {
+                const { setToken } = await import('@/services/tokenStorage');
+                setToken(devToken);
+              } catch {}
+              try {
+                const { setAccessToken } = await import('@/services/auth');
+                setAccessToken(devToken);
+              } catch {}
+              // Also set localStorage for visibility in DevTools
+              try {
+                localStorage.setItem('portfolio_auth_token', devToken);
+              } catch {}
+            }
+          }
+        } catch (e) {
+          // ignore
         }
 
         // If we have a persistent token in localStorage, also send it in the
@@ -241,6 +272,15 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
           localStorage.setItem('portfolio_auth_token', data.token);
         } catch {}
       }
+
+      // Sincronizar con token en memoria para apiFetch
+      try {
+        const { setAccessToken } = await import('@/services/auth');
+        setAccessToken(data.token);
+      } catch (e) {
+        // ignore
+      }
+
       console.log('[AuthContext] Token guardado exitosamente');
 
       // Verificar que se guardó correctamente

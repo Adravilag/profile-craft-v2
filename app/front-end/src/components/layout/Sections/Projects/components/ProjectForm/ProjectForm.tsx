@@ -3,13 +3,13 @@ import React, { useEffect, useCallback, memo, useState, useRef } from 'react';
 import { useProjectForm } from './hooks/useProjectForm';
 import { useProjectData } from './hooks/useProjectData';
 import ProjectFormContainer from '../CreateProject/ProjectFormContainer';
-import styles from '../CreateProject/CreateProjectForm.module.css';
 import TextEditor from '@components/common/TextEditor/TextEditor';
+import ImageGallery from '@/components/ui/ImageGallery/ImageGallery';
 import { useTranslation } from '@/contexts/TranslationContext';
 import type { ProjectFormProps } from './types/ProjectFormTypes';
-import SkillPill from '@/components/ui/SkillPill/SkillPill';
 import { resolvePillFromTech } from '@/features/skills/utils/pillUtils';
 import TechnologyChips from '@/components/ui/TechnologyChips/TechnologyChips';
+import styles from './ProjectForm.module.css';
 
 /**
  * ProjectForm - A comprehensive form component for creating and editing projects
@@ -58,8 +58,21 @@ import TechnologyChips from '@/components/ui/TechnologyChips/TechnologyChips';
  * @author ProjectForm Team
  */
 const ProjectForm: React.FC<ProjectFormProps> = memo(
-  ({ mode = 'create', projectId, onSuccess, onCancel }) => {
-    const { t } = useTranslation();
+  ({
+    mode = 'create',
+    projectId,
+    onSuccess,
+    onCancel,
+    language: propLanguage,
+    onLanguageChange,
+  }) => {
+    // Allow internal language state if parent doesn't provide it
+    const [language, setLanguage] = useState<'es' | 'en'>(propLanguage || 'es');
+    const handleLanguageChange = (lang: 'es' | 'en') => {
+      setLanguage(lang);
+      if (onLanguageChange) onLanguageChange(lang);
+    };
+    const { t, getText } = useTranslation();
     const { project, loading: loadingProject, error: loadError, loadProject } = useProjectData();
 
     const {
@@ -89,6 +102,18 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
     // Pre-populate form when project data is loaded
     useEffect(() => {
       if (project && mode === 'edit') {
+        const maybeGallery = (project as any)?.gallery_images;
+        const initialGallery = Array.isArray(maybeGallery)
+          ? maybeGallery
+          : maybeGallery
+            ? [maybeGallery]
+            : [];
+
+        // Ensure image_url is included in gallery_images when available
+        const galleryWithCover = project.image_url
+          ? Array.from(new Set([project.image_url, ...initialGallery]))
+          : initialGallery;
+
         setForm({
           user_id: project.user_id,
           title: project.title,
@@ -103,6 +128,7 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
           order_index: project.order_index,
           type: project.type,
           technologies: project.technologies || [],
+          gallery_images: galleryWithCover,
           seo_metadata: {
             meta_title: '',
             meta_description: '',
@@ -119,7 +145,7 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
     // Handle keyboard navigation for tabs
     const handleTabKeyDown = useCallback(
       (e: React.KeyboardEvent, tabKey: string) => {
-        const tabs = ['basic', 'links', 'content', 'seo'];
+        const tabs = ['basic', 'gallery', 'links', 'content', 'seo'];
         const currentIndex = tabs.indexOf(activeTab);
 
         switch (e.key) {
@@ -262,13 +288,13 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
     if (mode === 'edit' && loadingProject) {
       return (
         <ProjectFormContainer
-          title="Cargando proyecto..."
+          title={getText('projects.form.loadingTitle', 'Cargando proyecto...')}
           icon="fas fa-spinner fa-spin"
-          subtitle="Obteniendo datos del proyecto"
+          subtitle={getText('projects.form.loadingSubtitle', 'Obteniendo datos del proyecto')}
         >
           <div className={styles.loadingContainer} role="status" aria-live="polite">
             <i className="fas fa-spinner fa-spin" aria-hidden="true"></i>
-            <p>Cargando datos del proyecto...</p>
+            <p>{getText('projects.form.loadingData', 'Cargando datos del proyecto...')}</p>
           </div>
         </ProjectFormContainer>
       );
@@ -278,77 +304,136 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
     if (mode === 'edit' && loadError) {
       return (
         <ProjectFormContainer
-          title="Error al cargar proyecto"
+          title={getText('projects.form.loadErrorTitle', 'Error al cargar proyecto')}
           icon="fas fa-exclamation-triangle"
-          subtitle="No se pudo cargar el proyecto"
+          subtitle={getText('projects.form.loadErrorSubtitle', 'No se pudo cargar el proyecto')}
         >
           <div className={styles.errorContainer} role="alert" aria-live="assertive">
             <i className="fas fa-exclamation-triangle" aria-hidden="true"></i>
-            <p>Error: {loadError}</p>
+            <p>
+              {getText('projects.form.loadErrorMessage', 'Error')}: {loadError}
+            </p>
             <button
               onClick={() => projectId && loadProject(projectId)}
               className={styles.retryButton}
-              aria-label="Reintentar cargar el proyecto"
+              aria-label={getText('projects.form.retryAria', 'Reintentar carga')}
             >
               <i className="fas fa-redo" aria-hidden="true"></i>
-              Reintentar
+              {getText('projects.form.retryButton', 'Reintentar')}
             </button>
           </div>
         </ProjectFormContainer>
       );
     }
 
-    const title = mode === 'edit' ? 'Editar Proyecto' : 'Crear Nuevo Proyecto';
+    const title =
+      mode === 'edit'
+        ? getText('projects.form.title.edit', 'Editar proyecto')
+        : getText('projects.form.title.create', 'Crear nuevo proyecto');
     const subtitle =
       mode === 'edit'
-        ? 'Modifica los datos de tu proyecto'
-        : 'Agrega un nuevo proyecto a tu portafolio';
+        ? getText('projects.form.subtitle.edit', 'Modifica los detalles de tu proyecto')
+        : getText('projects.form.subtitle.create', 'Agrega un nuevo proyecto a tu portafolio');
     const icon = mode === 'edit' ? 'fas fa-edit' : 'fas fa-plus-circle';
 
     return (
       <React.Fragment>
-        <ProjectFormContainer title={title} icon={icon} subtitle={subtitle}>
-          <div className={styles.progressContainer}>
-            <div
-              className={styles.progressBar}
-              role="progressbar"
-              aria-valuenow={getProgressPercentage()}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-label="Progreso del formulario"
-            >
+        <ProjectFormContainer
+          title={title}
+          icon={icon}
+          subtitle={subtitle}
+          language={language}
+          onLanguageChange={handleLanguageChange}
+        >
+          <div className={styles.topRow}>
+            <div className={styles.progressContainer}>
               <div
-                className={styles.progressFill}
-                style={{ width: `${getProgressPercentage()}%` }}
-              ></div>
-            </div>
-            <span className={styles.progressText} aria-live="polite">
-              Progreso: {Math.round(getProgressPercentage())}%
-            </span>
-          </div>
-
-          <div className={styles.formTabs} role="tablist" aria-label="Secciones del formulario">
-            {[
-              { key: 'basic', label: 'Básico', icon: 'fas fa-info-circle' },
-              { key: 'links', label: 'Enlaces', icon: 'fas fa-link' },
-              { key: 'content', label: 'Contenido', icon: 'fas fa-edit' },
-              { key: 'seo', label: 'SEO', icon: 'fas fa-search' },
-            ].map(tab => (
-              <button
-                key={tab.key}
-                className={`${styles.formTab} ${activeTab === tab.key ? styles.active : ''}`}
-                onClick={() => setActiveTab(tab.key as any)}
-                onKeyDown={e => handleTabKeyDown(e, tab.key)}
-                role="tab"
-                aria-selected={activeTab === tab.key}
-                aria-controls={`${tab.key}-panel`}
-                id={`${tab.key}-tab`}
-                tabIndex={activeTab === tab.key ? 0 : -1}
+                className={styles.progressBar}
+                role="progressbar"
+                aria-valuenow={getProgressPercentage()}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label="Progreso del formulario"
               >
-                <i className={tab.icon} aria-hidden="true"></i>
-                {tab.label}
-              </button>
-            ))}
+                <div
+                  className={styles.progressFill}
+                  style={{ width: `${getProgressPercentage()}%` }}
+                ></div>
+              </div>
+              <span className={styles.progressText} aria-live="polite">
+                {getText('projects.form.progressLabel', 'Progreso')}:{' '}
+                {Math.round(getProgressPercentage())}%
+              </span>
+            </div>
+
+            <div className={styles.formTabs} role="tablist" aria-label="Secciones del formulario">
+              {[
+                {
+                  key: 'basic',
+                  label: getText('projects.form.tabs.basic', 'Básico'),
+                  icon: 'fas fa-info-circle',
+                },
+                {
+                  key: 'gallery',
+                  label: getText('projects.form.tabs.gallery', 'Galería'),
+                  icon: 'far fa-images',
+                },
+                {
+                  key: 'links',
+                  label: getText('projects.form.tabs.links', 'Enlaces'),
+                  icon: 'fas fa-link',
+                },
+                {
+                  key: 'content',
+                  label: getText('projects.form.tabs.content', 'Contenido'),
+                  icon: 'fas fa-edit',
+                },
+                {
+                  key: 'seo',
+                  label: getText('projects.form.tabs.seo', 'SEO'),
+                  icon: 'fas fa-search',
+                },
+              ].map(tab => (
+                <button
+                  key={tab.key}
+                  className={`${styles.formTab} ${activeTab === tab.key ? styles.active : ''}`}
+                  onClick={() => setActiveTab(tab.key as any)}
+                  onKeyDown={e => handleTabKeyDown(e, tab.key)}
+                  role="tab"
+                  aria-selected={activeTab === tab.key}
+                  aria-controls={`${tab.key}-panel`}
+                  id={`${tab.key}-tab`}
+                  tabIndex={activeTab === tab.key ? 0 : -1}
+                >
+                  <i className={tab.icon} aria-hidden="true"></i>
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Language toggle inside formContent (aligned right in the same row) */}
+            <div className={styles.localesToggleWrapper}>
+              <div className={styles.localesToggle} role="tablist" aria-label="Seleccionar idioma">
+                <button
+                  type="button"
+                  className={styles.localeBtn}
+                  onClick={() => handleLanguageChange('es')}
+                  aria-pressed={language === 'es'}
+                  aria-label="Español"
+                >
+                  ES
+                </button>
+                <button
+                  type="button"
+                  className={styles.localeBtn}
+                  onClick={() => handleLanguageChange('en')}
+                  aria-pressed={language === 'en'}
+                  aria-label="English"
+                >
+                  EN
+                </button>
+              </div>
+            </div>
           </div>
 
           <div className={styles.formContent}>
@@ -360,7 +445,7 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                 aria-labelledby="basic-tab"
               >
                 <h3>
-                  <i className="fas fa-info-circle" aria-hidden="true"></i>Información Básica
+                  <i className="fas fa-info-circle" aria-hidden="true"></i>Basic Information
                 </h3>
                 {/* Technology suggestions and SkillPill integration handled in component body */}
 
@@ -368,7 +453,7 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                   <div className={styles.formColumn}>
                     <div className={styles.formGroup}>
                       <label htmlFor="title">
-                        Título del Proyecto *
+                        {getText('projects.form.labels.title', 'Título del proyecto')} *
                         {validationErrors.title && (
                           <span className={styles.errorText} role="alert" aria-live="polite">
                             {validationErrors.title}
@@ -380,7 +465,10 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                         type="text"
                         value={form.title}
                         onChange={e => handleFormChange('title', e.target.value)}
-                        placeholder="Nombre de tu proyecto"
+                        placeholder={getText(
+                          'projects.form.placeholders.projectName',
+                          'Nombre del proyecto'
+                        )}
                         className={validationErrors.title ? styles.error : ''}
                         aria-required="true"
                         aria-invalid={validationErrors.title ? 'true' : 'false'}
@@ -395,7 +483,7 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
 
                     <div className={styles.formGroup}>
                       <label htmlFor="description">
-                        Descripción *
+                        {getText('projects.form.labels.description', 'Descripción')} *
                         {validationErrors.description && (
                           <span className={styles.errorText} role="alert" aria-live="polite">
                             {validationErrors.description}
@@ -406,8 +494,11 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                         id="description"
                         value={form.description}
                         onChange={e => handleFormChange('description', e.target.value)}
-                        placeholder="Describe brevemente tu proyecto"
-                        rows={4}
+                        placeholder={getText(
+                          'projects.form.placeholders.description',
+                          'Describe brevemente tu proyecto'
+                        )}
+                        rows={10}
                         className={validationErrors.description ? styles.error : ''}
                         aria-required="true"
                         aria-invalid={validationErrors.description ? 'true' : 'false'}
@@ -423,34 +514,32 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                     </div>
                   </div>
                   <div className={styles.formColumn}>
-                    <div className={styles.formGroup}>
-                      <label htmlFor="type">Tipo de Contenido</label>
-                      <select
-                        id="type"
-                        value={form.type || 'proyecto'}
-                        onChange={e => handleFormChange('type', e.target.value)}
-                      >
-                        <option value="proyecto">Proyecto</option>
-                        <option value="articulo">Artículo</option>
-                      </select>
-                    </div>
+                    {/* Content Type removed per request */}
 
                     <div className={styles.formGroup}>
-                      <label htmlFor="status">Estado del Proyecto</label>
+                      <label htmlFor="status">
+                        {getText('projects.form.labels.status', 'Estado del proyecto')}
+                      </label>
                       <select
                         id="status"
                         value={form.status}
                         onChange={e => handleFormChange('status', e.target.value)}
                       >
-                        <option value="En progreso">En progreso</option>
-                        <option value="Completado">Completado</option>
-                        <option value="Pausado">Pausado</option>
+                        <option value="En progreso">
+                          {getText('projects.form.status.inProgress', 'En progreso')}
+                        </option>
+                        <option value="Completado">
+                          {getText('projects.form.status.completed', 'Completado')}
+                        </option>
+                        <option value="Pausado">
+                          {getText('projects.form.status.paused', 'Pausado')}
+                        </option>
                       </select>
                     </div>
 
                     <div className={styles.formGroup}>
                       <label htmlFor="tech-input">
-                        Tecnologías Utilizadas
+                        {getText('projects.form.labels.technologies', 'Tecnologías usadas')}
                         {validationErrors.technologies && (
                           <span className={styles.errorText} role="alert" aria-live="polite">
                             {validationErrors.technologies}
@@ -470,7 +559,10 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                           onKeyDown={handleKeyDown}
                           onFocus={() => setDropdownOpen(true)}
                           onBlur={() => setTimeout(() => setDropdownOpen(false), 150)}
-                          placeholder="Ej: React, TypeScript, Node.js"
+                          placeholder={getText(
+                            'projects.form.placeholders.techInput',
+                            'Ej.: React, TypeScript, Node.js'
+                          )}
                           className={validationErrors.technologies ? styles.error : ''}
                           aria-describedby="tech-help"
                           aria-invalid={validationErrors.technologies ? 'true' : 'false'}
@@ -481,8 +573,14 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                             if (techInput.trim()) handleAddTechnology();
                           }}
                           disabled={!techInput.trim()}
-                          title="Agregar tecnología"
-                          aria-label="Agregar tecnología a la lista"
+                          title={getText(
+                            'projects.form.actions.addTechTitle',
+                            'Agregar tecnología'
+                          )}
+                          aria-label={getText(
+                            'projects.form.actions.addTechAria',
+                            'Agregar tecnología a la lista'
+                          )}
                         >
                           <i className="fas fa-plus" aria-hidden="true"></i>
                         </button>
@@ -520,7 +618,10 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                         )}
                       </div>
                       <small id="tech-help">
-                        Presiona Enter o haz clic en + para agregar una tecnología
+                        {getText(
+                          'projects.form.hints.addTech',
+                          'Presiona Enter o haz clic en + para agregar una tecnología'
+                        )}
                       </small>
 
                       {form.technologies && form.technologies.length > 0 && (
@@ -562,22 +663,12 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                 aria-labelledby="links-tab"
               >
                 <h3>
-                  <i className="fas fa-link" aria-hidden="true"></i>Enlaces y Recursos
+                  <i className="fas fa-link" aria-hidden="true"></i>
+                  {getText('projects.form.sections.linksTitle', 'Enlaces y recursos')}
                 </h3>
 
                 <div className={styles.formColumns}>
                   <div className={styles.formColumn}>
-                    <div className={styles.formGroup}>
-                      <label htmlFor="image_url">Imagen Principal del Proyecto</label>
-                      <input
-                        id="image_url"
-                        type="url"
-                        value={form.image_url || ''}
-                        onChange={e => handleFormChange('image_url', e.target.value)}
-                        placeholder="https://ejemplo.com/imagen.jpg"
-                      />
-                    </div>
-
                     <div className={styles.formGroup}>
                       <label htmlFor="github_url">Repositorio de GitHub</label>
                       <input
@@ -585,7 +676,10 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                         type="url"
                         value={form.github_url}
                         onChange={e => handleFormChange('github_url', e.target.value)}
-                        placeholder="https://github.com/usuario/repositorio"
+                        placeholder={getText(
+                          'projects.form.placeholders.github',
+                          'https://github.com/user/repo'
+                        )}
                       />
                     </div>
 
@@ -596,36 +690,239 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                         type="url"
                         value={form.live_url}
                         onChange={e => handleFormChange('live_url', e.target.value)}
-                        placeholder="https://miproyecto.netlify.app"
+                        placeholder={getText(
+                          'projects.form.placeholders.liveDemo',
+                          'https://myproject.netlify.app'
+                        )}
                       />
                     </div>
                   </div>
 
                   <div className={styles.formColumn}>
                     <div className={styles.formGroup}>
-                      <label htmlFor="project_url">Artículo/Blog</label>
+                      <label htmlFor="project_url">
+                        {getText('projects.form.labels.article', 'Artículo / Blog')}
+                      </label>
                       <input
                         id="project_url"
                         type="url"
                         value={form.project_url}
                         onChange={e => handleFormChange('project_url', e.target.value)}
-                        placeholder="https://blog.com/mi-articulo"
+                        placeholder={getText(
+                          'projects.form.placeholders.article',
+                          'https://blog.com/mi-articulo'
+                        )}
                       />
                     </div>
 
                     <div className={styles.formGroup}>
-                      <label htmlFor="video_demo_url">Video Demo</label>
+                      <label htmlFor="video_demo_url">
+                        {getText('projects.form.labels.videoDemo', 'Video de demo')}
+                      </label>
                       <input
                         id="video_demo_url"
                         type="url"
                         value={form.video_demo_url}
                         onChange={e => handleFormChange('video_demo_url', e.target.value)}
-                        placeholder="https://youtube.com/watch?v=..."
+                        placeholder={getText(
+                          'projects.form.placeholders.videoDemo',
+                          'https://youtube.com/watch?v=...'
+                        )}
                       />
                     </div>
                   </div>
                 </div>
               </div>
+            )}
+
+            {activeTab === 'gallery' && (
+              <>
+                <div
+                  className={styles.formSection}
+                  role="tabpanel"
+                  id="gallery-panel"
+                  aria-labelledby="gallery-tab"
+                >
+                  <h3>
+                    <i className="far fa-images" aria-hidden="true"></i>
+                    {getText('projects.form.sections.galleryTitle', 'Galería de imágenes')}
+                  </h3>
+                  <div className={`${styles.formColumns} galleryFormColumns`}>
+                    <div className={styles.galleryWrapper}>
+                      <div className={styles.coverBox}>
+                        <div className={styles.coverLabel} style={{ marginBottom: '8px' }}>
+                          Imagen de portada
+                        </div>
+                        <aside className={styles.coverManager} aria-label="Gestión de portada">
+                          <div className={styles.coverPreview}>
+                            {form.image_url ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img src={form.image_url} alt="Portada actual" />
+                            ) : (
+                              <div className={styles.coverPlaceholder}>
+                                <i className="far fa-image" aria-hidden="true" />
+                                <div>
+                                  {getText('projects.form.labels.noCover', 'No hay portada')}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                          <div className={styles.coverActions}>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                // Clear cover
+                                handleFormChange('image_url', '');
+                              }}
+                              disabled={!form.image_url}
+                              className={styles.cancelButton}
+                            >
+                              {getText('projects.form.actions.removeCover', 'Quitar portada')}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                // If gallery has images, set first as cover
+                                const list = Array.isArray(form.gallery_images)
+                                  ? form.gallery_images
+                                  : form.gallery_images
+                                    ? [form.gallery_images]
+                                    : [];
+                                if (list && list.length > 0) {
+                                  const first = list[0];
+                                  handleFormChange('image_url', first || '');
+                                  setForm(
+                                    prev =>
+                                      ({
+                                        ...prev,
+                                        gallery_images: [
+                                          first,
+                                          ...list.filter((i: string) => i !== first),
+                                        ],
+                                      }) as any
+                                  );
+                                }
+                              }}
+                              disabled={
+                                !form.gallery_images ||
+                                (Array.isArray(form.gallery_images) &&
+                                  form.gallery_images.length === 0)
+                              }
+                              className={styles.selectButton}
+                            >
+                              {getText('projects.form.actions.useFirst', 'Usar primera imagen')}
+                            </button>
+                          </div>
+                        </aside>
+                      </div>
+
+                      <div className={styles.galleryColumn}>
+                        <div className={styles.formGroup}>
+                          <label>
+                            {getText('projects.form.labels.gallery', 'Galería de imágenes')}
+                          </label>
+                          <ImageGallery
+                            value={form.gallery_images || []}
+                            coverUrl={form.image_url || ''}
+                            onSetCover={(url: string | null) => {
+                              handleFormChange('image_url', url || '');
+                              setForm(prev => {
+                                const imgs = Array.isArray(prev.gallery_images)
+                                  ? prev.gallery_images
+                                  : prev.gallery_images
+                                    ? [prev.gallery_images]
+                                    : [];
+
+                                if (!url) {
+                                  return prev;
+                                }
+
+                                const next = [url, ...imgs.filter((i: string) => i !== url)];
+                                handleFormChange('gallery_images', next);
+                                return { ...prev, gallery_images: next } as any;
+                              });
+                            }}
+                            onChange={urls => {
+                              handleFormChange('gallery_images', urls);
+                              if (form.image_url && !urls.includes(form.image_url)) {
+                                handleFormChange('image_url', '');
+                              }
+                            }}
+                            uploadHandler={async (file: File) => {
+                              try {
+                                const { default: apiFetch } = await import(
+                                  '@/services/api/apiFetch'
+                                );
+
+                                const signRes = await apiFetch('/api/media/sign', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ folder: 'proyectos' }),
+                                });
+
+                                if (!signRes.ok) {
+                                  const fallback = new FormData();
+                                  fallback.append('image', file);
+                                  fallback.append('imageType', 'project');
+
+                                  const r = await apiFetch('/api/media/upload', {
+                                    method: 'POST',
+                                    body: fallback,
+                                  });
+                                  if (!r.ok) {
+                                    const txt = await r.text();
+                                    throw new Error('Server upload failed: ' + txt);
+                                  }
+                                  const d = await r.json();
+                                  if (!d?.file?.url)
+                                    throw new Error(
+                                      'Server upload did not return a valid file URL'
+                                    );
+                                  return d.file.url;
+                                }
+
+                                const signData = await signRes.json();
+                                const { signature, timestamp, apiKey, cloudName } = signData;
+
+                                if (!cloudName || !apiKey || !signature) {
+                                  throw new Error('Signed upload not available from server');
+                                }
+
+                                const formData = new FormData();
+                                formData.append('file', file);
+                                formData.append('api_key', apiKey);
+                                formData.append('timestamp', String(timestamp));
+                                formData.append('signature', signature);
+                                formData.append('folder', 'proyectos');
+
+                                const cloudUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+
+                                const uploadRes = await fetch(cloudUrl, {
+                                  method: 'POST',
+                                  body: formData,
+                                });
+                                if (!uploadRes.ok) {
+                                  const text = await uploadRes.text();
+                                  throw new Error('Cloudinary upload failed: ' + text);
+                                }
+                                const uploaded = await uploadRes.json();
+                                const uploadedUrl = uploaded?.secure_url || uploaded?.url;
+                                if (!uploadedUrl)
+                                  throw new Error('Cloudinary upload did not return a valid URL');
+                                return uploadedUrl;
+                              } catch (err) {
+                                console.error('Signed upload error:', err);
+                                if (err instanceof Error) throw err;
+                                throw new Error(String(err));
+                              }
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </>
             )}
 
             {activeTab === 'content' && (
@@ -636,7 +933,8 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                 aria-labelledby="content-tab"
               >
                 <h3>
-                  <i className="fas fa-edit" aria-hidden="true"></i>Contenido del Artículo
+                  <i className="fas fa-edit" aria-hidden="true"></i>
+                  {getText('projects.form.sections.contentTitle', 'Contenido del artículo')}
                 </h3>
                 <div className={styles.editorContainer}>
                   <TextEditor
@@ -656,13 +954,16 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                 aria-labelledby="seo-tab"
               >
                 <h3>
-                  <i className="fas fa-search" aria-hidden="true"></i>Optimización SEO
+                  <i className="fas fa-search" aria-hidden="true"></i>
+                  {getText('projects.form.sections.seoTitle', 'Optimización SEO')}
                 </h3>
 
                 <div className={styles.formColumns}>
                   <div className={styles.formColumn}>
                     <div className={styles.formGroup}>
-                      <label htmlFor="meta_title">Meta Título</label>
+                      <label htmlFor="meta_title">
+                        {getText('projects.form.labels.metaTitle', 'Meta título')}
+                      </label>
                       <input
                         id="meta_title"
                         type="text"
@@ -676,14 +977,16 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                             },
                           }))
                         }
-                        placeholder="Título optimizado para SEO"
+                        placeholder="SEO-optimized title"
                         maxLength={60}
                       />
-                      <small>Máximo 60 caracteres</small>
+                      <small>{getText('projects.form.hints.max60', 'Máximo 60 caracteres')}</small>
                     </div>
 
                     <div className={styles.formGroup}>
-                      <label htmlFor="meta_description">Meta Descripción</label>
+                      <label htmlFor="meta_description">
+                        {getText('projects.form.labels.metaDescription', 'Meta descripción')}
+                      </label>
                       <textarea
                         id="meta_description"
                         value={form.seo_metadata?.meta_description || ''}
@@ -696,17 +999,21 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                             },
                           }))
                         }
-                        placeholder="Descripción breve para motores de búsqueda"
+                        placeholder="Short description for search engines"
                         rows={3}
                         maxLength={160}
                       />
-                      <small>Máximo 160 caracteres</small>
+                      <small>
+                        {getText('projects.form.hints.max160', 'Máximo 160 caracteres')}
+                      </small>
                     </div>
                   </div>
 
                   <div className={styles.formColumn}>
                     <div className={styles.formGroup}>
-                      <label htmlFor="meta_keywords">Palabras Clave</label>
+                      <label htmlFor="meta_keywords">
+                        {getText('projects.form.labels.metaKeywords', 'Meta keywords')}
+                      </label>
                       <input
                         id="meta_keywords"
                         type="text"
@@ -722,7 +1029,9 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                         }
                         placeholder="react, javascript, web development"
                       />
-                      <small>Separadas por comas</small>
+                      <small>
+                        {getText('projects.form.hints.commaSeparated', 'Separadas por comas')}
+                      </small>
                     </div>
 
                     <div className={styles.formGroup}>
@@ -740,12 +1049,12 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                             }))
                           }
                         />
-                        Proyecto Destacado
+                        {getText('projects.form.labels.featured', 'Proyecto destacado')}
                       </label>
                     </div>
 
                     <div className={styles.formGroup}>
-                      <label htmlFor="reading_time">Tiempo de Lectura (minutos)</label>
+                      <label htmlFor="reading_time">Reading Time (minutes)</label>
                       <input
                         id="reading_time"
                         type="number"
@@ -767,40 +1076,49 @@ const ProjectForm: React.FC<ProjectFormProps> = memo(
                 </div>
               </div>
             )}
-          </div>
-
-          <div className={styles.formActions}>
-            <button
-              className={styles.cancelButton}
-              onClick={handleCancel}
-              disabled={saving}
-              aria-label="Cancelar y volver a la administración de proyectos"
-            >
-              <i className="fas fa-times" aria-hidden="true"></i>
-              {t.forms.experience.cancel}
-            </button>
-            <button
-              className={`${styles.saveButton} ${saving ? 'loading' : ''}`}
-              onClick={handleSave}
-              disabled={saving}
-              aria-label={
-                saving
-                  ? 'Guardando proyecto...'
-                  : mode === 'edit'
-                    ? 'Actualizar proyecto existente'
-                    : 'Guardar nuevo proyecto'
-              }
-            >
-              <i
-                className={saving ? 'fas fa-spinner fa-spin' : 'fas fa-save'}
-                aria-hidden="true"
-              ></i>
-              {saving
-                ? t.forms.experience.saving
-                : mode === 'edit'
-                  ? 'Actualizar'
-                  : t.forms.experience.save}
-            </button>
+            {/* Move form actions into the formContent footer so they stay at the bottom */}
+            <div className={styles.footActions}>
+              <div className={styles.formActions}>
+                <button
+                  className={styles.cancelButton}
+                  onClick={handleCancel}
+                  disabled={saving}
+                  aria-label={getText(
+                    'projects.form.actions.cancelAria',
+                    'Cancelar y volver a la administración de proyectos'
+                  )}
+                >
+                  <i className="fas fa-times" aria-hidden="true"></i>
+                  {t.forms.experience.cancel}
+                </button>
+                <button
+                  type="button"
+                  className={`${styles.saveButton} ${saving ? 'loading' : ''}`}
+                  onClick={() => {
+                    console.debug('[ProjectForm] Save button clicked');
+                    handleSave();
+                  }}
+                  disabled={saving}
+                  aria-label={
+                    saving
+                      ? getText('projects.form.aria.saving', 'Guardando proyecto...')
+                      : mode === 'edit'
+                        ? getText('projects.form.aria.update', 'Actualizar proyecto existente')
+                        : getText('projects.form.aria.save', 'Guardar nuevo proyecto')
+                  }
+                >
+                  <i
+                    className={saving ? 'fas fa-spinner fa-spin' : 'fas fa-save'}
+                    aria-hidden="true"
+                  ></i>
+                  {saving
+                    ? t.forms.experience.saving
+                    : mode === 'edit'
+                      ? getText('projects.form.actions.update', 'Actualizar')
+                      : t.forms.experience.save}
+                </button>
+              </div>
+            </div>
           </div>
         </ProjectFormContainer>
       </React.Fragment>

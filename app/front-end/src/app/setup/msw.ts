@@ -12,6 +12,18 @@ export const setupMsw = async (opts: SetupMswOptions = {}): Promise<void> => {
     (typeof import.meta !== 'undefined' && (import.meta as any).env?.DEV);
   if (!isDev) return;
 
+  // Allow opt-out of MSW via env var (useful in preview or when real APIs are required)
+  const disableMswFromEnv =
+    (typeof process !== 'undefined' && String(process.env?.DISABLE_MSW).toLowerCase() === 'true') ||
+    (typeof import.meta !== 'undefined' &&
+      String((import.meta as any).env?.VITE_DISABLE_MSW).toLowerCase() === 'true');
+
+  if (disableMswFromEnv) {
+    // eslint-disable-next-line no-console
+    console.info('[setupMsw] MSW disabled via environment variable');
+    return;
+  }
+
   try {
     // Evitar dependencias de alias en import dinámico (fallan en runtime si no están resueltas)
     // Usar una ruta relativa desde este archivo hacia `src/mocks/browser` por defecto.

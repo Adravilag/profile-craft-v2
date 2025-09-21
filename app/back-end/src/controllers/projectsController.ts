@@ -48,7 +48,7 @@ export const projectsController = {
       const projects = await Project.find(filter)
         .sort({ order_index: -1 })
         .select(
-          'title description image_url project_url status order_index project_content technologies views created_at updated_at project_start_date project_end_date github_url live_url video_demo_url'
+          'title description gallery_images image_url project_url status order_index project_content technologies views created_at updated_at project_start_date project_end_date github_url live_url video_demo_url'
         )
         .lean();
 
@@ -194,6 +194,7 @@ export const projectsController = {
       const project = new Project({
         user_id: new mongoose.Types.ObjectId(resolvedUserId),
         title,
+        gallery_images: Array.isArray(req.body.gallery_images) ? req.body.gallery_images : [],
         description,
         image_url,
         github_url,
@@ -230,6 +231,7 @@ export const projectsController = {
       const {
         title,
         description,
+        gallery_images = [],
         image_url,
         github_url,
         live_url,
@@ -247,6 +249,7 @@ export const projectsController = {
         req.params.id,
         {
           title,
+          gallery_images: Array.isArray(gallery_images) ? gallery_images : [],
           description,
           image_url,
           github_url,

@@ -49,8 +49,17 @@ let cachedProfile: UserProfile | null = null;
 let cachedEducation: Education[] | null = null;
 
 // Función helper para obtener datos reales desde la base de datos
-const fetchRealData = async (): Promise<void> => {
+// Si se pasa `force = true` se ignorará la cache y se forzará una recarga
+const fetchRealData = async (force: boolean = false): Promise<void> => {
   try {
+    if (force) {
+      cachedSkills = null;
+      cachedProjects = null;
+      cachedExperiences = null;
+      cachedProfile = null;
+      cachedEducation = null;
+    }
+
     if (!cachedSkills) {
       cachedSkills = await getSkills();
     }
@@ -193,6 +202,11 @@ const generateProfileSummary = (profile: UserProfile | null, t: any): string[] =
     output.push('');
     output.push(`${t.responses.about.status}: ${profile.status}`);
   }
+  // Si el perfil existe pero no contiene campos útiles, devolver el mensaje por defecto
+  if (output.length === 0) {
+    return t.responses.about.noProfile;
+  }
+
   return output;
 };
 
@@ -329,10 +343,29 @@ const COMMANDS: Record<string, CommandFn> = {
   }),
 
   about: async (args: string[], t: any, currentLanguage: string) => {
-    await fetchRealData();
-    return {
-      output: generateProfileSummary(cachedProfile, t),
-    };
+    // Forzar recarga de datos para asegurar que 'about' siempre muestre información actual
+    await fetchRealData(true);
+    // Logging temporal para depuración: mostrar qué trae cachedProfile y el output
+    try {
+      const output = generateProfileSummary(cachedProfile, t);
+      // Detalles útiles para debugging en la consola del navegador
+      // Nota: estos logs son temporales y deben eliminarse después de la verificación
+      // Se recomienda abrir la consola del navegador (F12) para verlos
+      // eslint-disable-next-line no-console
+      console.debug('[terminal][about] cachedProfile:', cachedProfile);
+      // eslint-disable-next-line no-console
+      console.debug('[terminal][about] generated output lines:', output.length);
+      // eslint-disable-next-line no-console
+      console.debug('[terminal][about] output sample:', output.slice(0, 10));
+
+      return { output };
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('[terminal][about] error generating profile summary', err);
+      return {
+        output: t.responses.about.noProfile,
+      };
+    }
   },
 
   whoami: async (args: string[], t: any, currentLanguage: string) => {

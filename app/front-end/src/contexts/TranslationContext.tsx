@@ -370,6 +370,140 @@ export interface Translations {
       paused: string;
       draft: string;
     };
+    // Textos específicos para el panel de administración de proyectos
+    admin?: {
+      title: string;
+      subtitle: string;
+      newProject: string;
+      newProjectAria: string;
+      stats: {
+        total: string;
+        completed: string;
+        inProgress: string;
+        draft: string;
+      };
+      searchPlaceholder: string;
+      filter: {
+        all: string;
+      };
+      resultsInfo: string;
+      empty: {
+        title: string;
+        subtitle: string;
+        action: string;
+      };
+      noResults: {
+        title: string;
+        subtitle: string;
+      };
+      actions: string;
+      action: {
+        view: string;
+        edit: string;
+        delete: string;
+      };
+    };
+    form: {
+      loadingTitle: string;
+      loadingSubtitle: string;
+      loadingMessage: string;
+      loadingData?: string; // alias used in some components
+      errorTitle: string;
+      errorSubtitle: string;
+      // aliases used in some components
+      loadErrorTitle?: string;
+      loadErrorSubtitle?: string;
+      loadErrorMessage?: string;
+      retryButton: string;
+      retryAria?: string;
+
+      // preserve legacy flat keys and provide nested convenience objects used by code
+      titleCreate?: string;
+      titleEdit?: string;
+      subtitleCreate?: string;
+      subtitleEdit?: string;
+      title?: { create: string; edit: string };
+      subtitle?: { create: string; edit: string };
+
+      tabs: {
+        basic: string;
+        gallery?: string;
+        links: string;
+        content: string;
+        seo: string;
+      };
+
+      headings: {
+        basic: string;
+        links: string;
+        content: string;
+        seo: string;
+      };
+
+      sections?: {
+        linksTitle?: string;
+        galleryTitle?: string;
+        contentTitle?: string;
+        seoTitle?: string;
+      };
+
+      labels: {
+        title: string;
+        description: string;
+        type: string;
+        status: string;
+        technologies: string;
+        techPlaceholder?: string;
+        techHelp?: string;
+        imagePlaceholder?: string;
+        githubPlaceholder?: string;
+        livePlaceholder?: string;
+        projectUrlPlaceholder?: string;
+        videoPlaceholder?: string;
+        galleryTitle?: string;
+        galleryDescription?: string;
+        contentLabel?: string;
+        characters?: string;
+        noContent?: string;
+        aboutProject?: string;
+        techUsed?: string;
+
+        metaTitle: string;
+        metaTitlePlaceholder: string;
+        metaTitleMax: string;
+        metaDescription: string;
+        metaDescriptionPlaceholder: string;
+        metaDescriptionMax: string;
+        metaKeywords: string;
+        metaKeywordsPlaceholder: string;
+        metaKeywordsNote: string;
+
+        featured: string;
+        readingTime: string;
+        updatedOn?: string;
+      };
+
+      placeholders?: {
+        projectName?: string;
+        description?: string;
+        github?: string;
+        liveDemo?: string;
+        article?: string;
+        videoDemo?: string;
+        techInput?: string;
+      };
+
+      hints?: {
+        addTech?: string;
+        max60?: string;
+        max160?: string;
+        commaSeparated?: string;
+      };
+
+      progressLabel?: string;
+
+      actions: { [key: string]: string };
+    };
   };
 
   // Sección específica de Proyectos (textos de cabecera)
@@ -1083,6 +1217,122 @@ const esTranslations: Translations = {
       paused: 'Pausado',
       draft: 'Borrador',
     },
+    form: {
+      loadingTitle: 'Cargando proyecto...',
+      loadingSubtitle: 'Obteniendo datos del proyecto',
+      loadingMessage: 'Cargando datos del proyecto...',
+      loadingData: 'Cargando datos del proyecto...',
+      errorTitle: 'Error al cargar proyecto',
+      errorSubtitle: 'No se pudo cargar el proyecto',
+      loadErrorMessage: 'Error',
+      loadErrorTitle: 'Error al cargar proyecto',
+      loadErrorSubtitle: 'No se pudo cargar el proyecto',
+      retryButton: 'Reintentar',
+      retryAria: 'Reintentar carga',
+
+      // titles and subtitles (both flat and nested forms)
+      titleCreate: 'Crear Nuevo Proyecto',
+      titleEdit: 'Editar Proyecto',
+      subtitleCreate: 'Agrega un nuevo proyecto a tu portafolio',
+      subtitleEdit: 'Modifica los datos de tu proyecto',
+      title: { create: 'Crear Nuevo Proyecto', edit: 'Editar Proyecto' },
+      subtitle: {
+        create: 'Agrega un nuevo proyecto a tu portafolio',
+        edit: 'Modifica los datos de tu proyecto',
+      },
+
+      tabs: {
+        basic: 'Básico',
+        gallery: 'Galería',
+        links: 'Enlaces',
+        content: 'Contenido',
+        seo: 'SEO',
+      },
+
+      headings: {
+        basic: 'Información Básica',
+        links: 'Enlaces y Recursos',
+        content: 'Contenido del Artículo',
+        seo: 'Optimización SEO',
+      },
+
+      labels: {
+        title: 'Título del Proyecto',
+        description: 'Descripción',
+        type: 'Tipo de Contenido',
+        status: 'Estado del Proyecto',
+        technologies: 'Tecnologías Utilizadas',
+        techPlaceholder: 'Ej: React, TypeScript, Node.js',
+        techHelp: 'Presiona Enter o haz clic en + para agregar una tecnología',
+        imagePlaceholder: 'https://ejemplo.com/imagen.jpg',
+        githubPlaceholder: 'https://github.com/usuario/repositorio',
+        livePlaceholder: 'https://miproyecto.netlify.app',
+        projectUrlPlaceholder: 'https://blog.com/mi-articulo',
+        videoPlaceholder: 'https://youtube.com/watch?v=...',
+        galleryTitle: 'Galería del proyecto',
+        galleryDescription: 'Explora las imágenes del proyecto en detalle',
+        contentLabel: 'Contenido',
+        characters: 'caracteres',
+        noContent: 'sin contenido',
+        aboutProject: 'Acerca del proyecto',
+        techUsed: 'Tecnologías utilizadas',
+        updatedOn: 'Actualizado el',
+
+        metaTitle: 'Meta Título',
+        metaTitlePlaceholder: 'Título optimizado para SEO',
+        metaTitleMax: 'Máximo 60 caracteres',
+        metaDescription: 'Meta Descripción',
+        metaDescriptionPlaceholder: 'Descripción breve para motores de búsqueda',
+        metaDescriptionMax: 'Máximo 160 caracteres',
+        metaKeywords: 'Palabras Clave',
+        metaKeywordsPlaceholder: 'react, javascript, web development',
+        metaKeywordsNote: 'Separadas por comas',
+
+        featured: 'Proyecto Destacado',
+        readingTime: 'Tiempo de Lectura (minutos)',
+      },
+
+      placeholders: {
+        projectName: 'Nombre del proyecto',
+        description: 'Describe brevemente tu proyecto',
+        github: 'https://github.com/user/repo',
+        liveDemo: 'https://myproject.netlify.app',
+        article: 'https://blog.com/mi-articulo',
+        videoDemo: 'https://youtube.com/watch?v=...',
+        techInput: 'Ej.: React, TypeScript, Node.js',
+      },
+
+      hints: {
+        addTech: 'Presiona Enter o haz clic en + para agregar una tecnología',
+        max60: 'Máximo 60 caracteres',
+        max160: 'Máximo 160 caracteres',
+        commaSeparated: 'Separadas por comas',
+      },
+
+      progressLabel: 'Progreso',
+
+      // general actions used in project pages/forms
+      actions: {
+        backToAdmin: 'Volver a administración',
+        cancelAria: 'Cancelar y volver a la administración de proyectos',
+        savingAria: 'Guardando proyecto...',
+        updateAria: 'Actualizar proyecto existente',
+        createAria: 'Guardar nuevo proyecto',
+        updateButton: 'Actualizar',
+        saveButton: 'Guardar',
+
+        // view actions used on project page
+        viewDemo: 'Ver demo',
+        viewCode: 'Ver código',
+        viewVideo: 'Ver video',
+        readArticle: 'Leer artículo',
+
+        addTechTitle: 'Agregar tecnología',
+        addTechAria: 'Agregar tecnología a la lista',
+        removeCover: 'Quitar portada',
+        useFirst: 'Usar primera imagen',
+      },
+    },
   },
 
   projectsSection: {
@@ -1686,6 +1936,107 @@ const enTranslations: Translations = {
       planned: 'Planned',
       paused: 'Paused',
       draft: 'Draft',
+    },
+    form: {
+      loadingTitle: 'Loading project...',
+      loadingSubtitle: 'Fetching project data',
+      loadingMessage: 'Loading project data...',
+      errorTitle: 'Error loading project',
+      errorSubtitle: 'Could not load project',
+      // aliases for some components
+      loadErrorTitle: 'Error loading project',
+      loadErrorSubtitle: 'Could not load project',
+      retryButton: 'Retry',
+
+      titleCreate: 'Create New Project',
+      titleEdit: 'Edit Project',
+      subtitleCreate: 'Add a new project to your portfolio',
+      subtitleEdit: 'Modify your project details',
+
+      tabs: {
+        basic: 'Basic',
+        links: 'Links',
+        content: 'Content',
+        seo: 'SEO',
+      },
+
+      headings: {
+        basic: 'Basic Information',
+        links: 'Links & Resources',
+        content: 'Article Content',
+        seo: 'SEO Optimization',
+      },
+
+      labels: {
+        title: 'Project Title',
+        description: 'Description',
+        type: 'Content Type',
+        status: 'Project Status',
+        technologies: 'Technologies Used',
+        techPlaceholder: 'E.g.: React, TypeScript, Node.js',
+        techHelp: 'Press Enter or click + to add a technology',
+        imagePlaceholder: 'https://example.com/image.jpg',
+        githubPlaceholder: 'https://github.com/user/repo',
+        livePlaceholder: 'https://myproject.netlify.app',
+        projectUrlPlaceholder: 'https://blog.com/my-article',
+        videoPlaceholder: 'https://youtube.com/watch?v=...',
+
+        metaTitle: 'Meta Title',
+        metaTitlePlaceholder: 'SEO-optimized title',
+        metaTitleMax: 'Maximum 60 characters',
+        metaDescription: 'Meta Description',
+        metaDescriptionPlaceholder: 'Short description for search engines',
+        metaDescriptionMax: 'Maximum 160 characters',
+        metaKeywords: 'Meta Keywords',
+        metaKeywordsPlaceholder: 'react, javascript, web development',
+        metaKeywordsNote: 'Separated by commas',
+
+        featured: 'Featured Project',
+        readingTime: 'Reading Time (minutes)',
+      },
+
+      actions: {
+        backToAdmin: 'Back to admin',
+        cancelAria: 'Cancel and return to project management',
+        savingAria: 'Saving project...',
+        updateAria: 'Update existing project',
+        createAria: 'Save new project',
+        updateButton: 'Update',
+        saveButton: 'Save',
+      },
+    },
+    // Sub-objeto para textos del panel administrativo
+    admin: {
+      title: 'Gestión de Proyectos',
+      subtitle: 'Administra y organiza todos tus artículos y proyectos',
+      newProject: 'Nuevo Proyecto',
+      newProjectAria: 'Crear nuevo proyecto',
+      stats: {
+        total: 'Total: {count}',
+        completed: 'Completados: {count}',
+        inProgress: 'En Desarrollo: {count}',
+        draft: 'Borradores: {count}',
+      },
+      searchPlaceholder: 'Buscar proyectos...',
+      filter: {
+        all: 'Todos los estados',
+      },
+      resultsInfo: 'Mostrando {shown} de {total} proyectos',
+      empty: {
+        title: 'No hay proyectos creados',
+        subtitle: 'Comienza creando tu primer proyecto para mostrar tu trabajo',
+        action: 'Crear mi primer proyecto',
+      },
+      noResults: {
+        title: 'No se encontraron resultados',
+        subtitle: 'Intenta con otros términos de búsqueda o cambia los filtros',
+      },
+      actions: 'Acciones',
+      action: {
+        view: 'Ver',
+        edit: 'Editar',
+        delete: 'Eliminar',
+      },
     },
   },
 

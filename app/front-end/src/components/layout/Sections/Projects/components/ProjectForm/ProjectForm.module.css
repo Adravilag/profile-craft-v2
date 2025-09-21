@@ -1,0 +1,691 @@
+/* Estilos generales del contenedor del formulario */
+.formContainer {
+  background-color: var(--color-background-secondary);
+  border-radius: 12px;
+  padding: 2.5rem;
+  box-shadow: var(--shadow-2);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  max-width: 900px;
+  margin: 2rem auto;
+}
+
+/* Encabezado del formulario */
+.formHeader {
+  text-align: center;
+}
+
+.formHeader h2 {
+  font-size: 2.25rem;
+  color: var(--color-primary);
+  margin-bottom: 0.5rem;
+  font-family: var(--font-heading);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.formHeader h2 i {
+  font-size: 2rem;
+  color: var(--color-accent);
+}
+
+.formHeader p {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Contenedores de estado de carga y error */
+.loadingContainer,
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  text-align: center;
+  gap: 1rem;
+}
+
+.loadingContainer i,
+.errorContainer i {
+  font-size: 3rem;
+  color: var(--color-accent);
+}
+
+.loadingContainer p,
+.errorContainer p {
+  font-size: 1.125rem;
+  color: var(--color-text-primary);
+}
+
+.errorContainer i {
+  color: var(--color-error);
+}
+
+.retryButton {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.retryButton:hover {
+  background-color: var(--color-primary-dark);
+}
+
+/* Contenedor principal de la barra de progreso */
+.progressContainer {
+  margin: 1rem 0 2rem;
+  text-align: right;
+}
+
+/* Top row holds progress and locales toggle in two columns */
+.topRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  flex-wrap: nowrap;
+  /* three-column layout: progress | tabs (flexible) | locales toggle (auto) */
+  justify-content: space-between;
+}
+
+.topRow .progressContainer {
+  flex: 1 1 auto;
+  text-align: left; /* progress will be on the left */
+  min-width: 0;
+}
+
+.localesToggleWrapper {
+  flex: 0 0 auto; /* keep toggle width fixed */
+  margin-left: auto;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background-color: var(--color-gray-200);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: var(--color-accent);
+  transition: width 0.4s ease;
+}
+
+.progressText {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+/* Contenedor y botones de las pestañas */
+.formTabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: none;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
+  align-items: center;
+  padding: 0.25rem 0;
+  flex: 1 1 0%;
+  justify-content: flex-start;
+  white-space: nowrap;
+}
+
+.formTab {
+  background-color: transparent;
+  border: none;
+  padding: 0.55rem 0.9rem;
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 0.12s ease,
+    color 0.12s ease,
+    transform 0.12s ease;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.formTab:hover,
+.formTab:focus {
+  color: var(--color-primary);
+  background-color: rgba(124, 58, 237, 0.08);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.formTab.active {
+  color: var(--color-accent);
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.14), rgba(88, 24, 160, 0.08));
+  box-shadow: 0 6px 18px rgba(88, 24, 160, 0.06);
+}
+
+/* make the pills scroll nicely on small screens */
+.formTabs::-webkit-scrollbar {
+  height: 6px;
+}
+.formTabs::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 999px;
+}
+
+/* Contenido de la sección de la pestaña activa */
+.formContent {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 10rem; /* ensure some vertical space so footer can stick */
+  position: relative; /* allow absolute footActions positioning */
+  padding-bottom: 88px; /* reserve space for anchored footer (height of buttons + gap) */
+}
+
+.formSection h3 {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  margin-bottom: 1.5rem;
+  font-family: var(--font-heading);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.formSection h3 i {
+  color: var(--color-accent);
+}
+
+/* Layout de columnas para secciones del formulario */
+.formColumns {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .formColumns {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.formColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Gallery + cover manager layout */
+.galleryWrapper {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+/* Wrapper around the cover manager to allow fine-grained control of the
+   width/height space between the two columns. Consumers can override the
+   CSS variables `--cover-width` and `--cover-height` on the element or via
+   inline style to tweak dimensions. */
+.coverBox {
+  --cover-width: 40vw; /* default width */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: var(--cover-width);
+  min-width: 140px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .coverBox {
+    width: 100%;
+    min-width: unset;
+    height: auto;
+  }
+}
+
+/* Helper global class that forces formColumns to behave as a single column
+   when the gallery is displayed. This avoids relying on cross-module selectors
+   and makes the intent explicit from the markup. */
+:global(.galleryFormColumns) {
+  /* Keep the outer layout as a single column grid so children keep their intrinsic widths
+     (like `.coverBox`) instead of forcing 100% widths which cause overflow. */
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 12px !important;
+}
+
+.coverManager {
+  /* Make the manager respect the coverBox width instead of using viewport-based sizing */
+  width: 100%;
+  min-width: unset;
+  max-width: 100%;
+  /* Use MD theme surface with fallbacks to existing project variables */
+  background-color: var(--md-sys-color-surface, var(--color-background-light));
+  /* Prevent accidental background-image usage */
+  background-image: none !important;
+  border: 1px solid var(--md-sys-color-outline-variant, var(--color-border));
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+  box-sizing: border-box;
+}
+
+.coverLabel {
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.coverPreview {
+  /* Make the cover preview visually consistent with gallery thumbnails */
+  aspect-ratio: 1;
+  width: 100%;
+  max-width: 220px; /* tighter max to avoid huge previews */
+  height: auto;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--color-gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--md-sys-color-outline-variant);
+  /* Ensure preview uses an <img> and not a CSS background */
+  background-image: none !important;
+  transition:
+    transform 0.18s cubic-bezier(0.2, 0, 0, 1),
+    box-shadow 0.18s ease;
+}
+
+.coverPreview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.coverPreview:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 2px 6px 2px rgba(0, 0, 0, 0.15);
+}
+
+.coverPlaceholder {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  color: var(--color-text-secondary);
+}
+
+.coverActions {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.galleryColumn {
+  flex: 1 1 auto;
+}
+
+@media (max-width: 768px) {
+  .galleryWrapper {
+    flex-direction: column;
+  }
+
+  .coverManager {
+    width: 100%;
+    min-width: unset;
+  }
+
+  /* On small screens the footer should be static and not overlap content */
+  .footActions {
+    position: static;
+    right: unset;
+    bottom: unset;
+    width: 100%;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0), rgba(255, 255, 255, 0.01));
+  }
+}
+
+/* Estilos de los grupos de formulario (label + input/textarea) */
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.formGroup label {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  display: block;
+}
+
+.formGroup input,
+.formGroup textarea,
+.formGroup select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 1rem;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus,
+.formGroup select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-light);
+}
+
+.formGroup input.error,
+.formGroup textarea.error {
+  border-color: var(--color-error);
+}
+
+/* Clase utilitaria aplicada directamente en inputs via styles.error */
+.error {
+  border-color: var(--color-error) !important;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.08);
+}
+
+.errorText {
+  color: var(--color-error);
+  font-size: 0.875rem;
+  margin-left: 0.5rem;
+}
+
+/* Estilos para el editor de texto */
+.editorContainer {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1rem;
+  background-color: var(--color-background-light);
+}
+
+/* Estilos del input de tecnologías con botón */
+.techInputContainer {
+  display: flex;
+  align-items: stretch;
+}
+
+.techInputContainer input {
+  flex-grow: 1;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.techInputContainer button {
+  background-color: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 0 8px 8px 0;
+  padding: 0 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.techInputContainer button:hover {
+  background-color: var(--color-primary-dark);
+}
+
+.techInputContainer button:disabled {
+  background-color: var(--color-gray-300);
+  cursor: not-allowed;
+}
+
+/* Contenedor de chips de tecnología */
+.techTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+/* Estilos de los chips de tecnología */
+.skillChip {
+  font-family: var(--font-text);
+  font-size: 0.875rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 20px;
+  background-color: var(--color-gray-100);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.skillChip.closable {
+  padding-right: 0.5rem;
+}
+
+.skillChip:hover {
+  background-color: var(--color-gray-200);
+}
+
+.skillChip button {
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+}
+
+/* Estilos del dropdown de sugerencias */
+.suggestionsDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--color-gray-100);
+  border: 1px solid var(--color-border);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  box-shadow: var(--shadow-1);
+  z-index: 10;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.suggestionItem {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.suggestionItem.highlighted,
+.suggestionItem:hover {
+  background-color: var(--color-primary-light);
+}
+
+/* Clase usada por el componente para marcar el elemento resaltado */
+.highlighted {
+  background-color: var(--color-primary-light);
+}
+
+.suggestionItem .icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 0.75rem;
+}
+
+.suggestionItem .colorDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 1rem;
+}
+
+.suggestionName {
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+/* Botones de acción del formulario */
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+  /* Push the actions to the bottom of .formContent */
+  margin-top: auto;
+  align-items: center;
+  padding-top: 12px;
+}
+
+/* FootActions: visual footer wrapper for form actions inside .formContent
+   Use in combination with .formActions to create a full-width footer area
+   that separates the actions from the content and provides consistent
+   padding and a subtle separator. */
+.footActions {
+  width: auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 0;
+  position: absolute;
+  right: 20px;
+  bottom: 16px;
+  z-index: 10;
+  border-top: none;
+  background: transparent;
+}
+
+.formActions button {
+  padding: 0.6rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    opacity 0.12s ease;
+}
+
+.cancelButton {
+  background-color: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.06);
+  color: var(--color-text-secondary);
+  padding: 0.55rem 1rem;
+  box-shadow: none;
+  opacity: 0.95;
+}
+
+.cancelButton:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--color-text-primary);
+  transform: translateY(-1px);
+}
+
+.saveButton {
+  background-color: var(--color-accent);
+  color: #fff;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 16px rgba(80, 35, 200, 0.12);
+}
+
+.saveButton:hover:not(:disabled) {
+  background-color: var(--color-accent-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(80, 35, 200, 0.16);
+}
+
+.saveButton:disabled {
+  background-color: var(--color-gray-300);
+  cursor: not-allowed;
+}
+
+/* Focus styles for accessibility */
+.formActions button:focus {
+  outline: 3px solid rgba(124, 58, 237, 0.18);
+  outline-offset: 2px;
+}
+
+/* Cuando el botón recibe la clase global 'loading' (no módulo) lo hacemos menos interactivo */
+:global(.loading) {
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* Visually hidden helper (global utility) */
+:global(.sr-only) {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Clase exportada para tabs activas cuando se aplica como styles.active */
+.active {
+  color: var(--color-accent);
+  border-bottom: 2px solid var(--color-accent);
+}
+
+/* Language toggle inside the form content */
+.localesToggleWrapper {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto; /* keep toggle width fixed */
+  margin-left: 12px;
+  margin-bottom: 0;
+}
+
+.localesToggle {
+  display: inline-flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.localeBtn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-text-secondary);
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.85rem;
+  min-width: 34px;
+  text-align: center;
+}
+
+.localeBtn[aria-pressed='true'] {
+  background: var(--color-accent);
+  color: #fff;
+  border-color: rgba(0, 0, 0, 0.06);
+}
