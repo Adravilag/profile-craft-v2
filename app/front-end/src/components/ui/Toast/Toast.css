@@ -1,0 +1,427 @@
+/* Toast.css - Material Design 3 inspired styles for AccessibleToast */
+
+/* MD3 tokens (local, conservative) */
+:root {
+  /* Dark mode tokens */
+  --md-surface: #0b1220; /* dark surface */
+  --md-on-surface: #e6eef8; /* text on dark */
+  --md-surface-variant: #0f1724;
+  --md-primary: #b9a1ff; /* muted primary for dark */
+  --md-success: #6fe08b;
+  --md-error: #ff8a80;
+  --md-warning: #ffd08a;
+  --md-info: #7fb8ff;
+  --md-elevation-1: 0 1px 2px rgba(2, 6, 23, 0.6), 0 4px 10px rgba(2, 6, 23, 0.5);
+  --md-elevation-2: 0 8px 24px rgba(2, 6, 23, 0.6);
+  --md-radius-lg: 12px;
+  --md-motion: 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.toast {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 14px 18px;
+  border-radius: 12px;
+  min-width: 280px;
+  max-width: 560px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.06));
+  color: var(--md-on-surface);
+  box-shadow:
+    0 18px 40px rgba(2, 6, 23, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+  transform: translateY(0);
+  transition:
+    transform var(--md-motion),
+    opacity var(--md-motion);
+  opacity: 1;
+  align-items: center;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial;
+  line-height: 1.2;
+}
+
+.toast .text-lg {
+  font-size: 1.125rem;
+}
+
+/* Accent stripe - subtle elevation + colored capsule */
+.toast::before {
+  content: '';
+  width: 10px;
+  height: 56px;
+  border-radius: 999px;
+  background: transparent;
+  display: inline-block;
+  margin-right: 14px;
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+.toast-success {
+  background: linear-gradient(
+    180deg,
+    var(--md-surface) 0%,
+    color-mix(in srgb, var(--md-surface) 60%, #05260a 40%)
+  );
+}
+.toast-success::before {
+  background: linear-gradient(
+    180deg,
+    var(--md-success),
+    color-mix(in srgb, var(--md-success) 60%, rgba(0, 0, 0, 0.05))
+  );
+}
+
+.toast-error {
+  background: linear-gradient(
+    180deg,
+    var(--md-surface) 0%,
+    color-mix(in srgb, var(--md-surface) 60%, #2f0a08 40%)
+  );
+}
+.toast-error::before {
+  background: linear-gradient(
+    180deg,
+    var(--md-error),
+    color-mix(in srgb, var(--md-error) 60%, rgba(0, 0, 0, 0.06))
+  );
+}
+
+.toast-warning {
+  background: linear-gradient(
+    180deg,
+    var(--md-surface) 0%,
+    color-mix(in srgb, var(--md-surface) 60%, #2a1604 40%)
+  );
+}
+.toast-warning::before {
+  background: linear-gradient(
+    180deg,
+    var(--md-warning),
+    color-mix(in srgb, var(--md-warning) 60%, rgba(0, 0, 0, 0.05))
+  );
+}
+
+.toast-info {
+  background: linear-gradient(
+    180deg,
+    var(--md-surface) 0%,
+    color-mix(in srgb, var(--md-surface) 60%, #04142a 40%)
+  );
+}
+.toast-info::before {
+  background: linear-gradient(
+    180deg,
+    var(--md-info),
+    color-mix(in srgb, var(--md-info) 60%, rgba(0, 0, 0, 0.06))
+  );
+}
+
+/* Content layout */
+.toast-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: 999px;
+  box-shadow: 0 4px 12px rgba(2, 6, 23, 0.6);
+}
+.toast-icon svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+.toast > .flex-1 {
+  font-size: 0.96rem;
+  color: var(--md-on-surface);
+}
+
+/* Content: title + description */
+.toast-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.toast-title {
+  font-weight: 700;
+  color: var(--md-on-surface);
+  font-size: 1rem;
+  line-height: 1.1;
+}
+.toast-description {
+  font-size: 0.9rem;
+  color: color-mix(in srgb, var(--md-on-surface) 72%, rgba(255, 255, 255, 0));
+}
+
+/* Action button (primary contextual action) */
+/* Action button (primary contextual action) - pill style */
+.toast .toast-action,
+.toast-action {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--md-on-surface);
+  padding: 6px 10px;
+  border-radius: 999px; /* pill */
+  margin-left: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.toast .toast-action:hover,
+.toast-action:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.toast-action-icon svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+.toast-action-label {
+  font-size: 0.95rem;
+}
+
+/* Loading / spinner animation for action icon */
+@keyframes tc-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.toast.is-loading {
+  opacity: 0.98;
+}
+.toast.is-loading .toast-action {
+  pointer-events: none;
+  opacity: 0.95;
+}
+.toast.is-loading .toast-action-icon svg {
+  animation: tc-spin 720ms linear infinite;
+}
+
+/* small click micro-rotation to give feedback */
+.toast-action:active .toast-action-icon svg {
+  transform: rotate(12deg);
+}
+
+/* Close button */
+.toast-close {
+  background: rgba(255, 255, 255, 0.02);
+  border: none;
+  color: var(--md-on-surface);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 999px;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 12px; /* space from content/action */
+  flex-shrink: 0;
+}
+.toast-close:hover {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+/* Color the icons based on variant (using currentColor inside SVG) */
+.toast-success {
+  color: var(--md-success);
+}
+.toast-error {
+  color: var(--md-error);
+}
+.toast-warning {
+  color: var(--md-warning);
+}
+.toast-info {
+  color: var(--md-info);
+}
+
+/* stripe colors for ::before */
+.toast-success::before {
+  background: linear-gradient(
+    180deg,
+    var(--md-success),
+    color-mix(in srgb, var(--md-success) 60%, rgba(0, 0, 0, 0.25))
+  );
+}
+.toast-error::before {
+  background: linear-gradient(
+    180deg,
+    var(--md-error),
+    color-mix(in srgb, var(--md-error) 60%, rgba(0, 0, 0, 0.25))
+  );
+}
+.toast-warning::before {
+  background: linear-gradient(
+    180deg,
+    var(--md-warning),
+    color-mix(in srgb, var(--md-warning) 60%, rgba(0, 0, 0, 0.25))
+  );
+}
+.toast-info::before {
+  background: linear-gradient(
+    180deg,
+    var(--md-info),
+    color-mix(in srgb, var(--md-info) 60%, rgba(0, 0, 0, 0.25))
+  );
+}
+
+/* badge backgrounds per variant (icon circle) */
+.toast-success .toast-icon {
+  background: linear-gradient(
+    180deg,
+    var(--md-success),
+    color-mix(in srgb, var(--md-success) 60%, rgba(0, 0, 0, 0.18))
+  );
+}
+.toast-error .toast-icon {
+  background: linear-gradient(
+    180deg,
+    var(--md-error),
+    color-mix(in srgb, var(--md-error) 60%, rgba(0, 0, 0, 0.18))
+  );
+}
+.toast-warning .toast-icon {
+  background: linear-gradient(
+    180deg,
+    var(--md-warning),
+    color-mix(in srgb, var(--md-warning) 60%, rgba(0, 0, 0, 0.18))
+  );
+}
+.toast-info .toast-icon {
+  background: linear-gradient(
+    180deg,
+    var(--md-info),
+    color-mix(in srgb, var(--md-info) 60%, rgba(0, 0, 0, 0.18))
+  );
+}
+.toast .toast-icon svg {
+  fill: white;
+  stroke: none;
+}
+
+.toast button {
+  /* Generic button styles for any button inside a toast, but .toast-action overrides these */
+  background: rgba(255, 255, 255, 0.02);
+  border: none;
+  color: var(--md-on-surface);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 999px;
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 12px;
+  flex-shrink: 0;
+}
+.toast button:hover {
+  background: rgba(255, 255, 255, 0.035);
+}
+.toast button:focus {
+  outline: 2px solid rgba(99, 102, 241, 0.12);
+  outline-offset: 2px;
+}
+
+/* Entrance / Exit motion inspired by MD3 motion systems */
+/* Entrance / Exit motion inspired by MD3 motion systems */
+.toast-enter {
+  transform: translateY(-10px) scale(0.995);
+  opacity: 0;
+}
+.toast-enter-active,
+.toast-enter.toast-enter-active {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  transition:
+    transform var(--md-motion),
+    opacity var(--md-motion);
+}
+
+.toast-exit {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+.toast-exit.toast-exit-active,
+.toast-exit-active {
+  transform: translateY(-10px) scale(0.985);
+  opacity: 0;
+  transition:
+    transform 220ms ease-in,
+    opacity 220ms ease-in;
+}
+
+/* Also support CSS animation keyframes for environments preferring animation */
+@keyframes toastIn {
+  from {
+    transform: translateY(-10px) scale(0.995);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes toastOut {
+  from {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-10px) scale(0.985);
+    opacity: 0;
+  }
+}
+
+.toast.animate-in {
+  animation: toastIn var(--md-motion) both;
+}
+.toast.animate-out {
+  animation: toastOut 220ms ease-in both;
+}
+
+/* Small screens: full-width bottom placement is common for toasts */
+@media (max-width: 480px) {
+  .toast {
+    width: calc(100% - 32px);
+    max-width: none;
+    padding: 12px;
+    min-width: 0;
+  }
+}
+
+/* Accessibility helper */
+.sr-only {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

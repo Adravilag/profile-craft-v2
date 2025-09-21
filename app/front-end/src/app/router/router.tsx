@@ -1,6 +1,6 @@
 // src/app/router.tsx
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
-import ScrollToTop from '@/components/ScrollToTop/ScrollToTop';
+import ScrollToTop from '@/components/utils/ScrollToTop';
 import { NORMALIZED_BASE } from '@/config/basePath';
 import { lazy, Suspense } from 'react';
 import type { ReactNode } from 'react';
