@@ -353,24 +353,48 @@ const ProfileHero: React.FC<ProfileHeroProps> = ({ isFirstTime = false }) => {
               aria-live="polite"
             >
               {remoteLoading ? (
+                // Usar skeleton con la misma estructura que los botones reales para evitar problemas de reconciliación
                 <>
-                  <span
+                  <div
+                    key="skeleton-experience"
                     className={`${styles.statBadge} ${styles.statPrimary} ${styles.statSkeleton} animate-pulse`}
-                  />
-                  <span
+                    aria-hidden="true"
+                  >
+                    <span className={styles.statIcon} aria-hidden="true">
+                      👨‍💻
+                    </span>
+                    <span className={styles.statText}>Cargando...</span>
+                  </div>
+                  <div
+                    key="skeleton-projects"
                     className={`${styles.statBadge} ${styles.statSkeleton} animate-pulse delay-100`}
-                  />
+                    aria-hidden="true"
+                  >
+                    <span className={styles.statIcon} aria-hidden="true">
+                      📂
+                    </span>
+                    <span className={styles.statText}>Cargando...</span>
+                  </div>
                 </>
               ) : (
-                statsArray.map(s => (
-                  <span
-                    key={s.key}
+                // Renderizar estadísticas reales con keys estables
+                statsArray.map((s, index) => (
+                  <button
+                    key={`stat-${s.key}-stable`}
+                    onClick={s.onClick}
                     className={`${styles.statBadge} ${styles.mobileOptimized} ${
                       s.key === 'years_experience' ? styles.statPrimary : ''
                     } transition-all hover:scale-105 hover:-translate-y-1`}
+                    title={`Ir a sección ${s.sectionId}`}
+                    aria-label={`Navegar a ${s.sectionId}: ${s.label}`}
+                    data-section-id={s.sectionId}
+                    data-testid={`stat-button-${s.key}`}
                   >
-                    {s.label}
-                  </span>
+                    <span className={styles.statIcon} aria-hidden="true">
+                      {s.icon}
+                    </span>
+                    <span className={styles.statText}>{s.label}</span>
+                  </button>
                 ))
               )}
             </div>

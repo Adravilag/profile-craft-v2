@@ -299,11 +299,10 @@ export function PatternLogin({
           }}
         >
           {src ? (
-            // Avoid passing unknown props like fetchPriority directly to DOM elements.
-            // Extract fetchPriority and pass it as lowercase `fetchpriority` attribute
+            // Extract fetchPriority and use correct camelCase for React
             (() => {
               const { fetchPriority, ...restAttrs } = (imgAttrs || {}) as any;
-              const fpAttr = fetchPriority != null ? { fetchpriority: fetchPriority } : {};
+              const fpAttr = fetchPriority != null ? { fetchPriority: fetchPriority } : {};
               return (
                 <img
                   src={buildCloudinaryUrl(src, {

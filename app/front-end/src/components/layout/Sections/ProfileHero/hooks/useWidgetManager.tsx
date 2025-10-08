@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react';
-import React from 'react';
 
 // añadir context translate
 import { useT } from '@/contexts/TranslationContext';

@@ -1,13 +1,20 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { getProjects, getExperiences, getCertifications } from '@/services/api';
 import type { UserProfile } from '@/types/api';
 import { debugLog } from '@/utils/debugConfig';
 import { useTranslation } from '@/contexts/TranslationContext';
 import { normalizeState, PROJECT_STATES } from '@/constants/projectStates';
 import { useSectionsLoadingContext } from '@/contexts/SectionsLoadingContext';
+import { scrollToElement } from '@/utils/scrollToElement';
 
 interface UseProfileStatsReturn {
-  statsArray: Array<{ key: string; label: string }>;
+  statsArray: Array<{
+    key: string;
+    label: string;
+    icon: string;
+    sectionId: string;
+    onClick: () => void;
+  }>;
   remoteLoading: boolean;
   remoteStats: {
     projects_count?: number;
@@ -36,6 +43,37 @@ export function useProfileStats(
   // Sistema centralizado de loading
   const { isLoading: centralLoading, setLoading } = useSectionsLoadingContext();
   const remoteLoading = centralLoading('profile');
+
+  // Función helper para navegación con scroll
+  const navigateToSection = useCallback(async (sectionId: string) => {
+    try {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        // Calcular offset dinámico para el header sticky
+        const navEl = document.querySelector('.header-portfolio-nav') as HTMLElement | null;
+        const navHeight = navEl ? navEl.getBoundingClientRect().height : 80;
+
+        await scrollToElement(element, {
+          offset: navHeight + 16, // 16px de margen extra
+          minDur: 300,
+          maxDur: 800,
+        });
+      }
+    } catch (error) {
+      debugLog.warn(`Error navigating to section ${sectionId}:`, error);
+    }
+  }, []);
+
+  // Funciones de navegación memoizadas para cada sección
+  const navigateToExperience = useCallback(
+    () => navigateToSection('experience'),
+    [navigateToSection]
+  );
+  const navigateToProjects = useCallback(() => navigateToSection('projects'), [navigateToSection]);
+  const navigateToCertifications = useCallback(
+    () => navigateToSection('certifications'),
+    [navigateToSection]
+  );
 
   // Fetch de estadísticas remotas
   useEffect(() => {
@@ -130,15 +168,30 @@ export function useProfileStats(
 
     const certCount = rs.certifications_count ?? meta.certifications_count ?? 0;
 
-    const items: { key: string; label: string }[] = [
-      { key: 'years_experience', label: yearsLabel },
+    const items: {
+      key: string;
+      label: string;
+      icon: string;
+      sectionId: string;
+      onClick: () => void;
+    }[] = [
+      {
+        key: 'years_experience',
+        label: `+${rs.years_experience ?? meta.years_experience ?? 5} ${t.profileHero.yearsExperience}`,
+        icon: '👨‍💻',
+        sectionId: 'experience',
+        onClick: navigateToExperience,
+      },
     ];
 
     // Añadir proyectos completados sólo si el valor efectivo no es 0.
     if (projectsCountRaw !== 0) {
       items.push({
         key: 'projects_count',
-        label: `📂 ${projectsLabelValue} ${t.profileHero.projectsCompleted}`,
+        label: `${projectsLabelValue} ${t.profileHero.projectsCompleted}`,
+        icon: '📂',
+        sectionId: 'projects',
+        onClick: navigateToProjects,
       });
     }
 
@@ -146,12 +199,22 @@ export function useProfileStats(
     if (certCount > 0) {
       items.push({
         key: 'certifications_count',
-        label: `🎓 ${certCount} ${t.experience.certifications}`,
+        label: `${certCount} ${t.experience.certifications}`,
+        icon: '🎓',
+        sectionId: 'certifications',
+        onClick: navigateToCertifications,
       });
     }
 
     return items;
-  }, [userProfile, remoteStats, t]);
+  }, [
+    userProfile,
+    remoteStats,
+    t,
+    navigateToExperience,
+    navigateToProjects,
+    navigateToCertifications,
+  ]);
 
   return {
     statsArray,
