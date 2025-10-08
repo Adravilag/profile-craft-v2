@@ -6,7 +6,6 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server-mongodb.ts",
-    "dev:mongodb": "tsx server-mongodb.ts",
     "build": "tsc --project tsconfig.server.json",
     "start": "node dist-server/server-clean.js",
     "start:mongodb": "node dist-server/server-mongodb.js",

@@ -68,13 +68,18 @@ const config: any = {
       '@types': path.resolve(currentDir, 'src/types'),
       '@assets': path.resolve(currentDir, 'src/assets'),
       '@locales': path.resolve(currentDir, 'src/locales'),
-      // Force resolution of react/react-dom to the package local copy to avoid multiple instances
-      // use `currentDir` (this file's folder) so resolution works regardless of process.cwd()
-      react: path.resolve(currentDir, 'node_modules', 'react'),
-      'react-dom': path.resolve(currentDir, 'node_modules', 'react-dom'),
+      // Force resolution of react/react-dom to the workspace root node_modules
+      // This is needed because we're using npm workspaces
+      react: path.resolve(currentDir, '../../node_modules', 'react'),
+      'react-dom': path.resolve(currentDir, '../../node_modules', 'react-dom'),
     },
     // Evitar que Vite resuelva varias copias de React (causa frecuente de "Invalid hook call")
     dedupe: ['react', 'react-dom'],
+  },
+  optimizeDeps: {
+    // Force Vite to pre-bundle React from the workspace root
+    force: true,
+    include: ['react', 'react-dom', 'react/jsx-runtime', 'react/jsx-dev-runtime'],
   },
   test: {
     projects: [
