@@ -459,5 +459,37 @@
     "color": "#F15A24",
     "svg": "scrum.svg",
     "aliases": ["scrum"]
+  },
+  {
+    "name": "TypeORM",
+    "slug": "typeorm",
+    "category": "library",
+    "color": "#FE0803",
+    "svg": "logos-typeorm.svg",
+    "aliases": ["type-orm"]
+  },
+  {
+    "name": "Socket.IO",
+    "slug": "socket-io",
+    "category": "library",
+    "color": "#010101",
+    "svg": "socket-io.svg",
+    "aliases": ["socket.io", "socketio"]
+  },
+  {
+    "name": "Swagger",
+    "slug": "swagger",
+    "category": "tool",
+    "color": "#85EA2D",
+    "svg": "swagger-svgrepo-com.svg",
+    "aliases": ["swagger-ui", "openapi"]
+  },
+  {
+    "name": "NestJS",
+    "slug": "nestjs",
+    "category": "framework",
+    "color": "#E0234E",
+    "svg": "nestjs-svgrepo-com.svg",
+    "aliases": ["nest", "nest.js"]
   }
 ]
